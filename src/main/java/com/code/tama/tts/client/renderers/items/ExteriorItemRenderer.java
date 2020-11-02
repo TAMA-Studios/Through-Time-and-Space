@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-/** Renderer for the ExteriorTile BlockItem * */
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
   public ExteriorItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
     super(dispatcher, modelSet);
