@@ -1,0 +1,14 @@
+{
+  "name": "TARDIS Manual",
+  "landing_text": "Index File",
+  "version": 0,
+  "creative_tab": "minecraft:tools_and_utilities",
+  "use_resource_pack": true,
+  "book_texture": "patchouli:textures/gui/book_green.png",
+  "model": "mtm:manual",
+  "nameplate_color": "003b6f",
+  "subtitle": "TT Capsule Type 40 Manual\nWritten and distributed by Black Hole Shipyards",
+  "categories": [
+    "mtm:test_category"
+  ]
+}

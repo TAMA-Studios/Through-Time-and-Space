@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "mtm:block/monitor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "mtm:block/monitor"
+    },
+    "facing=south": {
+      "model": "mtm:block/monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mtm:block/monitor",
+      "y": 270
+    }
+  }
+}

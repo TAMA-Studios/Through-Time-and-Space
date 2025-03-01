@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=east,pressed_button=0": {
+      "model": "mtm:block/control/chameleon_circuit_panel",
+      "y": 90
+    },
+    "facing=north,pressed_button=0": {
+      "model": "mtm:block/control/chameleon_circuit_panel"
+    },
+    "facing=south,pressed_button=0": {
+      "model": "mtm:block/control/chameleon_circuit_panel",
+      "y": 180
+    },
+    "facing=west,pressed_button=0": {
+      "model": "mtm:block/control/chameleon_circuit_panel",
+      "y": 270
+    },
+    "facing=east,pressed_button=1": {
+      "model": "mtm:block/control/chameleon_circuit_panel_0",
+      "y": 90
+    },
+    "facing=north,pressed_button=1": {
+      "model": "mtm:block/control/chameleon_circuit_panel_0"
+    },
+    "facing=south,pressed_button=1": {
+      "model": "mtm:block/control/chameleon_circuit_panel_0",
+      "y": 180
+    },
+    "facing=west,pressed_button=1": {
+      "model": "mtm:block/control/chameleon_circuit_panel_0",
+      "y": 270
+    },
+    "facing=east,pressed_button=2": {
+      "model": "mtm:block/control/chameleon_circuit_panel_1",
+      "y": 90
+    },
+    "facing=north,pressed_button=2": {
+      "model": "mtm:block/control/chameleon_circuit_panel_1"
+    },
+    "facing=south,pressed_button=2": {
+      "model": "mtm:block/control/chameleon_circuit_panel_1",
+      "y": 180
+    },
+    "facing=west,pressed_button=2": {
+      "model": "mtm:block/control/chameleon_circuit_panel_1",
+      "y": 270
+    },
+    "facing=east,pressed_button=3": {
+      "model": "mtm:block/control/chameleon_circuit_panel_2",
+      "y": 90
+    },
+    "facing=north,pressed_button=3": {
+      "model": "mtm:block/control/chameleon_circuit_panel_2"
+    },
+    "facing=south,pressed_button=3": {
+      "model": "mtm:block/control/chameleon_circuit_panel_2",
+      "y": 180
+    },
+    "facing=west,pressed_button=3": {
+      "model": "mtm:block/control/chameleon_circuit_panel_2",
+      "y": 270
+    }
+  }
+}

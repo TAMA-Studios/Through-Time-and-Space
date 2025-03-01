@@ -1,0 +1,15 @@
+{
+  "type": "patchouli:shaped_book_recipe",
+  "pattern": [
+    "B#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:green_dye"
+    },
+    "B": {
+      "item": "minecraft:book"
+    }
+  },
+  "book": "type_40_manual"
+}

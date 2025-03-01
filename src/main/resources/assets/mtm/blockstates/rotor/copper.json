@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mtm:block/rotor/copper"
+    }
+  }
+}

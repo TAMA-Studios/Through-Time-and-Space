@@ -1,0 +1,4 @@
+TODO:
+Animation works (Only after takeoff, add a "IsTakingOff" boolean and add it to the console tile tick with `animateIf(cap.IsInFlight() || cap.IsTakingOff()`
+Landing crashes, assumed null exterior, test block control for confirmation
+Add sound
