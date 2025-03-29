@@ -8,10 +8,12 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class ExteriorVariant implements INBTSerializable<CompoundTag> {
     private ExteriorModel ExteriorType;
     private ResourceLocation Texture;
+    private String Name;
 
-    public ExteriorVariant(ExteriorModel exteriorModel, ResourceLocation texture) {
+    public ExteriorVariant(ExteriorModel exteriorModel, ResourceLocation texture, String name) {
         this.ExteriorType = exteriorModel;
         this.Texture = texture;
+        this.Name = name;
     }
 
     public ExteriorVariant(CompoundTag Tag) {
@@ -20,6 +22,10 @@ public class ExteriorVariant implements INBTSerializable<CompoundTag> {
 
     public ExteriorModel GetExteriorType() {
         return ExteriorType;
+    }
+
+    public String GetExteriorName() {
+        return Name;
     }
 
     public ResourceLocation GetTexture() {
