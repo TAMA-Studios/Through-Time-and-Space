@@ -13,7 +13,7 @@ public class DataExteriorList {
     public static void setExteriorList(List<DataExterior> list) {
         exteriorList = list;
         for (DataExterior exterior : exteriorList) {
-            ExteriorVariant toAdd = new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, exterior.getTexture());
+            ExteriorVariant toAdd = new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, exterior.getTexture(), exterior.getName());
             AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
             ExistsOrNot.set(false);
             for(ExteriorVariant exteriorVariant : ExteriorVariants.Variants) {

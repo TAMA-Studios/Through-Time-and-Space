@@ -40,13 +40,13 @@ public class ExteriorVariants {
     }
 
     public static void InitVariants() {
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11a")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11b")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11c")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12a")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12b")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9_bw")));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_10")));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11a"), "11th Police Box (A)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11b"), "11th Police Box (B)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11c"), "11th Police Box (C)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12a"), "12th Police Box (A)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12b"), "12th Police Box (B)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9"), "9th Police Box"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9_bw"), "9th Police Box (Bad Wolf)"));
+        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_10"), "10th Police Box"));
     }
 }
