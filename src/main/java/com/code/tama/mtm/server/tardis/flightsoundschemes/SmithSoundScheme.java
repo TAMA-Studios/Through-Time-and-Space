@@ -1,0 +1,28 @@
+package com.code.tama.mtm.server.tardis.flightsoundschemes;
+
+import com.code.tama.mtm.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
+import com.code.tama.mtm.server.tardis.flightsoundschemes.flightsounds.SmithFlightLoopSound;
+import com.code.tama.mtm.server.tardis.flightsoundschemes.flightsounds.SmithLandingSound;
+import com.code.tama.mtm.server.tardis.flightsoundschemes.flightsounds.SmithTakeoffSound;
+
+public class SmithSoundScheme extends AbstractSoundScheme {
+    private final SmithTakeoffSound takeoffSound;
+    private final SmithFlightLoopSound loopSound;
+    private final SmithLandingSound landSound;
+
+    public SmithSoundScheme() {
+        this.takeoffSound = new SmithTakeoffSound();
+        this.loopSound = new SmithFlightLoopSound();
+        this.landSound = new SmithLandingSound();
+    }
+
+    public AbstractFlightSound GetTakeoff() {
+        return this.takeoffSound;
+    }
+    public AbstractFlightSound GetLanding() {
+        return this.landSound;
+    }
+    public AbstractFlightSound GetFlightLoop() {
+        return this.loopSound;
+    }
+}

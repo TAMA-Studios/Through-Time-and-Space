@@ -1,13 +1,13 @@
 package com.code.tama.mtm;
 
-import com.code.tama.mtm.Enums.tardis.ExteriorModel;
-import com.code.tama.mtm.misc.ExteriorVariant;
+import com.code.tama.mtm.server.enums.tardis.ExteriorModel;
+import com.code.tama.mtm.server.misc.ExteriorVariant;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.code.tama.mtm.mtm.MODID;
+import static com.code.tama.mtm.MTMMod.MODID;
 
 public class ExteriorVariants {
     public static ArrayList<ExteriorVariant> Variants = new ArrayList<>();
