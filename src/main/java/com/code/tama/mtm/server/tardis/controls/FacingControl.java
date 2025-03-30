@@ -1,7 +1,7 @@
 package com.code.tama.mtm.server.tardis.controls;
 
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -22,7 +22,7 @@ public class FacingControl extends AbstractControl {
 
     @Override
     public SoundEvent GetSuccessSound() {
-        return Sounds.BUTTON_CLICK_01.get();
+        return MTMSounds.BUTTON_CLICK_01.get();
     }
 
     @Override

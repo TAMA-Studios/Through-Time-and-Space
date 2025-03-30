@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.tardis.controls.Panels;
 
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -79,13 +79,13 @@ public class LightPanel extends HorizontalDirectionalBlock {
                     tardisLevelCapability.SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                     world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case PLUS:
                     tardisLevelCapability.SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 default: break;
             }

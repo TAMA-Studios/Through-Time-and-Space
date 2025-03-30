@@ -5,7 +5,7 @@ import com.code.tama.triggerapi.TriggerAPI;
 import com.code.tama.mtm.client.CameraShakeHandler;
 import com.code.tama.mtm.client.CustomLevelRenderer;
 import com.code.tama.mtm.client.renderers.PortalTileEntityRenderer;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.dimensions.Biomes;
 import com.code.tama.mtm.server.MTMEntities;
 import com.code.tama.mtm.server.networking.Networking;
@@ -89,7 +89,7 @@ public class MTMMod {
 
         ModLootModifiers.register(modEventBus);
 
-        Sounds.register(modEventBus);
+        MTMSounds.register(modEventBus);
 
         exteriorTileTickThread.start();
 

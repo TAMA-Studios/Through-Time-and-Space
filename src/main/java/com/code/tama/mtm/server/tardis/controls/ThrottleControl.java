@@ -1,7 +1,7 @@
 package com.code.tama.mtm.server.tardis.controls;
 
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -37,7 +37,7 @@ public class ThrottleControl extends AbstractControl {
 
     @Override
     public SoundEvent GetSuccessSound() {
-        return this.itardisLevel != null ? itardisLevel.IsInFlight() ? Sounds.THROTTLE_OFF.get() : Sounds.THROTTLE_OFF.get() : Sounds.THROTTLE_ON.get();
+        return this.itardisLevel != null ? itardisLevel.IsInFlight() ? MTMSounds.THROTTLE_OFF.get() : MTMSounds.THROTTLE_OFF.get() : MTMSounds.THROTTLE_ON.get();
     }
 
     @Override

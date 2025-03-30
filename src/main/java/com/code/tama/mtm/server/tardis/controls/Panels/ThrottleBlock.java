@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.tardis.controls.Panels;
 
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -66,7 +66,7 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
                         level.playSound(null, pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS);
                         break POWER;
                     }
-                    level.playSound(null, pos, Sounds.THROTTLE_ON.get(), SoundSource.BLOCKS);
+                    level.playSound(null, pos, MTMSounds.THROTTLE_ON.get(), SoundSource.BLOCKS);
                     level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
                 }
                 else {
@@ -76,7 +76,7 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
             } else {
                 if(cap.IsInFlight()) {
                     cap.Land();
-                    level.playSound(null, pos, Sounds.THROTTLE_OFF.get(), SoundSource.BLOCKS);
+                    level.playSound(null, pos, MTMSounds.THROTTLE_OFF.get(), SoundSource.BLOCKS);
                     level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
                 }
                 else {

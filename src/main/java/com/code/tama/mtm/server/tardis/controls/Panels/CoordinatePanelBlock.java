@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.tardis.controls.Panels;
 
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.MTMMod;
 import net.minecraft.core.BlockPos;
@@ -79,7 +79,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                             world.scheduleTick(pos, this, 10);
                             MTMMod.LOGGER.info("X!");
-                            world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                            world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Y:
                             tardisLevelCapability.SetDestination(destination.AddY(Crouching ? -DestOffset : DestOffset));
@@ -87,7 +87,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                             world.scheduleTick(pos, this, 10);
                             MTMMod.LOGGER.info("Y!");
-                            world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                            world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Z:
                             tardisLevelCapability.SetDestination(destination.AddZ(Crouching ? -DestOffset : DestOffset));
@@ -95,7 +95,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                             world.scheduleTick(pos, this, 10);
                             MTMMod.LOGGER.info("Z!");
-                            world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                            world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         default:
                             MTMMod.LOGGER.info("NOPE!");

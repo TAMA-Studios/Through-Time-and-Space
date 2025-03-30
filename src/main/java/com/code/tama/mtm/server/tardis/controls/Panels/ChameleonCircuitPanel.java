@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.tardis.controls.Panels;
 
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.ExteriorVariants;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.dimensions.SyncCapVariantPacket;
@@ -95,7 +95,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                 case MINUS:
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                     world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case VARIANT:
                     int Variant = ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant());
@@ -115,13 +115,13 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                     }
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case POSITIVE:
 
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                     world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 default:
                     MTMMod.LOGGER.info("NOPE!");

@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.tardis.controls.Panels;
 
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.Sounds;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.enums.Controls;
 import com.code.tama.mtm.server.misc.GrammarNazi;
 import com.code.tama.mtm.MTMMod;
@@ -79,7 +79,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         MTMMod.LOGGER.info("INCREMENT!");
-                        world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                         break;
                     case FACING:
                         tardisLevelCapability.SetDestinationFacing(tardisLevelCapability.NextDestinationFacing());
@@ -87,7 +87,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                         world.scheduleTick(pos, this, 10);
                         MTMMod.LOGGER.info("FACING!");
-                        world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                         break;
                     case INFO:
                         player.sendSystemMessage(Component.literal("Location: " + tardisLevelCapability.GetExteriorLocation().ReadableString()));
@@ -96,7 +96,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                         world.scheduleTick(pos, this, 10);
                         MTMMod.LOGGER.info("INFO!");
-                        world.playSound(null, pos, Sounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                         break;
                     default:
                         MTMMod.LOGGER.info("NOPE!");
