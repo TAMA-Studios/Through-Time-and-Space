@@ -1,5 +1,7 @@
 package com.code.tama.mtm;
 
+import com.code.tama.mtm.client.ClientSetup;
+import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
 import com.code.tama.mtm.client.CameraShakeHandler;
@@ -18,7 +20,11 @@ import com.code.tama.mtm.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.mtm.server.worlds.tree.ModTrunkPlacerTypes;
 import com.code.tama.mtm.server.loots.ModLootModifiers;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -113,6 +119,10 @@ public class MTMMod {
 
         skyboxRenderThread.start();
 
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        eventBus.addListener(this::setupTransparency);
+
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
 //        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -125,9 +135,18 @@ public class MTMMod {
         });
     }
 
-    // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.DEEPSLATE_ZEITON_ORE);
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.ZEITON_ORE);
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.NETHER_ZEITON_ORE);
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.END_STONE_ZEITON_ORE);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void setupTransparency(final FMLClientSetupEvent event) {
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.AMETHYST_ROTOR.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.BLUE_ROTOR.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.COPPER_ROTOR.get(), RenderType.translucent());
     }
 
     @SubscribeEvent
