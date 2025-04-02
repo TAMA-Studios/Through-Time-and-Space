@@ -1,11 +1,11 @@
 package com.code.tama.mtm.server.blocks;
 
+import com.code.tama.mtm.MTMMod;
+import com.code.tama.mtm.data.DoorData;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
+import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.server.tileentities.DoorTile;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
-import com.code.tama.mtm.triggerapi.data.DoorData;
-import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
-import com.code.tama.mtm.MTMMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;

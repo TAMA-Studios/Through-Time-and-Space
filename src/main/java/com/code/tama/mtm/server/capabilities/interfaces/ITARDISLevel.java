@@ -1,11 +1,11 @@
 package com.code.tama.mtm.server.capabilities.interfaces;
 
+import com.code.tama.mtm.data.DoorData;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
-import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
-import com.code.tama.mtm.server.tileentities.ExteriorTile;
-import com.code.tama.mtm.triggerapi.data.DoorData;
 import com.code.tama.mtm.server.misc.ExteriorVariant;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
+import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;

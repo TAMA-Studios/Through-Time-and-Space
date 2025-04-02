@@ -1,4 +1,4 @@
-package com.code.tama.mtm.triggerapi.data;
+package com.code.tama.mtm.data;
 
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import net.minecraft.nbt.CompoundTag;

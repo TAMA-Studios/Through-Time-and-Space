@@ -1,4 +1,4 @@
-package com.code.tama.mtm.triggerapi.miscs;
+package com.code.tama.triggerapi.miscs;
 
 import java.io.BufferedWriter;
 import java.io.File;

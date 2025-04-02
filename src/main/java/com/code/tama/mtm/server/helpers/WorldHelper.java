@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.helpers;
 
-import com.code.tama.mtm.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.ReflectionBuddy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;

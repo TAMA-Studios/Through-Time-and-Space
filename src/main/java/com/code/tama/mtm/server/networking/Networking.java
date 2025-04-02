@@ -1,5 +1,6 @@
 package com.code.tama.mtm.server.networking;
 
+import com.code.tama.mtm.server.networking.packets.dimensions.*;
 import com.code.tama.mtm.server.networking.packets.entities.BlowUpCreeperPacket;
 import com.code.tama.mtm.server.networking.packets.entities.ControlClickedPacket;
 import com.code.tama.mtm.server.networking.packets.entities.ControlHitPacket;
@@ -10,8 +11,7 @@ import com.code.tama.mtm.server.networking.packets.exterior.SyncTransparencyPack
 import com.code.tama.mtm.server.networking.packets.portal.PortalChunkDataPacket;
 import com.code.tama.mtm.server.networking.packets.portal.PortalChunkRequestPacket;
 import com.code.tama.mtm.server.networking.packets.portal.PortalSyncPacket;
-import com.code.tama.mtm.triggerapi.dimensions.UpdateDimensionsPacket;
-import com.code.tama.mtm.server.networking.packets.dimensions.*;
+import com.code.tama.triggerapi.dimensions.UpdateDimensionsPacket;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;

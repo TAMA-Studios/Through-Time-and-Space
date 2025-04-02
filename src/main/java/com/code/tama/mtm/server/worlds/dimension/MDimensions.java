@@ -25,7 +25,6 @@ import java.util.OptionalLong;
 import static com.code.tama.mtm.MTMMod.MODID;
 
 public class MDimensions {
-    public static final ResourceLocation GALLIFREY_EFFECTS = new ResourceLocation(MODID, "gallifrey_sky_property");
 
     public static final ResourceKey<LevelStem> GALLIFREY_KEY = ResourceKey.create(Registries.LEVEL_STEM,
             new ResourceLocation(MODID, "gallifrey"));
@@ -62,7 +61,7 @@ public class MDimensions {
                 256, // height
                 256, // logicalHeight
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
-                MDimensions.GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+                DimensionEffects.GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(false, true, ConstantInt.of(0), 0)));
 
@@ -79,7 +78,7 @@ public class MDimensions {
                 256, // height
                 256, // logicalHeight
                 BlockTags.INFINIBURN_NETHER, // infiniburn
-                MDimensions.GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+                DimensionEffects.GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(true, false, ConstantInt.of(0), 0)));
     }
@@ -105,5 +104,11 @@ public class MDimensions {
         LevelStem stem = new LevelStem(dimTypes.getOrThrow(MDimensions.GALLIFREY_DIM_TYPE), noiseBasedChunkGenerator);
 
         context.register(GALLIFREY_KEY, stem);
+    }
+
+    public static class DimensionEffects {
+
+        public static final ResourceLocation GALLIFREY_EFFECTS = new ResourceLocation(MODID, "gallifrey_sky_property");
+        public static final ResourceLocation VAROS_EFFECTS = new ResourceLocation(MODID, "varos_sky_property");
     }
 }

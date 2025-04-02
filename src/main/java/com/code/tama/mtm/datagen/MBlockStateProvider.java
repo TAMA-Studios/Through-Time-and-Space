@@ -20,67 +20,12 @@ public class MBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        blockWithItem(MTMBlocks.ZEITON_BLOCK);
-        blockWithItem(MTMBlocks.RAW_ZEITON_BLOCK);
-
-        blockWithItem(MTMBlocks.AMETHYST_ROTOR);
-        blockWithItem(MTMBlocks.COPPER_ROTOR);
-        blockWithItem(MTMBlocks.BLUE_ROTOR);
-
-        blockWithItem(MTMBlocks.ZEITON_ORE);
-        blockWithItem(MTMBlocks.DEEPSLATE_ZEITON_ORE);
-        blockWithItem(MTMBlocks.END_STONE_ZEITON_ORE);
-        blockWithItem(MTMBlocks.NETHER_ZEITON_ORE);
-
-        stairsBlock(((StairBlock) MTMBlocks.GALLIFREYAN_OAK_STAIRS.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-        slabBlock(((SlabBlock) MTMBlocks.GALLIFREYAN_OAK_SLAB.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-
-        buttonBlock(((ButtonBlock) MTMBlocks.GALLIFREYAN_OAK_BUTTON.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-        pressurePlateBlock(((PressurePlateBlock) MTMBlocks.GALLIFREYAN_OAK_PRESSURE_PLATE.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-
-        fenceBlock(((FenceBlock) MTMBlocks.GALLIFREYAN_OAK_FENCE.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-        fenceGateBlock(((FenceGateBlock) MTMBlocks.GALLIFREYAN_OAK_FENCE_GATE.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-        wallBlock(((WallBlock) MTMBlocks.GALLIFREYAN_OAK_WALL.get()), blockTexture(MTMBlocks.ZEITON_BLOCK.get()));
-
-        doorBlockWithRenderType(((DoorBlock) MTMBlocks.GALLIFREYAN_OAK_DOOR.get()), modLoc("block/dimensional/gallifreyan/gallifreyan_oak_door_bottom"), modLoc("block/dimensional/gallifreyan/gallifreyan_oak_door_top"), "cutout");
-        trapdoorBlockWithRenderType(((TrapDoorBlock) MTMBlocks.GALLIFREYAN_OAK_TRAPDOOR.get()), modLoc("block/dimensional/gallifreyan/gallifreyan_oak_trapdoor"), true, "cutout");
-
-//        makeStrawberryCrop((CropBlock) MBlocks.STRAWBERRY_CROP.get(), "strawberry_stage", "strawberry_stage");
-//        makeCornCrop(((CropBlock) MBlocks.CORN_CROP.get()), "corn_stage_", "corn_stage_");
-
-//        simpleBlockWithItem(MBlocks.CATMINT.get(), models().cross(blockTexture(MBlocks.CATMINT.get()).getPath(),
-//                blockTexture(MBlocks.CATMINT.get())).renderType("cutout"));
-//        simpleBlockWithItem(MBlocks.POTTED_CATMINT.get(), models().singleTexture("potted_catmint", new ResourceLocation("flower_pot_cross"), "plant",
-//                blockTexture(MBlocks.CATMINT.get())).renderType("cutout"));
-
-//        simpleBlockWithItem(MBlocks.GEM_POLISHING_STATION.get(),
-//                new ModelFile.UncheckedModelFile(modLoc("block/gem_polishing_station")));
-
-        logBlock(((RotatedPillarBlock) MTMBlocks.GALLIFREYAN_OAK_LOG.get()));
-        axisBlock(((RotatedPillarBlock) MTMBlocks.GALLIFREYAN_OAK_WOOD.get()), blockTexture(MTMBlocks.GALLIFREYAN_OAK_LOG.get()), blockTexture(MTMBlocks.GALLIFREYAN_OAK_LOG.get()));
-
-        axisBlock(((RotatedPillarBlock) MTMBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get()), blockTexture(MTMBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get()),
-                new ResourceLocation(MODID, "block/stripped_gallifreyan_oak_log_top"));
-
-        axisBlock(((RotatedPillarBlock) MTMBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD.get()), blockTexture(MTMBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get()),
-                blockTexture(MTMBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get()));
-
-        blockWithItem(MTMBlocks.GALLIFREYAN_OAK_LOG);
-        blockWithItem(MTMBlocks.GALLIFREYAN_OAK_WOOD);
-        blockWithItem(MTMBlocks.STRIPPED_GALLIFREYAN_OAK_LOG);
-        blockWithItem(MTMBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD);
-        blockWithItem(MTMBlocks.GALLIFREYAN_SAND);
-        blockWithItem(MTMBlocks.GALLIFREYAN_OAK_PLANKS);
-        SpecialBlockItem(MTMBlocks.HUDOLIN_CONSOLE_BLOCK);
-        leavesBlock(MTMBlocks.GALLIFREYAN_OAK_LEAVES);
-
-//        signBlock(((StandingSignBlock) MBlocks.PINE_SIGN.get()), ((WallSignBlock) MBlocks.PINE_WALL_SIGN.get()),
-//                blockTexture(MBlocks.PINE_PLANKS.get()));
-
-//        hangingSignBlock(MBlocks.PINE_HANGING_SIGN.get(), MBlocks.PINE_WALL_HANGING_SIGN.get(), blockTexture(MBlocks.PINE_PLANKS.get()));
-        saplingBlock(MTMBlocks.GALLIFREYAN_SAPLING);
-
-//        blockWithItem(MBlocks.MOD_PORTAL);
+        for (RegistryObject<Block> block : MTMBlocks.BLOCKS.getEntries()) {
+            try {
+                simpleBlock(block.get());
+            }
+            catch (Exception ignored) {}
+        }
     }
 
     private void saplingBlock(RegistryObject<Block> blockRegistryObject) {

@@ -1,4 +1,4 @@
-package com.code.tama.mtm.triggerapi.dimensions;
+package com.code.tama.triggerapi.dimensions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;

@@ -1,11 +1,11 @@
-package com.code.tama.mtm.triggerapi.dimensions;
+package com.code.tama.triggerapi.dimensions;
 
 import com.code.tama.mtm.MTMMod;
 import com.code.tama.mtm.server.dimensions.TARDISDimensionChunkGenerator;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.dimensions.SyncDimensions;
-import com.code.tama.mtm.triggerapi.ReflectionBuddy;
 import com.code.tama.mtm.server.worlds.dimension.MDimensions;
+import com.code.tama.triggerapi.ReflectionBuddy;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;

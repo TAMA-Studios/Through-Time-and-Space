@@ -1,8 +1,11 @@
 package com.code.tama.mtm.server.capabilities.caps;
 
+import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.data.DoorData;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.server.misc.ExteriorVariant;
+import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.dimensions.SyncTARDISCapPacket;
 import com.code.tama.mtm.server.networking.packets.dimensions.TriggerSyncCapLightPacket;
@@ -14,9 +17,6 @@ import com.code.tama.mtm.server.threads.CrashThread;
 import com.code.tama.mtm.server.threads.LandThread;
 import com.code.tama.mtm.server.threads.TakeOffThread;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
-import com.code.tama.mtm.triggerapi.data.DoorData;
-import com.code.tama.mtm.server.misc.ExteriorVariant;
-import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

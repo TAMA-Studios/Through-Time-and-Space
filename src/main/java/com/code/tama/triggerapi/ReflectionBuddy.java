@@ -1,4 +1,4 @@
-package com.code.tama.mtm.triggerapi;
+package com.code.tama.triggerapi;
 
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;

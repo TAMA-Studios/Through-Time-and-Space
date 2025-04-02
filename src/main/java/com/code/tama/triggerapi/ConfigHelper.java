@@ -1,4 +1,4 @@
-package com.code.tama.triggerapi;
+package com.code.tama.TriggerAPI;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;

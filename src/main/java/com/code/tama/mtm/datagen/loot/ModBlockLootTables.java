@@ -27,6 +27,9 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         this.dropSelf(MTMBlocks.ZEITON_BLOCK.get());
         this.dropSelf(MTMBlocks.RAW_ZEITON_BLOCK.get());
+        this.dropSelf(MTMBlocks.VAROS_ROCKS.get());
+        this.dropSelf(MTMBlocks.ZEITON_BLOCK.get());
+        this.dropSelf(MTMBlocks.RAW_ZEITON_BLOCK.get());
 
         this.add(MTMBlocks.ZEITON_ORE.get(),
                 block -> createCopperLikeOreDrops(MTMBlocks.ZEITON_ORE.get(), MTMItems.RAW_ZEITON.get()));

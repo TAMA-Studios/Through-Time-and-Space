@@ -21,9 +21,9 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
+import static com.code.tama.mtm.MTMMod.MODID;
 import static com.code.tama.mtm.server.MTMItems.DIMENSIONAL_ITEMS;
 import static com.code.tama.mtm.server.MTMItems.ITEMS;
-import static com.code.tama.mtm.MTMMod.MODID;
 
 public class MTMBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -165,7 +165,9 @@ public class MTMBlocks {
 
     public static final RegistryObject<Block> GALLIFREYAN_OAK_TRAPDOOR = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_trapdoor",
             () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD).noOcclusion(), BlockSetType.IRON), DIMENSIONAL_ITEMS, BLOCKS);
-    
+
+    public static final RegistryObject<Block> VAROS_ROCKS = RegisterWithItem("dimensional/varos/rocks",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE)), DIMENSIONAL_ITEMS, BLOCKS);
     /**
      * Ores
      **/

@@ -1,11 +1,11 @@
 package com.code.tama.mtm.server.blocks;
 
-import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.code.tama.mtm.server.MTMTileEntities;
-import com.code.tama.mtm.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.mtm.triggerapi.dimensions.DimensionManager;
+import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import com.code.tama.mtm.server.tileentities.ExteriorTile;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;

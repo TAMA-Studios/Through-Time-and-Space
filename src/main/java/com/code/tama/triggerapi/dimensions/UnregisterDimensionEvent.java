@@ -1,4 +1,4 @@
-package com.code.tama.mtm.triggerapi.dimensions;
+package com.code.tama.triggerapi.dimensions;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.eventbus.api.Event;

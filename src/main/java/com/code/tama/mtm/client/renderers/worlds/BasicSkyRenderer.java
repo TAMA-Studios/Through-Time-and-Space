@@ -1,7 +1,6 @@
 package com.code.tama.mtm.client.renderers.worlds;
 
 import com.code.tama.mtm.client.CustomLevelRenderer;
-import com.code.tama.mtm.server.worlds.dimension.MDimensions;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -21,26 +20,23 @@ import java.util.Random;
 import static com.code.tama.mtm.MTMMod.MODID;
 import static com.code.tama.mtm.client.CustomLevelRenderer.renderPlanet;
 
-public class GallifreySkyRenderer extends AbstractLevelRenderer {
+public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
+    private final int SkyColor[];
 
-    @Override
-    ResourceLocation EffectsLocation() {
-        return MDimensions.DimensionEffects.GALLIFREY_EFFECTS;
+    public BasicSkyRenderer(int skyColor[]) {
+        this.SkyColor = skyColor;
     }
 
     @Override
     void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
-//        RenderStars(poseStack, matrix4f, partialTicks);
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/night_sky.png"), new Vector4i(255, 255, 255, (int) GetOpacityForSkybox(partialTicks)));
-        CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/void.png"), new Vector4i(226, 168, 121, -(int) GetOpacityForSkybox(partialTicks)));
+        CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/void.png"), new Vector4i(this.SkyColor[0], this.SkyColor[1], this.SkyColor[2], -(int) GetOpacityForSkybox(partialTicks)));
         renderPlanet(poseStack, new Vec3(30, 400, 0), Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())), new Vec3(0, 0, 0), 2,"sun");
         renderPlanet(poseStack, new Vec3(0, 450, 75), Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())), new Vec3(0, 0, 0), 2,"sun");
-}
+    }
 
     @Override
-    boolean ShouldRenderVoid() {
-        return false;
-    }
+    abstract boolean ShouldRenderVoid();
 
     private static void RenderStars(@NotNull PoseStack poseStack, Matrix4f projectionMatrix, float PartialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionShader);

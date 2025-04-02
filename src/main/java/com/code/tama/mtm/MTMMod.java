@@ -1,15 +1,13 @@
 package com.code.tama.mtm;
 
-import com.code.tama.mtm.client.ClientSetup;
-import com.code.tama.mtm.server.MTMBlocks;
-import com.code.tama.triggerapi.FileHelper;
-import com.code.tama.triggerapi.TriggerAPI;
 import com.code.tama.mtm.client.CameraShakeHandler;
 import com.code.tama.mtm.client.CustomLevelRenderer;
-import com.code.tama.mtm.client.renderers.PortalTileEntityRenderer;
 import com.code.tama.mtm.client.MTMSounds;
-import com.code.tama.mtm.server.dimensions.Biomes;
+import com.code.tama.mtm.client.renderers.PortalTileEntityRenderer;
+import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.server.MTMEntities;
+import com.code.tama.mtm.server.dimensions.Biomes;
+import com.code.tama.mtm.server.loots.ModLootModifiers;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.threads.ExteriorTileTickThread;
@@ -18,7 +16,8 @@ import com.code.tama.mtm.server.worlds.biomes.MTerrablender;
 import com.code.tama.mtm.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.mtm.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.mtm.server.worlds.tree.ModTrunkPlacerTypes;
-import com.code.tama.mtm.server.loots.ModLootModifiers;
+import com.code.tama.triggerapi.FileHelper;
+import com.code.tama.triggerapi.TriggerAPI;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -46,9 +45,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static com.code.tama.mtm.server.MTMBlocks.BLOCKS;
+import static com.code.tama.mtm.server.MTMCreativeTabs.CREATIVE_MODE_TABS;
 import static com.code.tama.mtm.server.MTMItems.DIMENSIONAL_ITEMS;
 import static com.code.tama.mtm.server.MTMItems.ITEMS;
-import static com.code.tama.mtm.server.MTMCreativeTabs.CREATIVE_MODE_TABS;
 import static com.code.tama.mtm.server.MTMTileEntities.PORTAL_TILE_ENTITY;
 import static com.code.tama.mtm.server.MTMTileEntities.TILE_ENTITIES;
 
