@@ -52,6 +52,12 @@ public class ClientRegistry {
         ItemBlockRenderTypes.setRenderLayer(MTMBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(MTMBlocks.DOOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(MTMBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
+
+        // Rotors
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.COPPER_ROTOR.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.AMETHYST_ROTOR.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.BLUE_ROTOR.get(), RenderType.translucent());
+
     }
 
     @SubscribeEvent

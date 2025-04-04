@@ -124,7 +124,6 @@ public class MTMMod {
 
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        eventBus.addListener(this::setupTransparency);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
 //        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -148,14 +147,8 @@ public class MTMMod {
             }
         }
         // Sorry maketendo I like having my items in my tabs (it makes them easier to find without using the search bar)
+        // No worries! just thought it could be nicer if they're implemented into the game a bit more, i see what u mean.
         }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setupTransparency(final FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.AMETHYST_ROTOR.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.BLUE_ROTOR.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(MTMBlocks.COPPER_ROTOR.get(), RenderType.translucent());
-    }
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {

@@ -7,7 +7,7 @@ import com.code.tama.mtm.server.networking.packets.entities.ControlClickedPacket
 import com.code.tama.mtm.server.networking.packets.entities.ControlHitPacket;
 
 
-import com.code.tama.mtm.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.ReflectionBuddy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
