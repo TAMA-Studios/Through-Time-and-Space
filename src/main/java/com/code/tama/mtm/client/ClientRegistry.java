@@ -1,13 +1,13 @@
 package com.code.tama.mtm.client;
 
-import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.mtm.client.models.HudolinConsole;
 import com.code.tama.mtm.client.models.ModernBoxModel;
 import com.code.tama.mtm.client.renderers.*;
+import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.server.MTMEntities;
-import com.code.tama.mtm.server.tileentities.ConsoleTile;
 import com.code.tama.mtm.server.MTMTileEntities;
+import com.code.tama.mtm.server.tileentities.ConsoleTile;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -20,8 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.mtm.server.MTMTileEntities.PORTAL_TILE_ENTITY;
 import static com.code.tama.mtm.MTMMod.MODID;
+import static com.code.tama.mtm.server.MTMTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {
@@ -41,6 +41,10 @@ public class ClientRegistry {
         event.registerBlockEntityRenderer(MTMTileEntities.HUDOLIN_CONSOLE_TILE.get(), context ->  new ConsoleRenderer<>(context, new HudolinConsole<ConsoleTile>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ExteriorSelector_Renderer::new);
+        event.registerBlockEntityRenderer(MTMTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
+
+        // Register your renderer here, first value here \/ is the Tile RegistryObject \/ is the renderer
+        event.registerBlockEntityRenderer(MTMTileEntities.EXAMPLE_TILE.get(), ExampleRenderer::new);
     }
 
     @SubscribeEvent

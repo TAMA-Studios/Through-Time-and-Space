@@ -1,10 +1,10 @@
 package com.code.tama.mtm.client.renderers;
 
 
-import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.client.models.ModernBoxModel;
-import com.code.tama.mtm.server.tileentities.ChameleonCircuitPanelTileEntity;
+import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.misc.ExteriorModels;
+import com.code.tama.mtm.server.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -23,6 +23,7 @@ public class ExteriorSelector_Renderer implements BlockEntityRenderer<ChameleonC
     public ModelPart MODEL;
     public final BlockEntityRendererProvider.Context context;
     public static ResourceLocation TEXTURE;
+    public static final int fullBright = LightTexture.pack(15, 15);
 
     public ExteriorSelector_Renderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
@@ -55,8 +56,6 @@ public class ExteriorSelector_Renderer implements BlockEntityRenderer<ChameleonC
             float r = 1.0f - blueTintFactor;
             float g = 1.0f - (blueTintFactor / 2);
             float b = 1.0f;
-
-            int fullBright = LightTexture.pack(15, 15);
 
             this.MODEL.render(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(TEXTURE)),
                     fullBright, OverlayTexture.NO_OVERLAY,

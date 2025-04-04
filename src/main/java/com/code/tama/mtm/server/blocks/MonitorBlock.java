@@ -1,5 +1,6 @@
 package com.code.tama.mtm.server.blocks;
 
+import com.code.tama.mtm.server.MTMTileEntities;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -8,17 +9,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class MonitorBlock extends HorizontalDirectionalBlock {
+@SuppressWarnings("deprecation")
+public class MonitorBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public MonitorBlock(Properties p_49795_) {
         super(p_49795_);
@@ -36,17 +37,17 @@ public class MonitorBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+    public @NotNull BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
         return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+    public @NotNull BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
         return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (!world.isClientSide) {
             System.out.println("Block was hit on face: " + hit.getDirection());
 
@@ -66,5 +67,10 @@ public class MonitorBlock extends HorizontalDirectionalBlock {
             });
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        return MTMTileEntities.MONITOR_TILE.get().create(blockPos, blockState);
     }
 }

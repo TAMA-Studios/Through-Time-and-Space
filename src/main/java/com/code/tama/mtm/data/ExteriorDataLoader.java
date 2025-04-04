@@ -1,14 +1,15 @@
 package com.code.tama.mtm.data;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.GsonHelper;
-import org.slf4j.Logger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
+import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class ExteriorDataLoader implements ResourceManagerReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
     private final List<DataExterior> dataExteriorList = new ArrayList<>(); // List to store DataExterior objects
@@ -112,7 +114,4 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
         return false;
     }
 
-    public List<DataExterior> getDataExteriorList() {
-        return dataExteriorList;
-    }
 }

@@ -1,5 +1,6 @@
 package com.code.tama.mtm.server;
 
+import com.code.tama.mtm.annotations.DimensionalTab;
 import com.code.tama.mtm.server.blocks.*;
 import com.code.tama.mtm.server.tardis.controls.Panels.*;
 import com.code.tama.mtm.server.worlds.tree.GallifreyanOakTreeGrower;
@@ -27,6 +28,9 @@ import static com.code.tama.mtm.server.MTMItems.ITEMS;
 
 public class MTMBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
+
+    //                         Set this \/ to your block class                                                                                  \/ this too
+    public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK = RegisterWithItemSpecial("example_tile_block", () -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
 
     public static RegistryObject<ExteriorBlock> EXTERIOR_BLOCK = BLOCKS.register("exterior_block", () -> new ExteriorBlock(BlockBehaviour.Properties.of().noOcclusion(), MTMTileEntities.EXTERIOR_TILE));
 
@@ -81,21 +85,27 @@ public class MTMBlocks {
      * Gallifrey Blocks
      **/
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_LOG = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_log",
             () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG).strength(3f)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_SAND = RegisterWithItem("dimensional/gallifreyan/gallifreyan_sand",
             () -> new SandBlock(10634503, BlockBehaviour.Properties.of()), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_WOOD = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_wood",
             () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).strength(3f)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_LOG = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_log_stripped",
             () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG).strength(3f)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_WOOD = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_wood_stripped",
             () -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD).strength(3f)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_PLANKS = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_planks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)) {
                 @Override
@@ -114,6 +124,7 @@ public class MTMBlocks {
                 }
             }, DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_LEAVES = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_leaves",
             () -> new LeavesBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LEAVES)) {
                 @Override
@@ -132,40 +143,51 @@ public class MTMBlocks {
                 }
             }, DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_SAPLING = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_sapling",
             () -> new SaplingBlock(new GallifreyanOakTreeGrower(), BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)), DIMENSIONAL_ITEMS, BLOCKS);
 
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_STAIRS = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_stairs",
             () -> new StairBlock(() -> MTMBlocks.ZEITON_BLOCK.get().defaultBlockState(),
                     BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.AMETHYST)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_SLAB = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_slab",
             () -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_BUTTON = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_button",
             () -> new ButtonBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BUTTON).sound(SoundType.WOOD),
                     BlockSetType.IRON, 10, true), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_PRESSURE_PLATE = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_pressure_plate",
             () -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD),
                     BlockSetType.IRON), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_FENCE = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_fence",
             () -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_FENCE_GATE = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_fence_gate",
             () -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD), SoundEvents.CHAIN_PLACE, SoundEvents.ANVIL_BREAK));
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_WALL = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_wall",
             () -> new WallBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_DOOR = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_door",
             () -> new net.minecraft.world.level.block.DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).sound(SoundType.WOOD).noOcclusion(), BlockSetType.IRON), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> GALLIFREYAN_OAK_TRAPDOOR = RegisterWithItem("dimensional/gallifreyan/gallifreyan_oak_trapdoor",
             () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD).noOcclusion(), BlockSetType.IRON), DIMENSIONAL_ITEMS, BLOCKS);
 
+    @DimensionalTab
     public static final RegistryObject<Block> VAROS_ROCKS = RegisterWithItem("dimensional/varos/rocks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE)), DIMENSIONAL_ITEMS, BLOCKS);
     /**

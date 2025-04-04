@@ -11,7 +11,8 @@ import java.util.List;
 
 import static com.code.tama.mtm.MTMMod.MODID;
 
-/** Trigger API Logger V1.0 **/
+/** Trigger API Logger V1.0 (Don't use this it's old)**/
+@Deprecated
 public class TriggerLogger {
     public static final double Version = 1.0;
     private final File logFile;

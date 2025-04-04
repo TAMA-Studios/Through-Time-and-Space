@@ -42,4 +42,21 @@ public class AnnotationUtils {
             }
         }
     }
+
+    public static boolean hasAnnotation(Class<? extends Annotation> clazz, Object object) {
+        for (Field f : clazz.getDeclaredFields()) {
+            try {
+                Object TestField = f.get(Object.class);
+
+                if (TestField == object) {
+                    if (f.isAnnotationPresent(clazz)) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
 }

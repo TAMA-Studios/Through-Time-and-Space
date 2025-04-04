@@ -1,9 +1,13 @@
 package com.code.tama.mtm.data;
 
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
+@Setter
+@Getter
 public class DoorData implements INBTSerializable<CompoundTag> {
     SpaceTimeCoordinate location = new SpaceTimeCoordinate();
 
@@ -30,19 +34,4 @@ public class DoorData implements INBTSerializable<CompoundTag> {
         this.YRot = tag.getFloat("yRot");
     }
 
-    public float getYRot() {
-        return this.YRot;
-    }
-
-    public void setYRot(float YRot) {
-        this.YRot = YRot;
-    }
-
-    public SpaceTimeCoordinate getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(SpaceTimeCoordinate location) {
-        this.location = location;
-    }
 }

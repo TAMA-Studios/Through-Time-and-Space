@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.code.mtm.mixin",
+  "package": "com.code.tama.mtm.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "mtm.refmap.json",
   "mixins": [

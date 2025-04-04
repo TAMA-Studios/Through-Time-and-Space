@@ -1,10 +1,13 @@
 package com.code.tama.mtm;
 
+import com.code.tama.mtm.annotations.DimensionalTab;
+import com.code.tama.mtm.annotations.MainTab;
 import com.code.tama.mtm.client.CameraShakeHandler;
 import com.code.tama.mtm.client.CustomLevelRenderer;
 import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.client.renderers.PortalTileEntityRenderer;
 import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.MTMCreativeTabs;
 import com.code.tama.mtm.server.MTMEntities;
 import com.code.tama.mtm.server.dimensions.Biomes;
 import com.code.tama.mtm.server.loots.ModLootModifiers;
@@ -16,12 +19,13 @@ import com.code.tama.mtm.server.worlds.biomes.MTerrablender;
 import com.code.tama.mtm.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.mtm.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.mtm.server.worlds.tree.ModTrunkPlacerTypes;
+import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -37,6 +41,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.Logger;
 import terrablender.api.SurfaceRuleManager;
 
@@ -58,7 +63,6 @@ public class MTMMod {
 
     // Define mod id in a common place for everything to reference
     public static final String MODID = "mtm";
-    // Directly reference a slf4j logger
     public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
     public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
     public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
@@ -135,11 +139,16 @@ public class MTMMod {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.DEEPSLATE_ZEITON_ORE);
-        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.ZEITON_ORE);
-        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.NETHER_ZEITON_ORE);
-        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) event.accept(MTMBlocks.END_STONE_ZEITON_ORE);
-    }
+        for(RegistryObject<Item> item : ITEMS.getEntries()) {
+            if(AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
+                if(event.getTabKey() == MTMCreativeTabs.DIMENSIONAL_TAB.getKey()) event.accept(item);
+            }
+            if(AnnotationUtils.hasAnnotation(MainTab.class, item)) {
+                if(event.getTabKey() == MTMCreativeTabs.MAIN_TAB.getKey()) event.accept(item);
+            }
+        }
+        // Sorry maketendo I like having my items in my tabs (it makes them easier to find without using the search bar)
+        }
 
     @OnlyIn(Dist.CLIENT)
     private void setupTransparency(final FMLClientSetupEvent event) {
