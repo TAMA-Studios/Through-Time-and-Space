@@ -4,7 +4,6 @@ import com.code.tama.mtm.MTMMod;
 import com.code.tama.mtm.client.renderers.worlds.AbstractLevelRenderer;
 import com.code.tama.mtm.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.mtm.client.renderers.worlds.TardisSkyRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -136,11 +135,9 @@ public class CustomLevelRenderer {
         RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/" + name + ".png"));
 
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
         poseStack.pushPose();
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
         poseStack.translate(position.x, position.y, position.z);
         poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
         poseStack.scale(30.0F, 30.0F, 30.0F);
@@ -187,9 +184,8 @@ public class CustomLevelRenderer {
         buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
 
         BufferUploader.drawWithShader(buffer.end());
-
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
         poseStack.popPose();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
     }
 }

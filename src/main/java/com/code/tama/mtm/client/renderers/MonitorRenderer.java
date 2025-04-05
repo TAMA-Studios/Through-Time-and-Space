@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -95,13 +96,17 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
 
     private void renderRotatingImage(MonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
         ResourceLocation texture = new ResourceLocation(MTMMod.MODID, "textures/tiles/monitor/galifrayan.png");
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
         RenderSystem.setShaderTexture(0, texture);
 
         float rotationAngle = (monitor.getLevel().getGameTime() % 360) + Minecraft.getInstance().getFrameTime();
 
-        poseStack.pushPose();
-        poseStack.translate(0, 1, 0);
+        poseStack.translate(25, 70, 0);
+        poseStack.scale(20, 20, 20);
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationAngle));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
 
         Matrix4f matrix = poseStack.last().pose();
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -113,7 +118,7 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
         buffer.vertex(matrix, -0.5f, 0.5f, 0).uv(0, 1).endVertex();
 
         BufferUploader.drawWithShader(buffer.end());
-
-        poseStack.popPose();
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
     }
 }
