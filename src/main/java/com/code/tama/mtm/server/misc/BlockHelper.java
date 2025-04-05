@@ -17,7 +17,7 @@ public class BlockHelper {
         // Move downward until a solid block is found
         while (mutablePos.getY() > world.getMinBuildHeight()) {
             BlockState state = chunkAccess.getBlockState(mutablePos);
-            if (!state.canBeReplaced()) {
+            if (!state.isAir()) {
                 return mutablePos.immutable(); // Return the first solid block found
             }
             mutablePos.move(0, -1, 0);

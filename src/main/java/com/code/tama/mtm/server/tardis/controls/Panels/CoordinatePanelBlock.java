@@ -1,10 +1,10 @@
 package com.code.tama.mtm.server.tardis.controls.Panels;
 
+import com.code.tama.mtm.MTMMod;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
-import com.code.tama.mtm.MTMMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -75,14 +75,15 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                     switch (button) {
                         case X:
                             tardisLevelCapability.SetDestination(destination.AddX(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                             world.scheduleTick(pos, this, 10);
-                            MTMMod.LOGGER.info("X!");
                             world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Y:
                             tardisLevelCapability.SetDestination(destination.AddY(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                             world.scheduleTick(pos, this, 10);
@@ -91,6 +92,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             break;
                         case Z:
                             tardisLevelCapability.SetDestination(destination.AddZ(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                             world.scheduleTick(pos, this, 10);

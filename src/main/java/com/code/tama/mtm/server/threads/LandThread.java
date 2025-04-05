@@ -1,12 +1,13 @@
 package com.code.tama.mtm.server.threads;
 
-import com.code.tama.mtm.server.blocks.ExteriorBlock;
 import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.blocks.ExteriorBlock;
 import com.code.tama.mtm.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.code.tama.mtm.server.misc.BlockHelper;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import com.code.tama.mtm.server.tileentities.ExteriorTile;
+import com.code.tama.triggerapi.WorldHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +25,8 @@ public class LandThread extends Thread {
 
         ServerLevel CurrentLevel = this.itardisLevel.GetLevel().getServer().getLevel(this.itardisLevel.GetCurrentLevel());
         CurrentLevel.setChunkForced((int) (this.itardisLevel.GetDestination().GetX() / 16), (int) (this.itardisLevel.GetDestination().GetZ() / 16), true);
-        BlockPos pos = BlockHelper.snapToGround(this.itardisLevel.GetLevel(), this.itardisLevel.GetDestination().GetBlockPos());
+        BlockPos pos = BlockHelper.snapToGround(CurrentLevel, this.itardisLevel.GetDestination().GetBlockPos());
+        pos.offset(0, WorldHelper.getSurfaceHeight(CurrentLevel, ((int) this.itardisLevel.GetDestination().GetX()), ((int) this.itardisLevel.GetDestination().GetZ())), 0);
 
         SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos);
 

@@ -70,6 +70,10 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         return "X - " + Double.toString(this.X) + " Y - " + Double.toString(this.Y) + " Z - " + Double.toString(this.Z);
     }
 
+    public String ReadableStringShort() {
+        return Integer.toString((int) this.X) + ", " + Integer.toString((int) this.Y) + ", " + Integer.toString((int) this.Z);
+    }
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();

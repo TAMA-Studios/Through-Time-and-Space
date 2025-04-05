@@ -36,13 +36,13 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
 
         monitor.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             poseStack.pushPose();
-            poseStack.translate(0.48, 0.98, 0.44);
+            poseStack.translate(0.5, 0.98, 0.5);
             poseStack.scale(-0.011f, -0.011f, 0.011f);
 
             BlockState state = monitor.getBlockState();
             Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
-            double offset = 39f;
+            double offset = 44.3f;
             switch (facing) {
                 case NORTH -> poseStack.translate(0, 0, -offset);
                 case SOUTH -> poseStack.translate(0, 0, offset);
@@ -66,10 +66,10 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
                     .substring(0, 1).toUpperCase(Locale.ROOT)
                     + cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ");
 
-            String line2 = String.format("%.0f", cap.GetExteriorLocation().GetX()) + ", " + String.format("%.0f", cap.GetExteriorLocation().GetY()) + ", " + String.format("%.0f", cap.GetExteriorLocation().GetZ());
-            String line3 = String.format("%.0f", cap.GetDestination().GetX()) + ", " + String.format("%.0f", cap.GetDestination().GetY()) + ", " + String.format("%.0f", cap.GetDestination().GetZ());
+            String line2 = cap.GetExteriorLocation().ReadableStringShort();
+            String line3 = cap.GetDestination().ReadableStringShort();
 
-            int white = 0xFFFFF;
+            int white = 0xFFFFFF;
 
             RenderSystem.disableDepthTest();
 
