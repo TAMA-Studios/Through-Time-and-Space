@@ -198,6 +198,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public ResourceKey<Level> GetCurrentLevel() {
+        if(this.level.isClientSide && this.ExteriorDimensionKey == null) this.UpdateClient();
         if(this.ExteriorDimensionKey == null) {
             this.NullExteriorChecksAndFixes();
             if(this.GetExteriorTile() != null) {
@@ -440,7 +441,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if(this.level.isClientSide)
             Networking.sendPacketToDimension(this.level.dimension(), new TriggerSyncCapVariantPacket(this.level.dimension()));
         else
-            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacket(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos()));
+            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacket(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos(), this.GetCurrentLevel()));
     }
 
     @Override

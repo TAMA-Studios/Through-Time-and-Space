@@ -116,6 +116,4 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
 
         poseStack.popPose();
     }
-
-
 }

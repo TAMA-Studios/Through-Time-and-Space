@@ -39,7 +39,7 @@ public class TriggerSyncCapPacket {
                                     cap.IsPoweredOn(),
                                     cap.IsInFlight(), cap.ShouldPlayRotorAnimation(),
                                     cap.GetDestination().GetBlockPos(),
-                                    cap.GetExteriorLocation().GetBlockPos())));
+                                    cap.GetExteriorLocation().GetBlockPos(), cap.GetCurrentLevel())));
         });
         context.setPacketHandled(true);
     }

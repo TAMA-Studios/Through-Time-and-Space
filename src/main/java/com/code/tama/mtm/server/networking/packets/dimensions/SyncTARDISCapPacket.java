@@ -4,7 +4,10 @@ import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -16,14 +19,16 @@ public class SyncTARDISCapPacket {
     private final float LightLevel;
     private final boolean IsPoweredOn, IsInFlight, ShouldPlayRotorAnimation;
     private final BlockPos Destination, Location;
+    private final ResourceKey<Level> ExteriorLevel;
 
-    public SyncTARDISCapPacket(float LightLevel, boolean IsPoweredOn, boolean IsInFlight, boolean ShouldPlayRotorAnimation, BlockPos Destination, BlockPos Location) {
+    public SyncTARDISCapPacket(float LightLevel, boolean IsPoweredOn, boolean IsInFlight, boolean ShouldPlayRotorAnimation, BlockPos Destination, BlockPos Location, ResourceKey<Level> exteriorLevel) {
         this.LightLevel = LightLevel;
         this.IsInFlight = IsInFlight;
         this.IsPoweredOn = IsPoweredOn;
         this.ShouldPlayRotorAnimation = ShouldPlayRotorAnimation;
         this.Destination = Destination;
         this.Location = Location;
+        this.ExteriorLevel = exteriorLevel;
     }
 
     public static void encode(SyncTARDISCapPacket packet, FriendlyByteBuf buffer) {
@@ -33,7 +38,7 @@ public class SyncTARDISCapPacket {
         buffer.writeBoolean(packet.ShouldPlayRotorAnimation);
         buffer.writeBlockPos(packet.Destination);
         buffer.writeBlockPos(packet.Location);
-
+        buffer.writeResourceKey(packet.ExteriorLevel);
     }
 
     public static SyncTARDISCapPacket decode(FriendlyByteBuf buffer) {
@@ -43,7 +48,8 @@ public class SyncTARDISCapPacket {
                 buffer.readBoolean(),
                 buffer.readBoolean(),
                 buffer.readBlockPos(),
-                buffer.readBlockPos()
+                buffer.readBlockPos(),
+                buffer.readResourceKey(Registries.DIMENSION)
         );
     }
 
@@ -59,6 +65,7 @@ public class SyncTARDISCapPacket {
                             cap.SetPowered(packet.IsPoweredOn);
                             cap.SetInFlight(packet.IsInFlight);
                             cap.SetPlayRotorAnimation(packet.ShouldPlayRotorAnimation);
+                            cap.SetCurrentLevel(packet.ExteriorLevel);
                         });
             }
         });
