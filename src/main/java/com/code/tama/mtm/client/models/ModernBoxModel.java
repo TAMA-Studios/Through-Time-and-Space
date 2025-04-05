@@ -1,10 +1,12 @@
 package com.code.tama.mtm.client.models;
 
 
+import com.code.tama.mtm.server.misc.interfaces.IExteriorModel;
+import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -15,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.code.tama.mtm.MTMMod.MODID;
 
-public class ModernBoxModel<T extends Entity> extends EntityModel<T> {
+public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalModel<Entity> implements IExteriorModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MODID, "mof_11b"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MODID, "modernboxmodel"), "main");
 	private final ModelPart root;
 	private final ModelPart Shell;
 	private final ModelPart bone18;
@@ -1596,12 +1598,6 @@ public class ModernBoxModel<T extends Entity> extends EntityModel<T> {
 	}
 
 	@Override
-	public void setupAnim(@NotNull T p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
-	}
-
-
-
-	@Override
 	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
@@ -1615,5 +1611,31 @@ public class ModernBoxModel<T extends Entity> extends EntityModel<T> {
 		RightEmmisives.render(poseStack, vertexConsumer, packedLight * 16, packedOverlay, red, green, blue, alpha);
 		LeftEmmisives.render(poseStack, vertexConsumer, packedLight * 16, packedOverlay, red, green, blue, alpha);
 		poseStack.popPose();
+	}
+
+	@Override
+	public void setupAnim(@NotNull Entity entity, float v, float v1, float v2, float v3, float v4) {
+
+	}
+
+	@Override
+	public void SetupAnimations(T tile, float ageInTicks) {
+		switch (tile.DoorsOpen()) {
+			case 1: {
+				this.LeftDoor.yRot = 0;
+				this.RightDoor.yRot = 90;
+				break;
+			}
+			case 2: {
+				this.LeftDoor.yRot = 90;
+				this.RightDoor.yRot = 90;
+				break;
+			}
+			default: {
+				this.LeftDoor.yRot = 0;
+				this.RightDoor.yRot = 0;
+				break;
+			}
+		}
 	}
 }

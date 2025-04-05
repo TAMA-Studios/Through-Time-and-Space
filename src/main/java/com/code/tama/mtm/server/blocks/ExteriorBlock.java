@@ -108,8 +108,7 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if(level.getBlockEntity(blockPos) != null) {
-            ExteriorTile exteriorTile = ((ExteriorTile) level.getBlockEntity(blockPos));
-            exteriorTile.SetDoorsOpen(exteriorTile.DoorsOpen());
+            ((ExteriorTile) level.getBlockEntity(blockPos)).CycleDoors();
         }
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }

@@ -63,7 +63,7 @@ public class PhysicalStateManager {
                     default:
                         this.AlphaModifierPositive = 0.0f;
                 }
-                
+
                 if (this.AlphaModifierPositive == 0.0f && this.Alpha <= 0.01f) {
                     if(this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
                         this.itardisLevel.Fly();
@@ -82,7 +82,7 @@ public class PhysicalStateManager {
 
             // Make sure it doesn't go on for too long
             if(this.Cycles > 10) {
-                if(this.Cycles > 800) {
+                if(this.Cycles > 30) {
                     this.itardisLevel.Fly();
                     break;
 

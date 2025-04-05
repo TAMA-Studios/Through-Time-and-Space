@@ -5,8 +5,6 @@ import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.entities.ControlClickedPacket;
 import com.code.tama.mtm.server.networking.packets.entities.ControlHitPacket;
-
-
 import com.code.tama.triggerapi.ReflectionBuddy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;

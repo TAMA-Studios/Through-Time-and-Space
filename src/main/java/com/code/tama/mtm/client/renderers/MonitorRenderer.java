@@ -36,7 +36,7 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
 
         monitor.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             poseStack.pushPose();
-            poseStack.translate(0.5, 1, 0.5);
+            poseStack.translate(0.48, 0.98, 0.44);
             poseStack.scale(-0.011f, -0.011f, 0.011f);
 
             BlockState state = monitor.getBlockState();
@@ -71,9 +71,10 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
 
             int white = 0xFFFFF;
 
+            RenderSystem.disableDepthTest();
+
             fontRenderer.drawInBatch("TARDISOS - 1.0",  -40, 5, white, false,
                     poseStack.last().pose(), bufferSource, Font.DisplayMode.SEE_THROUGH, 0, combinedLight);
-
 
             fontRenderer.drawInBatch(line1,  -40, 15, white, false,
                     poseStack.last().pose(), bufferSource, Font.DisplayMode.SEE_THROUGH, 0, combinedLight);
@@ -85,6 +86,8 @@ public class MonitorRenderer implements BlockEntityRenderer<MonitorTile> {
                     poseStack.last().pose(), bufferSource, Font.DisplayMode.SEE_THROUGH, 0, combinedLight);
 
             renderRotatingImage(monitor, poseStack, bufferSource, combinedLight);
+
+            RenderSystem.enableDepthTest();
 
             poseStack.popPose();
         });

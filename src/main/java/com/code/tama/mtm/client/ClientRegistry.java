@@ -7,7 +7,6 @@ import com.code.tama.mtm.client.renderers.*;
 import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.server.MTMEntities;
 import com.code.tama.mtm.server.MTMTileEntities;
-import com.code.tama.mtm.server.tileentities.ConsoleTile;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -38,7 +37,7 @@ public class ClientRegistry {
         event.registerEntityRenderer(MTMEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.EXTERIOR_TILE.get(), ModernPoliceBoxRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
-        event.registerBlockEntityRenderer(MTMTileEntities.HUDOLIN_CONSOLE_TILE.get(), context ->  new ConsoleRenderer<>(context, new HudolinConsole<ConsoleTile>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
+        event.registerBlockEntityRenderer(MTMTileEntities.HUDOLIN_CONSOLE_TILE.get(), context -> new ConsoleRenderer<>(context, new HudolinConsole<>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ExteriorSelector_Renderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);

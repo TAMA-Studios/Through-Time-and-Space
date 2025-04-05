@@ -293,24 +293,22 @@ public class TARDISLevelCapability implements ITARDISLevel {
         // Set distance between the location and destination
         double Distance = this.GetDestination().GetBlockPos().getCenter().distanceTo(this.GetExteriorLocation().GetBlockPos().getCenter());
         // Set reach destination ticks
-        this.SetTicksTillReachedDestination((int) Distance);
+        this.SetTicksTillReachedDestination((int) Distance * 20);
         //////////////////////// CALCULATIONS END ////////////////////////
         // Make sure this is powered before continuing
         if (!this.IsPoweredOn()) return;
-        if (!this.FlightSoundScheme.GetTakeoff().IsFinished()) return;
+        if (this.GetLevel().isClientSide()) return;
+        if (this.GetExteriorTile() == null) return;
+        ExteriorTile ext = this.GetExteriorTile();
+
         // Set the TARDIS in flight
         this.SetInFlight(true);
 
-        if (this.level.isClientSide()) return;
-        if (this.exteriorTile == null)
-            if (this.GetExteriorTile() == null) return;
-        if (this.level.isClientSide) return;
-
-        Level exteriorLevel = this.exteriorTile.getLevel();
+        Level exteriorLevel = ext.getLevel();
         assert exteriorLevel != null;
         exteriorLevel.getServer().getLevel(exteriorLevel.dimension()).setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), true);
 
-        this.exteriorTile.UtterlyDestroy();
+        ext.UtterlyDestroy();
         exteriorLevel.getServer().getLevel(exteriorLevel.dimension()).setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), false);
         this.UpdateClient();
     }
@@ -318,7 +316,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void Dematerialize() {
         if (this.IsInFlight()) return;
-        if (this.exteriorTile == null) {
+        if (this.GetExteriorTile() == null) {
             // Makes it so the TARDIS is supposed to be in-flight
             this.SetInFlight(true);
             this.GetFlightScheme().GetTakeoff().SetFinished(true);
@@ -387,7 +385,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void SetPowered(boolean IsPoweredOn) {
         this.IsPowered = IsPoweredOn;
-        if (this.IsInFlight) {
+        if (this.IsInFlight && !IsPoweredOn) {
             this.Crash();
         }
     }

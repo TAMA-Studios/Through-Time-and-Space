@@ -39,22 +39,22 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(POWERED, false);
     }
 
-    public @NotNull InteractionResult use(BlockState p_54640_, Level p_54641_, BlockPos p_54642_, Player p_54643_, InteractionHand p_54644_, BlockHitResult p_54645_) {
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         BlockState blockstate1;
-        if (p_54641_.isClientSide) {
-            blockstate1 = (BlockState)p_54640_.cycle(POWERED);
+        if (level.isClientSide) {
+            blockstate1 = (BlockState)state.cycle(POWERED);
             if ((Boolean)blockstate1.getValue(POWERED)) {
-                makeParticle(blockstate1, p_54641_, p_54642_, 1.0F);
+                makeParticle(blockstate1, level, blockPos, 1.0F);
             }
 
             return InteractionResult.SUCCESS;
         } else {
-            p_54641_.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap ->
-                    cap.SetPowered(!p_54640_.getValue(POWERED)));
+            level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap ->
+                    cap.SetPowered(!state.getValue(POWERED)));
 
-            blockstate1 = this.pull(p_54640_, p_54641_, p_54642_);
-            p_54641_.playSound(null, p_54642_, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS);
-            p_54641_.gameEvent(p_54643_, blockstate1.getValue(POWERED) ? GameEvent.BLOCK_ACTIVATE : GameEvent.BLOCK_DEACTIVATE, p_54642_);
+            blockstate1 = this.pull(state, level, blockPos);
+            level.playSound(null, blockPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS);
+            level.gameEvent(player, blockstate1.getValue(POWERED) ? GameEvent.BLOCK_ACTIVATE : GameEvent.BLOCK_DEACTIVATE, blockPos);
             return InteractionResult.CONSUME;
         }
     }
