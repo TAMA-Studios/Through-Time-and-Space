@@ -64,6 +64,7 @@ public class ExteriorSelector_Renderer implements BlockEntityRenderer<ChameleonC
             poseStack.popPose();
 
             poseStack.pushPose();
+
             poseStack.translate(0.5, 1, 0.5);
             poseStack.scale(-0.02f, -0.02f, 0.02f);
 
@@ -74,7 +75,7 @@ public class ExteriorSelector_Renderer implements BlockEntityRenderer<ChameleonC
             String text = cap.GetExteriorVariant().GetExteriorName();
 
             fontRenderer.drawInBatch(text, -fontRenderer.width(text) / 2f, 0, 0x55AAFF, true,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.SEE_THROUGH, 0, fullBright);
+                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, fullBright);
 
             poseStack.popPose();
         });
