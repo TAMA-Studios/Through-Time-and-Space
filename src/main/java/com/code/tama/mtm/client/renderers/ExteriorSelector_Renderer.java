@@ -40,7 +40,7 @@ public class ExteriorSelector_Renderer implements BlockEntityRenderer<ChameleonC
             poseStack.pushPose();
             poseStack.mulPose(Axis.XP.rotationDegrees(180));
             poseStack.mulPose(Axis.YP.rotationDegrees(180));
-            poseStack.translate(-0.5, -0.35, 0.5);
+            poseStack.translate(-0.5, -0.45, 0.5);
             poseStack.scale(0.07f, 0.07f, 0.07f);
 
             float time = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
