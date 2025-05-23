@@ -12,6 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,6 +29,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import org.jetbrains.annotations.NotNull;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
+    private static final EntityDataAccessor<String> CONTROL = SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);
     public ModularControl(Level p_19871_, AbstractConsoleTile consoleTile, Vec3 pos, float SizeX, float SizeY, float SizeZ) {
         super(MTMEntities.MODULAR_CONTROL.get(), p_19871_);
         this.Position = pos;
@@ -38,24 +42,31 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public AABB size;
     public Vec3 Position;
 
-    Controls control = Controls.EMPTY;
-
     public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
         super(modularControlEntityType, level);
     }
 
+    public Controls GetControl() {
+        return Controls.valueOf(this.entityData.get(CONTROL));
+    }
+
+    public void SetControl(Controls control) {
+        this.entityData.set(CONTROL, control.name());
+    }
+
     @Override
     public Component TranslationKey() {
-        return Component.translatable("mtm.tardis.control." + this.control.name().toLowerCase());
+        return Component.translatable("mtm.tardis.control." + this.GetControl().name().toLowerCase());
     }
 
     @Override
     protected void defineSynchedData() {
+        this.entityData.define(CONTROL, Controls.EMPTY.name());
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
-        this.control = Controls.values()[Tag.getInt("control")];
+        this.SetControl(Controls.valueOf(Tag.getString("control")));
         this.size = new AABB(0, 0, 0, Tag.getDouble("maxX"), Tag.getDouble("maxY"), Tag.getDouble("maxZ"));
         if (this.level().getServer().getLevel(this.level().dimension()).getBlockEntity(
                 new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z"))) != null)
@@ -66,7 +77,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
-        Tag.putInt("control", this.control.ordinal());
+        Tag.putString("control", this.GetControl().name());
         Tag.putDouble("maxX", this.size.maxX);
         Tag.putDouble("maxY", this.size.maxY);
         Tag.putDouble("maxZ", this.size.maxZ);
@@ -80,6 +91,8 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         Tag.putDouble("vec_z", this.Position.z);
     }
 
+
+
     @Override
     public void OnControlClicked(ITARDISLevel capability, Player player) {
         if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
@@ -89,13 +102,13 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
             else this.CycleControlForward();
             return;
         }
-        InteractionResult interactionResult = this.control.GetControl().OnRightClick(capability, player);
+        InteractionResult interactionResult = this.GetControl().GetControl().OnRightClick(capability, player);
         this.level().playSound(null, this.blockPosition(),
                 interactionResult == InteractionResult.SUCCESS ?
-                        this.control.GetControl().GetSuccessSound() :
-                        this.control.GetControl().GetFailSound(), SoundSource.BLOCKS);
+                        this.GetControl().GetControl().GetSuccessSound() :
+                        this.GetControl().GetControl().GetFailSound(), SoundSource.BLOCKS);
 
-        if (this.control.GetControl().NeedsUpdate() && !this.level().isClientSide) {
+        if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {
             Networking.sendPacketToDimension(this.level().dimension(), new SyncButtonAnimationSetPacketS2C(this.consoleTile.ControlAnimationMap, this.consoleTile.getBlockPos()));
         }
     }
@@ -104,9 +117,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public void OnControlHit(ITARDISLevel capability, Entity entity) {
         if (entity instanceof Player player)
             if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
-        this.control.GetControl().OnLeftClick(capability, entity);
+        this.GetControl().GetControl().OnLeftClick(capability, entity);
 
-        if (this.control.GetControl().NeedsUpdate() && !this.level().isClientSide) {
+        if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {
         }
     }
 
@@ -116,18 +129,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     }
 
     void CycleControlForward() {
-        this.control = this.control.Cycle();
+        this.SetControl(this.GetControl().Cycle());
         if (this.level().isClientSide()) {
             assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.control.name().toLowerCase()));
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
         }
     }
 
     void CycleControlBackward() {
-        this.control = this.control.Cycle();
+        this.SetControl(this.GetControl().Cycle());
         if (this.level().isClientSide()) {
             assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.control.name().toLowerCase()));
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
         }
     }
 
@@ -138,14 +151,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
             buf.writeDouble(this.size.getYsize());
             buf.writeDouble(this.size.getZsize());
         }
-        if (this.control != null)
-            buf.writeInt(this.control.ordinal());
+        if (this.GetControl() != null)
+            buf.writeInt(this.GetControl().ordinal());
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf buf) {
         this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
-        this.control = Controls.values()[buf.readInt()];
+        this.SetControl(Controls.values()[buf.readInt()]);
     }
 
     @Override
@@ -156,11 +169,11 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     public void UpdateConsoleAnimationMap() {
         if (this.consoleTile == null) return;
-        if (!this.control.GetControl().NeedsUpdate()) return;
+        if (!this.GetControl().GetControl().NeedsUpdate()) return;
         if (!this.consoleTile.GetControlAnimationMap().containsKey(this.Position)) return;
-        if (this.consoleTile.GetControlAnimationMap().get(this.Position) == this.control.GetControl().GetAnimationState())
+        if (this.consoleTile.GetControlAnimationMap().get(this.Position) == this.GetControl().GetControl().GetAnimationState())
             return;
         this.consoleTile.GetControlAnimationMap().remove(this.Position);
-        this.consoleTile.GetControlAnimationMap().put(this.Position, this.control.GetControl().GetAnimationState());
+        this.consoleTile.GetControlAnimationMap().put(this.Position, this.GetControl().GetControl().GetAnimationState());
     }
 }

@@ -1,11 +1,8 @@
-package com.code.tama.mtm.server.tardis.controls.Panels;
+package com.code.tama.mtm.server.blocks.Panels;
 
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.MTMSounds;
-import com.code.tama.mtm.server.enums.Controls;
-import com.code.tama.mtm.server.misc.GrammarNazi;
-import com.code.tama.mtm.MTMMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -42,17 +39,22 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public class DestinationInfoBlock extends HorizontalDirectionalBlock {
-    public DestinationInfoBlock(Properties p_49795_) {
+public class LightPanel extends HorizontalDirectionalBlock {
+    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
+    public static List<Buttons> buttons = new ArrayList<>();
+
+
+    public LightPanel(Properties p_49795_) {
         super(p_49795_);
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
     }
 
-    public Controls controls[] = new Controls[2];
-    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
-    public static List<DestinationInfoButtons> buttons = new ArrayList<>();
+    @Override
+    public boolean skipRendering(@NotNull BlockState state, BlockState adjacentBlockState, @NotNull Direction side) {
+        return adjacentBlockState.is(this); // Avoids rendering internal faces
+    }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -60,50 +62,36 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
-        if (!world.isClientSide) {
-            System.out.println("Block was hit on face: " + hit.getDirection());
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+//        if (world.isClientSide) return InteractionResult.PASS;
+        if (hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
 
-            DestinationInfoButtons button = this.getButton(
-                    (100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
-                    (100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
-                    state.getValue(FACING).getOpposite());
+        Buttons button = this.getButton(
+                (100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
+                (100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
+                state.getValue(FACING).getOpposite());
 
-            if (button == null) return InteractionResult.FAIL;
+        if (button == null) return InteractionResult.FAIL;
 
-            world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
-                switch (button) {
-                    case INCREMENT:
-                        tardisLevelCapability.SetIncrement(tardisLevelCapability.GetNextIncrement());
-                        player.displayClientMessage(Component.literal("Coordinate Increment = " + Integer.toString(tardisLevelCapability.GetIncrement())), true);
-                        world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-                        world.scheduleTick(pos, this, 10);
-                        MTMMod.LOGGER.info("INCREMENT!");
-                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-                        break;
-                    case FACING:
-                        tardisLevelCapability.SetDestinationFacing(tardisLevelCapability.NextDestinationFacing());
-                        player.displayClientMessage(Component.literal("Exterior Facing = " + GrammarNazi.CapitalizeFirstLettersAndRemoveScores(tardisLevelCapability.GetDestinationFacing().getName())), true);
-                        world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-                        world.scheduleTick(pos, this, 10);
-                        MTMMod.LOGGER.info("FACING!");
-                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-                        break;
-                    case INFO:
-                        player.sendSystemMessage(Component.literal("Location: " + tardisLevelCapability.GetExteriorLocation().ReadableString()));
-                        player.sendSystemMessage(Component.literal("Dimension: " + tardisLevelCapability.GetCurrentLevel().location()));
-                        player.sendSystemMessage(Component.literal("Destination: " + tardisLevelCapability.GetDestination().ReadableString()));
-                        world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
-                        world.scheduleTick(pos, this, 10);
-                        MTMMod.LOGGER.info("INFO!");
-                        world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-                        break;
-                    default:
-                        MTMMod.LOGGER.info("NOPE!");
-                }
-            });
+        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+            switch (button) {
+                case MINUS:
+                    tardisLevelCapability.SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
+                    world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+                    world.scheduleTick(pos, this, 10);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    break;
+                case PLUS:
+                    tardisLevelCapability.SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
+                    world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
+                    world.scheduleTick(pos, this, 10);
+                    world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+                    break;
+                default: break;
+            }
+        });
 
-        }
+//        }
         return InteractionResult.SUCCESS;
     }
 
@@ -126,29 +114,27 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+    public @NotNull BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
         return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+    public @NotNull BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
         return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
     }
 
     public static VoxelShape createVoxelShape() {
         return Stream.of(
-                Block.box(11, 0.5, 2.999999999999999, 14, 1.5000000000000004, 6.000000000000003),
-                Block.box(6.499999999999998, 0.5, 2.999999999999999, 9.499999999999998, 1.5000000000000004, 6.000000000000003),
-                Block.box(2, 0.5, 2.999999999999999, 5, 1.5000000000000004, 6.000000000000003),
-                Block.box(0, 0, 0, 16, 1, 16),
-                Block.box(0, 1, 9, 16, 8, 16)
+                Block.box(9, 0.5, 5, 13, 1.5, 9),
+                Block.box(3, 0.5, 5, 7, 1.5, 9),
+                Block.box(0, 0, 0, 16, 1, 16)
         ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     }
 
 
-    public DestinationInfoButtons getButton(double mouseX, double mouseZ, Direction facing) {
+    public Buttons getButton(double mouseX, double mouseZ, Direction facing) {
 
-        for (DestinationInfoButtons button : buttons) {
+        for (Buttons button : buttons) {
             if (button.values.containsKey(facing)) {
                 Vec2 vec = button.values.get(facing);
                 float width = button.width;
@@ -182,13 +168,12 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
             }
         }
 
-        return DestinationInfoButtons.EMPTY;
+        return Buttons.EMPTY;
     }
 
-    public enum DestinationInfoButtons {
-        INCREMENT("INCREMENT", 3.00f, 3.00f, 11.00f, 3.00f),
-        FACING("FACING", 3.00f, 3.00f, 6.50f, 3.00f),
-        INFO("INFO", 3.00f, 3.00f, 2.00f, 3.00f),
+    public enum Buttons {
+        MINUS("ONE",  4.00f, 4.00f, 9.00f, 5.00f),
+        PLUS("TWO", 4.00f, 4.00f, 3.00f, 5.00f),
         EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F);
 
         final Map<Direction, Vec2> values = new HashMap<>();
@@ -196,7 +181,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
         final float height;
         Component displayName;
 
-        DestinationInfoButtons(String s, float w, float h, float x1, float z1) {
+        Buttons(String s, float w, float h, float x1, float z1) {
             float f = 0.0625F;
             this.width = w * f;
             this.height = h * f;
@@ -209,7 +194,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
             if (s != null) {
                 this.displayName = Component.literal(s);
             }
-            DestinationInfoBlock.buttons.add(this);
+            LightPanel.buttons.add(this);
 
         }
     }

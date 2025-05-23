@@ -2,7 +2,7 @@ package com.code.tama.mtm.server.registries;
 
 import com.code.tama.mtm.core.annotations.DimensionalTab;
 import com.code.tama.mtm.server.blocks.*;
-import com.code.tama.mtm.server.tardis.controls.Panels.*;
+import com.code.tama.mtm.server.blocks.Panels.*;
 import com.code.tama.mtm.server.worlds.tree.GallifreyanOakTreeGrower;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

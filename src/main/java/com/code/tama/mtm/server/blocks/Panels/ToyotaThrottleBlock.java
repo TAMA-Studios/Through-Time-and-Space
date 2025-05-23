@@ -1,4 +1,4 @@
-package com.code.tama.mtm.server.tardis.controls.Panels;
+package com.code.tama.mtm.server.blocks.Panels;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.BooleanOp;

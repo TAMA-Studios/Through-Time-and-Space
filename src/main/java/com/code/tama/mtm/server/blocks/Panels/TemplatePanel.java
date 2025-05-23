@@ -1,8 +1,8 @@
-package com.code.tama.mtm.server.tardis.controls.Panels;
+package com.code.tama.mtm.server.blocks.Panels;
 
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.MTMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

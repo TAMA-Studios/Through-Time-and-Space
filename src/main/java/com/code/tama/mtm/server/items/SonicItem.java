@@ -63,18 +63,18 @@ public class SonicItem extends Item {
             return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
 
         if (!(this.InteractionType == SonicInteractionType.ENTITY))
-            return InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
-
-        this.EntityInteraction(level);
+//            return InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
+            this.EntityInteraction(level);
 
         return super.use(level, player, interactionHand);
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext useOnContext) {
         switch (this.InteractionType) {
             case BLOCKS -> this.BlockInteraction(useOnContext);
             case SCANNER -> this.ScannerInteraction(useOnContext);
+            case ENTITY -> this.EntityInteraction(useOnContext.getLevel());
         }
 
         return InteractionResult.PASS;
@@ -115,11 +115,11 @@ public class SonicItem extends Item {
         Level Level = useOnContext.getLevel();
         BlockPos Pos = useOnContext.getClickedPos();
 
-        if(State.getBlock().equals(MTMBlocks.EXTERIOR_BLOCK.get())) {
-            if(Level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
-                if(exteriorTile.GetInterior() != null)
-                   ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
-                           .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
+        if (State.getBlock().equals(MTMBlocks.EXTERIOR_BLOCK.get())) {
+            if (Level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
+                if (exteriorTile.GetInterior() != null)
+                    ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
+                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
             }
         }
 

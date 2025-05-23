@@ -1,4 +1,4 @@
-package com.code.tama.mtm.server.tardis.controls.Panels;
+package com.code.tama.mtm.server.blocks.Panels;
 
 import com.code.tama.mtm.ExteriorVariants;
 import com.code.tama.mtm.MTMMod;
