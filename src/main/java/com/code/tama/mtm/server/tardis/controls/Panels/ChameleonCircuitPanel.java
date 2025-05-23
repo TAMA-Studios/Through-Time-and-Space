@@ -1,13 +1,14 @@
 package com.code.tama.mtm.server.tardis.controls.Panels;
 
+import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.MTMMod;
+import com.code.tama.mtm.client.ExteriorModelsHandler;
+import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.client.MTMSounds;
-import com.code.tama.mtm.ExteriorVariants;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.dimensions.SyncCapVariantPacket;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.mtm.server.tileentities.ChameleonCircuitPanelTileEntity;
-import com.code.tama.mtm.MTMMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("deprecation")
 public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements EntityBlock {
     private final Supplier<? extends BlockEntityType<? extends ChameleonCircuitPanelTileEntity>> exteriorType;
-    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
+    public static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
     public static List<ChameleonCircuitButtons> buttons = new ArrayList<>();
@@ -93,6 +94,11 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MINUS:
+                    if(tardisLevelCapability.GetExteriorModelIndex() <= 0)
+                        tardisLevelCapability.SetExteriorModelIndex(ExteriorModelsHandler.ModelMap.size() - 1);
+                    else
+                        tardisLevelCapability.SetExteriorModelIndex(tardisLevelCapability.GetExteriorModelIndex() - 1);
+                    tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
@@ -100,25 +106,29 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                 case VARIANT:
                     int Variant = ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant());
 
-                    tardisLevelCapability.SetExteriorVariant(ExteriorVariants.Get(ExteriorVariants.Cycle(Variant)));
+                    tardisLevelCapability.CycleVariant();
 
                     ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
                     assert serverLevel != null;
                     if(tardisLevelCapability.GetExteriorTile() != null) {
-                        tardisLevelCapability.GetExteriorTile().CycleVariant();
+                        tardisLevelCapability.CycleVariant();
 
                         Networking.sendPacketToDimension(world.dimension(),
-                                new SyncCapVariantPacket(ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
+                                new SyncCapVariantPacketS2C(ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
 
-                        serverLevel.sendBlockUpdated(tardisLevelCapability.GetExteriorLocation().GetBlockPos(), serverLevel.getBlockState(tardisLevelCapability.GetExteriorLocation().GetBlockPos()), serverLevel.getBlockState(tardisLevelCapability.GetExteriorLocation().GetBlockPos()), 3);
                         serverLevel.getBlockEntity(tardisLevelCapability.GetExteriorLocation().GetBlockPos()).setChanged();
                     }
+                    tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case POSITIVE:
-
+                    if(tardisLevelCapability.GetExteriorModelIndex() >= ExteriorModelsHandler.ModelMap.size() - 1)
+                        tardisLevelCapability.SetExteriorModelIndex(0);
+                    else
+                        tardisLevelCapability.SetExteriorModelIndex(tardisLevelCapability.GetExteriorModelIndex() + 1);
+                    tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.misc;
 
-import com.code.tama.mtm.server.networking.packets.dimensions.SyncDimensions;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -12,7 +12,7 @@ import java.util.Set;
 @OnlyIn(Dist.CLIENT)
 public class ClientHelper {
     /** Doesn't work when this code is called from the packet so it gets its own method **/
-    public static void handleDimSyncPacket(SyncDimensions mes){
+    public static void handleDimSyncPacket(SyncDimensionsS2C mes){
 
         if(Minecraft.getInstance().player == null || Minecraft.getInstance().player.connection.levels() == null)
             return;

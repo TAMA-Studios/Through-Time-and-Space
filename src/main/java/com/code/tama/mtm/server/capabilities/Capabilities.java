@@ -40,7 +40,7 @@ public class Capabilities {
             if (event.getObject().registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getKey(event.getObject().dimensionType()) == null)
                 return;
 
-            if (!event.getObject().dimensionTypeId().location().equals(MDimensions.TARDIS.location())) return;
+            if (!event.getObject().dimensionTypeId().location().equals(MDimensions.TARDIS_DIM_TYPE.location())) return;
 
             event.addCapability(Capabilities.TARDIS_LEVEL_KEY, new SerializableLevelCapabilityProvider<>(CapabilityConstants.TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
         }

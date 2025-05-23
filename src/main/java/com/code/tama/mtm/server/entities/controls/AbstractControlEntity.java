@@ -3,8 +3,8 @@ package com.code.tama.mtm.server.entities.controls;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.entities.ControlClickedPacket;
-import com.code.tama.mtm.server.networking.packets.entities.ControlHitPacket;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.triggerapi.ReflectionBuddy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -39,7 +39,7 @@ public abstract class AbstractControlEntity extends Entity {
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if(player.level().isClientSide) {
-            Networking.sendToServer(new ControlClickedPacket(this.uuid));
+            Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
         }
         return InteractionResult.SUCCESS;
     }
@@ -52,7 +52,7 @@ public abstract class AbstractControlEntity extends Entity {
             source.getEntity().level();
         }
 
-        Networking.sendToServer(new ControlHitPacket(this.uuid));
+        Networking.sendToServer(new ControlHitPacketC2S(this.uuid));
         source.getEntity().level().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(c -> this.OnControlHit(c, source.getEntity()));
         return false;
     }

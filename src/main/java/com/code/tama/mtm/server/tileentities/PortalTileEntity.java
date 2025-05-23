@@ -1,9 +1,9 @@
 package com.code.tama.mtm.server.tileentities;
 
-import com.code.tama.mtm.server.MTMTileEntities;
+import com.code.tama.mtm.core.abstractClasses.TickingTile;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.portal.PortalSyncPacket;
-import com.code.tama.mtm.server.misc.interfaces.TickingTile;
+import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
+import com.code.tama.mtm.server.registries.MTMTileEntities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -60,7 +60,7 @@ public class PortalTileEntity extends TickingTile {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             Networking.INSTANCE.send(PacketDistributor.ALL.noArg(),
-                    new PortalSyncPacket(worldPosition, targetLevel, targetPos));
+                    new PortalSyncPacketS2C(worldPosition, targetLevel, targetPos));
         }
     }
 

@@ -1,24 +1,23 @@
 package com.code.tama.mtm.client.models;
 
 
-import com.code.tama.mtm.server.misc.interfaces.IExteriorModel;
+import com.code.tama.mtm.core.Constants;
+import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import lombok.Getter;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import static com.code.tama.mtm.MTMMod.MODID;
 
-public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalModel<Entity> implements IExteriorModel<T> {
+public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalExteriorModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MODID, "modernboxmodel"), "main");
 	private final ModelPart Root;
@@ -168,6 +167,7 @@ public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalModel<En
 	private final ModelPart RightEmmisives;
 
 	public ModernBoxModel (ModelPart root) {
+		super(root, Constants.ExteriorModelNames.ModernBox, LAYER_LOCATION);
 		this.Root = root.getChild("Root");
 		this.Shell = this.Root.getChild("Shell");
 		this.bone18 = this.Shell.getChild("bone18");
@@ -1597,40 +1597,24 @@ public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalModel<En
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
-		poseStack.translate(-0.5, -0.645, 0.5);
+		poseStack.translate(-0.5, -1.3, 0.5);
 		poseStack.scale(0.43f, 0.43f, 0.43f);
-		Shell.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		Emmisive.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		LeftNonEmmisives.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		RightNonEmmisive.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		RightEmmisives.render(poseStack, vertexConsumer, packedLight * 16, packedOverlay, red, green, blue, alpha);
-		LeftEmmisives.render(poseStack, vertexConsumer, packedLight * 16, packedOverlay, red, green, blue, alpha);
+		this.Root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		poseStack.popPose();
 	}
 
 	@Override
-	public void setupAnim(@NotNull Entity entity, float v, float v1, float v2, float v3, float v4) {
-
+	public ModelPart LeftDoor() {
+		return this.LeftDoor;
 	}
 
 	@Override
-	public void SetupAnimations(T tile, float ageInTicks) {
-		switch (tile.DoorsOpen()) {
-			case 1: {
-				this.LeftDoor.yRot = 0;
-				this.RightDoor.yRot = 90;
-				break;
-			}
-			case 2: {
-				this.LeftDoor.yRot = 90;
-				this.RightDoor.yRot = 90;
-				break;
-			}
-			default: {
-				this.LeftDoor.yRot = 0;
-				this.RightDoor.yRot = 0;
-				break;
-			}
-		}
+	public ModelPart RightDoor() {
+		return this.RightDoor;
+	}
+
+	@Override
+	public ResourceLocation GetModelName() {
+		return Constants.ExteriorModelNames.ModernBox;
 	}
 }

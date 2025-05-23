@@ -1,8 +1,8 @@
 package com.code.tama.mtm.client.renderers;
 
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.portal.PortalChunkDataPacket;
-import com.code.tama.mtm.server.networking.packets.portal.PortalChunkRequestPacket;
+import com.code.tama.mtm.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
+import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.mtm.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -104,9 +104,9 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             if (targetLevel != null) {
                 ChunkPos chunkPos = new ChunkPos(tileEntity.getTargetPos());
                 LevelChunk chunk = targetLevel.getChunk(chunkPos.x, chunkPos.z);
-                tileEntity.updateChunkModelFromServer(new PortalChunkDataPacket(tileEntity.getBlockPos(), chunk, tileEntity.getTargetPos()).chunkData);
+                tileEntity.updateChunkModelFromServer(new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), chunk, tileEntity.getTargetPos()).chunkData);
             } else {
-                Networking.INSTANCE.sendToServer(new PortalChunkRequestPacket(
+                Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
                         tileEntity.getBlockPos(),
                         tileEntity.getTargetLevel(),
                         tileEntity.getTargetPos()

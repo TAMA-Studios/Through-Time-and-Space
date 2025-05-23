@@ -15,8 +15,6 @@ public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
     public final BlockEntityRendererProvider.Context context;
     public static final int fullBright = LightTexture.pack(15, 15);
 
-    // Removed the exterior model rendering code for ya maketendo
-
     public ExampleRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }

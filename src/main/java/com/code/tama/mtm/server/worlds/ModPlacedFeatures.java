@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.worlds;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

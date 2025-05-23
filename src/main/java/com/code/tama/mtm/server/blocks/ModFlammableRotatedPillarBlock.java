@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.blocks;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.AxeItem;

@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.blocks;
 
-import com.code.tama.mtm.server.MTMTileEntities;
+import com.code.tama.mtm.server.registries.MTMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;

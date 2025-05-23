@@ -1,13 +1,13 @@
 package com.code.tama.mtm.server.items;
 
-import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.enums.SonicInteractionType;
-import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.entities.BlowUpCreeperPacket;
-import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.code.tama.mtm.server.misc.ClientUtil;
+import com.code.tama.mtm.server.networking.Networking;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
+import com.code.tama.mtm.server.registries.MTMBlocks;
+import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SonicItem extends Item {
-    private SonicInteractionType InteractionType = SonicInteractionType.BLOCKS;
+    public SonicInteractionType InteractionType = SonicInteractionType.BLOCKS;
 
     public SonicItem(Properties properties) {
         super(properties);
@@ -86,7 +86,7 @@ public class SonicItem extends Item {
         Entity lookingAtEntity = ClientUtil.GetEntityClientIsLookingAt();
 
         if (lookingAtEntity instanceof Creeper creeper) {
-            Networking.sendToServer(new BlowUpCreeperPacket(creeper.getUUID()));
+            Networking.sendToServer(new BlowUpCreeperPacketC2S(creeper.getUUID()));
             creeper.ignite();
             return InteractionResult.SUCCESS;
         }

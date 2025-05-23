@@ -25,7 +25,7 @@ public class TardisSkyRenderer extends AbstractLevelRenderer {
 
     @Override
     ResourceLocation EffectsLocation() {
-        return MDimensions.TARDIS.location();
+        return MDimensions.TARDIS_DIM_TYPE.location();
     }
 
     @Override

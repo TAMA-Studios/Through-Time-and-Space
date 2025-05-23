@@ -1,17 +1,24 @@
 package com.code.tama.mtm.server.networking;
 
-import com.code.tama.mtm.server.networking.packets.dimensions.*;
-import com.code.tama.mtm.server.networking.packets.entities.BlowUpCreeperPacket;
-import com.code.tama.mtm.server.networking.packets.entities.ControlClickedPacket;
-import com.code.tama.mtm.server.networking.packets.entities.ControlHitPacket;
-import com.code.tama.mtm.server.networking.packets.entities.SyncButtonAnimationSetPacket;
-import com.code.tama.mtm.server.networking.packets.exterior.SetExteriorAlpha;
-import com.code.tama.mtm.server.networking.packets.exterior.SyncExteriorVariantPacket;
-import com.code.tama.mtm.server.networking.packets.exterior.SyncTransparencyPacket;
-import com.code.tama.mtm.server.networking.packets.portal.PortalChunkDataPacket;
-import com.code.tama.mtm.server.networking.packets.portal.PortalChunkRequestPacket;
-import com.code.tama.mtm.server.networking.packets.portal.PortalSyncPacket;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.entities.ControlHitPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
+import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.triggerapi.dimensions.UpdateDimensionsPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -45,48 +52,48 @@ public class Networking {
 
     public static void registerPackets(){
         // Entity Packets
-        register(ControlClickedPacket.class, ControlClickedPacket::encode, ControlClickedPacket::decode, ControlClickedPacket::handle);
-        register(ControlHitPacket.class, ControlHitPacket::encode, ControlHitPacket::decode, ControlHitPacket::handle);
-        register(BlowUpCreeperPacket.class, BlowUpCreeperPacket::encode, BlowUpCreeperPacket::decode, BlowUpCreeperPacket::handle);
-        register(SyncButtonAnimationSetPacket.class, SyncButtonAnimationSetPacket::encode, SyncButtonAnimationSetPacket::decode, SyncButtonAnimationSetPacket::handle);
+        register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode, ControlClickedPacketC2S::handle);
+        register(ControlHitPacketC2S.class, ControlHitPacketC2S::encode, ControlHitPacketC2S::decode, ControlHitPacketC2S::handle);
+        register(BlowUpCreeperPacketC2S.class, BlowUpCreeperPacketC2S::encode, BlowUpCreeperPacketC2S::decode, BlowUpCreeperPacketC2S::handle);
+        register(SyncButtonAnimationSetPacketS2C.class, SyncButtonAnimationSetPacketS2C::encode, SyncButtonAnimationSetPacketS2C::decode, SyncButtonAnimationSetPacketS2C::handle);
 
 
         // Exterior Data
-        register(SyncExteriorVariantPacket.class, SyncExteriorVariantPacket::encode, SyncExteriorVariantPacket::decode, SyncExteriorVariantPacket::handle);
-        register(SetExteriorAlpha.class, SetExteriorAlpha::encode, SetExteriorAlpha::decode, SetExteriorAlpha::handle);
-        register(SyncTransparencyPacket.class, SyncTransparencyPacket::encode, SyncTransparencyPacket::decode, SyncTransparencyPacket::handle);
+        register(SyncExteriorVariantPacketS2C.class, SyncExteriorVariantPacketS2C::encode, SyncExteriorVariantPacketS2C::decode, SyncExteriorVariantPacketS2C::handle);
+        register(SyncTransparencyPacketS2C.class, SyncTransparencyPacketS2C::encode, SyncTransparencyPacketS2C::decode, SyncTransparencyPacketS2C::handle);
 
 
         // Cap Data
-        register(SyncDimensions.class, SyncDimensions::encode, SyncDimensions::decode, SyncDimensions::handle);
+        register(SyncDimensionsS2C.class, SyncDimensionsS2C::encode, SyncDimensionsS2C::decode, SyncDimensionsS2C::handle);
         register(UpdateDimensionsPacket.class, UpdateDimensionsPacket::encode, UpdateDimensionsPacket::decode, UpdateDimensionsPacket::handle);
-        register(SyncCapLightLevelPacket.class, SyncCapLightLevelPacket::encode, SyncCapLightLevelPacket::decode, SyncCapLightLevelPacket::handle);
-        register(SyncCapVariantPacket.class, SyncCapVariantPacket::encode, SyncCapVariantPacket::decode, SyncCapVariantPacket::handle);
-        register(TriggerSyncCapVariantPacket.class, TriggerSyncCapVariantPacket::encode, TriggerSyncCapVariantPacket::decode, TriggerSyncCapVariantPacket::handle);
-        register(TriggerSyncCapLightPacket.class, TriggerSyncCapLightPacket::encode, TriggerSyncCapLightPacket::decode, TriggerSyncCapLightPacket::handle);
-        register(SyncTARDISCapPacket.class, SyncTARDISCapPacket::encode, SyncTARDISCapPacket::decode, SyncTARDISCapPacket::handle);
-        register(TriggerSyncCapVariantPacket.class, TriggerSyncCapVariantPacket::encode, TriggerSyncCapVariantPacket::decode, TriggerSyncCapVariantPacket::handle);
-
+        register(SyncCapLightLevelPacketS2C.class, SyncCapLightLevelPacketS2C::encode, SyncCapLightLevelPacketS2C::decode, SyncCapLightLevelPacketS2C::handle);
+        register(SyncCapVariantPacketS2C.class, SyncCapVariantPacketS2C::encode, SyncCapVariantPacketS2C::decode, SyncCapVariantPacketS2C::handle);
+        register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode, TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);
+        register(TriggerSyncCapLightPacketC2S.class, TriggerSyncCapLightPacketC2S::encode, TriggerSyncCapLightPacketC2S::decode, TriggerSyncCapLightPacketC2S::handle);
+        register(SyncTARDISCapPacketS2C.class, SyncTARDISCapPacketS2C::encode, SyncTARDISCapPacketS2C::decode, SyncTARDISCapPacketS2C::handle);
+        register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode, TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);
+        register(TriggerSyncExteriorVariantPacketC2S.class, TriggerSyncExteriorVariantPacketC2S::encode, TriggerSyncExteriorVariantPacketC2S::decode, TriggerSyncExteriorVariantPacketC2S::handle);
+        register(TriggerSyncCapPacketC2S.class, TriggerSyncCapPacketC2S::encode, TriggerSyncCapPacketC2S::decode, TriggerSyncCapPacketC2S::handle);
         // BOTI
 
 //        register(PortalSyncPacket.class, PortalSyncPacket::encode, PortalSyncPacket::decode, PortalSyncPacket::handle);
 //        register(PortalChunkRequestPacket.class, PortalChunkRequestPacket::encode, PortalChunkRequestPacket::decode, PortalChunkRequestPacket::handle);
 //        register(PortalChunkDataPacket.class, PortalChunkDataPacket::encode, PortalChunkDataPacket::decode, PortalChunkDataPacket::handle);
 
-        INSTANCE.registerMessage(id(), PortalSyncPacket.class,
-                PortalSyncPacket::encode,
-                PortalSyncPacket::decode,
-                PortalSyncPacket::handle,
+        INSTANCE.registerMessage(id(), PortalSyncPacketS2C.class,
+                PortalSyncPacketS2C::encode,
+                PortalSyncPacketS2C::decode,
+                PortalSyncPacketS2C::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-        INSTANCE.registerMessage(id(), PortalChunkRequestPacket.class,
-                PortalChunkRequestPacket::encode,
-                PortalChunkRequestPacket::decode,
-                PortalChunkRequestPacket::handle,
+        INSTANCE.registerMessage(id(), PortalChunkRequestPacketC2S.class,
+                PortalChunkRequestPacketC2S::encode,
+                PortalChunkRequestPacketC2S::decode,
+                PortalChunkRequestPacketC2S::handle,
                 Optional.of(NetworkDirection.PLAY_TO_SERVER));
-        INSTANCE.registerMessage(id(), PortalChunkDataPacket.class,
-                PortalChunkDataPacket::encode,
-                PortalChunkDataPacket::decode,
-                PortalChunkDataPacket::handle,
+        INSTANCE.registerMessage(id(), PortalChunkDataPacketS2C.class,
+                PortalChunkDataPacketS2C::encode,
+                PortalChunkDataPacketS2C::decode,
+                PortalChunkDataPacketS2C::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         System.out.println("Network packets registered: Sync=0, Request=1, Data=2");
     }
@@ -133,6 +140,7 @@ public class Networking {
     }
 
     public static void sendToServer(Object mes) {
+    if(Minecraft.getInstance().getConnection() != null)
         INSTANCE.sendToServer(mes);
     }
 

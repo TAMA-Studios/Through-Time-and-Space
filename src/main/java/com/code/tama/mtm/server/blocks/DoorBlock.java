@@ -1,8 +1,8 @@
 package com.code.tama.mtm.server.blocks;
 
 import com.code.tama.mtm.MTMMod;
-import com.code.tama.mtm.data.DoorData;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
+import com.code.tama.mtm.server.data.tardis.DoorData;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.server.tileentities.DoorTile;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
@@ -65,13 +65,13 @@ public class DoorBlock extends Block implements EntityBlock {
         level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             cap.SetDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
             Direction direction = state.getValue(FACING);
-            float yRot = switch (direction) {
-                case EAST -> 90;
-                case SOUTH -> 180;
-                case WEST -> 270;
-                default -> 0;
-            };
-            cap.SetDoorData(new DoorData(yRot, new SpaceTimeCoordinate(blockPos)));
+//            float yRot = switch (direction) {
+//                case EAST -> 90;
+//                case SOUTH -> 180;
+//                case WEST -> 270;
+//                default -> 0;
+//            };
+            cap.SetDoorData(new DoorData(direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1))));
         });
 
         super.onPlace(state, level, blockPos, blockState, p_60570_);
@@ -90,8 +90,9 @@ public class DoorBlock extends Block implements EntityBlock {
                 if(Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
                     exteriorTile.SetInteriorAndSyncWithBlock(Interior.dimension());
                 }
+                float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot() + EntityToTeleport.getYRot();
                 EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()),
-                        pos.getX(), pos.getY(), pos.getZ(), Set.of(), 0, 0);
+                        pos.getX(), pos.getY(), pos.getZ(), Set.of(), yRot, 0);
             });
         } catch (Exception e) {
             MTMMod.LOGGER.error("EXTERIOR NOT FOUND");

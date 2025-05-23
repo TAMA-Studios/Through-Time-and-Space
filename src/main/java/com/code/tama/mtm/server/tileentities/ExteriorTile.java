@@ -1,15 +1,18 @@
 package com.code.tama.mtm.server.tileentities;
 
-import com.code.tama.mtm.server.MTMTileEntities;
+import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.client.ExteriorModelsHandler;
 import com.code.tama.mtm.server.blocks.ExteriorBlock;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.enums.Structures;
-import com.code.tama.mtm.ExteriorVariants;
-import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.exterior.SyncExteriorVariantPacket;
-import com.code.tama.mtm.server.networking.packets.exterior.SyncTransparencyPacket;
-import com.code.tama.mtm.server.threads.PlaceStructureThread;
 import com.code.tama.mtm.server.misc.ExteriorVariant;
+import com.code.tama.mtm.server.networking.Networking;
+import com.code.tama.mtm.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
+import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+import com.code.tama.mtm.server.registries.MTMTileEntities;
+import com.code.tama.mtm.server.threads.PlaceStructureThread;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -34,10 +37,15 @@ import static com.code.tama.mtm.MTMMod.MODID;
 
 public class ExteriorTile extends BlockEntity {
     private ResourceKey<Level> INTERIOR_DIMENSION;
+    @Getter
     private float transparency = 1.0f; // Default fully visible
+    @Getter
     private int transparencyInt; // Default fully visible
     public ExteriorVariant Variant;
     int DoorState;
+    @Getter
+    @Setter
+    int ModelIndex = 0;
 
     public ExteriorTile(BlockPos p_155229_, BlockState p_155230_) {
         super(MTMTileEntities.EXTERIOR_TILE.get(), p_155229_, p_155230_);
@@ -48,7 +56,7 @@ public class ExteriorTile extends BlockEntity {
     }
 
     public int CycleDoors() {
-        this.SetDoorsOpen(switch(this.DoorsOpen()) {
+        this.SetDoorsOpen(switch (this.DoorsOpen()) {
             case 0 -> 1;
             case 1 -> 2;
             default -> 0;
@@ -61,41 +69,64 @@ public class ExteriorTile extends BlockEntity {
     }
 
     public ExteriorVariant GetVariant() {
+        if (this.level == null) return ExteriorVariants.Get(0);
+        if (this.level.isClientSide && this.Variant == null)
+            Networking.sendToServer(new TriggerSyncExteriorVariantPacketC2S(
+                    this.level.dimension(),
+                    this.getBlockPos().getX(),
+                    this.getBlockPos().getY(),
+                    this.getBlockPos().getZ()
+            ));
+        if (this.Variant == null) this.Variant = ExteriorVariants.Get(0);
+        if (!ExteriorModelsHandler.GetInstance().InstanceModels.isEmpty()) {
+            while (this.Variant.GetModelName() != ExteriorModelsHandler.GetInstance().InstanceModels.get(this.ModelIndex).GetModelName()) {
+                this.CycleVariant();
+            }
+        }
         return this.Variant;
     }
 
     public void CycleVariant() {
-        this.Variant = ExteriorVariants.Cycle(this.Variant);
+        this.Variant = ExteriorVariants.Cycle(this.GetVariant());
+        if (this.level != null && !this.level.isClientSide)
+            this.NeedsClientUpdate();
+        this.setChanged();
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
-        if(this.INTERIOR_DIMENSION != null)
+        tag.putInt("modelIndex", this.ModelIndex);
+        if (this.INTERIOR_DIMENSION != null)
             tag.putString("interior_path", this.INTERIOR_DIMENSION.location().getPath());
-        if(this.Variant == null){
+        if (this.GetVariant() == null) {
             this.setVariant(ExteriorVariants.GetOrdinal(ExteriorVariants.Variants.get(0)));
             tag.put("variant", ExteriorVariants.Variants.get(0).serializeNBT());
-        }
-        else
-            tag.put("variant", this.Variant.serializeNBT());
+        } else
+            tag.put("variant", this.GetVariant().serializeNBT());
 
         super.saveAdditional(tag);
     }
 
     @Override
     public void load(CompoundTag tag) {
-        if(tag.contains("interior_path")) {
+        this.ModelIndex = tag.getInt("modelIndex");
+        if (tag.contains("interior_path")) {
             this.INTERIOR_DIMENSION = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(MODID, tag.getString("interior_path")));
 //            if(this.getLevel() != null)
 //            if(this.GetBlock() != null) {
 //                this.GetBlock().SetInteriorKey(this.INTERIOR_DIMENSION);
 //            }
         }
+        if(tag.contains("variant")) {
+            this.Variant = new ExteriorVariant(tag.getCompound("variant"));
+        }
         this.setVariant(ExteriorVariants.GetOrdinal(new ExteriorVariant(tag.getCompound("variant"))));
         super.load(tag);
     }
 
-    /** NEVER RUN THIS! THIS SHOULD ONLY BE USED ONCE, AND THAT IS WHEN IT'S FIRST INITIALIZED WHEN THE DIMENSION IS CREATED **/
+    /**
+     * NEVER RUN THIS! THIS SHOULD ONLY BE USED ONCE, AND THAT IS WHEN IT'S FIRST INITIALIZED WHEN THE DIMENSION IS CREATED
+     **/
     public void Init(ResourceKey<Level> LevelKey) {
         this.INTERIOR_DIMENSION = LevelKey;
         this.PlaceInterior(Structures.CleanInterior);
@@ -114,24 +145,27 @@ public class ExteriorTile extends BlockEntity {
     public void SetInteriorAndSyncWithBlock(ResourceKey<Level> INTERIOR_DIMENSION) {
         this.INTERIOR_DIMENSION = INTERIOR_DIMENSION;
         assert this.level != null;
-        if(this.level.getBlockState(this.getBlockPos()).getBlock() instanceof ExteriorBlock exteriorBlock) {
+        if (this.level.getBlockState(this.getBlockPos()).getBlock() instanceof ExteriorBlock exteriorBlock) {
             exteriorBlock.SetInteriorKey(this.INTERIOR_DIMENSION);
             this.setChanged();
         }
     }
 
-    @Nullable public ExteriorBlock GetBlock() {
+    @Nullable
+    public ExteriorBlock GetBlock() {
         assert this.level != null;
         Block block = this.level.getServer().getLevel(this.level.dimension()).getBlockState(this.getBlockPos()).getBlock();
-        if(block instanceof ExteriorBlock exteriorBlock) return exteriorBlock;
+        if (block instanceof ExteriorBlock exteriorBlock) return exteriorBlock;
         else return null;
     }
 
-    /** Utterly Destroys the tile entity and the linked {@link ExteriorBlock} like, 4 different ways, scheduling a tick that destroys it, removing it through servers level methods, etc**/
+    /**
+     * Utterly Destroys the tile entity and the linked {@link ExteriorBlock} like, 4 different ways, scheduling a tick that destroys it, removing it through servers level methods, etc
+     **/
     public void UtterlyDestroy() {
         assert this.level != null;
 //        this.level.getServer().execute(new TickTask(5, () -> {
-        if(this.GetBlock() != null) {
+        if (this.GetBlock() != null) {
             this.GetBlock().MarkForRemoval();
             this.level.getServer().getLevel(this.level.dimension()).scheduleTick(this.getBlockPos(), this.GetBlock(), 1);
         }
@@ -165,19 +199,17 @@ public class ExteriorTile extends BlockEntity {
 //                        exteriorTile.SetInteriorAndSyncWithBlock(exteriorTile.GetInterior());
 
 
-            if (!level.isClientSide) {
+            if (level != null && !level.isClientSide) {
                 level.getServer().getLevel(exteriorTile.GetInterior()).getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-
-
-                    if ((!exteriorTile.getBlockPos().equals(cap.GetExteriorLocation().GetBlockPos()) || cap.IsInFlight())) exteriorTile.UtterlyDestroy();
+                    if ((!exteriorTile.getBlockPos().equals(cap.GetExteriorLocation().GetBlockPos()) || cap.IsInFlight()))
+                        exteriorTile.UtterlyDestroy();
+                    exteriorTile.Variant = cap.GetExteriorVariant();
                 });
-            }
-            else {
+            } else {
             }
         }
     }
 
-    @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -187,51 +219,51 @@ public class ExteriorTile extends BlockEntity {
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         tag.putInt("TransparencyInt", this.transparencyInt);
+        tag.putInt("modelIndex", this.getModelIndex());
         tag.putFloat("Transparency", this.transparency);
-        tag.putInt("variant", ExteriorVariants.GetOrdinal(this.Variant));
+        tag.put("variant", this.GetVariant().serializeNBT());
         tag.putInt("doors", this.DoorState);
         return tag;
         //this.serializeNBT
     }
 
+
     @Override
     public void handleUpdateTag(CompoundTag tag) {
         //this.deserializeNBT
-        super.handleUpdateTag(tag);
         if (tag.contains("Transparency")) {
             this.transparency = tag.getFloat("Transparency");
         }
+        if (tag.contains("modelIndex")) {
+            this.setModelIndex(tag.getInt("modelIndex"));
+        }
         if (tag.contains("variant")) {
-            this.Variant = ExteriorVariants.Get(tag.getInt("variant"));
+            this.Variant = new ExteriorVariant(tag.getCompound("variant"));
         }
         if (tag.contains("TransparencyInt")) {
             this.transparencyInt = tag.getInt("TransparencyInt");
         }
-        if(tag.contains("doors")) {
+        if (tag.contains("doors")) {
             this.DoorState = tag.getInt("doors");
         }
+        super.handleUpdateTag(tag);
     }
 
     public void TeleportToInterior(Entity EntityToTeleport) {
-        if(this.getLevel().isClientSide) return;
-        if(this.INTERIOR_DIMENSION == null) return;
+        if (this.getLevel() == null || this.getLevel().isClientSide) return;
+        if (this.INTERIOR_DIMENSION == null) return;
         ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
         assert Interior != null;
         Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            int X, Y, Z;
+            float X, Y, Z;
             BlockPos pos = cap.GetDoorBlock().GetBlockPos().north();
-            X = pos.getX();
+            X = pos.getX() + 0.5f;
             Y = pos.getY() == 0 ? 128 : pos.getY();
-            Z = pos.getZ();
-            EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), 0, 0);
+            Z = pos.getZ() + 0.5f;
+            float yRot = cap.GetDoorData().getYRot() + EntityToTeleport.getYRot();
+            System.out.println(yRot);
+            EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
         });
-    }
-
-    public float getTransparency() {
-        return this.transparency;
-    }
-    public int getTransparencyInt() {
-        return this.transparencyInt;
     }
 
     public void setTransparency(float alpha) {
@@ -245,26 +277,27 @@ public class ExteriorTile extends BlockEntity {
             // Send the custom packet to all nearby players (example: radius of 64 blocks)
             for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
                 if (player.blockPosition().closerThan(worldPosition, 64)) {
-                    Networking.sendToPlayer(player, new SyncTransparencyPacket(transparency, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
+                    Networking.sendToPlayer(player, new SyncTransparencyPacketS2C(transparency, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
                 }
             }
         }
     }
 
     public void setVariant(int variant) {
-        if(variant >= ExteriorVariants.Variants.size()) variant = 0;
+        if (variant >= ExteriorVariants.Variants.size()) variant = 0;
         this.Variant = ExteriorVariants.Variants.get(variant);
         this.setChanged();
 
         if (this.level instanceof ServerLevel serverLevel) {
-            // Notify clients of the update using a block update
-            serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
+            if(level1 != null) {
+                level1.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                    this.ModelIndex = cap.GetExteriorModelIndex();
+                    this.Variant = cap.GetExteriorVariant();
+                    cap.UpdateClient();
 
-            // Send the custom packet to all nearby players (example: radius of 64 blocks)
-            for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
-                if (player.blockPosition().closerThan(worldPosition, 64)) {
-                    Networking.sendToPlayer(player, new SyncExteriorVariantPacket(ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
-                }
+//                Networking.sendPacketToDimension(this.level.dimension(), new SyncExteriorVariantPacketS2C(this.ModelIndex, ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
+                });
             }
         }
     }
@@ -279,5 +312,23 @@ public class ExteriorTile extends BlockEntity {
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (this.level != null && this.level.isClientSide)
+            Networking.sendToServer(new TriggerSyncExteriorVariantPacketC2S(
+                    this.level.dimension(),
+                    this.getBlockPos().getX(),
+                    this.getBlockPos().getY(),
+                    this.getBlockPos().getZ()
+            ));
+    }
+
+    public void NeedsClientUpdate() {
+        if(this.level == null) return;
+        if(this.level.isClientSide) return;
+        this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
     }
 }

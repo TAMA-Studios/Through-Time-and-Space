@@ -3,7 +3,7 @@ package com.code.tama.triggerapi.dimensions;
 import com.code.tama.mtm.MTMMod;
 import com.code.tama.mtm.server.dimensions.TARDISDimensionChunkGenerator;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.dimensions.SyncDimensions;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
 import com.code.tama.mtm.server.worlds.dimension.MDimensions;
 import com.code.tama.triggerapi.ReflectionBuddy;
 import com.google.common.collect.Lists;
@@ -205,7 +205,7 @@ public final class DimensionManager implements DimensionAPI
 //		QuietPacketDistributors.sendToAll(Networking.INSTANCE, new UpdateDimensionsPacket(Set.of(levelKey), true));
 		PrepareWorld(chunkProgressListener, newLevel);
 
-		Networking.sendPacketToAll(new SyncDimensions(levelKey, true)); // Sync dimension
+		Networking.sendPacketToAll(new SyncDimensionsS2C(levelKey, true)); // Sync dimension
 		return newLevel;
 	}
 	
@@ -405,7 +405,7 @@ public final class DimensionManager implements DimensionAPI
 	}
 
 	public static LevelStem CreateTARDISLevelStem(MinecraftServer server){
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(MDimensions.TARDIS),
+		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE),
 				new TARDISDimensionChunkGenerator(
 						server.registryAccess().registryOrThrow(Registries.BIOME).asLookup()));
 	}

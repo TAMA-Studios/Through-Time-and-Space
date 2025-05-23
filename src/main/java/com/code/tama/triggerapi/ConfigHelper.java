@@ -23,6 +23,7 @@ public class ConfigHelper {
         CONFIG_SPEC = BUILDER.build();
     }
 
+    @SuppressWarnings("removal")
     public static void register() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CONFIG_SPEC);
     }

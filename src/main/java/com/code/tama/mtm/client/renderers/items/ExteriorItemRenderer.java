@@ -1,6 +1,6 @@
 package com.code.tama.mtm.client.renderers.items;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

@@ -1,6 +1,6 @@
 package com.code.tama.mtm;
 
-import com.code.tama.mtm.server.enums.tardis.ExteriorModel;
+import com.code.tama.mtm.core.Constants;
 import com.code.tama.mtm.server.misc.ExteriorVariant;
 import net.minecraft.resources.ResourceLocation;
 
@@ -12,6 +12,16 @@ import static com.code.tama.mtm.MTMMod.MODID;
 public class ExteriorVariants {
     public static ArrayList<ExteriorVariant> Variants = new ArrayList<>();
 
+    public static final ExteriorVariant EXT_11A = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/mof_11a"), "11th Police Box (A)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_11B = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/mof_11b"), "11th Police Box (B)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_11C = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/mof_11c"), "11th Police Box (C)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_12A = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/mof_12a"), "12th Police Box (A)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_12B = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/mof_12b"), "12th Police Box (B)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_9 = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/rtd_9"), "9th Police Box", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_9_BW = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/rtd_9_bw"), "9th Police Box (Bad Wolf)", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_10 = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/box/rtd_10"), "10th Police Box", Constants.ExteriorModelNames.ModernBox);
+    public static final ExteriorVariant EXT_WHITTAKER = new ExteriorVariant(new ResourceLocation(MODID, "textures/tiles/exterior/whittaker/box/whittaker"), "AWJ", Constants.ExteriorModelNames.Whittaker);
+    
     public static int Cycle(int Index) {
         Index++;
         return Index >= Variants.size() ? 0 : Index;
@@ -40,13 +50,14 @@ public class ExteriorVariants {
     }
 
     public static void InitVariants() {
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11a"), "11th Police Box (A)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11b"), "11th Police Box (B)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_11c"), "11th Police Box (C)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12a"), "12th Police Box (A)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/mof_12b"), "12th Police Box (B)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9"), "9th Police Box"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_9_bw"), "9th Police Box (Bad Wolf)"));
-        Variants.add(new ExteriorVariant(ExteriorModel.COLIN_RICHMOND, new ResourceLocation(MODID, "textures/tiles/exterior/colin_richmond/rtd_10"), "10th Police Box"));
+        Variants.add(EXT_12A);
+        Variants.add(EXT_12B);
+        Variants.add(EXT_11A);    
+        Variants.add(EXT_11B);
+        Variants.add(EXT_11C);
+        Variants.add(EXT_10);
+        Variants.add(EXT_9);
+        Variants.add(EXT_9_BW);
+        Variants.add(EXT_WHITTAKER);
     }
 }

@@ -20,5 +20,7 @@
   "mtm.tardis.control.power_control": "Power Switch",
   "mtm.tardis.control.facing_control": "Facing Modifier",
   "mtm.tab.main": "Tech Blocks (Modern TARDIS)",
-  "mtm.tab.dimensional": "Dimensional Blocks (Modern TARDIS)"
+  "mtm.tab.dimensional": "Dimensional Blocks (Modern TARDIS)",
+  "mtm.keybinds.catagory": "Modern TARDIS Mod",
+  "mtm.keybinds.sonic_mode": "Change Sonic Interaction Mode"
 }

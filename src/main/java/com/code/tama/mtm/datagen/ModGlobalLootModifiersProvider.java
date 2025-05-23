@@ -1,7 +1,7 @@
 package com.code.tama.mtm.datagen;
 
-import com.code.tama.mtm.server.MTMItems;
 import com.code.tama.mtm.server.loots.AddItemModifier;
+import com.code.tama.mtm.server.registries.MTMItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;

@@ -26,7 +26,7 @@ import static com.code.tama.mtm.MTMMod.MODID;
 
 public class MDimensions {
 
-    public static final ResourceKey<LevelStem> GALLIFREY_KEY = ResourceKey.create(Registries.LEVEL_STEM,
+    public static final ResourceKey<LevelStem> GALLIFREY_STEM = ResourceKey.create(Registries.LEVEL_STEM,
             new ResourceLocation(MODID, "gallifrey"));
     public static final ResourceKey<Level> GALLIFREY_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
             new ResourceLocation(MODID, "gallifrey"));
@@ -41,10 +41,8 @@ public class MDimensions {
             new ResourceLocation(MODID, "varos_type"));
 
 
-    public static final ResourceKey<DimensionType> TARDIS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
-            new ResourceLocation(MODID, "tardis"));
     public static final ResourceKey<Level> TARDIS_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(MODID, "tardis"));
-    public static ResourceKey<DimensionType> TARDIS = ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(MODID, "tardis"));
+    public static ResourceKey<DimensionType> TARDIS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(MODID, "tardis"));
 
 
     public static void bootstrapType(BootstapContext<DimensionType> context) {
@@ -103,7 +101,7 @@ public class MDimensions {
 
         LevelStem stem = new LevelStem(dimTypes.getOrThrow(MDimensions.GALLIFREY_DIM_TYPE), noiseBasedChunkGenerator);
 
-        context.register(GALLIFREY_KEY, stem);
+        context.register(GALLIFREY_STEM, stem);
     }
 
     public static class DimensionEffects {

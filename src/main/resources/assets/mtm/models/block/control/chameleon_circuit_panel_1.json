@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "mtm:emmisive",
 	"textures": {
 		"2": "mtm:block/steel",
 		"3": "mtm:block/controls/button",

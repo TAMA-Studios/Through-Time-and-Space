@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.worlds;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.worlds.tree.custom.GallifreyanFoliagePlacer;
 import com.code.tama.mtm.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
 import net.minecraft.core.registries.Registries;

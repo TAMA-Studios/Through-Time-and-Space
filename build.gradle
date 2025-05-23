@@ -13,9 +13,27 @@ plugins {
     id "io.freefair.lombok" version "8.12.2.1"
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'jacoco'
+    id 'com.gradleup.shadow' version '8.3.0'
 }
 
 apply plugin: 'org.spongepowered.mixin'
+
+jacoco {
+    toolVersion = "0.8.11" // or latest
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+configurations {
+    shadeOnly
+    implementation.extendsFrom(shadeOnly)
+}
 
 group = mod_group_id
 version = mod_version
@@ -52,6 +70,10 @@ minecraft {
                     source sourceSets.main
                 }
             }
+        }
+
+        build {
+            jvmArg("-Xlint:deprecation")
         }
 
         client {
@@ -107,24 +129,29 @@ repositories {
     //     dir 'libs'
     // }
 
+//    maven {
+//        name = 'GeckoLib'
+//        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+//        content {
+//            includeGroupByRegex("software\\.bernie.*")
+//            includeGroup("com.eliotlash.mclib")
+//        }
+//    }
+
     maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-            includeGroup("com.eliotlash.mclib")
-        }
+        url = "https://repo.maven.apache.org/maven2/"
     }
+
 
     maven {
         // maven that hosts JEI files
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
-
 }
 
 dependencies {
+
     // Minecraft
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -141,12 +168,14 @@ dependencies {
     // JEI (includes in runtime)
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
+    implementation 'org.openjdk.nashorn:nashorn-core:15.4'
+
     // Terrablender
-    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraft_version}-${terrablender_version}")
+    shadeOnly fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraft_version}-${terrablender_version}")
 
     // GeckoLib
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
-    implementation("com.eliotlash.mclib:mclib:20")
+//    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+//    implementation("com.eliotlash.mclib:mclib:20")
 
     // LomBok
     compileOnly 'org.projectlombok:lombok:1.18.32'
@@ -156,6 +185,15 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }
+
+shadowJar {
+    configurations = [project.configurations.shadeOnly]
+    archiveClassifier.set('all') // Optional: adds "-all" suffix to jar name
+
+    // Optional: Relocate packages to avoid conflicts
+    relocate 'terrablender.api', 'com.code.tama.shade.terrablender.api'
+}
+
 
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [

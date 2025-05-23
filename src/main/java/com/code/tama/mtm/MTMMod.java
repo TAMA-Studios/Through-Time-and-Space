@@ -1,17 +1,22 @@
 package com.code.tama.mtm;
 
-import com.code.tama.mtm.annotations.DimensionalTab;
-import com.code.tama.mtm.annotations.MainTab;
 import com.code.tama.mtm.client.CameraShakeHandler;
 import com.code.tama.mtm.client.CustomLevelRenderer;
+import com.code.tama.mtm.client.ExteriorModelsHandler;
 import com.code.tama.mtm.client.MTMSounds;
+import com.code.tama.mtm.client.models.ModernBoxModel;
+import com.code.tama.mtm.client.models.TTCapsuleModel;
+import com.code.tama.mtm.client.models.WhittakerExteriorModel;
 import com.code.tama.mtm.client.renderers.PortalTileEntityRenderer;
-import com.code.tama.mtm.server.MTMBlocks;
-import com.code.tama.mtm.server.MTMCreativeTabs;
-import com.code.tama.mtm.server.MTMEntities;
+import com.code.tama.mtm.core.Constants;
+import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
+import com.code.tama.mtm.core.annotations.DimensionalTab;
+import com.code.tama.mtm.core.annotations.MainTab;
 import com.code.tama.mtm.server.dimensions.Biomes;
 import com.code.tama.mtm.server.loots.ModLootModifiers;
 import com.code.tama.mtm.server.networking.Networking;
+import com.code.tama.mtm.server.registries.MTMCreativeTabs;
+import com.code.tama.mtm.server.registries.MTMEntities;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.threads.ExteriorTileTickThread;
 import com.code.tama.mtm.server.threads.SkyboxRenderThread;
@@ -23,11 +28,11 @@ import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import lombok.Getter;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -49,12 +54,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import static com.code.tama.mtm.server.MTMBlocks.BLOCKS;
-import static com.code.tama.mtm.server.MTMCreativeTabs.CREATIVE_MODE_TABS;
-import static com.code.tama.mtm.server.MTMItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.mtm.server.MTMItems.ITEMS;
-import static com.code.tama.mtm.server.MTMTileEntities.PORTAL_TILE_ENTITY;
-import static com.code.tama.mtm.server.MTMTileEntities.TILE_ENTITIES;
+import static com.code.tama.mtm.server.registries.MTMBlocks.BLOCKS;
+import static com.code.tama.mtm.server.registries.MTMCreativeTabs.CREATIVE_MODE_TABS;
+import static com.code.tama.mtm.server.registries.MTMItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.mtm.server.registries.MTMItems.ITEMS;
+import static com.code.tama.mtm.server.registries.MTMTileEntities.PORTAL_TILE_ENTITY;
+import static com.code.tama.mtm.server.registries.MTMTileEntities.TILE_ENTITIES;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MTMMod.MODID)
@@ -68,6 +73,8 @@ public class MTMMod {
     public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
     public static SkyboxRenderThread skyboxRenderThread = new SkyboxRenderThread();
     public static ExteriorTileTickThread exteriorTileTickThread = new ExteriorTileTickThread();
+    @Getter
+    private static final ExteriorModelsHandler<HierarchicalExteriorModel> exteriorModelsHandler = new ExteriorModelsHandler<>();
     public static TriggerAPI triggerAPI;
 
     public MTMMod() {
@@ -75,11 +82,12 @@ public class MTMMod {
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-
         CustomLevelRenderer.Register();
         MinecraftForge.EVENT_BUS.addListener(CustomLevelRenderer::onRenderLevel);
 
         triggerAPI = new TriggerAPI();
+
+        this.RegisterExteriorModels();
 
         FileHelper.createStoredFile("last_time_launched", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH_mm")));
 
@@ -122,11 +130,23 @@ public class MTMMod {
 
         skyboxRenderThread.start();
 
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-
-        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
+        // TODO: Finish the config and find a use for it
 //        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    public static void RegisterExteriorModel(Class<? extends HierarchicalExteriorModel> modelClass, ModelLayerLocation layerLocation, ResourceLocation modelName) {
+        ExteriorModelsHandler.GetInstance().AddModel(modelClass, layerLocation);
+        com.code.tama.mtm.server.ExteriorModelsHandler.ModelList.add(modelName);
+    }
+
+    private void RegisterExteriorModels() {
+//        ExteriorModelsHandler.GetInstance().AddModel(ModernBoxModel.class, ModernBoxModel.LAYER_LOCATION);
+//        ExteriorModelsHandler.GetInstance().AddModel(WhittakerExteriorModel.class, WhittakerExteriorModel.LAYER_LOCATION);
+//        ExteriorModelsHandler.GetInstance().AddModel(TTCapsuleModel.class, TTCapsuleModel.LAYER_LOCATION);
+        RegisterExteriorModel(ModernBoxModel.class, ModernBoxModel.LAYER_LOCATION, Constants.ExteriorModelNames.ModernBox);
+        RegisterExteriorModel(TTCapsuleModel.class, TTCapsuleModel.LAYER_LOCATION, Constants.ExteriorModelNames.TTCapsule);
+        RegisterExteriorModel(WhittakerExteriorModel.class, WhittakerExteriorModel.LAYER_LOCATION, Constants.ExteriorModelNames.Whittaker);
+
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -138,17 +158,15 @@ public class MTMMod {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        for(RegistryObject<Item> item : ITEMS.getEntries()) {
-            if(AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
-                if(event.getTabKey() == MTMCreativeTabs.DIMENSIONAL_TAB.getKey()) event.accept(item);
+        for (RegistryObject<Item> item : ITEMS.getEntries()) {
+            if (AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
+                if (event.getTabKey() == MTMCreativeTabs.DIMENSIONAL_TAB.getKey()) event.accept(item);
             }
-            if(AnnotationUtils.hasAnnotation(MainTab.class, item)) {
-                if(event.getTabKey() == MTMCreativeTabs.MAIN_TAB.getKey()) event.accept(item);
+            if (AnnotationUtils.hasAnnotation(MainTab.class, item)) {
+                if (event.getTabKey() == MTMCreativeTabs.MAIN_TAB.getKey()) event.accept(item);
             }
         }
-        // Sorry maketendo I like having my items in my tabs (it makes them easier to find without using the search bar)
-        // No worries! just thought it could be nicer if they're implemented into the game a bit more, i see what u mean.
-        }
+    }
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
@@ -176,12 +194,10 @@ public class MTMMod {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-//            Sheets.addWoodType(ModWoodTypes.PINE);
             LOGGER.info("Inside OnClientSetup");
             MinecraftForge.EVENT_BUS.register(CameraShakeHandler.class);
             LOGGER.info("Camera Shake Handler Registered");
             event.enqueueWork(() -> {
-//                DimensionSpecialEffects.EFFECTS.put(MDimensions.GALLIFREY_EFFECTS, new GallifreyEffects());
             });
         }
 

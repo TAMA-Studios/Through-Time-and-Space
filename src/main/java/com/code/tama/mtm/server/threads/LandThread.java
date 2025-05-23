@@ -1,11 +1,11 @@
 package com.code.tama.mtm.server.threads;
 
-import com.code.tama.mtm.server.MTMBlocks;
 import com.code.tama.mtm.server.blocks.ExteriorBlock;
 import com.code.tama.mtm.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.misc.BlockHelper;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.code.tama.triggerapi.WorldHelper;
 import net.minecraft.core.BlockPos;

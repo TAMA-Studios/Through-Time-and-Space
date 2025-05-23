@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.events;
 
-import com.code.tama.mtm.data.ExteriorDataLoader;
+import com.code.tama.mtm.server.data.json.ExteriorDataLoader;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +19,6 @@ public class CommonEvents {
 //            Networking.sendPacketToDimension(event.getPlayer().level().dimension(), new SyncCapLightLevelPacket((float) Integer.parseInt(event.getRawText()) / 10));
 //        }
     }
-
 
     @SubscribeEvent
     public static void onAddReloadListeners(AddReloadListenerEvent event) {

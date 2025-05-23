@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.blocks;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.tileentities.HartnellDoorTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

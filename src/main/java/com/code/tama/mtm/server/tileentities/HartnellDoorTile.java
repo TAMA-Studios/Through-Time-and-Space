@@ -1,7 +1,7 @@
 package com.code.tama.mtm.server.tileentities;
 
-import com.code.tama.mtm.server.MTMTileEntities;
 import com.code.tama.mtm.server.blocks.HartnellDoor;
+import com.code.tama.mtm.server.registries.MTMTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;

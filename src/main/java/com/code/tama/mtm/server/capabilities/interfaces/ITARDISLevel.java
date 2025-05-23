@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.capabilities.interfaces;
 
-import com.code.tama.mtm.data.DoorData;
+import com.code.tama.mtm.server.data.tardis.DoorData;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.mtm.server.misc.ExteriorVariant;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+    int GetExteriorModelIndex();
+    void SetExteriorModelIndex(int index);
     SpaceTimeCoordinate GetDestination();
     void SetDestination(SpaceTimeCoordinate Destination);
 
@@ -113,7 +115,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
     ExteriorVariant GetExteriorVariant();
     void SetExteriorVariant(ExteriorVariant exteriorVariant);
-
+    void CycleVariant();
     float GetLightLevel();
     void SetLightLevel(float LightLevel);
 }

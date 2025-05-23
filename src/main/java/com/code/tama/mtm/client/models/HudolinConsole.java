@@ -3,10 +3,9 @@ package com.code.tama.mtm.client.models;// Made with Blockbench 4.12.2
 // Paste this class into your mod and generate all required imports
 
 
-
 import com.code.tama.mtm.client.animations.consoles.HudolinConsoleAnimation;
+import com.code.tama.mtm.core.interfaces.IConsoleModel;
 import com.code.tama.mtm.server.tileentities.ConsoleTile;
-import com.code.tama.mtm.server.misc.interfaces.IConsoleModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;

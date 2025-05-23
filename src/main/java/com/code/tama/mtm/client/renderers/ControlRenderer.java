@@ -2,7 +2,7 @@ package com.code.tama.mtm.client.renderers;
 
 
 import com.code.tama.mtm.server.entities.controls.ModularControl;
-import com.code.tama.mtm.server.MTMItems;
+import com.code.tama.mtm.server.registries.MTMItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

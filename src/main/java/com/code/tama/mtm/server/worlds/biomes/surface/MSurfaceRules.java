@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.worlds.biomes.surface;
 
-import com.code.tama.mtm.server.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.worlds.biomes.MBiomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

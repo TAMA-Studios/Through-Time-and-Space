@@ -1,7 +1,7 @@
 package com.code.tama.mtm.datagen;
 
-import com.code.tama.mtm.server.MTMBlocks;
-import com.code.tama.mtm.server.MTMItems;
+import com.code.tama.mtm.server.registries.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;

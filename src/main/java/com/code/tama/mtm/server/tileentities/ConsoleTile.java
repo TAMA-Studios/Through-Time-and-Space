@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.tileentities;
 
-import com.code.tama.mtm.server.MTMTileEntities;
+import com.code.tama.mtm.server.registries.MTMTileEntities;
 import com.code.tama.mtm.server.tardis.control_lists.AbstractControlList;
 import com.code.tama.mtm.server.tardis.control_lists.ControlLists;
 import net.minecraft.core.BlockPos;

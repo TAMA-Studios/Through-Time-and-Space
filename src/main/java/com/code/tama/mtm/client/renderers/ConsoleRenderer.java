@@ -1,8 +1,8 @@
 package com.code.tama.mtm.client.renderers;
 
 
+import com.code.tama.mtm.core.interfaces.IConsoleModel;
 import com.code.tama.mtm.server.tileentities.ConsoleTile;
-import com.code.tama.mtm.server.misc.interfaces.IConsoleModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;

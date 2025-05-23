@@ -1,15 +1,17 @@
 package com.code.tama.mtm.server.capabilities.caps;
 
 import com.code.tama.mtm.ExteriorVariants;
-import com.code.tama.mtm.data.DoorData;
+import com.code.tama.mtm.server.ExteriorModelsHandler;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.mtm.server.data.tardis.DoorData;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.mtm.server.misc.ExteriorVariant;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.dimensions.SyncTARDISCapPacket;
-import com.code.tama.mtm.server.networking.packets.dimensions.TriggerSyncCapLightPacket;
-import com.code.tama.mtm.server.networking.packets.dimensions.TriggerSyncCapVariantPacket;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
+import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
+import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.FlightSoundHandler;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.SmithSoundScheme;
@@ -17,6 +19,7 @@ import com.code.tama.mtm.server.threads.CrashThread;
 import com.code.tama.mtm.server.threads.LandThread;
 import com.code.tama.mtm.server.threads.TakeOffThread;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -30,10 +33,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
-    ExteriorVariant exteriorVariant;
+    ExteriorVariant ExteriorVariant;
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
     DoorData InteriorDoorData;
-    int TicksInFlight, TicksTillDestination, Increment = 1;
+    int TicksInFlight, TicksTillDestination, Increment = 1, ExteriorModelIndex;
     Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
     Level level;
     SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(), doorBlock = new SpaceTimeCoordinate();
@@ -51,6 +54,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
 
+        Tag.putInt("exterior_model_index", this.ExteriorModelIndex);
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
         Tag.putInt("increment", this.Increment);
         if (this.InteriorDoorData == null) this.InteriorDoorData = new DoorData(90, this.GetDoorBlock());
@@ -62,8 +66,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         Tag.put("destination", this.Destination.serializeNBT());
         Tag.put("location", this.Location.serializeNBT());
         Tag.put("door", this.doorBlock.serializeNBT());
-        if (this.exteriorVariant != null)
-            Tag.put("exterior_variant", this.exteriorVariant.serializeNBT());
+        if (this.ExteriorVariant != null)
+            Tag.put("exterior_variant", this.ExteriorVariant.serializeNBT());
         Tag.putBoolean("is_powered_on", this.IsPowered);
         Tag.putFloat("light_level", this.LightLevel);
         if (this.ExteriorDimensionKey != null) {
@@ -85,6 +89,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        this.ExteriorModelIndex = nbt.getInt("exterior_model_index");
         this.IsInFlight = nbt.getBoolean("isInFlight");
         this.ShouldPlayRotorAnimation = nbt.getBoolean("play_rotor_animation");
         this.FlightSoundScheme = FlightSoundHandler.GetByID(nbt.getInt("flight_sound_scheme"));
@@ -97,8 +102,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
         }
 
         if (nbt.contains("exterior_variant")) {
-            this.exteriorVariant = new ExteriorVariant(nbt.getCompound("exterior_variant"));
+            this.ExteriorVariant = new ExteriorVariant(nbt.getCompound("exterior_variant"));
         }
+        else
+            this.ExteriorVariant = ExteriorVariants.Get(0);
 
         this.LightLevel = nbt.getFloat("light_level");
 
@@ -114,7 +121,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
             this.ExteriorDimensionKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("exterior_dimension_key_namespace"), nbt.getString("exterior_dimension_key_path")));
         else {
             this.NullExteriorChecksAndFixes();
-            if(this.GetExteriorTile() != null) this.ExteriorDimensionKey = this.GetExteriorTile().getLevel().dimension();
+            if (this.GetExteriorTile() != null)
+                this.ExteriorDimensionKey = this.GetExteriorTile().getLevel().dimension();
         }
 
         if (nbt.contains("destination_dimension_key_path"))
@@ -144,6 +152,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
         }
 
         this.flightTerminationProtocol = FlightTerminationProtocolEnum.GetFromName(nbt.getString("flight_termination_protocol"));
+    }
+
+    @Override
+    public int GetExteriorModelIndex() {
+        return this.ExteriorModelIndex;
+    }
+
+    @Override
+    public void SetExteriorModelIndex(int index) {
+        this.ExteriorModelIndex = index;
     }
 
     @Override
@@ -198,10 +216,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public ResourceKey<Level> GetCurrentLevel() {
-        if(this.level.isClientSide && this.ExteriorDimensionKey == null) this.UpdateClient();
-        if(this.ExteriorDimensionKey == null) {
+        if (this.level.isClientSide && this.ExteriorDimensionKey == null) this.UpdateClient();
+        if (this.ExteriorDimensionKey == null) {
             this.NullExteriorChecksAndFixes();
-            if(this.GetExteriorTile() != null) {
+            if (this.GetExteriorTile() != null) {
                 this.ExteriorDimensionKey = this.GetExteriorTile().getLevel().dimension();
             }
         }
@@ -258,6 +276,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public DoorData GetDoorData() {
+        if (this.InteriorDoorData == null) {
+//            if(this.level != null && !this.level.isClientSide) {
+//                List<>this.level.blockEn.getEntitiesOfClass(DoorTile.class, new AABB(new BlockPos(0, 128, 0)).inflate(100));
+//            }
+            this.InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(new BlockPos(0, 128, 0)));
+        }
         return this.InteriorDoorData;
     }
 
@@ -430,7 +454,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
         };
     }
 
-    /** TODO: ADD MORE HERE! **/
+    /**
+     * TODO: ADD MORE HERE!
+     **/
     public void NullExteriorChecksAndFixes() {
         if (!this.level.isClientSide)
             if (this.level.getServer().getLevel(this.GetCurrentLevel()) == null)
@@ -438,10 +464,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     public void UpdateClient() {
-        if(this.level.isClientSide)
-            Networking.sendPacketToDimension(this.level.dimension(), new TriggerSyncCapVariantPacket(this.level.dimension()));
-        else
-            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacket(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos(), this.GetCurrentLevel()));
+        if (this.level.isClientSide)
+            Networking.sendPacketToDimension(this.level.dimension(), new TriggerSyncCapPacketC2S(this.level.dimension()));
+        else {
+            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacketS2C(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos(), this.GetCurrentLevel(), this.GetExteriorModelIndex()));
+            if (this.GetExteriorTile() != null) {
+                this.GetExteriorTile().Variant = this.GetExteriorVariant();
+                this.GetExteriorTile().setModelIndex(this.GetExteriorModelIndex());
+                this.GetExteriorTile().NeedsClientUpdate();
+            }
+        }
     }
 
     @Override
@@ -451,22 +483,36 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public ExteriorVariant GetExteriorVariant() {
-        if (this.exteriorVariant == null) {
-            Networking.sendToServer(new TriggerSyncCapVariantPacket(this.level.dimension()));
+        if (this.ExteriorVariant == null) {
+            Networking.sendToServer(new TriggerSyncCapVariantPacketC2S(this.level.dimension()));
             return ExteriorVariants.Variants.get(0);
         }
-        return this.exteriorVariant;
+        return this.ExteriorVariant;
     }
 
     @Override
     public void SetExteriorVariant(ExteriorVariant exteriorVariant) {
-        this.exteriorVariant = exteriorVariant;
+        this.ExteriorVariant = exteriorVariant;
+    }
+
+    @Override
+    public void CycleVariant() {
+        this.ExteriorVariant = ExteriorVariants.Cycle(this.ExteriorVariant);
+        while (true) {
+            if(!this.ExteriorVariant.GetModelName().equals(ExteriorModelsHandler.ModelList.get(this.ExteriorModelIndex))) {
+                this.ExteriorVariant = ExteriorVariants.Cycle(this.ExteriorVariant);
+            }
+            else {
+                this.UpdateClient();
+                break;
+            }
+        }
     }
 
     @Override
     public float GetLightLevel() {
         if (this.LightLevel == 0.0f) {
-            Networking.sendToServer(new TriggerSyncCapLightPacket(this.level.dimension()));
+            Networking.sendToServer(new TriggerSyncCapLightPacketC2S(this.level.dimension()));
             return 0.1f;
         }
         return this.LightLevel;

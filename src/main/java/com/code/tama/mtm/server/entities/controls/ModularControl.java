@@ -1,11 +1,11 @@
 package com.code.tama.mtm.server.entities.controls;
 
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.mtm.server.MTMEntities;
 import com.code.tama.mtm.server.enums.Controls;
-import com.code.tama.mtm.server.MTMItems;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.entities.SyncButtonAnimationSetPacket;
+import com.code.tama.mtm.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
+import com.code.tama.mtm.server.registries.MTMEntities;
+import com.code.tama.mtm.server.registries.MTMItems;
 import com.code.tama.mtm.server.tileentities.AbstractConsoleTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -96,7 +96,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
                         this.control.GetControl().GetFailSound(), SoundSource.BLOCKS);
 
         if (this.control.GetControl().NeedsUpdate() && !this.level().isClientSide) {
-            Networking.sendPacketToDimension(this.level().dimension(), new SyncButtonAnimationSetPacket(this.consoleTile.ControlAnimationMap, this.consoleTile.getBlockPos()));
+            Networking.sendPacketToDimension(this.level().dimension(), new SyncButtonAnimationSetPacketS2C(this.consoleTile.ControlAnimationMap, this.consoleTile.getBlockPos()));
         }
     }
 

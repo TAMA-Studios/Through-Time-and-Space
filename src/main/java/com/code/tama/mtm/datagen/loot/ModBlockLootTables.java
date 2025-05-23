@@ -1,7 +1,7 @@
 package com.code.tama.mtm.datagen.loot;
 
-import com.code.tama.mtm.server.MTMBlocks;
-import com.code.tama.mtm.server.MTMItems;
+import com.code.tama.mtm.server.registries.MTMBlocks;
+import com.code.tama.mtm.server.registries.MTMItems;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
