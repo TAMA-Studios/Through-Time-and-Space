@@ -4,14 +4,16 @@ import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class SyncExteriorVariantPacketS2C {
-    private final int variant, model;
+    private final int variant;
+    private final ResourceLocation model;
     private final int blockX, blockY, blockZ; // Block position
-    public SyncExteriorVariantPacketS2C(int model, int variant, int x, int y, int z) {
+    public SyncExteriorVariantPacketS2C(ResourceLocation model, int variant, int x, int y, int z) {
         this.variant = variant;
         this.model = model;
         this.blockX = x;
@@ -20,7 +22,7 @@ public class SyncExteriorVariantPacketS2C {
     }
 
     public static void encode(SyncExteriorVariantPacketS2C packet, FriendlyByteBuf buffer) {
-        buffer.writeInt(packet.model);
+        buffer.writeResourceLocation(packet.model);
         buffer.writeInt(packet.variant);
         buffer.writeInt(packet.blockX);
         buffer.writeInt(packet.blockY);
@@ -29,7 +31,7 @@ public class SyncExteriorVariantPacketS2C {
 
     public static SyncExteriorVariantPacketS2C decode(FriendlyByteBuf buffer) {
         return new SyncExteriorVariantPacketS2C(
-                buffer.readInt(),
+                buffer.readResourceLocation(),
                 buffer.readInt(),
                 buffer.readInt(),
                 buffer.readInt(),

@@ -1,5 +1,6 @@
 package com.code.tama.mtm.server.networking.packets.S2C.dimensions;
 
+import com.code.tama.mtm.client.ExteriorModelsBakery;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import net.minecraft.client.Minecraft;
@@ -7,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -20,9 +22,9 @@ public class SyncTARDISCapPacketS2C {
     private final boolean IsPoweredOn, IsInFlight, ShouldPlayRotorAnimation;
     private final BlockPos Destination, Location;
     private final ResourceKey<Level> ExteriorLevel;
-    private final int ExteriorModelIndex;
+    private final ResourceLocation ExteriorModelIndex;
 
-    public SyncTARDISCapPacketS2C(float LightLevel, boolean IsPoweredOn, boolean IsInFlight, boolean ShouldPlayRotorAnimation, BlockPos Destination, BlockPos Location, ResourceKey<Level> exteriorLevel, int ExteriorModelIndex) {
+    public SyncTARDISCapPacketS2C(float LightLevel, boolean IsPoweredOn, boolean IsInFlight, boolean ShouldPlayRotorAnimation, BlockPos Destination, BlockPos Location, ResourceKey<Level> exteriorLevel, ResourceLocation ExteriorModelIndex) {
         this.LightLevel = LightLevel;
         this.IsInFlight = IsInFlight;
         this.IsPoweredOn = IsPoweredOn;
@@ -41,7 +43,7 @@ public class SyncTARDISCapPacketS2C {
         buffer.writeBlockPos(packet.Destination);
         buffer.writeBlockPos(packet.Location);
         buffer.writeResourceKey(packet.ExteriorLevel);
-        buffer.writeInt(packet.ExteriorModelIndex);
+        buffer.writeResourceLocation(packet.ExteriorModelIndex);
     }
 
     public static SyncTARDISCapPacketS2C decode(FriendlyByteBuf buffer) {
@@ -53,7 +55,7 @@ public class SyncTARDISCapPacketS2C {
                 buffer.readBlockPos(),
                 buffer.readBlockPos(),
                 buffer.readResourceKey(Registries.DIMENSION),
-                buffer.readInt()
+                buffer.readResourceLocation()
         );
     }
 
@@ -70,7 +72,7 @@ public class SyncTARDISCapPacketS2C {
                             cap.SetInFlight(packet.IsInFlight);
                             cap.SetPlayRotorAnimation(packet.ShouldPlayRotorAnimation);
                             cap.SetCurrentLevel(packet.ExteriorLevel);
-                            cap.SetExteriorModelIndex(packet.ExteriorModelIndex);
+                            cap.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromName(packet.ExteriorModelIndex));
                         });
             }
         });

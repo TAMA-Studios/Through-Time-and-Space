@@ -29,6 +29,7 @@ public abstract class AbstractControl {
         Networking.sendPacketToDimension(consoleTile.getLevel().dimension(), new SyncButtonAnimationSetPacketS2C(consoleTile.ControlAnimationMap, consoleTile.getBlockPos()));
         this.NeedsUpdate = false;
     }
+
     public abstract InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player);
     public abstract InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player);
     abstract String GetName();

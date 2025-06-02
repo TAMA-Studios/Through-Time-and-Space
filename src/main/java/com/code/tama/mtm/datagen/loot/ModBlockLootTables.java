@@ -53,32 +53,6 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                 block -> createSlabItemTable(MTMBlocks.GALLIFREYAN_OAK_SLAB.get()));
         this.add(MTMBlocks.GALLIFREYAN_OAK_DOOR.get(),
                 block -> createDoorTable(MTMBlocks.GALLIFREYAN_OAK_DOOR.get()));
-//        LootItemCondition.Builder lootitemcondition$builder = LootItemBlockStatePropertyCondition
-//                .hasBlockStateProperties(MBlocks.STRAWBERRY_CROP.get())
-//                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(StrawberryCropBlock.AGE, 5));
-//
-//        this.add(MBlocks.STRAWBERRY_CROP.get(), createCropDrops(MBlocks.STRAWBERRY_CROP.get(), MItems.STRAWBERRY.get(),
-//                MItems.STRAWBERRY_SEEDS.get(), lootitemcondition$builder));
-
-
-//        LootItemCondition.Builder lootitemcondition$builder2 = LootItemBlockStatePropertyCondition
-//                .hasBlockStateProperties(MBlocks.CORN_CROP.get())
-//                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CornCropBlock.AGE, 7))
-//                .or(LootItemBlockStatePropertyCondition
-//                        .hasBlockStateProperties(MBlocks.CORN_CROP.get())
-//                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CornCropBlock.AGE, 8)));
-//
-//        // LootItemCondition.Builder lootitemcondition$builder2 = LootItemBlockStatePropertyCondition
-//        //         .hasBlockStateProperties(MBlocks.CORN_CROP.get())
-//        //         .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CornCropBlock.AGE, 8));
-//
-//        this.add(MBlocks.CORN_CROP.get(), createCropDrops(MBlocks.CORN_CROP.get(), MItems.CORN.get(),
-//                MItems.CORN_SEEDS.get(), lootitemcondition$builder2));
-
-//        this.dropSelf(MBlocks.CATMINT.get());
-//        this.add(MBlocks.POTTED_CATMINT.get(), createPotFlowerItemTable(MBlocks.CATMINT.get()));
-//
-//        this.dropSelf(MBlocks.GEM_POLISHING_STATION.get());
 
         this.dropSelf(MTMBlocks.GALLIFREYAN_OAK_LOG.get());
         this.dropSelf(MTMBlocks.GALLIFREYAN_OAK_WOOD.get());
@@ -92,7 +66,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(MTMBlocks.GALLIFREYAN_SAPLING.get());
         this.dropOther(MTMBlocks.EXTERIOR_BLOCK.get(), Blocks.AIR);
 
-        this.dropOther(MTMBlocks.HUDOLIN_CONSOLE_BLOCK.get(), Blocks.AIR);
+        this.dropSelf(MTMBlocks.HUDOLIN_CONSOLE_BLOCK.get());
 
         this.dropSelf(MTMBlocks.CHAMELEON_CIRCUIT_BLOCK.get());
         this.dropSelf(MTMBlocks.COORDINATE_PANEL.get());

@@ -7,7 +7,6 @@ import com.code.tama.mtm.server.networking.packets.S2C.entities.SyncButtonAnimat
 import com.code.tama.mtm.server.registries.MTMEntities;
 import com.code.tama.mtm.server.registries.MTMItems;
 import com.code.tama.mtm.server.tileentities.AbstractConsoleTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -97,9 +96,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public void OnControlClicked(ITARDISLevel capability, Player player) {
         if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
         if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem().equals(MTMItems.SONIC_SCREWDRIVER.get())) {
-            if (player.isCrouching())
+            if (player.isCrouching()) {
                 this.CycleControlBackward();
-            else this.CycleControlForward();
+                player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
+            }
+            else {
+                this.CycleControlForward();
+                player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
+            }
             return;
         }
         InteractionResult interactionResult = this.GetControl().GetControl().OnRightClick(capability, player);
@@ -117,7 +121,12 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public void OnControlHit(ITARDISLevel capability, Entity entity) {
         if (entity instanceof Player player)
             if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
-        this.GetControl().GetControl().OnLeftClick(capability, entity);
+        InteractionResult interactionResult = this.GetControl().GetControl().OnLeftClick(capability, entity);
+
+        this.level().playSound(null, this.blockPosition(),
+                interactionResult == InteractionResult.SUCCESS ?
+                        this.GetControl().GetControl().GetSuccessSound() :
+                        this.GetControl().GetControl().GetFailSound(), SoundSource.BLOCKS);
 
         if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {
         }
@@ -130,18 +139,10 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     void CycleControlForward() {
         this.SetControl(this.GetControl().Cycle());
-        if (this.level().isClientSide()) {
-            assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
-        }
     }
 
     void CycleControlBackward() {
         this.SetControl(this.GetControl().Cycle());
-        if (this.level().isClientSide()) {
-            assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("Control set to: " + this.GetControl().name().toLowerCase()));
-        }
     }
 
     @Override

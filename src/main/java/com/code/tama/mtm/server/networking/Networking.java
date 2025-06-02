@@ -18,7 +18,6 @@ import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncTransparency
 import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.triggerapi.dimensions.UpdateDimensionsPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -140,7 +139,7 @@ public class Networking {
     }
 
     public static void sendToServer(Object mes) {
-    if(Minecraft.getInstance().getConnection() != null)
+    if(net.minecraft.client.Minecraft.getInstance().getConnection() != null)
         INSTANCE.sendToServer(mes);
     }
 

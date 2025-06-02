@@ -2,6 +2,8 @@ package com.code.tama.mtm.client;
 
 import com.code.tama.mtm.client.models.*;
 import com.code.tama.mtm.client.renderers.*;
+import com.code.tama.mtm.client.renderers.monitors.MonitorPanelRenderer;
+import com.code.tama.mtm.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.mtm.server.registries.MTMBlocks;
 import com.code.tama.mtm.server.registries.MTMEntities;
 import com.code.tama.mtm.server.registries.MTMTileEntities;
@@ -34,7 +36,7 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
         event.registerEntityRenderer(MTMEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
-        event.registerBlockEntityRenderer(MTMTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
+                event.registerBlockEntityRenderer(MTMTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.HUDOLIN_CONSOLE_TILE.get(), context -> new ConsoleRenderer<>(context, new HudolinConsole<>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
@@ -42,7 +44,7 @@ public class ClientRegistry {
         event.registerBlockEntityRenderer(MTMTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
         event.registerBlockEntityRenderer(MTMTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
         // Register your renderer here, first value here \/ is the Tile RegistryObject \/ is the renderer
-        event.registerBlockEntityRenderer(MTMTileEntities.EXAMPLE_TILE.get(), ExampleRenderer::new);
+        event.registerBlockEntityRenderer(MTMTileEntities.EXAMPLE_TILE.get(), MTMModern::new);
     }
 
     @SuppressWarnings("deprecation")

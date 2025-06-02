@@ -41,7 +41,7 @@ public class TriggerSyncCapPacketC2S {
                                     cap.IsInFlight(), cap.ShouldPlayRotorAnimation(),
                                     cap.GetDestination().GetBlockPos(),
                                     cap.GetExteriorLocation().GetBlockPos(), cap.GetCurrentLevel(),
-                                    cap.GetExteriorModelIndex())));
+                                    cap.GetExteriorModel().ModelName)));
         });
         context.setPacketHandled(true);
     }

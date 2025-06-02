@@ -1,5 +1,6 @@
 package com.code.tama.triggerapi;
 
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,9 +21,9 @@ public class EntityUtils {
         entity.setHealth(Math.min(health, entity.getMaxHealth()));
     }
 
-    public static void applyEffect(LivingEntity entity, MobEffectInstance effect) {
+    public static void applyEffect(LivingEntity entity, MobEffect effect, int Duration, int Potency) {
         if (entity == null || effect == null) return;
-        entity.addEffect(new MobEffectInstance(effect));
+        entity.addEffect(new MobEffectInstance(effect, Duration, Potency));
     }
 
     public static boolean isWithinDistance(Entity entity, Vec3 point, double distance) {

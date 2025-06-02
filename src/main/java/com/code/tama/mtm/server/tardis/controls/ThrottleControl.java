@@ -1,7 +1,7 @@
 package com.code.tama.mtm.server.tardis.controls;
 
-import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.client.MTMSounds;
+import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -14,18 +14,19 @@ public class ThrottleControl extends AbstractControl {
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         this.itardisLevel = itardisLevel;
+        this.SetNeedsUpdate(true);
         if(!itardisLevel.IsInFlight()) {
             this.SetAnimationState(1.0f);
             itardisLevel.GetFlightScheme().GetTakeoff().Play(itardisLevel.GetLevel(), new BlockPos(0, 0, 0));
             itardisLevel.Dematerialize();
         }
-
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
         this.itardisLevel = itardisLevel;
+        this.SetNeedsUpdate(true);
         if(itardisLevel.IsInFlight()) {
             this.SetAnimationState(0.0f);
             itardisLevel.GetFlightScheme().GetLanding().Play(itardisLevel.GetLevel(), new BlockPos(0, 0, 0));

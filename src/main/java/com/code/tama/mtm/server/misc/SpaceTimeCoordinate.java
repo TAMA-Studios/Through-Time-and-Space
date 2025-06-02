@@ -6,7 +6,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 /** Holds four doubles, X, Y, Z, and Time
  * Can be NBT serialized/deserialized (unlike {@link net.minecraft.core.BlockPos})
- * Can be created using a {@link net.minecraft.core.BlockPos}**/
+ * Can be created using a {@link net.minecraft.core.BlockPos}
+ **/
 public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     double Time, X, Y, Z;
 

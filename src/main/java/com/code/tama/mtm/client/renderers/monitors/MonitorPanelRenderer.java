@@ -1,4 +1,4 @@
-package com.code.tama.mtm.client.renderers;
+package com.code.tama.mtm.client.renderers.monitors;
 
 
 import com.code.tama.mtm.server.tileentities.MonitorPanelTile;
@@ -12,7 +12,7 @@ public class MonitorPanelRenderer extends AbstractMonitorRenderer<MonitorPanelTi
     }
 
     public float Offset() {
-        return -44f;
+        return -39.75f;
     }
 
     public void ApplyCustomTransforms(PoseStack stack, MultiBufferSource bufferSource) {

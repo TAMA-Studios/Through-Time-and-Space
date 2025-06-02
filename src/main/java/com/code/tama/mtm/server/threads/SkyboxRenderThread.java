@@ -1,8 +1,8 @@
 package com.code.tama.mtm.server.threads;
 
+import com.code.tama.mtm.client.CustomLevelRenderer;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.mtm.client.CustomLevelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
@@ -31,7 +31,7 @@ public class SkyboxRenderThread extends Thread {
 
         // Calculate the light level from the cap if it exists
         float ambientLight = Minecraft.getInstance().level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
-                .map(ITARDISLevel::GetLightLevel).orElse(1.0f);//0.5f;  // Default value
+                .map(ITARDISLevel::GetLightLevel).orElse(1.0f); // Default value
 
         // Apply the calculated lighting
         CustomLevelRenderer.applyLighting(ambientLight);

@@ -38,5 +38,6 @@ public class ExteriorTileTickThread extends Thread {
     public void run() {
         if(this.IsInstantiated) return;
         super.run();
+        return;
     }
 }

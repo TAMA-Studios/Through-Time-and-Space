@@ -1,0 +1,87 @@
+{
+	"texture": "Mods/assets/ttcapsule",
+	"texture_width": 256,
+	"texture_height": 256,
+	"scale": 1,
+	"groups": [
+		{
+			"group_name": "base",
+			"pivot": [0,23,0],
+			"rotation": [0,0,0],
+			"children": [
+				{
+					"group_name": "bone",
+					"pivot": [-1,-3,0],
+					"rotation": [0,90,0],
+					"cubes": [
+						{
+							"uv": [1,0],
+							"size": [1,32,16],
+							"origin": [7,-32,-9],
+							"inflate": 0,
+							"mirror": true
+						}
+					]
+				}
+			],
+			"cubes": [
+				{
+					"uv": [1,0],
+					"size": [1,32,16],
+					"origin": [-8,-35,-8],
+					"inflate": 0,
+					"mirror": false
+				},
+				{
+					"uv": [0,48],
+					"size": [18,4,18],
+					"origin": [-9,-3,-9],
+					"inflate": 0,
+					"mirror": false
+				},
+				{
+					"uv": [1,0],
+					"size": [1,32,16],
+					"origin": [7,-35,-8],
+					"inflate": 0,
+					"mirror": true
+				},
+				{
+					"uv": [0,48],
+					"size": [18,4,18],
+					"origin": [-9,-39,-9],
+					"inflate": 0,
+					"mirror": false
+				}
+			]
+		},
+		{
+			"group_name": "RightDoor",
+			"pivot": [-7,20,-7],
+			"rotation": [0,0,0],
+			"cubes": [
+				{
+					"uv": [1,102],
+					"size": [7,32,1],
+					"origin": [0,-32,0],
+					"inflate": 0,
+					"mirror": false
+				}
+			]
+		},
+		{
+			"group_name": "LeftDoor",
+			"pivot": [7,20,-7],
+			"rotation": [0,0,0],
+			"cubes": [
+				{
+					"uv": [15,69],
+					"size": [7,32,1],
+					"origin": [-7,-32,0],
+					"inflate": 0,
+					"mirror": false
+				}
+			]
+		}
+	]
+}

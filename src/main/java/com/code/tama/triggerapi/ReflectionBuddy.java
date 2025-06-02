@@ -1,5 +1,6 @@
 package com.code.tama.triggerapi;
 
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -139,6 +140,11 @@ public class ReflectionBuddy {
     public static class BlockAccess {
         public static final Function<Block, Boolean> hasCollision =
                 getInstanceFieldGetter(Block.class, "hasCollision");
+    }
+
+    public static class ModelPartAccess {
+        public static final Function<ModelPart, List<ModelPart.Cube>> cubes =
+                getInstanceFieldGetter(ModelPart.class, "f_104212_");
     }
 
     public static class LayeredRegistryAccessAccess {

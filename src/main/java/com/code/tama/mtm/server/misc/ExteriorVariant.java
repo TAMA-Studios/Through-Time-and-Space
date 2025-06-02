@@ -38,18 +38,16 @@ public class ExteriorVariant implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
-        Tag.putString("namespace", this.Texture.getNamespace());
-        Tag.putString("path", this.Texture.getPath());
+        Tag.putString("texture", this.Texture.toString());
         Tag.putString("name", this.Name);
-        Tag.putString("modelName", this.ModelName.getPath());
-        Tag.putString("modelNameNamespace", this.ModelName.getNamespace());
+        Tag.putString("model", this.ModelName.toString());
         return Tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag Tag) {
-        this.Texture = new ResourceLocation(Tag.getString("namespace"), Tag.getString("path"));
+        this.Texture = ResourceLocation.parse(Tag.getString("texture"));
         this.Name = Tag.getString("name");
-        this.ModelName = new ResourceLocation(Tag.getString("modelNameNamespace"), Tag.getString("modelName"));
+        this.ModelName = ResourceLocation.parse(Tag.getString("model"));
     }
 }

@@ -1,7 +1,6 @@
 package com.code.tama.mtm.server.networking.packets.S2C.entities;
 
 import com.code.tama.mtm.server.tileentities.AbstractConsoleTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
@@ -46,13 +45,9 @@ public class SyncButtonAnimationSetPacketS2C {
     public static void handle(SyncButtonAnimationSetPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            if (Minecraft.getInstance().level != null) {
-                if(context.getSender().level().getServer().getLevel(context.getSender().level().dimension()).getBlockEntity(packet.pos) != null) {
-                    ((AbstractConsoleTile) context.getSender().level().getServer().getLevel(context.getSender().level().dimension()).getBlockEntity(packet.pos)).ControlAnimationMap = packet.AnimationSet;
-
-
+                if(context.getSender().level().getBlockEntity(packet.pos) != null) {
+                    ((AbstractConsoleTile) context.getSender().level().getBlockEntity(packet.pos)).ControlAnimationMap = packet.AnimationSet;
                 }
-            }
         });
         context.setPacketHandled(true);
     }

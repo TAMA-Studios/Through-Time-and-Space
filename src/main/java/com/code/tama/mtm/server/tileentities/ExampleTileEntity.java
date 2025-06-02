@@ -7,6 +7,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ExampleTileEntity extends BlockEntity {
     public ExampleTileEntity(BlockPos pos, BlockState state) {
-        super(MTMTileEntities.DOOR_TILE.get(), pos, state);
+        super(MTMTileEntities.EXAMPLE_TILE.get(), pos, state);
     }
 }

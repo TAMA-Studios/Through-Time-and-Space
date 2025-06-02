@@ -15,5 +15,6 @@ public class TakeOffThread extends Thread {
         this.itardisLevel.UpdateClient();
         new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).TakeOff();
         super.run();
+        return;
     }
 }

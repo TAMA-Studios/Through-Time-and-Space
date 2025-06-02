@@ -1,4 +1,4 @@
-package com.code.tama.mtm.client.UI;
+package com.code.tama.mtm.client.UI.component.core;
 
 public enum ComponentTypes {
     TOGGLE,

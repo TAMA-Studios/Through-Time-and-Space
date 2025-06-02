@@ -1,6 +1,5 @@
 package com.code.tama.mtm.client;
 
-import com.code.tama.mtm.MTMMod;
 import com.code.tama.mtm.client.renderers.worlds.AbstractLevelRenderer;
 import com.code.tama.mtm.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.mtm.client.renderers.worlds.TardisSkyRenderer;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -25,6 +25,7 @@ public class CustomLevelRenderer {
     public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
     private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
     static long Ticks;
+    static boolean InittedSkyboxThread;
 
     /** Adds all the renderers to the renderer array **/
     public static void Register() {
@@ -37,10 +38,14 @@ public class CustomLevelRenderer {
     }
 
     // This method will handle the rendering event
+    @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        MTMMod.skyboxRenderThread.SetEvent(event);
-        MTMMod.skyboxRenderThread.run();
-        assert Minecraft.getInstance().level != null;
+//        MTMMod.skyboxRenderThread.SetEvent(event);
+//        if(!InittedSkyboxThread) {
+//            MTMMod.skyboxRenderThread.start();
+//            InittedSkyboxThread = true;
+//        }
+
         Ticks = Minecraft.getInstance().level.getGameTime();
     }
 
@@ -59,6 +64,8 @@ public class CustomLevelRenderer {
     }
 
     public static void renderImageSky(PoseStack poseStack, ResourceLocation resourceLocation, Vector4i Colors) {
+        if(true) return; // Disabled but just doing `return` throws unreachable
+
         poseStack.pushPose();
 
         // Disable depth testing and culling for skybox
@@ -184,6 +191,7 @@ public class CustomLevelRenderer {
         buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
 
         BufferUploader.drawWithShader(buffer.end());
+
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         poseStack.popPose();

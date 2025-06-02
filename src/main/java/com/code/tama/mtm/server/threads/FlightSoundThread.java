@@ -33,5 +33,6 @@ public class FlightSoundThread extends Thread {
             }
         }
         super.run();
+        return;
     }
 }

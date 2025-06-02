@@ -171,7 +171,7 @@ dependencies {
     implementation 'org.openjdk.nashorn:nashorn-core:15.4'
 
     // Terrablender
-    shadeOnly fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraft_version}-${terrablender_version}")
+    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraft_version}-${terrablender_version}")
 
     // GeckoLib
 //    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
@@ -188,11 +188,55 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadeOnly]
-    archiveClassifier.set('all') // Optional: adds "-all" suffix to jar name
+    from(sourceSets.main.output)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'  // exclude extra copies
+    }
 
-    // Optional: Relocate packages to avoid conflicts
-    relocate 'terrablender.api', 'com.code.tama.shade.terrablender.api'
+    // Relocate TerraBlender package
+    relocate 'terrablender', 'com.code.tama.shadow.terrablender'
+
+    archiveClassifier.set('') // No -all
+
+    // Step 1: Exclude all foreign mods.toml (from shaded deps)
+    doFirst {
+        def ownModsTomlFile = file('src/main/resources/META-INF/mods.toml')
+        if (!ownModsTomlFile.exists()) {
+            println "Warning: Your own mods.toml not found at ${ownModsTomlFile.absolutePath}"
+        }
+        def ownModsToml = ownModsTomlFile.exists() ? ownModsTomlFile.absolutePath : null
+
+        project.configurations.shadeOnly.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            def jarFile = artifact.file
+            if (jarFile.name.endsWith(".jar")) {
+                zipTree(jarFile).matching {
+                    include 'META-INF/mods.toml'
+                }.files.each { f ->
+                    if (ownModsToml == null || !f.absolutePath.equalsIgnoreCase(ownModsToml)) {
+                        exclude { fileTreeElement ->
+                            fileTreeElement.file?.absolutePath == f?.absolutePath
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Step 2: Re-include your own mods.toml from resources
+    from('src/main/resources') {
+        include 'META-INF/mods.toml'
+        include 'META-INF/**'
+    }
 }
+
+
+
+
+
+
+
 
 
 tasks.named('processResources', ProcessResources).configure {

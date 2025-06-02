@@ -2,7 +2,6 @@ package com.code.tama.mtm.client;
 
 import com.code.tama.mtm.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.mtm.client.renderers.worlds.effects.TardisSkyEffects;
-import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
 import com.code.tama.mtm.server.worlds.dimension.MDimensions;
 import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +17,7 @@ public class ClientSetup {
 
     @OnlyIn(Dist.CLIENT)
     @Getter
-    private static final ExteriorModelsHandler<HierarchicalExteriorModel> exteriorModelsHandler = new ExteriorModelsHandler<HierarchicalExteriorModel>();
+    private static final ExteriorModelsBakery exteriorModelsHandler = new ExteriorModelsBakery();
 
     @SubscribeEvent
     public static void registerSkyRenderers(RegisterDimensionSpecialEffectsEvent event) {

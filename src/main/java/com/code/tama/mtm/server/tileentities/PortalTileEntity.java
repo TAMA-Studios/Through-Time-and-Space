@@ -4,6 +4,7 @@ import com.code.tama.mtm.core.abstractClasses.TickingTile;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.mtm.server.registries.MTMTileEntities;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -29,6 +30,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +41,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PortalTileEntity extends TickingTile {
+    @Getter
     private ResourceKey<Level> targetLevel;
+    @Getter
     private BlockPos targetPos;
     public long lastUpdateTime = 0;
+    @OnlyIn(Dist.CLIENT)
     public BakedModel chunkModel = null;
+
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
     public long lastRequestTime = 0;
 
@@ -51,12 +58,14 @@ public class PortalTileEntity extends TickingTile {
     }
 
     public void setTargetLevel(ResourceKey<Level> levelKey, BlockPos targetPos, boolean markDirty) {
+        if(this.level == null) return;
         this.targetLevel = levelKey;
         this.targetPos = targetPos;
-        this.chunkModel = null;
-        if(this.blockEntities != null)
+        if (this.level.isClientSide)
+            this.chunkModel = null;
+        if (this.blockEntities != null)
             this.blockEntities.clear();
-        if (markDirty && level != null && !level.isClientSide()) {
+        if (markDirty && !level.isClientSide()) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             Networking.INSTANCE.send(PacketDistributor.ALL.noArg(),
@@ -64,17 +73,8 @@ public class PortalTileEntity extends TickingTile {
         }
     }
 
-    public ResourceKey<Level> getTargetLevel() {
-        return targetLevel;
-    }
-
-    public BlockPos getTargetPos() {
-        return targetPos;
-    }
-
+    @OnlyIn(Dist.CLIENT)
     public void updateChunkModelFromServer(CompoundTag chunkData) {
-        if (!level.isClientSide()) return;
-
         Minecraft mc = Minecraft.getInstance();
         BlockRenderDispatcher dispatcher = mc.getBlockRenderer();
         List<BakedQuad> quads = new ArrayList<>();
@@ -143,14 +143,36 @@ public class PortalTileEntity extends TickingTile {
                 public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
                     return quads;
                 }
-                @Override public boolean useAmbientOcclusion() { return true; }
-                @Override public boolean isGui3d() { return true; }
-                @Override public boolean usesBlockLight() { return true; }
-                @Override public boolean isCustomRenderer() { return false; }
-                @Override public TextureAtlasSprite getParticleIcon() {
+
+                @Override
+                public boolean useAmbientOcclusion() {
+                    return true;
+                }
+
+                @Override
+                public boolean isGui3d() {
+                    return true;
+                }
+
+                @Override
+                public boolean usesBlockLight() {
+                    return true;
+                }
+
+                @Override
+                public boolean isCustomRenderer() {
+                    return false;
+                }
+
+                @Override
+                public TextureAtlasSprite getParticleIcon() {
                     return mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(new ResourceLocation("minecraft", "stone"));
                 }
-                @Override public ItemOverrides getOverrides() { return ItemOverrides.EMPTY; }
+
+                @Override
+                public ItemOverrides getOverrides() {
+                    return ItemOverrides.EMPTY;
+                }
             };
         }
     }

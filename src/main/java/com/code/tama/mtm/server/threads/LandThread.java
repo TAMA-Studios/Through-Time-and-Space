@@ -49,5 +49,6 @@ public class LandThread extends Thread {
         this.itardisLevel.SetPlayRotorAnimation(false);
         this.itardisLevel.UpdateClient();
         super.run();
+        return;
     }
 }

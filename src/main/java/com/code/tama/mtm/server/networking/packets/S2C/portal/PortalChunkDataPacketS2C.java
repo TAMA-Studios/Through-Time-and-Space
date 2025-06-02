@@ -14,6 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -141,17 +144,20 @@ public class PortalChunkDataPacketS2C {
     }
 
     public static void handle(PortalChunkDataPacketS2C msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                BlockEntity be = level.getBlockEntity(msg.portalPos);
-                if (be instanceof PortalTileEntity portal) {
-                    portal.updateChunkModelFromServer(msg.chunkData);
-                } else {
-                    System.out.println("No PortalTileEntity at " + msg.portalPos);
-                }
-            }
-        });
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PortalChunkDataPacketS2C.Data(msg)));
         ctx.get().setPacketHandled(true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void Data(PortalChunkDataPacketS2C msg) {
+        Level level = Minecraft.getInstance().level;
+        if (level != null) {
+            BlockEntity be = level.getBlockEntity(msg.portalPos);
+            if (be instanceof PortalTileEntity portal) {
+                portal.updateChunkModelFromServer(msg.chunkData);
+            } else {
+                System.out.println("No PortalTileEntity at " + msg.portalPos);
+            }
+        }
     }
 }

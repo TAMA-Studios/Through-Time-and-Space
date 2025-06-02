@@ -1,6 +1,7 @@
 package com.code.tama.mtm.client.renderers;
 
 
+import com.code.tama.mtm.client.renderers.exteriors.AbstractJSONExterior;
 import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
 import com.code.tama.mtm.core.interfaces.IUseExteriorModels;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
@@ -16,7 +17,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.mtm.MTMMod.MODID;
 
 public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends HierarchicalExteriorModel> extends IUseExteriorModels implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
     public HierarchicalExteriorModel MODEL;
@@ -33,7 +37,7 @@ public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends Hierarch
         if (chameleonCircuit.getLevel() == null) return;
         if(this.getHandler().InstanceModels.isEmpty()) return;
         chameleonCircuit.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            this.MODEL = this.getHandler().InstanceModels.get(cap.GetExteriorModelIndex());
+            this.MODEL = this.getHandler().InstanceModels.get(cap.GetExteriorVariant().GetModelName());
 
             poseStack.pushPose();
             poseStack.translate(0.6, 0.1, 0.6);
@@ -54,9 +58,15 @@ public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends Hierarch
             float g = 1.0f - (blueTintFactor / 2);
             float b = 1.0f;
 
-            this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetTexture())),
-                    fullBright, OverlayTexture.NO_OVERLAY,
-                    r, g, b, flicker);
+//            this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetTexture())),
+//                    fullBright, OverlayTexture.NO_OVERLAY,
+//                    r, g, b, flicker);
+
+            new AbstractJSONExterior(new ResourceLocation(MODID, "models/exterior/" + cap.GetExteriorModel().ModelName.getPath() + ".json")).getModel()
+                    .renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetTexture())),
+                            fullBright, OverlayTexture.NO_OVERLAY,
+                            r, g, b, flicker);
+
 
 //            this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetEmmisiveTexture())),
 //                    fullBright, OverlayTexture.NO_OVERLAY,

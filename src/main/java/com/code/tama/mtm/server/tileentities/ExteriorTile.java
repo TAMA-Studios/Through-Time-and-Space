@@ -1,7 +1,6 @@
 package com.code.tama.mtm.server.tileentities;
 
 import com.code.tama.mtm.ExteriorVariants;
-import com.code.tama.mtm.client.ExteriorModelsHandler;
 import com.code.tama.mtm.server.blocks.ExteriorBlock;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.enums.Structures;
@@ -9,7 +8,9 @@ import com.code.tama.mtm.server.misc.ExteriorVariant;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+import com.code.tama.mtm.server.registries.ExteriorRegistry;
 import com.code.tama.mtm.server.registries.MTMTileEntities;
+import com.code.tama.mtm.server.threads.GetExteriorVariantThread;
 import com.code.tama.mtm.server.threads.PlaceStructureThread;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,9 +44,11 @@ public class ExteriorTile extends BlockEntity {
     private int transparencyInt; // Default fully visible
     public ExteriorVariant Variant;
     int DoorState;
+    public boolean ThreadWorking = false;
+
     @Getter
     @Setter
-    int ModelIndex = 0;
+    ResourceLocation ModelIndex = ExteriorRegistry.TT_CAPSULE.get().ModelName;
 
     public ExteriorTile(BlockPos p_155229_, BlockState p_155230_) {
         super(MTMTileEntities.EXTERIOR_TILE.get(), p_155229_, p_155230_);
@@ -69,33 +72,18 @@ public class ExteriorTile extends BlockEntity {
     }
 
     public ExteriorVariant GetVariant() {
-        if (this.level == null) return ExteriorVariants.Get(0);
-        if (this.level.isClientSide && this.Variant == null)
-            Networking.sendToServer(new TriggerSyncExteriorVariantPacketC2S(
-                    this.level.dimension(),
-                    this.getBlockPos().getX(),
-                    this.getBlockPos().getY(),
-                    this.getBlockPos().getZ()
-            ));
-        if (this.Variant == null) this.Variant = ExteriorVariants.Get(0);
-        if (!ExteriorModelsHandler.GetInstance().InstanceModels.isEmpty()) {
-            while (this.Variant.GetModelName() != ExteriorModelsHandler.GetInstance().InstanceModels.get(this.ModelIndex).GetModelName()) {
-                this.CycleVariant();
-            }
-        }
-        return this.Variant;
+        this.UpdateVariant();
+        return this.Variant == null ? ExteriorVariants.Get(0) : this.Variant;
     }
 
-    public void CycleVariant() {
-        this.Variant = ExteriorVariants.Cycle(this.GetVariant());
-        if (this.level != null && !this.level.isClientSide)
-            this.NeedsClientUpdate();
-        this.setChanged();
+    public void UpdateVariant() {
+        new GetExteriorVariantThread(this).start();
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
-        tag.putInt("modelIndex", this.ModelIndex);
+        tag.putString("modelPath", this.ModelIndex.getPath());
+        tag.putString("modelNamespace", this.ModelIndex.getNamespace());
         if (this.INTERIOR_DIMENSION != null)
             tag.putString("interior_path", this.INTERIOR_DIMENSION.location().getPath());
         if (this.GetVariant() == null) {
@@ -109,7 +97,11 @@ public class ExteriorTile extends BlockEntity {
 
     @Override
     public void load(CompoundTag tag) {
-        this.ModelIndex = tag.getInt("modelIndex");
+        if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
+            this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
+        } else {
+            this.ModelIndex = ExteriorRegistry.TT_CAPSULE.get().ModelName;
+        }
         if (tag.contains("interior_path")) {
             this.INTERIOR_DIMENSION = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(MODID, tag.getString("interior_path")));
 //            if(this.getLevel() != null)
@@ -117,7 +109,7 @@ public class ExteriorTile extends BlockEntity {
 //                this.GetBlock().SetInteriorKey(this.INTERIOR_DIMENSION);
 //            }
         }
-        if(tag.contains("variant")) {
+        if (tag.contains("variant")) {
             this.Variant = new ExteriorVariant(tag.getCompound("variant"));
         }
         this.setVariant(ExteriorVariants.GetOrdinal(new ExteriorVariant(tag.getCompound("variant"))));
@@ -219,7 +211,8 @@ public class ExteriorTile extends BlockEntity {
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         tag.putInt("TransparencyInt", this.transparencyInt);
-        tag.putInt("modelIndex", this.getModelIndex());
+        tag.putString("modelPath", this.getModelIndex().getPath());
+        tag.putString("modelNamespace", this.getModelIndex().getNamespace());
         tag.putFloat("Transparency", this.transparency);
         tag.put("variant", this.GetVariant().serializeNBT());
         tag.putInt("doors", this.DoorState);
@@ -234,8 +227,10 @@ public class ExteriorTile extends BlockEntity {
         if (tag.contains("Transparency")) {
             this.transparency = tag.getFloat("Transparency");
         }
-        if (tag.contains("modelIndex")) {
-            this.setModelIndex(tag.getInt("modelIndex"));
+        if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
+            this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
+        } else {
+            this.ModelIndex = ExteriorRegistry.TT_CAPSULE.get().ModelName;
         }
         if (tag.contains("variant")) {
             this.Variant = new ExteriorVariant(tag.getCompound("variant"));
@@ -290,9 +285,9 @@ public class ExteriorTile extends BlockEntity {
 
         if (this.level instanceof ServerLevel serverLevel) {
             ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
-            if(level1 != null) {
+            if (level1 != null) {
                 level1.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-                    this.ModelIndex = cap.GetExteriorModelIndex();
+                    this.ModelIndex = cap.GetExteriorModel().ModelName;
                     this.Variant = cap.GetExteriorVariant();
                     cap.UpdateClient();
 
@@ -327,8 +322,8 @@ public class ExteriorTile extends BlockEntity {
     }
 
     public void NeedsClientUpdate() {
-        if(this.level == null) return;
-        if(this.level.isClientSide) return;
+        if (this.level == null) return;
+        if (this.level.isClientSide) return;
         this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
     }
 }

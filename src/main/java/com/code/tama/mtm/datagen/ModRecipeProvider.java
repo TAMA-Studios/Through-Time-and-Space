@@ -29,11 +29,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         oreSmelting(pWriter, ZEITON_SMELTABLES, RecipeCategory.MISC, MTMItems.ZEITON.get(), 0.25f, 200, "zeiton");
         oreBlasting(pWriter, ZEITON_SMELTABLES, RecipeCategory.MISC, MTMItems.ZEITON.get(), 0.25f, 100, "zeiton");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MTMBlocks.ZEITON_BLOCK.get())
-                .pattern("SSS")
-                .pattern("SSS")
-                .pattern("SSS")
-                .define('S', MTMItems.ZEITON.get())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, MTMBlocks.ZEITON_BLOCK.get())
+                .requires(MTMItems.ZEITON.get(), 9)
                 .unlockedBy(getHasName(MTMItems.ZEITON.get()), has(MTMItems.ZEITON.get()))
                 .save(pWriter);
 
@@ -41,6 +38,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(MTMBlocks.ZEITON_BLOCK.get())
                 .unlockedBy(getHasName(MTMBlocks.ZEITON_BLOCK.get()), has(MTMBlocks.ZEITON_BLOCK.get()))
                 .save(pWriter);
+
     }
 
     protected static void oreSmelting(Consumer<FinishedRecipe> pFinishedRecipeConsumer, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTIme, String pGroup) {

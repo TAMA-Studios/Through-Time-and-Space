@@ -1,4 +1,4 @@
-package com.code.tama.mtm.client.renderers;
+package com.code.tama.mtm.client.renderers.monitors;
 
 
 import com.code.tama.mtm.server.tileentities.MonitorTile;

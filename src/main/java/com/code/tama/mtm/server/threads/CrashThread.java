@@ -54,5 +54,6 @@ public class CrashThread extends Thread {
         CurrentLevel.setChunkForced((int) (this.itardisLevel.GetDestination().GetX() / 16), (int) (this.itardisLevel.GetDestination().GetZ() / 16), false);
         this.itardisLevel.UpdateClient();
         super.run();
+        return;
     }
 }
