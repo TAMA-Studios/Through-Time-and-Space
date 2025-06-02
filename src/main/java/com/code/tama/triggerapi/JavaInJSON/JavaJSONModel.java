@@ -31,11 +31,8 @@ public class JavaJSONModel extends Model {
 
 	public JavaJSONModel(int texWidth, int texHeight, float scale, List<JavaJSONFile.FontData> fontData) {
 		super(JavaJSONRenderer::transparentRenderType);
-//		this.texWidth = texWidth;
-//		this.texHeight = texHeight;
 		this.modelScale = scale;
 		this.rootfontData = fontData != null ? fontData : new ArrayList<>();
-		LOGGER.debug("Created JavaJSONModel: texWidth={}, texHeight={}, scale={}", texWidth, texHeight, scale);
 	}
 
 	public JavaJSONModel(int texWidth, int texHeight, float scale) {
@@ -48,7 +45,6 @@ public class JavaJSONModel extends Model {
 
 	public JavaJSONRenderer getPart(String groupName) {
 		JavaJSONRenderer part = partsList.getOrDefault(groupName, JavaJSONParser.NULL_PART);
-		LOGGER.debug("Retrieved part for group: {}, part: {}", groupName, part);
 		return part;
 	}
 
@@ -115,22 +111,21 @@ public class JavaJSONModel extends Model {
 		Minecraft mc = Minecraft.getInstance();
 		Font font = mc.font;
 		JavaJSONRenderer parent = model.getPart(_parent);
-		LOGGER.debug("Rendering font for group: {}, text: {}", _parent, fontData.value);
 
 		poseStack.pushPose();
 
 		poseStack.translate(0.5, 0.0, 0.5);
 		poseStack.translate(-parent.x / 16.0, 1.5 - parent.y / 16.0, parent.z / 16.0);
 
-		poseStack.mulPose(ZP.rotationDegrees(parent.zRot));
-		poseStack.mulPose(YP.rotationDegrees(-parent.yRot));
-		poseStack.mulPose(XP.rotationDegrees(-parent.xRot));
+		poseStack.mulPose(ZN.rotationDegrees(parent.zRot));
+		poseStack.mulPose(YN.rotationDegrees(-parent.yRot));
+		poseStack.mulPose(XN.rotationDegrees(-parent.xRot));
 
 		poseStack.translate(fontData.origin[0] / 16.0, fontData.origin[1] / 16.0, fontData.origin[2] / 16.0);
 
-		poseStack.mulPose(ZP.rotationDegrees((float) Math.toRadians(fontData.rotation[2] + 180)));
-		poseStack.mulPose(YP.rotationDegrees((float) Math.toRadians(-fontData.rotation[1])));
-		poseStack.mulPose(XP.rotationDegrees((float) Math.toRadians(-fontData.rotation[0])));
+		poseStack.mulPose(ZN.rotationDegrees((float) Math.toRadians(fontData.rotation[2] + 180)));
+		poseStack.mulPose(YN.rotationDegrees((float) Math.toRadians(-fontData.rotation[1])));
+		poseStack.mulPose(XN.rotationDegrees((float) Math.toRadians(-fontData.rotation[0])));
 
 		float scale = fontData.scale * modelScale / 100.0f;
 		poseStack.scale(scale, scale, scale);
@@ -139,8 +134,7 @@ public class JavaJSONModel extends Model {
 		float adjustmentY = fontData.centered[1] ? (1.0f / 32.0f) * (fontData.scale * modelScale) : 0;
 
 		if (fontData.glow) {
-//			font.draw(poseStack, fontData.value, adjustmentX, adjustmentY, new Color(red, green, blue, alpha).getRGB());
-			LOGGER.debug("Rendered glowing font: {}, color: {}", fontData.value, new Color(red, green, blue, alpha).getRGB());
+			font.drawInBatch(fontData.value, adjustmentX, adjustmentY, new Color(red, green, blue, alpha).getRGB(), false, poseStack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(), Font.DisplayMode.NORMAL, 0, packedLight);
 		} else {
 			int color = new Color(red, green, blue, alpha).getRGB();
 			int realRed = (int) (((color >> 16) & 0xFF) * 0.7);
@@ -149,7 +143,6 @@ public class JavaJSONModel extends Model {
 			int realColor = (0xFF << 24) | (realRed << 16) | (realGreen << 8) | realBlue;
 
 			font.drawInBatch(fontData.value, adjustmentX, adjustmentY, realColor, false, poseStack.last().pose(), Minecraft.getInstance().renderBuffers().bufferSource(), Font.DisplayMode.NORMAL, 0, packedLight);
-			LOGGER.debug("Rendered font: {}, color: {}", fontData.value, realColor);
 		}
 
 		poseStack.popPose();

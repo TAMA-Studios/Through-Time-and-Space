@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.networking.packets.S2C.dimensions;
 
-import com.code.tama.mtm.client.ExteriorModelsBakery;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import net.minecraft.client.Minecraft;
@@ -72,7 +72,7 @@ public class SyncTARDISCapPacketS2C {
                             cap.SetInFlight(packet.IsInFlight);
                             cap.SetPlayRotorAnimation(packet.ShouldPlayRotorAnimation);
                             cap.SetCurrentLevel(packet.ExteriorLevel);
-                            cap.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromName(packet.ExteriorModelIndex));
+                            cap.SetExteriorModel(Exteriors.GetByName(packet.ExteriorModelIndex));
                         });
             }
         });

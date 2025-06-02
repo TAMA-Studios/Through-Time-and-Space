@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.networking.packets.C2S.dimensions;
 
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -36,7 +36,7 @@ public class TriggerSyncCapVariantPacketC2S {
         context.enqueueWork(() ->
                 ServerLifecycleHooks.getCurrentServer().getLevel(packet.TARDISLevel)
                         .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> Networking.sendPacketToDimension(packet.TARDISLevel, new SyncCapVariantPacketS2C(
-                                ExteriorVariants.GetOrdinal(cap.GetExteriorVariant()))
+                                Exteriors.GetOrdinal(cap.GetExteriorVariant()))
 
                         )));
         context.setPacketHandled(true);

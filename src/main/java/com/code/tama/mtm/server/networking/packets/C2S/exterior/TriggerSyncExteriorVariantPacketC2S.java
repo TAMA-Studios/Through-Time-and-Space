@@ -1,6 +1,6 @@
 package com.code.tama.mtm.server.networking.packets.C2S.exterior;
 
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
@@ -53,7 +53,7 @@ public class TriggerSyncExteriorVariantPacketC2S {
                         packet.level,
                         new SyncExteriorVariantPacketS2C(
                                 exteriorTile.getModelIndex(),
-                                ExteriorVariants.GetOrdinal(exteriorTile.GetVariant()),
+                                Exteriors.GetOrdinal(exteriorTile.GetVariant()),
                                 packet.blockX,
                                 packet.blockY,
                                 packet.blockZ

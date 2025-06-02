@@ -26,7 +26,7 @@ public class WhittakerExteriorModel<T extends ExteriorTile> extends Hierarchical
 	private final ModelPart RightDoor;
 
 	public WhittakerExteriorModel(ModelPart root) {
-		super(root, Constants.ExteriorModelNames.Whittaker, LAYER_LOCATION);
+		super(root, Constants.ExteriorModelNames.VOXEL_MOFFAT, LAYER_LOCATION);
 		this.Root = root.getChild("Root");
 		this.LeftDoor = this.Root.getChild("LeftDoor");
 		this.RightDoor = this.Root.getChild("RightDoor");
@@ -174,6 +174,6 @@ public class WhittakerExteriorModel<T extends ExteriorTile> extends Hierarchical
 
 	@Override
 	public ResourceLocation GetModelName() {
-		return Constants.ExteriorModelNames.Whittaker;
+		return Constants.ExteriorModelNames.VOXEL_MOFFAT;
 	}
 }

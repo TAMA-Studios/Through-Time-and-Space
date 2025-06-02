@@ -1,8 +1,8 @@
 package com.code.tama.mtm.server.tardis.controls;
 
-import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.client.MTMSounds;
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -12,14 +12,14 @@ import net.minecraft.world.entity.player.Player;
 public class VariantControl extends AbstractControl {
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetExteriorVariant(ExteriorVariants.Cycle(itardisLevel.GetExteriorVariant()));
+        itardisLevel.SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetExteriorVariant()));
         itardisLevel.UpdateClient();
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-        itardisLevel.SetExteriorVariant(ExteriorVariants.Cycle(itardisLevel.GetExteriorVariant()));
+        itardisLevel.SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetExteriorVariant()));
         itardisLevel.UpdateClient();
         return InteractionResult.SUCCESS;
     }

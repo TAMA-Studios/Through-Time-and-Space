@@ -3,9 +3,7 @@ package com.code.tama.mtm.client;
 import com.code.tama.mtm.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.mtm.client.renderers.worlds.effects.TardisSkyEffects;
 import com.code.tama.mtm.server.worlds.dimension.MDimensions;
-import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,10 +12,6 @@ import static com.code.tama.mtm.MTMMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
-
-    @OnlyIn(Dist.CLIENT)
-    @Getter
-    private static final ExteriorModelsBakery exteriorModelsHandler = new ExteriorModelsBakery();
 
     @SubscribeEvent
     public static void registerSkyRenderers(RegisterDimensionSpecialEffectsEvent event) {

@@ -1,7 +1,6 @@
 {
-	"credit": "Made with Blockbench",
-	"texture": "mtm:textures/exteriors/rtd",
-	"lightmap": "mtm:textures/exteriors/voxel/lightmap",
+	"texture": "mtm:exteriors/voxel/rtd",
+	"lightmap": "mtm:exteriors/voxel/lightmap",
 	"texture_width": 256,
 	"texture_height": 256,
 	"scale": 1,
@@ -18,13 +17,13 @@
 					"children": [
 						{
 							"pivot": [0,0,0],
-							"rotation": [-180,0,180],
+							"rotation": [0,-180,0],
 							"children": [],
 							"cubes": [
 								{
 									"uv": [218,82],
 									"size": [1,34,18],
-									"origin": [-0.5,-17,-9],
+									"origin": [9,-36,-9],
 									"inflate": 0,
 									"mirror": false
 								}

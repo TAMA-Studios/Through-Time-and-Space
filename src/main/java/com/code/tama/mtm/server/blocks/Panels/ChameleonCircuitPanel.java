@@ -1,8 +1,7 @@
 package com.code.tama.mtm.server.blocks.Panels;
 
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.MTMMod;
-import com.code.tama.mtm.client.ExteriorModelsBakery;
 import com.code.tama.mtm.client.MTMSounds;
 import com.code.tama.mtm.server.blocks.VoxelRotatedShape;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
@@ -94,17 +93,15 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MINUS:
-                    if(tardisLevelCapability.GetExteriorModel().ID <= 0)
-                        tardisLevelCapability.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromID(ExteriorModelsBakery.ModelMap.size() - 1));
-                    else
-                        tardisLevelCapability.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromID(tardisLevelCapability.GetExteriorModel().ID - 1));
+                    tardisLevelCapability.SetExteriorModel(Exteriors.CycleDown(tardisLevelCapability.GetExteriorModel()));
+
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case VARIANT:
-                    int Variant = ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant());
+                    int Variant = Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant());
 
                     tardisLevelCapability.CycleVariant();
 
@@ -114,7 +111,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                         tardisLevelCapability.CycleVariant();
 
                         Networking.sendPacketToDimension(world.dimension(),
-                                new SyncCapVariantPacketS2C(ExteriorVariants.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
+                                new SyncCapVariantPacketS2C(Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
 
                         serverLevel.getBlockEntity(tardisLevelCapability.GetExteriorLocation().GetBlockPos()).setChanged();
                     }
@@ -124,10 +121,8 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                     world.playSound(null, pos, MTMSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case POSITIVE:
-                    if(tardisLevelCapability.GetExteriorModel().ID >= ExteriorModelsBakery.ModelMap.size() - 1)
-                        tardisLevelCapability.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromID(0));
-                    else
-                        tardisLevelCapability.SetExteriorModel(ExteriorModelsBakery.GetExteriorFromID(tardisLevelCapability.GetExteriorModel().ID + 1));
+                    tardisLevelCapability.SetExteriorModel(Exteriors.Cycle(tardisLevelCapability.GetExteriorModel()));
+
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                     world.scheduleTick(pos, this, 10);

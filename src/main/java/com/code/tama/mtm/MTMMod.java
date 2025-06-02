@@ -2,19 +2,16 @@ package com.code.tama.mtm;
 
 import com.code.tama.mtm.client.CameraShakeHandler;
 import com.code.tama.mtm.client.CustomLevelRenderer;
-import com.code.tama.mtm.client.ExteriorModelsBakery;
 import com.code.tama.mtm.client.MTMSounds;
-import com.code.tama.mtm.client.models.ModernBoxModel;
-import com.code.tama.mtm.client.models.TTCapsuleModel;
-import com.code.tama.mtm.client.models.WhittakerExteriorModel;
-import com.code.tama.mtm.core.Constants;
-import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
 import com.code.tama.mtm.core.annotations.DimensionalTab;
 import com.code.tama.mtm.core.annotations.MainTab;
 import com.code.tama.mtm.server.dimensions.Biomes;
 import com.code.tama.mtm.server.loots.ModLootModifiers;
 import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.registries.*;
+import com.code.tama.mtm.server.registries.MTMCreativeTabs;
+import com.code.tama.mtm.server.registries.MTMEntities;
+import com.code.tama.mtm.server.registries.UICategoryRegistry;
+import com.code.tama.mtm.server.registries.UIComponentRegistry;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.threads.ExteriorTileTickThread;
 import com.code.tama.mtm.server.threads.SkyboxRenderThread;
@@ -26,12 +23,8 @@ import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
 import com.mojang.logging.LogUtils;
-import lombok.Getter;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -71,8 +64,6 @@ public class MTMMod {
     public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
     public static SkyboxRenderThread skyboxRenderThread = new SkyboxRenderThread();
     public static ExteriorTileTickThread exteriorTileTickThread = new ExteriorTileTickThread();
-    @Getter
-    private static final ExteriorModelsBakery exteriorModelsHandler = new ExteriorModelsBakery();
     public static TriggerAPI triggerAPI;
 
     public MTMMod() {
@@ -84,7 +75,6 @@ public class MTMMod {
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                     MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
-                    this.RegisterExteriorModels();
                 }
         );
 
@@ -115,10 +105,6 @@ public class MTMMod {
 
         exteriorTileTickThread.start();
 
-        ExteriorVariants.InitVariants();
-
-        ExteriorRegistry.register(modEventBus);
-
         ModTrunkPlacerTypes.register(modEventBus);
 
         ModFoliagePlacers.register(modEventBus);
@@ -139,22 +125,6 @@ public class MTMMod {
 
         // TODO: Finish the config and find a use for it
 //        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void RegisterExteriorModel(Class<? extends HierarchicalExteriorModel> modelClass, ModelLayerLocation layerLocation, ResourceLocation modelName) {
-        ExteriorModelsBakery.GetInstance().AddModel(modelName, modelClass, layerLocation);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void RegisterExteriorModels() {
-//        ExteriorModelsHandler.GetInstance().AddModel(ModernBoxModel.class, ModernBoxModel.LAYER_LOCATION);
-//        ExteriorModelsHandler.GetInstance().AddModel(WhittakerExteriorModel.class, WhittakerExteriorModel.LAYER_LOCATION);
-//        ExteriorModelsHandler.GetInstance().AddModel(TTCapsuleModel.class, TTCapsuleModel.LAYER_LOCATION);
-        RegisterExteriorModel(ModernBoxModel.class, ModernBoxModel.LAYER_LOCATION, Constants.ExteriorModelNames.ModernBox);
-        RegisterExteriorModel(TTCapsuleModel.class, TTCapsuleModel.LAYER_LOCATION, Constants.ExteriorModelNames.TTCapsule);
-        RegisterExteriorModel(WhittakerExteriorModel.class, WhittakerExteriorModel.LAYER_LOCATION, Constants.ExteriorModelNames.Whittaker);
-
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

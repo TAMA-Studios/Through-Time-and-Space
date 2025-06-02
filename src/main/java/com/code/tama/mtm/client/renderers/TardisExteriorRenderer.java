@@ -3,25 +3,24 @@ package com.code.tama.mtm.client.renderers;
 
 import com.code.tama.mtm.client.renderers.exteriors.AbstractJSONExterior;
 import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
-import com.code.tama.mtm.core.interfaces.IUseExteriorModels;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.mtm.MTMMod.MODID;
-
-public class TardisExteriorRenderer<T extends ExteriorTile> extends IUseExteriorModels implements BlockEntityRenderer<T> {
+public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
     public HierarchicalExteriorModel MODEL;
     public ResourceLocation TEXTURE = new ResourceLocation("mtm", "textures/tiles/exterior.png");
     ResourceLocation index = new ResourceLocation("");
     int VarIndex = -1;
 
     public TardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
     }
 
     @Override
@@ -34,10 +33,19 @@ public class TardisExteriorRenderer<T extends ExteriorTile> extends IUseExterior
 //        }
 
         poseStack.pushPose();
-//        poseStack.translate(0.5, 1.5, 0.5);
-//        poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(180));
-//        new AbstractJSONExterior(new ResourceLocation(MODID, "models/exterior/" + exteriorTile.getModelIndex().getPath() + ".json")).render(exteriorTile, partialTicks, poseStack, bufferSource, combinedLight, combinedOverlay);
-        new AbstractJSONExterior(new ResourceLocation(MODID, "models/exterior/voxel_chibnall.json")).render(exteriorTile, partialTicks, poseStack, bufferSource, combinedLight, combinedOverlay);
+        poseStack.translate(0.5, 1, 0.5);
+
+        AbstractJSONExterior ext = new AbstractJSONExterior(exteriorTile.GetVariant().GetModelName());
+
+        JavaJSONParsed parsed = JavaJSON.getParsedJavaJSON(ext);
+
+        parsed.getPart("LeftDoor").yRot = exteriorTile.DoorsOpen() > 1 ? (float) Math.toRadians(70) : 0;//(float) Math.toRadians(0);
+        parsed.getPart("RightDoor").yRot = exteriorTile.DoorsOpen() > 0 ? (float) Math.toRadians(-70) : 0;
+
+        parsed.getModelInfo().getModel().renderToBuffer(poseStack, bufferSource.getBuffer(ext.getRenderType()), combinedLight, OverlayTexture.NO_OVERLAY,
+                1.0f, 1.0f, 1.0f, transparency);
+
+//        ext.render(exteriorTile, partialTicks, poseStack, bufferSource, combinedLight, combinedOverlay);
         poseStack.popPose();
 //        if(VarIndex != ExteriorVariants.GetOrdinal(exteriorTile.GetVariant())) {
 //            VarIndex = ExteriorVariants.GetOrdinal(exteriorTile.GetVariant());

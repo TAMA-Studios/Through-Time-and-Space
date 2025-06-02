@@ -61,13 +61,11 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
                         if (isValidJson(jsonObject)) {
                             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
                             String name = valuesObject.get("name").getAsString();
-                            String texture = valuesObject.get("texture").getAsString();
                             String modelname = valuesObject.get("modelname").getAsString();
-                            ResourceLocation textureLocation = new ResourceLocation(texture);
                             ResourceLocation modelLocation = new ResourceLocation(modelname);
 
                             // Create DataExterior and add it to the list
-                            DataExterior dataExterior = new DataExterior(name, textureLocation, modelLocation);
+                            DataExterior dataExterior = new DataExterior(name, modelLocation);
                             dataExteriorList.add(dataExterior);
 
                             LOGGER.info("Loaded DataExterior from {}: {}", location, dataExterior);
@@ -93,9 +91,9 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
             // Validate name and texture fields
-            if (valuesObject.has("name") && valuesObject.has("texture")) {
+            if (valuesObject.has("name") && valuesObject.has("modelname")) {
                 String name = valuesObject.get("name").getAsString();
-                String texture = valuesObject.get("texture").getAsString();
+                String modelName = valuesObject.get("modelname").getAsString();
 
                 // Check for non-empty name
                 if (name.isEmpty()) {
@@ -105,9 +103,9 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
                 // Validate texture as ResourceLocation
                 try {
-                    new ResourceLocation(texture);  // Will throw exception if invalid
+                    ResourceLocation.parse(modelName);  // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid texture ResourceLocation: {}", texture);
+                    LOGGER.warn("Invalid texture ResourceLocation: {}", modelName);
                     return false;
                 }
 

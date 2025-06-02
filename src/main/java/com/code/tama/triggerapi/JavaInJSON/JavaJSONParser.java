@@ -57,7 +57,7 @@ public class JavaJSONParser {
 						List<ModelPart.Cube> cubes = new ArrayList<>();
 						CubeListBuilder cubeList = CubeListBuilder.create();
 						if (group.cubes != null) {
-							LOGGER.debug("Processing {} cubes for group: {}", group.cubes.size(), group.name);
+								LOGGER.debug("Processing {} cubes for group: {}", group.cubes.size(), group.name);
 							for (JavaJSONFile.Cube cube : group.cubes) {
 								ModelPart.Cube modelCube = new ModelPart.Cube(
 										cube.uv[0], cube.uv[1],
@@ -86,9 +86,9 @@ public class JavaJSONParser {
 						renderer.setPosition(group.pivot[0], group.pivot[1], group.pivot[2]);
 						// Set rotations in radians
 						renderer.setRotation(
-								(float) Math.toRadians(group.getRotation().x),
-								(float) Math.toRadians(group.getRotation().y),
-								(float) Math.toRadians(group.getRotation().z)
+								(float) Math.toRadians(-group.getRotation().x),
+								(float) Math.toRadians(-group.getRotation().y),
+								(float) Math.toRadians(-group.getRotation().z)
 						);
 						LOGGER.debug("Created renderer for group: {}, pivot=({},{},{}), rotations: xRot={}, yRot={}, zRot={}",
 								group.name, group.pivot[0], group.pivot[1], group.pivot[2], renderer.xRot, renderer.yRot, renderer.zRot);
@@ -151,9 +151,9 @@ public class JavaJSONParser {
 				renderer.setPosition(group.pivot[0], group.pivot[1], group.pivot[2]);
 				// Set rotations in radians
 				renderer.setRotation(
-						(float) Math.toRadians(group.getRotation().x),
-						(float) Math.toRadians(group.getRotation().y),
-						(float) Math.toRadians(group.getRotation().z)
+						(float) Math.toRadians(-group.getRotation().x),
+						(float) Math.toRadians(-group.getRotation().y),
+						(float) Math.toRadians(-group.getRotation().z)
 				);
 				LOGGER.debug("Created child renderer for group: {}, pivot=({},{},{}), rotations: xRot={}, yRot={}, zRot={}",
 						group.name, group.pivot[0], group.pivot[1], group.pivot[2], renderer.xRot, renderer.yRot, renderer.zRot);

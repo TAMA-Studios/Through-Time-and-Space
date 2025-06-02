@@ -1,25 +1,21 @@
 package com.code.tama.mtm.server.capabilities.caps;
 
-import com.code.tama.mtm.ExteriorVariants;
-import com.code.tama.mtm.client.ExteriorModelsBakery;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.mtm.server.data.tardis.DoorData;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
-import com.code.tama.mtm.server.misc.ExteriorVariant;
+import com.code.tama.mtm.server.misc.Exterior;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
 import com.code.tama.mtm.server.networking.Networking;
 import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
-import com.code.tama.mtm.server.registries.ExteriorRegistry;
-import com.code.tama.mtm.server.tardis.exteriors.AbstractExterior;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.FlightSoundHandler;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.SmithSoundScheme;
 import com.code.tama.mtm.server.threads.CrashThread;
 import com.code.tama.mtm.server.threads.LandThread;
-import com.code.tama.mtm.server.threads.SwitchVariantThread;
 import com.code.tama.mtm.server.threads.TakeOffThread;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
@@ -36,11 +32,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
-    ExteriorVariant ExteriorVariant;
+    Exterior ExteriorVariant;
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
     DoorData InteriorDoorData;
     int TicksInFlight, TicksTillDestination, Increment = 1;
-    ResourceLocation ExteriorModelID = ExteriorRegistry.TT_CAPSULE.get().ModelName;
+    Exterior ExteriorModelID = Exteriors.EXTERIORS.get(0);
     Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
     Level level;
     SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(), doorBlock = new SpaceTimeCoordinate();
@@ -58,8 +54,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
 
-        Tag.putString("exterior_model_id_path", this.ExteriorModelID.getPath());
-        Tag.putString("exterior_model_id_namespace", this.ExteriorModelID.getNamespace());
+        Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
         Tag.putInt("increment", this.Increment);
         if (this.InteriorDoorData == null) this.InteriorDoorData = new DoorData(90, this.GetDoorBlock());
@@ -94,8 +89,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.contains("exterior_model_id_namespace") && nbt.contains("exterior_model_id_path"))
-            this.ExteriorModelID = new ResourceLocation(nbt.getString("exterior_model_id_namespace"), nbt.getString("exterior_model_id_path"));
+        if (nbt.contains("exterior_model_id"))
+            this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
         this.IsInFlight = nbt.getBoolean("isInFlight");
         this.ShouldPlayRotorAnimation = nbt.getBoolean("play_rotor_animation");
         this.FlightSoundScheme = FlightSoundHandler.GetByID(nbt.getInt("flight_sound_scheme"));
@@ -108,9 +103,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
         }
 
         if (nbt.contains("exterior_variant")) {
-            this.ExteriorVariant = new ExteriorVariant(nbt.getCompound("exterior_variant"));
+            this.ExteriorVariant = new Exterior(nbt.getCompound("exterior_variant"));
         } else
-            this.ExteriorVariant = ExteriorVariants.Get(0);
+            this.ExteriorVariant = Exteriors.Get(0);
 
         this.LightLevel = nbt.getFloat("light_level");
 
@@ -160,13 +155,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     @Override
-    public AbstractExterior GetExteriorModel() {
-        return ExteriorModelsBakery.GetExteriorFromName(this.ExteriorModelID);
+    public Exterior GetExteriorModel() {
+        return this.ExteriorModelID;
     }
 
     @Override
-    public void SetExteriorModel(AbstractExterior Exterior) {
-        this.ExteriorModelID = Exterior.getModelName();
+    public void SetExteriorModel(Exterior Exterior) {
+        this.ExteriorModelID = Exterior;
     }
 
     @Override
@@ -472,10 +467,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (this.level.isClientSide)
             Networking.sendPacketToDimension(this.level.dimension(), new TriggerSyncCapPacketC2S(this.level.dimension()));
         else {
-            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacketS2C(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos(), this.GetCurrentLevel(), this.GetExteriorModel().ModelName));
+            Networking.sendPacketToDimension(this.level.dimension(), new SyncTARDISCapPacketS2C(this.LightLevel, this.IsPowered, this.IsInFlight, this.ShouldPlayRotorAnimation, this.Destination.GetBlockPos(), this.Location.GetBlockPos(), this.GetCurrentLevel(), this.GetExteriorModel().GetModelName()));
             if (this.GetExteriorTile() != null) {
                 this.GetExteriorTile().Variant = this.GetExteriorVariant();
-                this.GetExteriorTile().setModelIndex(this.GetExteriorModel().ModelName);
+                this.GetExteriorTile().setModelIndex(this.GetExteriorModel().GetModelName());
                 this.GetExteriorTile().setChanged();
                 this.GetExteriorTile().NeedsClientUpdate();
             }
@@ -488,23 +483,22 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     @Override
-    public ExteriorVariant GetExteriorVariant() {
+    public Exterior GetExteriorVariant() {
         if (this.ExteriorVariant == null) {
             Networking.sendToServer(new TriggerSyncCapVariantPacketC2S(this.level.dimension()));
-            return ExteriorVariants.Variants.get(0);
+            return Exteriors.EXTERIORS.get(0);
         }
         return this.ExteriorVariant;
     }
 
     @Override
-    public void SetExteriorVariant(ExteriorVariant exteriorVariant) {
+    public void SetExteriorVariant(Exterior exteriorVariant) {
         this.ExteriorVariant = exteriorVariant;
     }
 
     @Override
     public void CycleVariant() {
-        this.ExteriorVariant = ExteriorVariants.Cycle(this.ExteriorVariant);
-        new SwitchVariantThread(this).start();
+        this.ExteriorVariant = Exteriors.Cycle(this.ExteriorVariant);
     }
 
     @Override

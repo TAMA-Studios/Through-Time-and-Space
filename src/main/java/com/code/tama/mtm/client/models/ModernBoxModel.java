@@ -167,7 +167,7 @@ public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalExterior
 	private final ModelPart RightEmmisives;
 
 	public ModernBoxModel (ModelPart root) {
-		super(root, Constants.ExteriorModelNames.ModernBox, LAYER_LOCATION);
+		super(root, Constants.ExteriorModelNames.VOXEL_CHIBNALL, LAYER_LOCATION);
 		this.Root = root.getChild("Root");
 		this.Shell = this.Root.getChild("Shell");
 		this.bone18 = this.Shell.getChild("bone18");
@@ -1615,6 +1615,6 @@ public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalExterior
 
 	@Override
 	public ResourceLocation GetModelName() {
-		return Constants.ExteriorModelNames.ModernBox;
+		return Constants.ExteriorModelNames.VOXEL_CHIBNALL;
 	}
 }

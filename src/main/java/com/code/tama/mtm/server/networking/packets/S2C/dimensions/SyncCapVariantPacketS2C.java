@@ -1,7 +1,7 @@
 package com.code.tama.mtm.server.networking.packets.S2C.dimensions;
 
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
-import com.code.tama.mtm.ExteriorVariants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -33,7 +33,7 @@ public class SyncCapVariantPacketS2C {
         context.enqueueWork(() -> {
             if (Minecraft.getInstance().level != null) {
                 Minecraft.getInstance().level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(
-                        cap -> cap.SetExteriorVariant(ExteriorVariants.Get(packet.variant)));
+                        cap -> cap.SetExteriorVariant(Exteriors.Get(packet.variant)));
             }
         });
         context.setPacketHandled(true);

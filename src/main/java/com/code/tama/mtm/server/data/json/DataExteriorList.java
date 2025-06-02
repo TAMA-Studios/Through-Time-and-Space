@@ -1,8 +1,8 @@
 package com.code.tama.mtm.server.data.json;
 
-import com.code.tama.mtm.ExteriorVariants;
+import com.code.tama.mtm.Exteriors;
 import com.code.tama.mtm.server.data.json.records.DataExterior;
-import com.code.tama.mtm.server.misc.ExteriorVariant;
+import com.code.tama.mtm.server.misc.Exterior;
 import lombok.Getter;
 
 import java.util.List;
@@ -15,16 +15,16 @@ public class DataExteriorList {
     public static void setExteriorList(List<DataExterior> list) {
         exteriorList = list;
         for (DataExterior exterior : exteriorList) {
-            ExteriorVariant toAdd = new ExteriorVariant(exterior.Texture(), exterior.name(), exterior.ModelName());
+            Exterior toAdd = new Exterior(exterior.name(), exterior.ModelName());
             AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
             ExistsOrNot.set(false);
-            for(ExteriorVariant exteriorVariant : ExteriorVariants.Variants) {
-                if(exteriorVariant.GetTexture().equals(toAdd.GetTexture()))
+            for(Exterior existing : Exteriors.EXTERIORS) {
+                if(existing.GetModelName().equals(toAdd.GetModelName()))
                     ExistsOrNot.set(true);
             }
 
             if(!ExistsOrNot.get())
-                ExteriorVariants.Variants.add(toAdd);
+                Exteriors.EXTERIORS.add(toAdd);
         }
     }
 }

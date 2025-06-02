@@ -1,7 +1,6 @@
 {
   "values": {
     "name": "TT Capsule",
-    "texture": "mtm:textures/tiles/exterior/ttcapsule/ttcapsule.png",
-    "modelname": "mtm:ttcapsule"
+    "modelname": "mtm:models/exterior/ttcapsule.json"
   }
 }

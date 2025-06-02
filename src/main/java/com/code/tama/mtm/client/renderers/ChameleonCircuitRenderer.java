@@ -2,42 +2,31 @@ package com.code.tama.mtm.client.renderers;
 
 
 import com.code.tama.mtm.client.renderers.exteriors.AbstractJSONExterior;
-import com.code.tama.mtm.core.abstractClasses.HierarchicalExteriorModel;
-import com.code.tama.mtm.core.interfaces.IUseExteriorModels;
 import com.code.tama.mtm.server.capabilities.CapabilityConstants;
 import com.code.tama.mtm.server.tileentities.ChameleonCircuitPanelTileEntity;
-import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.mtm.MTMMod.MODID;
-
-public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends HierarchicalExteriorModel> extends IUseExteriorModels implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
-    public HierarchicalExteriorModel MODEL;
+public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
     public final BlockEntityRendererProvider.Context context;
-    public static final int fullBright = LightTexture.pack(15, 15);
+    public static final int fullBright = 0xF000F0;//LightTexture.pack(15, 15);
 
     public ChameleonCircuitRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
         this.context = context;
     }
 
     @Override
     public void render(@NotNull ChameleonCircuitPanelTileEntity chameleonCircuit, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
         if (chameleonCircuit.getLevel() == null) return;
-        if(this.getHandler().InstanceModels.isEmpty()) return;
         chameleonCircuit.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            this.MODEL = this.getHandler().InstanceModels.get(cap.GetExteriorVariant().GetModelName());
+            cap.GetExteriorVariant().GetModelName();
 
             poseStack.pushPose();
             poseStack.translate(0.6, 0.1, 0.6);
@@ -50,7 +39,7 @@ public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends Hierarch
                 poseStack.translate(glitchOffset, 0, 0);
             }
 
-            this.MODEL.root().yRot = (float) Math.toRadians(Minecraft.getInstance().level.getGameTime() % 360);
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) Math.toRadians(Minecraft.getInstance().level.getGameTime() % 360)));
 
             float flicker = 0.5f + 0.3f * (float) Math.sin(time * 0.1);
             float blueTintFactor = 0.2f;
@@ -58,19 +47,12 @@ public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends Hierarch
             float g = 1.0f - (blueTintFactor / 2);
             float b = 1.0f;
 
-//            this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetTexture())),
-//                    fullBright, OverlayTexture.NO_OVERLAY,
-//                    r, g, b, flicker);
+            AbstractJSONExterior model = new AbstractJSONExterior(cap.GetExteriorModel().GetModelName());
 
-            new AbstractJSONExterior(new ResourceLocation(MODID, "models/exterior/" + cap.GetExteriorModel().ModelName.getPath() + ".json")).getModel()
-                    .renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetTexture())),
+            model.getModel()
+                    .renderToBuffer(poseStack, bufferSource.getBuffer(model.getRenderType()),
                             fullBright, OverlayTexture.NO_OVERLAY,
                             r, g, b, flicker);
-
-
-//            this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentCull(cap.GetExteriorVariant().GetEmmisiveTexture())),
-//                    fullBright, OverlayTexture.NO_OVERLAY,
-//                    r, g, b, flicker);
 
             poseStack.popPose();
 
@@ -79,6 +61,7 @@ public class ChameleonCircuitRenderer<T extends ExteriorTile, C extends Hierarch
             poseStack.translate(0.5, 1, 0.5);
             poseStack.scale(-0.02f, -0.02f, 0.02f);
 
+            assert Minecraft.getInstance().player != null;
             float yaw = Minecraft.getInstance().player.getYRot();
             poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
 
