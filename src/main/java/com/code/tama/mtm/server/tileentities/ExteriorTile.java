@@ -190,7 +190,7 @@ public class ExteriorTile extends BlockEntity {
 //                        exteriorTile.SetInteriorAndSyncWithBlock(exteriorTile.GetInterior());
 
 
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide && level.getServer().getLevel(exteriorTile.GetInterior()) != null) {
                 level.getServer().getLevel(exteriorTile.GetInterior()).getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                     if ((!exteriorTile.getBlockPos().equals(cap.GetExteriorLocation().GetBlockPos()) || cap.IsInFlight()))
                         exteriorTile.UtterlyDestroy();
