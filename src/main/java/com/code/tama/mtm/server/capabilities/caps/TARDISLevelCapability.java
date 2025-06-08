@@ -11,6 +11,7 @@ import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCap
 import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.mtm.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.mtm.server.tardis.SubsystemsData;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.FlightSoundHandler;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.SmithSoundScheme;
@@ -44,6 +45,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     ResourceKey<Level> ExteriorDimensionKey, DestinationDimensionKey;
     FlightTerminationProtocolEnum flightTerminationProtocol;
     AbstractSoundScheme FlightSoundScheme;
+    SubsystemsData SubsystemsData;
 
     public TARDISLevelCapability(Level level) {
         this.level = level;
@@ -53,7 +55,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
-
+        Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
         Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
         Tag.putInt("increment", this.Increment);
@@ -89,6 +91,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        if (nbt.contains("subsystems"))
+            this.SubsystemsData.deserializeNBT(nbt.getCompound("subsystems"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
         this.IsInFlight = nbt.getBoolean("isInFlight");
@@ -525,4 +529,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public void SetFlightTerminationPolicy(FlightTerminationProtocolEnum policy) {
         this.flightTerminationProtocol = policy;
     }
+
+    @Override
+    public SubsystemsData GetSubsystemsData() {
+        return this.SubsystemsData;
+    }
+
+
 }

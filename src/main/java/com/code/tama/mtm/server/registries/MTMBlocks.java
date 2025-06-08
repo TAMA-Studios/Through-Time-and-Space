@@ -3,6 +3,8 @@ package com.code.tama.mtm.server.registries;
 import com.code.tama.mtm.core.annotations.DimensionalTab;
 import com.code.tama.mtm.server.blocks.*;
 import com.code.tama.mtm.server.blocks.Panels.*;
+import com.code.tama.mtm.server.blocks.subsystems.DematerializationCircuitSubsystem;
+import com.code.tama.mtm.server.blocks.subsystems.NetherReactorCoreSubsystem;
 import com.code.tama.mtm.server.worlds.tree.GallifreyanOakTreeGrower;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -75,6 +77,15 @@ public class MTMBlocks {
 
     public static final RegistryObject<HartnellDoor> HARTNELL_DOOR = RegisterWithItemSpecial("hartnell_door", () -> new HartnellDoor(
             MTMTileEntities.HARTNELL_DOOR));
+
+    public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem("fragment_links",
+            () -> new FragmentLinksBlock(BlockBehaviour.Properties.of().strength(0.5f).sound(SoundType.SNOW)));
+
+    public static final RegistryObject<Block> DEMATERIALIZATION_CIRCUIT_CORE = RegisterWithItem("dematerialization_circuit_core",
+            () -> new DematerializationCircuitSubsystem());
+
+    public static final RegistryObject<Block> NETHER_REACTOR_CORE = RegisterWithItem("nether_reactor_core",
+            () -> new NetherReactorCoreSubsystem(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal_block",
             () -> new PortalBlock(BlockBehaviour.Properties.of()

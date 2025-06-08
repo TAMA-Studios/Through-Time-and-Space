@@ -4,6 +4,7 @@ import com.code.tama.mtm.server.data.tardis.DoorData;
 import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.mtm.server.misc.Exterior;
 import com.code.tama.mtm.server.misc.SpaceTimeCoordinate;
+import com.code.tama.mtm.server.tardis.SubsystemsData;
 import com.code.tama.mtm.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.mtm.server.tileentities.ExteriorTile;
 import net.minecraft.core.Direction;
@@ -113,6 +114,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
     FlightTerminationProtocolEnum GetFlightTerminationPolicy();
     void SetFlightTerminationPolicy(FlightTerminationProtocolEnum policy);
 
+    SubsystemsData GetSubsystemsData();
     Exterior GetExteriorVariant();
     void SetExteriorVariant(Exterior exteriorVariant);
     void CycleVariant();

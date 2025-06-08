@@ -4,12 +4,12 @@ import com.code.tama.mtm.server.enums.tardis.FlightTerminationProtocolEnum;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class SystemsData implements INBTSerializable<CompoundTag> {
+public class ControlParameters implements INBTSerializable<CompoundTag> {
     boolean APCState;
     int ArtronPacketOutput;
     FlightTerminationProtocolEnum flightTerminationProtocolEnum = FlightTerminationProtocolEnum.POLITE;
 
-    public SystemsData(CompoundTag compoundTag) {
+    public ControlParameters(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);
     }
 
