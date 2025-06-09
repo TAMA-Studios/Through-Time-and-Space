@@ -3,23 +3,79 @@ package com.code.tama.tts.server.misc;
 
 import static java.lang.Math.sin;
 
-import java.text.DecimalFormat;
-
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.text.DecimalFormat;
 
 public class PhysicalStateManager {
-    long TicksOld, Ticks, Difference, DifferenceOld;
-    ITARDISLevel itardisLevel;
-    ExteriorTile exteriorTile;
-    boolean IsFading;
+    public static void Land(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
+        new PhysicalStateManager(itardisLevel, exteriorTile).Land();
+    }
+
+    public static void Takeoff(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
+        new PhysicalStateManager(itardisLevel, exteriorTile).TakeOff();
+    }
+
     float Alpha, AlphaModifierPositive, AlphaModifierNegative;
-    int Stage, Cycles;
+    boolean IsFading;
     double SineModifier = 0.05;
+    int Stage, Cycles;
+    long TicksOld, Ticks, Difference, DifferenceOld;
+
+    ExteriorTile exteriorTile;
+
+    ITARDISLevel itardisLevel;
 
     public PhysicalStateManager(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
         this.itardisLevel = itardisLevel;
         this.exteriorTile = exteriorTile;
+    }
+
+    public void Land() {
+        this.IsFading = false;
+        this.Alpha = 0;
+        this.Ticks = exteriorTile.getLevel().getGameTime();
+        this.TicksOld = this.Ticks;
+        while (!itardisLevel.IsInFlight()) {
+
+            this.Difference = this.Ticks = this.TicksOld;
+            this.Ticks = exteriorTile.getLevel().getGameTime();
+            if (this.Alpha == 20) this.IsFading = true;
+            if (this.Alpha == 0) this.IsFading = false;
+
+            if (this.IsFading) this.Alpha--;
+            else this.Alpha++;
+
+            this.exteriorTile.setTransparency(this.Alpha / 20);
+
+            if (this.Difference >= 360 && this.Alpha == 20) {
+                this.itardisLevel.Land();
+                break;
+            }
+        }
+    }
+
+    public void Phase() {
+        this.Ticks = exteriorTile.getLevel().getGameTime();
+        this.IsFading = true;
+        this.Alpha = 20;
+        this.TicksOld = this.Ticks;
+        while (!itardisLevel.IsInFlight()) {
+
+            this.Difference = this.Ticks = this.TicksOld;
+            this.Ticks = exteriorTile.getLevel().getGameTime();
+            if (this.Alpha == 20) this.IsFading = true;
+            if (this.Alpha == 0) this.IsFading = false;
+
+            if (this.IsFading) this.Alpha--;
+            else this.Alpha++;
+
+            this.exteriorTile.setTransparency(this.Alpha / 20);
+
+            if (this.Difference >= 40 && this.Alpha == 20) {
+                break;
+            }
+        }
     }
 
     public void TakeOff() {
@@ -28,16 +84,19 @@ public class PhysicalStateManager {
         this.Ticks = exteriorTile.getLevel().getGameTime();
         this.TicksOld = this.Ticks;
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        while(!itardisLevel.IsInFlight()) {
+        while (!itardisLevel.IsInFlight()) {
             // The difference between Ticks and TicksOld
             this.Difference = this.Ticks - this.TicksOld;
 
             // Only execute ON the tick, not like 5 billion times each tick
-            if(this.Difference != this.DifferenceOld) {
+            if (this.Difference != this.DifferenceOld) {
 
-                this.Alpha = Float.parseFloat(decimalFormat.format(this.AlphaModifierNegative + Math.abs((this.AlphaModifierPositive * sin(this.SineModifier * (this.Difference+(1*Math.PI)))))));
-                if(this.Alpha <= this.AlphaModifierNegative) this.Cycles++;
-                //Math.min(this.AlphaModifierPositive, (float) Math.abs(Math.sin(this.Difference * this.SineModifier)));
+                this.Alpha = Float.parseFloat(decimalFormat.format(this.AlphaModifierNegative
+                        + Math.abs((this.AlphaModifierPositive
+                                * sin(this.SineModifier * (this.Difference + (1 * Math.PI)))))));
+                if (this.Alpha <= this.AlphaModifierNegative) this.Cycles++;
+                // Math.min(this.AlphaModifierPositive, (float)
+                // Math.abs(Math.sin(this.Difference * this.SineModifier)));
                 exteriorTile.setTransparency(this.Alpha);
 
                 switch (this.Cycles) {
@@ -66,7 +125,7 @@ public class PhysicalStateManager {
                 }
 
                 if (this.AlphaModifierPositive == 0.0f && this.Alpha <= 0.1f) {
-                    if(this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
+                    if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
                         this.itardisLevel.Fly();
                         break;
                     }
@@ -75,91 +134,32 @@ public class PhysicalStateManager {
             }
 
             // Make sure the exterior is solid before changing timings
-            if(this.Alpha >= 0.99f) {
-//                this.Stage = this.Difference > 130 ? this.Difference >= 360 ? 2 : 1 : 0;
-//                this.SineModifier = this.Difference > 130 ? 0.06 : 0.04;
+            if (this.Alpha >= 0.99f) {
+                // this.Stage = this.Difference > 130 ? this.Difference >= 360 ? 2 : 1 : 0;
+                // this.SineModifier = this.Difference > 130 ? 0.06 : 0.04;
                 this.SineModifier = 0.08f;
             }
 
             // Make sure it doesn't go on for too long
-            if(this.Cycles > 10) {
-                if(this.Cycles > 30) {
+            if (this.Cycles > 10) {
+                if (this.Cycles > 30) {
                     this.itardisLevel.Fly();
                     break;
                 }
 
-                if(this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
+                if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
                     this.itardisLevel.Fly();
                     break;
                 }
             }
 
             if (this.Stage >= 2 && this.Alpha <= 0.1f) {
-                if(this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
+                if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
                     this.itardisLevel.Fly();
                     break;
                 }
             }
             this.Ticks = exteriorTile.getLevel().getGameTime();
         }
-    }
-
-    public void Land() {
-        this.IsFading = false;
-        this.Alpha = 0;
-        this.Ticks = exteriorTile.getLevel().getGameTime();
-        this.TicksOld = this.Ticks;
-        while(!itardisLevel.IsInFlight()) {
-
-            this.Difference = this.Ticks = this.TicksOld;
-            this.Ticks = exteriorTile.getLevel().getGameTime();
-            if(this.Alpha == 20)
-                this.IsFading = true;
-            if(this.Alpha == 0)
-                this.IsFading = false;
-
-            if(this.IsFading) this.Alpha--;
-            else this.Alpha++;
-
-            this.exteriorTile.setTransparency(this.Alpha / 20);
-
-            if(this.Difference >= 360 && this.Alpha == 20) {
-                this.itardisLevel.Land();
-                break;
-            }
-        }
-    }
-
-    public void Phase() {
-        this.Ticks = exteriorTile.getLevel().getGameTime();
-        this.IsFading = true;
-        this.Alpha = 20;
-        this.TicksOld = this.Ticks;
-        while(!itardisLevel.IsInFlight()) {
-
-            this.Difference = this.Ticks = this.TicksOld;
-            this.Ticks = exteriorTile.getLevel().getGameTime();
-            if(this.Alpha == 20)
-                this.IsFading = true;
-            if(this.Alpha == 0)
-                this.IsFading = false;
-
-            if(this.IsFading) this.Alpha--;
-            else this.Alpha++;
-
-            this.exteriorTile.setTransparency(this.Alpha / 20);
-
-            if(this.Difference >= 40 && this.Alpha == 20) {
-                break;
-            }
-        }
-    }
-
-    public static void Takeoff(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
-        new PhysicalStateManager(itardisLevel, exteriorTile).TakeOff();
-    }
-
-    public static void Land(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
-        new PhysicalStateManager(itardisLevel, exteriorTile).Land();
     }
 }

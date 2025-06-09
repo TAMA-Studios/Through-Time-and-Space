@@ -7,7 +7,6 @@ import com.code.tama.tts.client.UI.component.core.ComponentTypes;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 

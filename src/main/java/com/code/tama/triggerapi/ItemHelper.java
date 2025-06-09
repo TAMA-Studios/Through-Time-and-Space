@@ -8,15 +8,6 @@ import net.minecraft.world.level.Level;
 
 public class ItemHelper {
     /**
-     * Gives an item to a player or drops it if inventory is full.
-     */
-    public static void giveItemToPlayer(Player player, ItemStack stack) {
-        if (!player.addItem(stack)) {
-            player.drop(stack, false);
-        }
-    }
-
-    /**
      * Counts how many of a specific item a player has in their inventory.
      */
     public static int countItem(Player player, ItemStack itemToCount) {
@@ -27,6 +18,15 @@ public class ItemHelper {
             }
         }
         return count;
+    }
+
+    /**
+     * Gives an item to a player or drops it if inventory is full.
+     */
+    public static void giveItemToPlayer(Player player, ItemStack stack) {
+        if (!player.addItem(stack)) {
+            player.drop(stack, false);
+        }
     }
 
     /**

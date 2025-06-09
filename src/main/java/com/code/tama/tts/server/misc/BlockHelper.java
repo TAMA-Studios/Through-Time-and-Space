@@ -14,7 +14,8 @@ public class BlockHelper {
 
     public static BlockPos snapToGround(Level world, BlockPos pos) {
         ChunkAccess chunkAccess = world.getChunk(ChunkPos.getX(pos.getX()), ChunkPos.getZ(pos.getY()));
-        BlockPos.MutableBlockPos mutablePos = pos.mutable();//new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
+        BlockPos.MutableBlockPos mutablePos = pos.mutable(); // new BlockPos.MutableBlockPos(pos.getX(), pos.getY(),
+        // pos.getZ());
         // Move downward until a solid block is found
         while (mutablePos.getY() > world.getMinBuildHeight()) {
             BlockState state = chunkAccess.getBlockState(mutablePos);
@@ -56,5 +57,4 @@ public class BlockHelper {
         }
         return false; // Fluid not found
     }
-
 }

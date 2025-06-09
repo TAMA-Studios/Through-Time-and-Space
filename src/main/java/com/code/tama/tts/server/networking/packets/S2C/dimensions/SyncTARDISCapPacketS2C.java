@@ -1,12 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
-
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -20,21 +18,16 @@ import net.minecraftforge.network.NetworkEvent;
  * Used to sync the TARDIS Cap between the server and the client
  */
 public class SyncTARDISCapPacketS2C {
-    private final float LightLevel;
-    private final boolean IsPoweredOn, IsInFlight, ShouldPlayRotorAnimation;
-    private final BlockPos Destination, Location;
-    private final ResourceKey<Level> ExteriorLevel;
-    private final ResourceLocation ExteriorModelIndex;
-
-    public SyncTARDISCapPacketS2C(float LightLevel, boolean IsPoweredOn, boolean IsInFlight, boolean ShouldPlayRotorAnimation, BlockPos Destination, BlockPos Location, ResourceKey<Level> exteriorLevel, ResourceLocation ExteriorModelIndex) {
-        this.LightLevel = LightLevel;
-        this.IsInFlight = IsInFlight;
-        this.IsPoweredOn = IsPoweredOn;
-        this.ShouldPlayRotorAnimation = ShouldPlayRotorAnimation;
-        this.Destination = Destination;
-        this.Location = Location;
-        this.ExteriorLevel = exteriorLevel;
-        this.ExteriorModelIndex = ExteriorModelIndex;
+    public static SyncTARDISCapPacketS2C decode(FriendlyByteBuf buffer) {
+        return new SyncTARDISCapPacketS2C(
+                buffer.readFloat(),
+                buffer.readBoolean(),
+                buffer.readBoolean(),
+                buffer.readBoolean(),
+                buffer.readBlockPos(),
+                buffer.readBlockPos(),
+                buffer.readResourceKey(Registries.DIMENSION),
+                buffer.readResourceLocation());
     }
 
     public static void encode(SyncTARDISCapPacketS2C packet, FriendlyByteBuf buffer) {
@@ -48,25 +41,14 @@ public class SyncTARDISCapPacketS2C {
         buffer.writeResourceLocation(packet.ExteriorModelIndex);
     }
 
-    public static SyncTARDISCapPacketS2C decode(FriendlyByteBuf buffer) {
-        return new SyncTARDISCapPacketS2C(
-                buffer.readFloat(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readBlockPos(),
-                buffer.readBlockPos(),
-                buffer.readResourceKey(Registries.DIMENSION),
-                buffer.readResourceLocation()
-        );
-    }
-
     public static void handle(SyncTARDISCapPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             if (Minecraft.getInstance().level != null) {
-                Minecraft.getInstance().level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(
-                        cap -> {
+                Minecraft.getInstance()
+                        .level
+                        .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                        .ifPresent(cap -> {
                             cap.SetLightLevel(packet.LightLevel);
                             cap.SetExteriorLocation(new SpaceTimeCoordinate(packet.Location));
                             cap.SetDestination(new SpaceTimeCoordinate(packet.Destination));
@@ -79,5 +61,33 @@ public class SyncTARDISCapPacketS2C {
             }
         });
         context.setPacketHandled(true);
+    }
+
+    private final BlockPos Destination, Location;
+    private final ResourceKey<Level> ExteriorLevel;
+
+    private final ResourceLocation ExteriorModelIndex;
+
+    private final boolean IsPoweredOn, IsInFlight, ShouldPlayRotorAnimation;
+
+    private final float LightLevel;
+
+    public SyncTARDISCapPacketS2C(
+            float LightLevel,
+            boolean IsPoweredOn,
+            boolean IsInFlight,
+            boolean ShouldPlayRotorAnimation,
+            BlockPos Destination,
+            BlockPos Location,
+            ResourceKey<Level> exteriorLevel,
+            ResourceLocation ExteriorModelIndex) {
+        this.LightLevel = LightLevel;
+        this.IsInFlight = IsInFlight;
+        this.IsPoweredOn = IsPoweredOn;
+        this.ShouldPlayRotorAnimation = ShouldPlayRotorAnimation;
+        this.Destination = Destination;
+        this.Location = Location;
+        this.ExteriorLevel = exteriorLevel;
+        this.ExteriorModelIndex = ExteriorModelIndex;
     }
 }

@@ -9,9 +9,6 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;
@@ -40,6 +37,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SonicItem extends Item {
     public SonicInteractionType InteractionType = SonicInteractionType.BLOCKS;
@@ -49,23 +48,25 @@ public class SonicItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(
+            Level level, Player player, InteractionHand interactionHand) {
         if (interactionHand == InteractionHand.OFF_HAND)
             return InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
 
         if (player.isCrouching()) {
             this.InteractionType = SonicInteractionType.values()[
-                    this.InteractionType.ordinal() < SonicInteractionType.values().length - 1 ? this.InteractionType.ordinal() + 1 : 0
-                    ];
-            if (!level.isClientSide)
-                player.sendSystemMessage(this.InteractionType.Name());
+                    this.InteractionType.ordinal() < SonicInteractionType.values().length - 1
+                            ? this.InteractionType.ordinal() + 1
+                            : 0];
+            if (!level.isClientSide) player.sendSystemMessage(this.InteractionType.Name());
         }
 
         if (this.InteractionType == SonicInteractionType.BLOCKS)
             return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
 
         if (!(this.InteractionType == SonicInteractionType.ENTITY))
-//            return InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
+            // return
+            // InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
             this.EntityInteraction(level);
 
         return super.use(level, player, interactionHand);
@@ -93,17 +94,17 @@ public class SonicItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-//        if (lookingAtEntity instanceof Skeleton skeleton) {
-//            buf.writeUUID(skeleton.getUUID());
-//            NetworkManager.sendToServer(NetworkHandler.KILL_ENTITY, buf);
-//            return InteractionResult.SUCCESS;
-//        }
-//
-//        if (lookingAtEntity instanceof ZombieVillager zombieVillager) {
-//            buf.writeUUID(zombieVillager.getUUID());
-//            NetworkManager.sendToServer(NetworkHandler.CURE_VILLAGER, buf);
-//            return InteractionResult.SUCCESS;
-//        }
+        // if (lookingAtEntity instanceof Skeleton skeleton) {
+        // buf.writeUUID(skeleton.getUUID());
+        // NetworkManager.sendToServer(NetworkHandler.KILL_ENTITY, buf);
+        // return InteractionResult.SUCCESS;
+        // }
+        //
+        // if (lookingAtEntity instanceof ZombieVillager zombieVillager) {
+        // buf.writeUUID(zombieVillager.getUUID());
+        // NetworkManager.sendToServer(NetworkHandler.CURE_VILLAGER, buf);
+        // return InteractionResult.SUCCESS;
+        // }
 
         return InteractionResult.FAIL;
     }
@@ -120,22 +121,28 @@ public class SonicItem extends Item {
         if (State.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
             if (Level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
                 if (exteriorTile.GetInterior() != null)
-                    ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
-                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
+                    ServerLifecycleHooks.getCurrentServer()
+                            .getLevel(exteriorTile.GetInterior())
+                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                            .ifPresent(ITARDISLevel::Dematerialize);
             }
         }
 
         if (State.getBlock().equals(Blocks.IRON_DOOR)) {
             State = State.cycle(DoorBlock.OPEN);
             Level.setBlockAndUpdate(Pos, State);
-            this.playDoorSound(useOnContext.getPlayer(), Level, Pos, State.getValue(BlockStateProperties.OPEN), (DoorBlock) State.getBlock());
-            Level.gameEvent(useOnContext.getPlayer(), ((DoorBlock) State.getBlock()).isOpen(State) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, Pos);
+            this.playDoorSound(
+                    useOnContext.getPlayer(), Level, Pos, State.getValue(BlockStateProperties.OPEN), (DoorBlock)
+                            State.getBlock());
+            Level.gameEvent(
+                    useOnContext.getPlayer(),
+                    ((DoorBlock) State.getBlock()).isOpen(State) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE,
+                    Pos);
             return InteractionResult.SUCCESS;
         }
 
         if (State.getBlock() instanceof RedstoneLampBlock) {
-            if (!Level.isClientSide)
-                Level.setBlockAndUpdate(Pos, State.cycle(RedstoneLampBlock.LIT));
+            if (!Level.isClientSide) Level.setBlockAndUpdate(Pos, State.cycle(RedstoneLampBlock.LIT));
             return InteractionResult.SUCCESS;
         }
 
@@ -157,7 +164,13 @@ public class SonicItem extends Item {
 
         if (State.getBlock() instanceof GlassBlock) {
             Level.removeBlock(Pos, false);
-            Level.playSound(useOnContext.getPlayer(), Pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, Level.getRandom().nextFloat() * 0.1F + 0.9F);
+            Level.playSound(
+                    useOnContext.getPlayer(),
+                    Pos,
+                    SoundEvents.GLASS_BREAK,
+                    SoundSource.BLOCKS,
+                    1.0F,
+                    Level.getRandom().nextFloat() * 0.1F + 0.9F);
             return InteractionResult.SUCCESS;
         }
 
@@ -188,10 +201,10 @@ public class SonicItem extends Item {
         return InteractionResult.PASS;
     }
 
-
     private @NotNull HitResult calculateHitResult(LivingEntity livingEntity) {
         final double MAX_BRUSH_DISTANCE = Math.sqrt(ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) - 1.0;
-        return ProjectileUtil.getHitResultOnViewVector(livingEntity, entity -> !entity.isSpectator() && entity.isPickable(), MAX_BRUSH_DISTANCE);
+        return ProjectileUtil.getHitResultOnViewVector(
+                livingEntity, entity -> !entity.isSpectator() && entity.isPickable(), MAX_BRUSH_DISTANCE);
     }
 
     @Override
@@ -205,7 +218,9 @@ public class SonicItem extends Item {
                 if (bl) {
                     BlockPos blockPos = blockHitResult.getBlockPos();
                     BlockState blockState = level.getBlockState(blockPos);
-                    HumanoidArm humanoidArm = livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
+                    HumanoidArm humanoidArm = livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND
+                            ? player.getMainArm()
+                            : player.getMainArm().getOpposite();
                     SoundEvent soundEvent;
                     if (blockState.getBlock() instanceof BrushableBlock brushableBlock) {
                         soundEvent = brushableBlock.getBrushSound();
@@ -214,11 +229,16 @@ public class SonicItem extends Item {
                     }
 
                     level.playSound(player, blockPos, soundEvent, SoundSource.BLOCKS);
-                    if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof BrushableBlockEntity brushableBlockEntity) {
-                        boolean bl2 = brushableBlockEntity.brush(level.getGameTime(), player, blockHitResult.getDirection());
+                    if (!level.isClientSide()
+                            && level.getBlockEntity(blockPos) instanceof BrushableBlockEntity brushableBlockEntity) {
+                        boolean bl2 =
+                                brushableBlockEntity.brush(level.getGameTime(), player, blockHitResult.getDirection());
                         if (bl2) {
-                            EquipmentSlot equipmentSlot = itemStack.equals(player.getItemBySlot(EquipmentSlot.OFFHAND)) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-                            itemStack.hurtAndBreak(1, livingEntity, livingEntityx -> livingEntityx.broadcastBreakEvent(equipmentSlot));
+                            EquipmentSlot equipmentSlot = itemStack.equals(player.getItemBySlot(EquipmentSlot.OFFHAND))
+                                    ? EquipmentSlot.OFFHAND
+                                    : EquipmentSlot.MAINHAND;
+                            itemStack.hurtAndBreak(
+                                    1, livingEntity, livingEntityx -> livingEntityx.broadcastBreakEvent(equipmentSlot));
                         }
                     }
                 }
@@ -232,8 +252,14 @@ public class SonicItem extends Item {
         }
     }
 
-
-    public void playDoorSound(@Nullable Entity entity, @NotNull Level level, BlockPos blockPos, boolean bl, DoorBlock Block) {
-        level.playSound(entity, blockPos, bl ? Block.type().doorOpen() : Block.type().doorClose(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+    public void playDoorSound(
+            @Nullable Entity entity, @NotNull Level level, BlockPos blockPos, boolean bl, DoorBlock Block) {
+        level.playSound(
+                entity,
+                blockPos,
+                bl ? Block.type().doorOpen() : Block.type().doorClose(),
+                SoundSource.BLOCKS,
+                1.0F,
+                level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 }

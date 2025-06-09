@@ -6,7 +6,6 @@ import static com.code.tama.tts.TTSMod.MODID;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.TardisSkyEffects;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

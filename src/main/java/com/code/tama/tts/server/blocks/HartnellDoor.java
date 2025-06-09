@@ -1,15 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.code.tama.tts.server.tileentities.HartnellDoorTilePlaceholder;
-import org.jetbrains.annotations.NotNull;
-
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -30,29 +26,86 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class HartnellDoor extends Block implements EntityBlock {
-    private final Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> tile;
     private boolean IsOpen = false;
-
-    @Override
-    protected boolean isAir(@NotNull BlockState state) {
-        return false;
-    }
+    private final Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> tile;
 
     public HartnellDoor(Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> factory) {
         super(Properties.of().strength(3.0F).requiresCorrectToolForDrops());
         this.tile = factory;
     }
 
-    @Nullable @Override
+    public boolean IsOpen() {
+        return this.IsOpen;
+    }
+
+    public void SetIsOpen(boolean IsOpen) {
+        this.IsOpen = IsOpen;
+    }
+
+    @Override
+    public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState state) {
+        this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
+        super.destroy(levelAccessor, blockPos, state);
+    }
+
+    public boolean destroyMultiblockStructure(ServerLevel level, BlockPos pos) {
+        BlockState blockToPlace = Blocks.AIR.defaultBlockState();
+
+        // Check if space is clear
+        for (int y = 0; y < 3; y++) { // Height (3)
+            for (int x = 0; x < 2; x++) { // Width (2)
+                BlockPos placePos = pos.offset(x, y, 0);
+                if (placePos != pos)
+                    if (!level.getBlockState(placePos).isAir()) {
+                        level.setBlockAndUpdate(placePos, blockToPlace);
+                        return true;
+                    }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(
+            BlockState state, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        if (this.IsOpen) return Shapes.empty();
+        return super.getCollisionShape(state, blockGetter, blockPos, collisionContext);
+    }
+
+    @Nullable
+    @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return this.tile.get().create(pos, state);
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, InteractionHand p_60507_, @NotNull BlockHitResult blockHitResult) {
+    public void onPlace(
+            @NotNull BlockState state,
+            Level level,
+            @NotNull BlockPos pos,
+            @NotNull BlockState oldState,
+            boolean isMoving) {
+        if (!level.isClientSide) {
+            if (placeMultiblockStructure(level.getServer().getLevel(level.dimension()), pos)) {
+                level.playSound(null, pos, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                System.out.println("Multiblock door automatically placed!");
+            }
+        }
+    }
+
+    @Override
+    public @NotNull InteractionResult use(
+            @NotNull BlockState blockState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull Player player,
+            InteractionHand p_60507_,
+            @NotNull BlockHitResult blockHitResult) {
         if (p_60507_.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
         if (level.isClientSide) return InteractionResult.PASS;
 
@@ -68,17 +121,13 @@ public class HartnellDoor extends Block implements EntityBlock {
     }
 
     @Override
-    public void onPlace(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean isMoving) {
-        if (!level.isClientSide) {
-            if (placeMultiblockStructure(level.getServer().getLevel(level.dimension()), pos)) {
-                level.playSound(null, pos, SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                System.out.println("Multiblock door automatically placed!");
-            }
-        }
+    protected boolean isAir(@NotNull BlockState state) {
+        return false;
     }
 
     private boolean placeMultiblockStructure(ServerLevel level, BlockPos pos) {
-        BlockState blockToPlace = TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get().defaultBlockState(); // Use the same block for all parts
+        BlockState blockToPlace = TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get().defaultBlockState(); // Use the same block
+        // for all parts
 
         // Check if space is clear
         for (int y = 0; y < 3; y++) { // Height (3)
@@ -104,45 +153,5 @@ public class HartnellDoor extends Block implements EntityBlock {
         }
 
         return true;
-    }
-
-    public boolean destroyMultiblockStructure(ServerLevel level, BlockPos pos) {
-        BlockState blockToPlace = Blocks.AIR.defaultBlockState();
-
-        // Check if space is clear
-        for (int y = 0; y < 3; y++) { // Height (3)
-            for (int x = 0; x < 2; x++) { // Width (2)
-                BlockPos placePos = pos.offset(x, y, 0);
-                if (placePos != pos)
-                    if (!level.getBlockState(placePos).isAir()) {
-                        level.setBlockAndUpdate(placePos, blockToPlace);
-                        return true;
-                    }
-            }
-        }
-
-        return false;
-    }
-
-    public boolean IsOpen() {
-        return this.IsOpen;
-    }
-
-    public void SetIsOpen(boolean IsOpen) {
-        this.IsOpen = IsOpen;
-    }
-
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        if (this.IsOpen)
-            return Shapes.empty();
-        return super.getCollisionShape(state, blockGetter, blockPos, collisionContext);
-    }
-
-    @Override
-    public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState state) {
-        this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
-        super.destroy(levelAccessor, blockPos, state);
     }
 }

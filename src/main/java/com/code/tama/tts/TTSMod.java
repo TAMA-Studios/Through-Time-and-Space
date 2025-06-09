@@ -7,10 +7,6 @@ import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
 import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 import static com.code.tama.tts.server.registries.TTSTileEntities.TILE_ENTITIES;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-
 import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
@@ -27,16 +23,14 @@ import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
-import com.code.tama.tts.server.threads.ExteriorTileTickThread;
-import com.code.tama.tts.server.threads.SkyboxRenderThread;
 import com.code.tama.tts.server.worlds.biomes.MTerrablender;
 import com.code.tama.tts.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
-import org.apache.logging.log4j.Logger;
-import terrablender.api.SurfaceRuleManager;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -53,19 +47,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.Logger;
+import terrablender.api.SurfaceRuleManager;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
 @SuppressWarnings("removal")
 public class TTSMod {
 
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "tts";
     public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
     public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
+    // Define mod id in a common place for everything to reference
+    public static final String MODID = "tts";
     public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
-    public static SkyboxRenderThread skyboxRenderThread = new SkyboxRenderThread();
-    public static ExteriorTileTickThread exteriorTileTickThread = new ExteriorTileTickThread();
     public static TriggerAPI triggerAPI;
 
     public TTSMod() {
@@ -76,13 +70,13 @@ public class TTSMod {
         CustomLevelRenderer.Register();
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
-                }
-        );
+            MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
+        });
 
         triggerAPI = new TriggerAPI(modEventBus);
 
-        FileHelper.createStoredFile("last_time_launched", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH_mm")));
+        FileHelper.createStoredFile(
+                "last_time_launched", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH_mm")));
 
         // Register Blocks, Items, Dimensions etc...
         BLOCKS.register(modEventBus);
@@ -105,8 +99,6 @@ public class TTSMod {
 
         UIComponentRegistry.register(modEventBus);
 
-        exteriorTileTickThread.start();
-
         ModTrunkPlacerTypes.register(modEventBus);
 
         ModFoliagePlacers.register(modEventBus);
@@ -123,18 +115,28 @@ public class TTSMod {
 
         Biomes.CHUNK_GENERATORS.register(modEventBus);
 
-        skyboxRenderThread.start();
-
         // TODO: Finish the config and find a use for it
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        // ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        Networking.registerPackets();
-        event.enqueueWork(() -> {
-            LOGGER.info("Surface Rules Added");
-            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, MSurfaceRules.makeRules());
-        });
+    @SubscribeEvent
+    public void onServerStarting(ServerStartedEvent event) {
+        LOGGER.info("Server Started!");
+    }
+
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+        LOGGER.info("Server Starting");
+    }
+
+    @SubscribeEvent
+    public void onServerStopped(ServerStoppedEvent event) {
+        LOGGER.info("Server Stopped!");
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        LOGGER.info("Server Stopping");
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -148,27 +150,17 @@ public class TTSMod {
         }
     }
 
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("Server Starting");
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        Networking.registerPackets();
+        event.enqueueWork(() -> {
+            LOGGER.info("Surface Rules Added");
+            SurfaceRuleManager.addSurfaceRules(
+                    SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, MSurfaceRules.makeRules());
+        });
     }
 
-    @SubscribeEvent
-    public void onServerStarting(ServerStartedEvent event) {
-        LOGGER.info("Server Started!");
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event) {
-        LOGGER.info("Server Stopping");
-    }
-
-    @SubscribeEvent
-    public void onServerStopped(ServerStoppedEvent event) {
-        LOGGER.info("Server Stopped!");
-    }
-
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    // You can use EventBusSubscriber to automatically register all static methods
+    // in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
@@ -177,8 +169,7 @@ public class TTSMod {
             LOGGER.info("Inside OnClientSetup");
             MinecraftForge.EVENT_BUS.register(CameraShakeHandler.class);
             LOGGER.info("Camera Shake Handler Registered");
-            event.enqueueWork(() -> {
-            });
+            event.enqueueWork(() -> {});
         }
     }
 }

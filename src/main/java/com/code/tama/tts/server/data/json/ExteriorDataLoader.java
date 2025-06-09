@@ -1,24 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
+import com.code.tama.tts.server.data.json.records.DataExterior;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.code.tama.tts.server.data.json.records.DataExterior;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.logging.LogUtils;
 import lombok.Getter;
-import org.slf4j.Logger;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
 
 @Getter
 public class ExteriorDataLoader implements ResourceManagerReloadListener {
@@ -27,7 +25,7 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        dataExteriorList.clear();  // Reset the list of DataExterior objects
+        dataExteriorList.clear(); // Reset the list of DataExterior objects
 
         // Log namespaces
         LOGGER.info("Loaded namespaces: {}", resourceManager.getNamespaces());
@@ -36,9 +34,10 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
         for (String namespace : resourceManager.getNamespaces()) {
             LOGGER.info("Searching resources in namespace: {}", namespace);
 
-            // List all resources in this namespace inside 'data' folder, looking for .json files
-            Map<ResourceLocation, Resource> resources = resourceManager.listResources("exteriors", fileName -> fileName.toString().endsWith(".json"));
-
+            // List all resources in this namespace inside 'data' folder, looking for .json
+            // files
+            Map<ResourceLocation, Resource> resources = resourceManager.listResources(
+                    "exteriors", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
             LOGGER.info("Searching for resources under: data/{}/exterior/", namespace);
@@ -50,7 +49,7 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
                 LOGGER.warn("No resources found for namespace: {}", namespace);
             }
 
-            for (ResourceLocation location : resources.keySet()) {  // Iterate over the keys
+            for (ResourceLocation location : resources.keySet()) { // Iterate over the keys
                 LOGGER.info("Found resource: {}", location);
 
                 Resource resource = resources.get(location);
@@ -85,9 +84,6 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
         DataExteriorList.setExteriorList(dataExteriorList);
     }
 
-
-
-
     private boolean isValidJson(JsonObject jsonObject) {
         if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
@@ -105,7 +101,7 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
                 // Validate texture as ResourceLocation
                 try {
-                    ResourceLocation.parse(modelName);  // Will throw exception if invalid
+                    ResourceLocation.parse(modelName); // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
                     LOGGER.warn("Invalid texture ResourceLocation: {}", modelName);
                     return false;
@@ -116,5 +112,4 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
         }
         return false;
     }
-
 }

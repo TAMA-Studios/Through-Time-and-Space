@@ -1,10 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items;
 
-import java.util.function.Consumer;
-
 import com.code.tama.tts.client.renderers.items.ExteriorItemRenderer;
-
+import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.BlockItem;
@@ -24,8 +22,7 @@ public class ExteriorItem extends BlockItem {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return new ExteriorItemRenderer(
                         Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-                        Minecraft.getInstance().getEntityModels()
-                );
+                        Minecraft.getInstance().getEntityModels());
             }
         });
     }

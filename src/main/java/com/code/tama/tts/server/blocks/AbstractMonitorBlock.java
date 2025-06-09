@@ -8,8 +8,6 @@ import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 @Setter
 @Getter
@@ -33,7 +32,8 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
@@ -53,7 +53,13 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            @NotNull BlockState state,
+            Level world,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            @NotNull BlockHitResult hit) {
 
         // Get the coordinates the player clicked on the screen
         Vec3 hitVec = hit.getLocation();
@@ -71,7 +77,9 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
         // Adjust coordinates based on how the block is facing
         switch (state.getValue(FACING)) {
             case NORTH -> mouseX = 16 - mouseX;
-            case SOUTH -> mouseX = mouseX; // <- Yes, I know this line seems redundant, but if I don't include it, mouseX is just always 16.0f, dunno why, don't care, if it ain't broke don't fix it and if it works it ain't stupid.
+            case SOUTH -> mouseX = mouseX; // <- Yes, I know this line seems redundant, but if I don't include it,
+                // mouseX is just always 16.0f, dunno why, don't care, if it ain't broke
+                // don't fix it and if it works it ain't stupid.
             case WEST -> mouseX = mouseZ;
             case EAST -> mouseX = 16 - mouseZ;
         }
@@ -81,17 +89,19 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
         double finalMouseY = mouseY;
 
         UIComponentRegistry.UI_COMPONENTS.getEntries().forEach(reg -> {
-            if (reg.get().category.getID() == ((AbstractMonitorTile) world.getBlockEntity(pos)).getCategoryID() || reg.get().category.equals(UICategoryRegistry.ALL.get())) {
-                if (reg.get().XYBounds().get(Axis.XP)[0] <= finalMouseX && reg.get().XYBounds().get(Axis.XP)[1] >= finalMouseX) {
-                    if (reg.get().XYBounds().get(Axis.YP)[0] <= finalMouseY && reg.get().XYBounds().get(Axis.YP)[1] >= finalMouseY) {
+            if (reg.get().category.getID() == ((AbstractMonitorTile) world.getBlockEntity(pos)).getCategoryID()
+                    || reg.get().category.equals(UICategoryRegistry.ALL.get())) {
+                if (reg.get().XYBounds().get(Axis.XP)[0] <= finalMouseX
+                        && reg.get().XYBounds().get(Axis.XP)[1] >= finalMouseX) {
+                    if (reg.get().XYBounds().get(Axis.YP)[0] <= finalMouseY
+                            && reg.get().XYBounds().get(Axis.YP)[1] >= finalMouseY) {
                         reg.get().onInteract(player, ((AbstractMonitorTile) world.getBlockEntity(pos)));
                     }
                 }
             }
         });
 
-        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-        });
+        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {});
         return InteractionResult.SUCCESS;
     }
 }

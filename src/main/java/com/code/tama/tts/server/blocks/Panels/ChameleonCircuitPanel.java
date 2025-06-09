@@ -1,15 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
@@ -18,8 +9,13 @@ import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
-import org.jetbrains.annotations.NotNull;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -46,25 +42,119 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements EntityBlock {
-    private final Supplier<? extends BlockEntityType<? extends ChameleonCircuitPanelTileEntity>> exteriorType;
-    public static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
+    public static final VoxelRotatedShape SHAPE =
+            new VoxelRotatedShape(createVoxelShape().optimize());
     public static List<ChameleonCircuitButtons> buttons = new ArrayList<>();
 
-
-    public ChameleonCircuitPanel(Properties p_49795_, Supplier<? extends BlockEntityType<? extends ChameleonCircuitPanelTileEntity>> factory) {
-        super(p_49795_);
-        this.exteriorType = factory;
-        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
+    public static VoxelShape createVoxelShape() {
+        return Stream.of(
+                        Block.box(11, 0.5, 3, 14, 1.5, 6),
+                        Block.box(6.5, 0.5, 1.5, 9.5, 1.5, 4.5),
+                        Block.box(2, 0.5, 3, 5, 1.5, 6),
+                        Block.box(0, 0, 0, 16, 1, 16),
+                        Block.box(5.5, 1, 5.5, 10.5, 3.5, 10.5))
+                .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
+                .get();
     }
 
-    @Nullable @Override
+    private final Supplier<? extends BlockEntityType<? extends ChameleonCircuitPanelTileEntity>> exteriorType;
+
+    public ChameleonCircuitPanel(
+            Properties p_49795_,
+            Supplier<? extends BlockEntityType<? extends ChameleonCircuitPanelTileEntity>> factory) {
+        super(p_49795_);
+        this.exteriorType = factory;
+        this.registerDefaultState(
+                this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
+    }
+
+    public ChameleonCircuitButtons getButton(double mouseX, double mouseZ, Direction facing) {
+
+        for (ChameleonCircuitButtons button : buttons) {
+            if (button.values.containsKey(facing)) {
+                Vec2 vec = button.values.get(facing);
+                float width = button.width;
+                float height = button.height;
+                float x = vec.x;
+                float z = vec.y;
+                switch (facing) {
+                    case EAST:
+                        if (mouseX >= (double) x
+                                && mouseX <= (double) (x + height)
+                                && mouseZ <= (double) z
+                                && mouseZ >= (double) (z - width)) {
+                            return button;
+                        }
+                        break;
+
+                    case SOUTH:
+                        if (mouseX >= (double) x
+                                && mouseZ >= (double) z
+                                && mouseX <= (double) (x + width)
+                                && mouseZ <= (double) (z + height)) {
+                            return button;
+                        }
+                        break;
+
+                    case WEST:
+                        if (mouseX <= (double) x
+                                && mouseX >= (double) (x - height)
+                                && mouseZ >= (double) z
+                                && mouseZ <= (double) (z + width)) {
+                            return button;
+                        }
+                        break;
+
+                    default:
+                        if (mouseX <= (double) x
+                                && mouseZ <= (double) z
+                                && mouseX >= (double) (x - width)
+                                && mouseZ >= (double) (z - height)) {
+                            return button;
+                        }
+                }
+            }
+        }
+
+        return ChameleonCircuitButtons.EMPTY;
+    }
+
+    @Override
+    public @NotNull VoxelShape getShape(
+            BlockState p_60555_,
+            @NotNull BlockGetter p_60556_,
+            @NotNull BlockPos p_60557_,
+            @NotNull CollisionContext p_60558_) {
+        return SHAPE.GetShapeFromRotation(p_60555_.getValue(FACING));
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(PRESSED_BUTTON, 0);
+    }
+
+    @Override
+    public @NotNull BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+    }
+
+    @Nullable
+    @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return this.exteriorType.get().create(pos, state);
+    }
+
+    @Override
+    public @NotNull BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
     }
 
     @Override
@@ -72,13 +162,24 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         return adjacentBlockState.is(this); // Avoids rendering internal faces
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(PRESSED_BUTTON, 0);
+    public void tick(
+            BlockState state,
+            @NotNull ServerLevel serverLevel,
+            @NotNull BlockPos pos,
+            @NotNull RandomSource randomSource) {
+        if (state.getValue(PRESSED_BUTTON) != 0) {
+            serverLevel.setBlock(pos, state.setValue(PRESSED_BUTTON, 0), 3);
+        }
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            @NotNull BlockState state,
+            Level world,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            BlockHitResult hit) {
         if (world.isClientSide) return InteractionResult.FAIL;
         if (hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
         System.out.println("Block was hit on face: " + hit.getDirection());
@@ -95,7 +196,8 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MINUS:
-                    tardisLevelCapability.SetExteriorModel(Exteriors.CycleDown(tardisLevelCapability.GetExteriorModel()));
+                    tardisLevelCapability.SetExteriorModel(
+                            Exteriors.CycleDown(tardisLevelCapability.GetExteriorModel()));
 
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
@@ -109,13 +211,19 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 
                     ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
                     assert serverLevel != null;
-                    if(tardisLevelCapability.GetExteriorTile() != null) {
+                    if (tardisLevelCapability.GetExteriorTile() != null) {
                         tardisLevelCapability.CycleVariant();
 
-                        Networking.sendPacketToDimension(world.dimension(),
-                                new SyncCapVariantPacketS2C(Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
+                        Networking.sendPacketToDimension(
+                                world.dimension(),
+                                new SyncCapVariantPacketS2C(
+                                        Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
 
-                        serverLevel.getBlockEntity(tardisLevelCapability.GetExteriorLocation().GetBlockPos()).setChanged();
+                        serverLevel
+                                .getBlockEntity(tardisLevelCapability
+                                        .GetExteriorLocation()
+                                        .GetBlockPos())
+                                .setChanged();
                     }
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
@@ -135,19 +243,8 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
             }
         });
 
-//        }
+        // }
         return InteractionResult.SUCCESS;
-    }
-
-    public void tick(BlockState state, @NotNull ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        if (state.getValue(PRESSED_BUTTON) != 0) {
-            serverLevel.setBlock(pos, state.setValue(PRESSED_BUTTON, 0), 3);
-        }
-    }
-
-    @Override
-    public @NotNull VoxelShape getShape(BlockState p_60555_, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_, @NotNull CollisionContext p_60558_) {
-        return SHAPE.GetShapeFromRotation(p_60555_.getValue(FACING));
     }
 
     @Override
@@ -157,76 +254,16 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         StateDefinition.add(PRESSED_BUTTON);
     }
 
-    @Override
-    public @NotNull BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
-        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
-    }
-
-    @Override
-    public @NotNull BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
-        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
-    }
-
-    public static VoxelShape createVoxelShape() {
-        return Stream.of(
-                Block.box(11, 0.5, 3, 14, 1.5, 6),
-                Block.box(6.5, 0.5, 1.5, 9.5, 1.5, 4.5),
-                Block.box(2, 0.5, 3, 5, 1.5, 6),
-                Block.box(0, 0, 0, 16, 1, 16),
-                Block.box(5.5, 1, 5.5, 10.5, 3.5, 10.5)
-        ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
-    }
-
-
-    public ChameleonCircuitButtons getButton(double mouseX, double mouseZ, Direction facing) {
-
-        for (ChameleonCircuitButtons button : buttons) {
-            if (button.values.containsKey(facing)) {
-                Vec2 vec = button.values.get(facing);
-                float width = button.width;
-                float height = button.height;
-                float x = vec.x;
-                float z = vec.y;
-                switch (facing) {
-                    case EAST:
-                        if (mouseX >= (double) x && mouseX <= (double) (x + height) && mouseZ <= (double) z && mouseZ >= (double) (z - width)) {
-                            return button;
-                        }
-                        break;
-
-                    case SOUTH:
-                        if (mouseX >= (double) x && mouseZ >= (double) z && mouseX <= (double) (x + width) && mouseZ <= (double) (z + height)) {
-                            return button;
-                        }
-                        break;
-
-                    case WEST:
-                        if (mouseX <= (double) x && mouseX >= (double) (x - height) && mouseZ >= (double) z && mouseZ <= (double) (z + width)) {
-                            return button;
-                        }
-                        break;
-
-                    default:
-                        if (mouseX <= (double) x && mouseZ <= (double) z && mouseX >= (double) (x - width) && mouseZ >= (double) (z - height)) {
-                            return button;
-                        }
-                }
-            }
-        }
-
-        return ChameleonCircuitButtons.EMPTY;
-    }
-
     public enum ChameleonCircuitButtons {
+        EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F),
         MINUS("MINUS", 3.00f, 3.00f, 11.00f, 3.00f),
-        VARIANT("VARIANT", 3.00f, 3.00f, 6.50f, 1.50f),
         POSITIVE("POSITIVE", 3.00f, 3.00f, 2.00f, 3.00f),
-        EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F);
+        VARIANT("VARIANT", 3.00f, 3.00f, 6.50f, 1.50f);
 
+        Component displayName;
+        final float height;
         final Map<Direction, Vec2> values = new HashMap<>();
         final float width;
-        final float height;
-        Component displayName;
 
         ChameleonCircuitButtons(String s, float w, float h, float x1, float z1) {
             float f = 0.0625F;
@@ -242,7 +279,6 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                 this.displayName = Component.literal(s);
             }
             ChameleonCircuitPanel.buttons.add(this);
-
         }
     }
 }

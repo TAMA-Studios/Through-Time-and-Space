@@ -6,7 +6,6 @@ import com.code.tama.tts.client.UI.component.core.UIComponent;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
-
 import net.minecraft.world.entity.player.Player;
 
 public class UIComponentZCoord extends UIComponent {
@@ -17,11 +16,12 @@ public class UIComponentZCoord extends UIComponent {
     @Override
     public void onInteract(Player player, AbstractMonitorTile monitor) {
         super.onInteract(player, monitor);
-        monitor.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            if (player.isCrouching())
-                cap.SetDestination(cap.GetDestination().AddZ(-cap.GetIncrement()));
-            else
-                cap.SetDestination(cap.GetDestination().AddZ(cap.GetIncrement()));
-        });
+        monitor.getLevel()
+                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> {
+                    if (player.isCrouching())
+                        cap.SetDestination(cap.GetDestination().AddZ(-cap.GetIncrement()));
+                    else cap.SetDestination(cap.GetDestination().AddZ(cap.GetIncrement()));
+                });
     }
 }

@@ -6,7 +6,9 @@ import com.code.tama.tts.server.misc.PhysicalStateManager;
 
 public class TakeOffThread extends Thread {
     ITARDISLevel itardisLevel;
+
     public TakeOffThread(ITARDISLevel itardisLevel) {
+        this.setName("Takeoff Thread");
         this.itardisLevel = itardisLevel;
     }
 

@@ -4,7 +4,6 @@ package com.code.tama.tts.server.worlds.tree;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraftforge.eventbus.api.IEventBus;

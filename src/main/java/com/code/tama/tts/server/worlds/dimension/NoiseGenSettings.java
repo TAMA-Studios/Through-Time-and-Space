@@ -9,5 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
 public class NoiseGenSettings {
-    public static final ResourceKey<NoiseGeneratorSettings> VAROS = ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation(MODID, "varos"));
+    public static final ResourceKey<NoiseGeneratorSettings> VAROS =
+            ResourceKey.create(Registries.NOISE_SETTINGS, new ResourceLocation(MODID, "varos"));
 }

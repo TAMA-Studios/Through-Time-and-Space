@@ -6,9 +6,6 @@ import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -17,7 +14,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-@Getter @Setter
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+@Getter
+@Setter
 public abstract class AbstractMonitorTile extends BlockEntity {
     public int categoryID = 1;
     public boolean powered = false;
@@ -26,31 +27,8 @@ public abstract class AbstractMonitorTile extends BlockEntity {
         super(p_155228_, p_155229_, p_155230_);
     }
 
-    @Override
-    public void onLoad() {
-        this.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::UpdateClient);
-        super.onLoad();
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        tag.putBoolean("powered", isPowered());
-        tag.putInt("categoryID", getCategoryID());
-        super.saveAdditional(tag);
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        setPowered(tag.getBoolean("powered"));
-        setCategoryID(tag.getInt("categoryID"));
-        super.load(tag);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        setPowered(tag.getBoolean("powered"));
-        setCategoryID(tag.getInt("categoryID"));
-        super.handleUpdateTag(tag);
+    public AbstractMonitorBlock GetBlock() {
+        return ((AbstractMonitorBlock) this.getBlockState().getBlock());
     }
 
     @Override
@@ -66,7 +44,32 @@ public abstract class AbstractMonitorTile extends BlockEntity {
         return tag;
     }
 
-    public AbstractMonitorBlock GetBlock() {
-        return ((AbstractMonitorBlock) this.getBlockState().getBlock());
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        setPowered(tag.getBoolean("powered"));
+        setCategoryID(tag.getInt("categoryID"));
+        super.handleUpdateTag(tag);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        setPowered(tag.getBoolean("powered"));
+        setCategoryID(tag.getInt("categoryID"));
+        super.load(tag);
+    }
+
+    @Override
+    public void onLoad() {
+        this.getLevel()
+                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(ITARDISLevel::UpdateClient);
+        super.onLoad();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        tag.putBoolean("powered", isPowered());
+        tag.putInt("categoryID", getCategoryID());
+        super.saveAdditional(tag);
     }
 }

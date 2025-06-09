@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds;
 
 import com.code.tama.tts.client.TTSSounds;
-
 import net.minecraft.sounds.SoundEvent;
 
 public class SmithTakeoffSound extends AbstractFlightSound {

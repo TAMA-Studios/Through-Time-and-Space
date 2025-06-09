@@ -3,15 +3,13 @@ package com.code.tama.tts.datagen;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
 import com.code.tama.tts.server.worlds.MBiomeModifiers;
 import com.code.tama.tts.server.worlds.MConfiguredFeatures;
 import com.code.tama.tts.server.worlds.ModPlacedFeatures;
 import com.code.tama.tts.server.worlds.biomes.MBiomes;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
-
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

@@ -1,12 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.loot;
 
-import java.util.Set;
-
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSItems;
-import org.jetbrains.annotations.NotNull;
-
+import java.util.Set;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -19,10 +16,21 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class ModBlockLootTables extends BlockLootSubProvider {
     public ModBlockLootTables() {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+    }
+
+    protected LootTable.Builder createCopperLikeOreDrops(Block pBlock, Item item) {
+        return createSilkTouchDispatchTable(
+                pBlock,
+                this.applyExplosionDecay(
+                        pBlock,
+                        LootItem.lootTableItem(item)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
+                                .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
     }
 
     @Override
@@ -33,13 +41,17 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(TTSBlocks.ZEITON_BLOCK.get());
         this.dropSelf(TTSBlocks.RAW_ZEITON_BLOCK.get());
 
-        this.add(TTSBlocks.ZEITON_ORE.get(),
+        this.add(
+                TTSBlocks.ZEITON_ORE.get(),
                 block -> createCopperLikeOreDrops(TTSBlocks.ZEITON_ORE.get(), TTSItems.RAW_ZEITON.get()));
-        this.add(TTSBlocks.DEEPSLATE_ZEITON_ORE.get(),
+        this.add(
+                TTSBlocks.DEEPSLATE_ZEITON_ORE.get(),
                 block -> createCopperLikeOreDrops(TTSBlocks.DEEPSLATE_ZEITON_ORE.get(), TTSItems.RAW_ZEITON.get()));
-        this.add(TTSBlocks.NETHER_ZEITON_ORE.get(),
+        this.add(
+                TTSBlocks.NETHER_ZEITON_ORE.get(),
                 block -> createCopperLikeOreDrops(TTSBlocks.NETHER_ZEITON_ORE.get(), TTSItems.RAW_ZEITON.get()));
-        this.add(TTSBlocks.END_STONE_ZEITON_ORE.get(),
+        this.add(
+                TTSBlocks.END_STONE_ZEITON_ORE.get(),
                 block -> createCopperLikeOreDrops(TTSBlocks.END_STONE_ZEITON_ORE.get(), TTSItems.RAW_ZEITON.get()));
 
         this.dropSelf(TTSBlocks.GALLIFREYAN_OAK_STAIRS.get());
@@ -51,10 +63,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(TTSBlocks.GALLIFREYAN_OAK_WALL.get());
         this.dropSelf(TTSBlocks.GALLIFREYAN_SAND.get());
 
-        this.add(TTSBlocks.GALLIFREYAN_OAK_SLAB.get(),
+        this.add(
+                TTSBlocks.GALLIFREYAN_OAK_SLAB.get(),
                 block -> createSlabItemTable(TTSBlocks.GALLIFREYAN_OAK_SLAB.get()));
-        this.add(TTSBlocks.GALLIFREYAN_OAK_DOOR.get(),
-                block -> createDoorTable(TTSBlocks.GALLIFREYAN_OAK_DOOR.get()));
+        this.add(TTSBlocks.GALLIFREYAN_OAK_DOOR.get(), block -> createDoorTable(TTSBlocks.GALLIFREYAN_OAK_DOOR.get()));
 
         this.dropSelf(TTSBlocks.GALLIFREYAN_OAK_LOG.get());
         this.dropSelf(TTSBlocks.GALLIFREYAN_OAK_WOOD.get());
@@ -62,8 +74,9 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD.get());
         this.dropSelf(TTSBlocks.GALLIFREYAN_OAK_PLANKS.get());
 
-        this.add(TTSBlocks.GALLIFREYAN_OAK_LEAVES.get(), block ->
-                createLeavesDrops(block, TTSBlocks.GALLIFREYAN_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES));
+        this.add(
+                TTSBlocks.GALLIFREYAN_OAK_LEAVES.get(),
+                block -> createLeavesDrops(block, TTSBlocks.GALLIFREYAN_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES));
 
         this.dropSelf(TTSBlocks.GALLIFREYAN_SAPLING.get());
         this.dropOther(TTSBlocks.EXTERIOR_BLOCK.get(), Blocks.AIR);
@@ -96,20 +109,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(TTSBlocks.DEMATERIALIZATION_CIRCUIT_CORE.get());
         this.dropSelf(TTSBlocks.NETHER_REACTOR_CORE.get());
 
-
         // If a block isn't added, make it drop itself
-        for(Block block : this.getKnownBlocks()) {
-            if(!this.map.containsKey(block.getLootTable()))
-                this.dropSelf(block);
+        for (Block block : this.getKnownBlocks()) {
+            if (!this.map.containsKey(block.getLootTable())) this.dropSelf(block);
         }
-    }
-
-    protected LootTable.Builder createCopperLikeOreDrops(Block pBlock, Item item) {
-        return createSilkTouchDispatchTable(pBlock,
-                this.applyExplosionDecay(pBlock,
-                        LootItem.lootTableItem(item)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
-                                .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
     }
 
     @Override

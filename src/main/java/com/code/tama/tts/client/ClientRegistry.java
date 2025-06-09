@@ -12,8 +12,6 @@ import com.code.tama.tts.client.renderers.tiles.*;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -23,33 +21,10 @@ import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {
-
-    @SubscribeEvent
-    public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(ModernBoxModel.LAYER_LOCATION, ModernBoxModel::createBodyLayer);
-        event.registerLayerDefinition(WhittakerExteriorModel.LAYER_LOCATION, WhittakerExteriorModel::createBodyLayer);
-        event.registerLayerDefinition(TTCapsuleModel.LAYER_LOCATION, TTCapsuleModel::createBodyLayer);
-        event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
-        event.registerLayerDefinition(HudolinConsole.LAYER_LOCATION, HudolinConsole::createBodyLayer);
-    }
-
-    @SubscribeEvent
-    public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
-        event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(), HartnellDoorRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(), context -> new ConsoleRenderer<>(context, new HudolinConsole<>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
-        event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ChameleonCircuitRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
-        event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
-        // Register your renderer here, first value here \/ is the Tile RegistryObject \/ is the renderer
-        event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), TTSModern::new);
-    }
 
     @SuppressWarnings("deprecation")
     @SubscribeEvent
@@ -72,16 +47,46 @@ public class ClientRegistry {
         event.register("emmisive", RenderType.cutout(), Sheets.cutoutBlockSheet());
     }
 
-//    @SubscribeEvent
-//    public static void registerShaders(RegisterShadersEvent event) {
-//        try {
-//            event.registerShader(new ShaderInstance(
-//                    event.getResourceProvider(),
-//                    new ResourceLocation(MODID, "shaders/core/transparent_block"),
-//                    DefaultVertexFormat.POSITION_TEX
-//            ), TransperentModdedEntityRenderer::setShader);
-//        } catch (IOException e) {
-//            throw new RuntimeException("Failed to load custom shader: transparent_block", e);
-//        }
-//    }
+    @SubscribeEvent
+    public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModernBoxModel.LAYER_LOCATION, ModernBoxModel::createBodyLayer);
+        event.registerLayerDefinition(WhittakerExteriorModel.LAYER_LOCATION, WhittakerExteriorModel::createBodyLayer);
+        event.registerLayerDefinition(TTCapsuleModel.LAYER_LOCATION, TTCapsuleModel::createBodyLayer);
+        event.registerLayerDefinition(
+                ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
+        event.registerLayerDefinition(HudolinConsole.LAYER_LOCATION, HudolinConsole::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
+        event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(), HartnellDoorRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
+        event.registerBlockEntityRenderer(
+                TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
+                context -> new ConsoleRenderer<>(
+                        context, new HudolinConsole<>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
+        event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ChameleonCircuitRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
+        // Register your renderer here, first value here \/ is the Tile RegistryObject
+        // \/ is the renderer
+        event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), TTSModern::new);
+    }
+
+    // @SubscribeEvent
+    // public static void registerShaders(RegisterShadersEvent event) {
+    // try {
+    // event.registerShader(new ShaderInstance(
+    // event.getResourceProvider(),
+    // new ResourceLocation(MODID, "shaders/core/transparent_block"),
+    // DefaultVertexFormat.POSITION_TEX
+    // ), TransperentModdedEntityRenderer::setShader);
+    // } catch (IOException e) {
+    // throw new RuntimeException("Failed to load custom shader: transparent_block",
+    // e);
+    // }
+    // }
 }

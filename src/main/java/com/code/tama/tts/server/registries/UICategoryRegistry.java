@@ -4,7 +4,6 @@ package com.code.tama.tts.server.registries;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.UI.category.*;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,28 +20,33 @@ public class UICategoryRegistry {
             DeferredRegister.create(UI_CATEGORY_REGISTRY_KEY, MODID);
 
     public static final RegistryObject<UICategory> ALL = UI_CATEGORIES.register("all", PlaceholderCategory::new);
-    public static final RegistryObject<UICategory> CURRENT_LOC = UI_CATEGORIES.register("current_location", LocationUICategory::new);
-    public static final RegistryObject<UICategory> DESTINATION_LOC = UI_CATEGORIES.register("destination", DestinationUICategory::new);
-    public static final RegistryObject<UICategory> INTERIOR_PROPS = UI_CATEGORIES.register("int_props", InteriorPropsUICategory::new);
 
+    public static final RegistryObject<UICategory> CURRENT_LOC =
+            UI_CATEGORIES.register("current_location", LocationUICategory::new);
 
-    public static void register(IEventBus modEventBus) {
-        UI_CATEGORIES.makeRegistry(() -> new RegistryBuilder<UICategory>()
-                .hasTags()
-                .disableSaving()
-                .disableSync()
-        );
-        UI_CATEGORIES.register(modEventBus);
-    }
+    public static final RegistryObject<UICategory> DESTINATION_LOC =
+            UI_CATEGORIES.register("destination", DestinationUICategory::new);
+
+    public static final RegistryObject<UICategory> INTERIOR_PROPS =
+            UI_CATEGORIES.register("int_props", InteriorPropsUICategory::new);
 
     private static int ID = 0;
 
-    /** THIS IS ONLY TO BE USED DURING REGISTRATION OF AN ID DO <i>NOT</i> USE IT! USE {@link UICategoryRegistry#getMaxID()}}**/
+    /**
+     * THIS IS ONLY TO BE USED DURING REGISTRATION OF AN ID DO <i>NOT</i> USE IT!
+     * USE {@link UICategoryRegistry#getMaxID()}}
+     **/
     public static int getID() {
         return ID++;
     }
+
     public static int getMaxID() {
         return ID - 1;
     }
 
+    public static void register(IEventBus modEventBus) {
+        UI_CATEGORIES.makeRegistry(() ->
+                new RegistryBuilder<UICategory>().hasTags().disableSaving().disableSync());
+        UI_CATEGORIES.register(modEventBus);
+    }
 }

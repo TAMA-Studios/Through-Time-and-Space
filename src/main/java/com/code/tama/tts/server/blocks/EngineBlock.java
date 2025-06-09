@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
 import net.minecraft.world.level.block.Block;

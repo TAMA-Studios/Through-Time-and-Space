@@ -1,9 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import com.code.tama.tts.server.enums.Structures;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -11,11 +10,12 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 public class PlaceStructureThread extends Thread {
-    final ServerLevel serverLevel;
     final BlockPos pos;
-    final Structures structure;
+    final ServerLevel serverLevel;
+    final ResourceLocation structure;
 
-    public PlaceStructureThread(ServerLevel level, BlockPos pos, Structures structure) {
+    public PlaceStructureThread(ServerLevel level, BlockPos pos, ResourceLocation structure) {
+        this.setName("Structure Place Thread");
         this.serverLevel = level;
         this.pos = pos;
         this.structure = structure;
@@ -25,10 +25,9 @@ public class PlaceStructureThread extends Thread {
     public void run() {
         if (this.serverLevel != null) {
             // The resource location of the .nbt structure
-            var structureResource = this.structure.GetRL();
 
             // Load the structure template
-            StructureTemplate template = this.serverLevel.getStructureManager().getOrCreate(structureResource);
+            StructureTemplate template = this.serverLevel.getStructureManager().getOrCreate(this.structure);
             int X = -(template.getSize().getX() / 2);
             int Y = -(template.getSize().getY() / 2);
             int Z = -(template.getSize().getZ() / 2);
@@ -38,12 +37,15 @@ public class PlaceStructureThread extends Thread {
 
             // Placement settings (adjust as needed)
             StructurePlaceSettings settings = new StructurePlaceSettings()
-                    .setIgnoreEntities(false) // Include entities stored in the structure
+                    .setIgnoreEntities(false) // Include entities
+                    // stored in the
+                    // structure
                     .setRotation(Rotation.NONE) // No rotation
                     .setMirror(Mirror.NONE); // No mirroring
 
             // Place the structure
-            template.placeInWorld(this.serverLevel, structureStartPos, structureStartPos, settings, this.serverLevel.getRandom(), 3);
+            template.placeInWorld(
+                    this.serverLevel, structureStartPos, structureStartPos, settings, this.serverLevel.getRandom(), 3);
 
             System.out.println("Placed structure at: " + structureStartPos);
         }

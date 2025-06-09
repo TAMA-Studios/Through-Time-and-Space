@@ -1,16 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.component.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.mojang.math.Axis;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-
 import net.minecraft.resources.ResourceLocation;
 
 @AllArgsConstructor
@@ -30,6 +28,11 @@ public class UIComponent extends AbstractUIComponent {
     }
 
     @Override
+    public ResourceLocation GetIcon() {
+        return this.icon;
+    }
+
+    @Override
     public ComponentTypes Type() {
         return this.type;
     }
@@ -37,13 +40,8 @@ public class UIComponent extends AbstractUIComponent {
     @Override
     public Map<Axis, Float[]> XYBounds() {
         Map<Axis, Float[]> bounds = new HashMap<>();
-        bounds.put(Axis.XP,this.x);
+        bounds.put(Axis.XP, this.x);
         bounds.put(Axis.YP, this.y);
         return bounds;
-    }
-
-    @Override
-    public ResourceLocation GetIcon() {
-        return this.icon;
     }
 }

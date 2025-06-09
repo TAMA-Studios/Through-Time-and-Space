@@ -4,7 +4,6 @@ package com.code.tama.tts.datagen;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -28,9 +27,12 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new MBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
 
-        ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
-                new ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModItemTagGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(), existingFileHelper));
+        ModBlockTagGenerator blockTagGenerator = generator.addProvider(
+                event.includeServer(), new ModBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(
+                event.includeServer(),
+                new ModItemTagGenerator(
+                        packOutput, lookupProvider, blockTagGenerator.contentsGetter(), existingFileHelper));
 
         generator.addProvider(event.includeServer(), new ModGlobalLootModifiersProvider(packOutput));
 

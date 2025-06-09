@@ -7,9 +7,9 @@ import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.SmithLand
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.SmithTakeoffSound;
 
 public class SmithSoundScheme extends AbstractSoundScheme {
-    private final SmithTakeoffSound takeoffSound;
-    private final SmithFlightLoopSound loopSound;
     private final SmithLandingSound landSound;
+    private final SmithFlightLoopSound loopSound;
+    private final SmithTakeoffSound takeoffSound;
 
     public SmithSoundScheme() {
         this.takeoffSound = new SmithTakeoffSound();
@@ -17,13 +17,15 @@ public class SmithSoundScheme extends AbstractSoundScheme {
         this.landSound = new SmithLandingSound();
     }
 
-    public AbstractFlightSound GetTakeoff() {
-        return this.takeoffSound;
+    public AbstractFlightSound GetFlightLoop() {
+        return this.loopSound;
     }
+
     public AbstractFlightSound GetLanding() {
         return this.landSound;
     }
-    public AbstractFlightSound GetFlightLoop() {
-        return this.loopSound;
+
+    public AbstractFlightSound GetTakeoff() {
+        return this.takeoffSound;
     }
 }

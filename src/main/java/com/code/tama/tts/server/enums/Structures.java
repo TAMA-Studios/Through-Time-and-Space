@@ -9,6 +9,7 @@ public enum Structures {
     CleanInterior(new ResourceLocation(MODID, "clean"));
 
     final ResourceLocation path;
+
     Structures(ResourceLocation path) {
         this.path = path;
     }

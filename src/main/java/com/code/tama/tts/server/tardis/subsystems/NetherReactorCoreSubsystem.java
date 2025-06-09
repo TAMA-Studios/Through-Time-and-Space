@@ -1,24 +1,18 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.registries.TTSBlocks;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Map;
-
 public class NetherReactorCoreSubsystem extends AbstractSubsystem {
-    @Override
-    public void OnActivate(Level level, BlockPos blockPos) {
-        this.Activated = true;
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.GetSubsystemsData().setNetherReactorCoreSubsystem(this));
-
-    }
-
     /**
-     * the Map uses a relative BlockPos, and the Default Blockstate that make up this subsystem
+     * the Map uses a relative BlockPos, and the Default Blockstate that make up
+     * this subsystem
      **/
     @Override
     public Map<BlockPos, BlockState> BlockMap() {
@@ -55,5 +49,12 @@ public class NetherReactorCoreSubsystem extends AbstractSubsystem {
         map.put(BlockPos.ZERO.below().south().east(), Blocks.GOLD_BLOCK.defaultBlockState());
         map.put(BlockPos.ZERO.below().south().west(), Blocks.GOLD_BLOCK.defaultBlockState());
         return map;
+    }
+
+    @Override
+    public void OnActivate(Level level, BlockPos blockPos) {
+        this.Activated = true;
+        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> cap.GetSubsystemsData().setNetherReactorCoreSubsystem(this));
     }
 }

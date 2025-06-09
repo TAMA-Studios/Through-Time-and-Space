@@ -1,18 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
-import org.jetbrains.annotations.NotNull;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -40,26 +37,126 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
-    public CoordinatePanelBlock(Properties p_49795_) {
-        super(p_49795_);
-        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
+    public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
+    public static VoxelRotatedShape SHAPE =
+            new VoxelRotatedShape(createVoxelShape().optimize());
+    public static List<CoordinatePanelButtons> buttons = new ArrayList<>();
+
+    public static VoxelShape createVoxelShape() {
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Block.box(12.25, 1, 6.25, 13.5, 2, 9.75), BooleanOp.OR);
+        shape = Shapes.join(shape, Block.box(0, 0, 5, 16, 1, 11), BooleanOp.OR);
+        shape = Shapes.join(shape, Block.box(7.5, 1, 6.25, 8.75, 2, 9.75), BooleanOp.OR);
+        return Shapes.join(shape, Block.box(2.5, 1, 6.25, 3.75, 2, 9.75), BooleanOp.OR);
     }
 
-    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
-    public static List<CoordinatePanelButtons> buttons = new ArrayList<>();
+    public CoordinatePanelBlock(Properties p_49795_) {
+        super(p_49795_);
+        this.registerDefaultState(
+                this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
+    }
+
+    public CoordinatePanelButtons getButton(double mouseX, double mouseZ, Direction facing) {
+
+        for (CoordinatePanelButtons button : buttons) {
+            if (button.values.containsKey(facing)) {
+                Vec2 vec = button.values.get(facing);
+                float width = button.width;
+                float height = button.height;
+                float x = vec.x;
+                float z = vec.y;
+                switch (facing) {
+                    case EAST:
+                        if (mouseX >= (double) x
+                                && mouseX <= (double) (x + height)
+                                && mouseZ <= (double) z
+                                && mouseZ >= (double) (z - width)) {
+                            return button;
+                        }
+                        break;
+
+                    case SOUTH:
+                        if (mouseX >= (double) x
+                                && mouseZ >= (double) z
+                                && mouseX <= (double) (x + width)
+                                && mouseZ <= (double) (z + height)) {
+                            return button;
+                        }
+                        break;
+
+                    case WEST:
+                        if (mouseX <= (double) x
+                                && mouseX >= (double) (x - height)
+                                && mouseZ >= (double) z
+                                && mouseZ <= (double) (z + width)) {
+                            return button;
+                        }
+                        break;
+
+                    default:
+                        if (mouseX <= (double) x
+                                && mouseZ <= (double) z
+                                && mouseX >= (double) (x - width)
+                                && mouseZ >= (double) (z - height)) {
+                            return button;
+                        }
+                }
+            }
+        }
+
+        return CoordinatePanelButtons.EMPTY;
+    }
+
+    @Override
+    public @NotNull VoxelShape getShape(
+            BlockState p_60555_,
+            @NotNull BlockGetter p_60556_,
+            @NotNull BlockPos p_60557_,
+            @NotNull CollisionContext p_60558_) {
+        return SHAPE.GetShapeFromRotation(p_60555_.getValue(FACING));
+    }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(PRESSED_BUTTON, 0);
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(PRESSED_BUTTON, 0);
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
+    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+    }
+
+    public void tick(
+            BlockState state,
+            @NotNull ServerLevel serverLevel,
+            @NotNull BlockPos pos,
+            @NotNull RandomSource randomSource) {
+        if (state.getValue(PRESSED_BUTTON) != 0) {
+            serverLevel.setBlock(pos, state.setValue(PRESSED_BUTTON, 0), 3);
+        }
+    }
+
+    @Override
+    public @NotNull InteractionResult use(
+            @NotNull BlockState state,
+            Level world,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            BlockHitResult hit) {
         if (!world.isClientSide) {
             System.out.println("Block was hit on face: " + hit.getDirection());
 
@@ -76,26 +173,32 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                     int DestOffset = tardisLevelCapability.GetIncrement();
                     switch (button) {
                         case X:
-                            tardisLevelCapability.SetDestination(destination.AddX(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.SetDestination(
+                                    destination.AddX(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
-                            player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
+                            player.displayClientMessage(
+                                    Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                             world.scheduleTick(pos, this, 10);
                             world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Y:
-                            tardisLevelCapability.SetDestination(destination.AddY(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.SetDestination(
+                                    destination.AddY(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
-                            player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
+                            player.displayClientMessage(
+                                    Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                             world.scheduleTick(pos, this, 10);
                             TTSMod.LOGGER.info("Y!");
                             world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Z:
-                            tardisLevelCapability.SetDestination(destination.AddZ(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability.SetDestination(
+                                    destination.AddZ(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
-                            player.displayClientMessage(Component.literal("Current Destination = " + destination.ReadableString()), true);
+                            player.displayClientMessage(
+                                    Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                             world.scheduleTick(pos, this, 10);
                             TTSMod.LOGGER.info("Z!");
@@ -109,17 +212,6 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
         return InteractionResult.SUCCESS;
     }
 
-    public void tick(BlockState state, @NotNull ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        if (state.getValue(PRESSED_BUTTON) != 0) {
-            serverLevel.setBlock(pos, state.setValue(PRESSED_BUTTON, 0), 3);
-        }
-    }
-
-    @Override
-    public @NotNull VoxelShape getShape(BlockState p_60555_, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_, @NotNull CollisionContext p_60558_) {
-        return SHAPE.GetShapeFromRotation(p_60555_.getValue(FACING));
-    }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
         super.createBlockStateDefinition(StateDefinition);
@@ -127,74 +219,16 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
         StateDefinition.add(PRESSED_BUTTON);
     }
 
-    @Override
-    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
-        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
-    }
-
-    @Override
-    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
-        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
-    }
-
-    public static VoxelShape createVoxelShape() {
-        VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Block.box(12.25, 1, 6.25, 13.5, 2, 9.75), BooleanOp.OR);
-        shape = Shapes.join(shape, Block.box(0, 0, 5, 16, 1, 11), BooleanOp.OR);
-        shape = Shapes.join(shape, Block.box(7.5, 1, 6.25, 8.75, 2, 9.75), BooleanOp.OR);
-        return Shapes.join(shape, Block.box(2.5, 1, 6.25, 3.75, 2, 9.75), BooleanOp.OR);
-    }
-
-
-    public CoordinatePanelButtons getButton(double mouseX, double mouseZ, Direction facing) {
-
-        for (CoordinatePanelButtons button : buttons) {
-            if (button.values.containsKey(facing)) {
-                Vec2 vec = button.values.get(facing);
-                float width = button.width;
-                float height = button.height;
-                float x = vec.x;
-                float z = vec.y;
-                switch (facing) {
-                    case EAST:
-                        if (mouseX >= (double) x && mouseX <= (double) (x + height) && mouseZ <= (double) z && mouseZ >= (double) (z - width)) {
-                            return button;
-                        }
-                        break;
-
-                    case SOUTH:
-                        if (mouseX >= (double) x && mouseZ >= (double) z && mouseX <= (double) (x + width) && mouseZ <= (double) (z + height)) {
-                            return button;
-                        }
-                        break;
-
-                    case WEST:
-                        if (mouseX <= (double) x && mouseX >= (double) (x - height) && mouseZ >= (double) z && mouseZ <= (double) (z + width)) {
-                            return button;
-                        }
-                        break;
-
-                    default:
-                        if (mouseX <= (double) x && mouseZ <= (double) z && mouseX >= (double) (x - width) && mouseZ >= (double) (z - height)) {
-                            return button;
-                        }
-                }
-            }
-        }
-
-        return CoordinatePanelButtons.EMPTY;
-    }
-
     public enum CoordinatePanelButtons {
+        EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F),
         X("X", 1.25f, 3.50f, 12.25f, 6.25f),
         Y("Y", 1.25f, 3.50f, 7.50f, 6.25f),
-        Z("Z", 1.25f,3.50f,2.50f,6.25f),
-        EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F);
+        Z("Z", 1.25f, 3.50f, 2.50f, 6.25f);
 
+        Component displayName;
+        final float height;
         final Map<Direction, Vec2> values = new HashMap<>();
         final float width;
-        final float height;
-        Component displayName;
 
         CoordinatePanelButtons(String s, float w, float h, float x1, float z1) {
             float f = 0.0625F;
@@ -210,7 +244,6 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                 this.displayName = Component.literal(s);
             }
             CoordinatePanelBlock.buttons.add(this);
-
         }
     }
 }

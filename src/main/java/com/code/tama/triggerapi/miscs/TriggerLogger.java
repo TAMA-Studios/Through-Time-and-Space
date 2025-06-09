@@ -12,16 +12,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Trigger API Logger V1.0 (Don't use this it's old)**/
+/** Trigger API Logger V1.0 (Don't use this it's old) **/
 @Deprecated
 public class TriggerLogger {
     public static final double Version = 1.0;
-    private final File logFile;
-    private final List<String> logBuffer; // Buffer to reduce frequent writes
+    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    // Example usage in a Minecraft mod context
+    public static void main(String[] args) {
+        // For testing outside Minecraft, replace it with mod integration
+        TriggerLogger logger = new TriggerLogger("log.txt");
+        logger.log("Trigger Logger V{} Started for mod {}", Version, MODID);
+        logger.flush(); // Force write to file
+    }
+
     private final int bufferSize; // Max entries before flushing
     private final Object lock = new Object(); // For thread safety
-    private static final DateTimeFormatter TIMESTAMP_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final List<String> logBuffer; // Buffer to reduce frequent writes
+
+    private final File logFile;
+
+    // Convenience constructor with default buffer size
+    public TriggerLogger(String filePath) {
+        this(filePath, 100);
+    }
 
     // Constructor: Initialize with file path and buffer size
     public TriggerLogger(String filePath, int bufferSize) {
@@ -36,16 +49,18 @@ public class TriggerLogger {
         }
     }
 
-    // Convenience constructor with default buffer size
-    public TriggerLogger(String filePath) {
-        this(filePath, 100);
+    // Flush buffer to file manually (e.g., on mod disable)
+    public void flush() {
+        synchronized (lock) {
+            if (!logBuffer.isEmpty()) {
+                flushToFile();
+            }
+        }
     }
 
     // Log a message with timestamp
     public void log(String message) {
-        String formattedMessage = String.format("[%s] %s",
-                TIMESTAMP_FORMAT.format(LocalDateTime.now()),
-                message);
+        String formattedMessage = String.format("[%s] %s", TIMESTAMP_FORMAT.format(LocalDateTime.now()), message);
 
         synchronized (lock) { // Thread-safe buffer access
             logBuffer.add(formattedMessage);
@@ -58,27 +73,16 @@ public class TriggerLogger {
     // Log a message with timestamp
     public void log(String message, Object... objects) {
         String messageToSend = message;
-        for(Object object : objects) {
+        for (Object object : objects) {
             messageToSend = messageToSend.replaceFirst("[{}]", String.valueOf(object));
             messageToSend = messageToSend.replaceFirst("[}]", "");
         }
         message = messageToSend;
-        String formattedMessage = String.format("[%s] %s",
-                TIMESTAMP_FORMAT.format(LocalDateTime.now()),
-                message);
+        String formattedMessage = String.format("[%s] %s", TIMESTAMP_FORMAT.format(LocalDateTime.now()), message);
 
         synchronized (lock) { // Thread-safe buffer access
             logBuffer.add(formattedMessage);
             if (logBuffer.size() >= bufferSize) {
-                flushToFile();
-            }
-        }
-    }
-
-    // Flush buffer to file manually (e.g., on mod disable)
-    public void flush() {
-        synchronized (lock) {
-            if (!logBuffer.isEmpty()) {
                 flushToFile();
             }
         }
@@ -96,13 +100,5 @@ public class TriggerLogger {
             System.err.println("Failed to write to log file: " + e.getMessage());
             // Keep buffer intact to retry later if desired
         }
-    }
-
-    // Example usage in a Minecraft mod context
-    public static void main(String[] args) {
-        // For testing outside Minecraft, replace it with mod integration
-        TriggerLogger logger = new TriggerLogger("log.txt");
-        logger.log("Trigger Logger V{} Started for mod {}", Version, MODID);
-        logger.flush(); // Force write to file
     }
 }

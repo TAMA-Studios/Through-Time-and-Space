@@ -1,24 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SyncTransparencyPacketS2C {
-    private final float transparency;
-    private final int blockX, blockY, blockZ; // Block position
-
-    public SyncTransparencyPacketS2C(float transparency, int x, int y, int z) {
-        this.transparency = transparency;
-        this.blockX = x;
-        this.blockY = y;
-        this.blockZ = z;
+    public static SyncTransparencyPacketS2C decode(FriendlyByteBuf buffer) {
+        return new SyncTransparencyPacketS2C(buffer.readFloat(), buffer.readInt(), buffer.readInt(), buffer.readInt());
     }
 
     public static void encode(SyncTransparencyPacketS2C packet, FriendlyByteBuf buffer) {
@@ -26,15 +18,6 @@ public class SyncTransparencyPacketS2C {
         buffer.writeInt(packet.blockX);
         buffer.writeInt(packet.blockY);
         buffer.writeInt(packet.blockZ);
-    }
-
-    public static SyncTransparencyPacketS2C decode(FriendlyByteBuf buffer) {
-        return new SyncTransparencyPacketS2C(
-                buffer.readFloat(),
-                buffer.readInt(),
-                buffer.readInt(),
-                buffer.readInt()
-        );
     }
 
     public static void handle(SyncTransparencyPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -50,5 +33,16 @@ public class SyncTransparencyPacketS2C {
             }
         });
         context.setPacketHandled(true);
+    }
+
+    private final int blockX, blockY, blockZ; // Block position
+
+    private final float transparency;
+
+    public SyncTransparencyPacketS2C(float transparency, int x, int y, int z) {
+        this.transparency = transparency;
+        this.blockX = x;
+        this.blockY = y;
+        this.blockZ = z;
     }
 }

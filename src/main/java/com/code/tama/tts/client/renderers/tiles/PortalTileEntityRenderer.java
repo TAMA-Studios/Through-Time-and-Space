@@ -1,17 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import java.util.Map;
-
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-
+import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,20 +19,32 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 @SuppressWarnings("deprecation")
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
     private final BlockEntityRendererProvider.Context context;
-    private final Minecraft mc = Minecraft.getInstance();
     private float lastRenderTick = -1;
+    private final Minecraft mc = Minecraft.getInstance();
 
     public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
 
     @Override
-    public void render(@NotNull PortalTileEntity tileEntity, float partialTick, @NotNull PoseStack poseStack,
-                       @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public int getViewDistance() {
+        return 16;
+    }
+
+    @Override
+    public void render(
+            @NotNull PortalTileEntity tileEntity,
+            float partialTick,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource buffer,
+            int packedLight,
+            int packedOverlay) {
         assert mc.level != null;
         if (!mc.level.isClientSide() || tileEntity.getTargetLevel() == null || tileEntity.getTargetPos() == null) {
             return;
@@ -65,16 +73,18 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             poseStack.pushPose();
             poseStack.translate(-8, -8, -8);
             VertexConsumer chunkConsumer = buffer.getBuffer(RenderType.cutout());
-            context.getBlockRenderDispatcher().getModelRenderer().renderModel(
-                    poseStack.last(),
-                    chunkConsumer,
-                    null,
-                    tileEntity.chunkModel,
-                    1.0F, 1.0F, 1.0F,
-                    packedLight,
-
-                    packedOverlay
-            );
+            context.getBlockRenderDispatcher()
+                    .getModelRenderer()
+                    .renderModel(
+                            poseStack.last(),
+                            chunkConsumer,
+                            null,
+                            tileEntity.chunkModel,
+                            1.0F,
+                            1.0F,
+                            1.0F,
+                            packedLight,
+                            packedOverlay);
             poseStack.popPose();
         }
 
@@ -82,7 +92,8 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         for (Map.Entry<BlockPos, BlockEntity> entry : tileEntity.blockEntities.entrySet()) {
             BlockPos offsetPos = entry.getKey();
             BlockEntity be = entry.getValue();
-            BlockEntityRenderer<BlockEntity> renderer = mc.getBlockEntityRenderDispatcher().getRenderer(be);
+            BlockEntityRenderer<BlockEntity> renderer =
+                    mc.getBlockEntityRenderDispatcher().getRenderer(be);
             if (renderer != null) {
                 poseStack.pushPose();
                 poseStack.translate(offsetPos.getX() - 8, offsetPos.getY() - 8, offsetPos.getZ() - 8);
@@ -96,6 +107,52 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         poseStack.popPose();
     }
 
+    @Override
+    public boolean shouldRenderOffScreen(@NotNull PortalTileEntity tileEntity) {
+        return true;
+    }
+
+    private void renderPortalFrame(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay) {
+        Matrix4f matrix = poseStack.last().pose();
+        float size = 1.0f;
+
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+
+        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        consumer.vertex(matrix, -size, -size, 0)
+                .color(0, 128, 255, 255)
+                .uv(0, 0)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(0, 0, 1)
+                .endVertex();
+        consumer.vertex(matrix, size, -size, 0)
+                .color(0, 128, 255, 255)
+                .uv(1, 0)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(0, 0, 1)
+                .endVertex();
+        consumer.vertex(matrix, size, size, 0)
+                .color(0, 128, 255, 255)
+                .uv(1, 1)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(0, 0, 1)
+                .endVertex();
+        consumer.vertex(matrix, -size, size, 0)
+                .color(0, 128, 255, 255)
+                .uv(0, 1)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(0, 0, 1)
+                .endVertex();
+
+        BufferUploader.drawWithShader(bufferBuilder.end());
+    }
+
     private void updateChunkModel(PortalTileEntity tileEntity) {
         assert mc.level != null;
         if (!mc.level.isClientSide()) return;
@@ -106,47 +163,14 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             if (targetLevel != null) {
                 ChunkPos chunkPos = new ChunkPos(tileEntity.getTargetPos());
                 LevelChunk chunk = targetLevel.getChunk(chunkPos.x, chunkPos.z);
-                tileEntity.updateChunkModelFromServer(new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), chunk, tileEntity.getTargetPos()).chunkData);
+                tileEntity.updateChunkModelFromServer(
+                        new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), chunk, tileEntity.getTargetPos())
+                                .chunkData);
             } else {
                 Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
-                        tileEntity.getBlockPos(),
-                        tileEntity.getTargetLevel(),
-                        tileEntity.getTargetPos()
-                ));
+                        tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
             }
             tileEntity.lastRequestTime = currentTime;
         }
-    }
-
-    private void renderPortalFrame(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay) {
-        Matrix4f matrix = poseStack.last().pose();
-        float size = 1.0f;
-
-
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
-        consumer.vertex(matrix, -size, -size, 0).color(0, 128, 255, 255)
-                .uv(0, 0).overlayCoords(packedOverlay).uv2(packedLight).normal(0, 0, 1).endVertex();
-        consumer.vertex(matrix, size, -size, 0).color(0, 128, 255, 255)
-                .uv(1, 0).overlayCoords(packedOverlay).uv2(packedLight).normal(0, 0, 1).endVertex();
-        consumer.vertex(matrix, size, size, 0).color(0, 128, 255, 255)
-                .uv(1, 1).overlayCoords(packedOverlay).uv2(packedLight).normal(0, 0, 1).endVertex();
-        consumer.vertex(matrix, -size, size, 0).color(0, 128, 255, 255)
-                .uv(0, 1).overlayCoords(packedOverlay).uv2(packedLight).normal(0, 0, 1).endVertex();
-
-        BufferUploader.drawWithShader(bufferBuilder.end());
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(@NotNull PortalTileEntity tileEntity) {
-        return true;
-    }
-
-    @Override
-    public int getViewDistance() {
-        return 16;
     }
 }

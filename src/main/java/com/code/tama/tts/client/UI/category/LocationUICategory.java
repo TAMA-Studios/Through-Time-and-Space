@@ -3,13 +3,11 @@ package com.code.tama.tts.client.UI.category;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import java.util.Locale;
-
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,40 +22,96 @@ public class LocationUICategory extends UICategory {
     }
 
     @Override
-    public void Render(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
-        monitor.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            Font fontRenderer = Minecraft.getInstance().font;
+    public void Render(
+            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
+        monitor.getLevel()
+                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> {
+                    Font fontRenderer = Minecraft.getInstance().font;
 
-            int white = 0xFFFFFF;
+                    int white = 0xFFFFFF;
 
-            RenderSystem.disableDepthTest();
+                    RenderSystem.disableDepthTest();
 
-            ResourceLocation OLD_HIGH_GALLIFREYAN = new ResourceLocation(MODID, "old_high_gallifreyan");
-            ResourceLocation DEFAULT = new ResourceLocation("default");
-            ResourceLocation STANDARD_GALACTIC = new ResourceLocation("alt");
-            Style STYLE = Style.EMPTY.withFont(DEFAULT);
+                    ResourceLocation OLD_HIGH_GALLIFREYAN = new ResourceLocation(MODID, "old_high_gallifreyan");
+                    ResourceLocation DEFAULT = new ResourceLocation("default");
+                    ResourceLocation STANDARD_GALACTIC = new ResourceLocation("alt");
+                    Style STYLE = Style.EMPTY.withFont(DEFAULT);
 
-            Component line1 = Component.literal(cap.GetCurrentLevel().location().getPath()
-                    .substring(0, 1).toUpperCase(Locale.ROOT)
-                    + cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ")).setStyle(STYLE);
+                    Component line1 = Component.literal(cap.GetCurrentLevel()
+                                            .location()
+                                            .getPath()
+                                            .substring(0, 1)
+                                            .toUpperCase(Locale.ROOT)
+                                    + cap.GetCurrentLevel()
+                                            .location()
+                                            .getPath()
+                                            .substring(1)
+                                            .replace("_", " "))
+                            .setStyle(STYLE);
 
-            Component line2 = Component.literal(cap.GetExteriorLocation().ReadableStringShort());
+                    Component line2 =
+                            Component.literal(cap.GetExteriorLocation().ReadableStringShort());
 
+                    fontRenderer.drawInBatch(
+                            OS_VER.copy().setStyle(STYLE),
+                            -40,
+                            5,
+                            white,
+                            false,
+                            poseStack.last().pose(),
+                            bufferSource,
+                            Font.DisplayMode.NORMAL,
+                            0,
+                            combinedLight);
 
-            fontRenderer.drawInBatch(OS_VER.copy().setStyle(STYLE), -40, 5, white, false,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+                    fontRenderer.drawInBatch(
+                            Component.literal("Location").withStyle(STYLE),
+                            -22.5f,
+                            15,
+                            white,
+                            false,
+                            poseStack.last().pose(),
+                            bufferSource,
+                            Font.DisplayMode.NORMAL,
+                            0,
+                            combinedLight);
 
-            fontRenderer.drawInBatch(Component.literal("Location").withStyle(STYLE), -22.5f, 15, white, false,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+                    fontRenderer.drawInBatch(
+                            line1,
+                            -40,
+                            25,
+                            white,
+                            false,
+                            poseStack.last().pose(),
+                            bufferSource,
+                            Font.DisplayMode.NORMAL,
+                            0,
+                            combinedLight);
 
-            fontRenderer.drawInBatch(line1, -40, 25, white, false,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+                    fontRenderer.drawInBatch(
+                            line2,
+                            -40,
+                            35,
+                            white,
+                            false,
+                            poseStack.last().pose(),
+                            bufferSource,
+                            Font.DisplayMode.NORMAL,
+                            0,
+                            combinedLight);
 
-            fontRenderer.drawInBatch(line2, -40, 35, white, false,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
-
-            fontRenderer.drawInBatch(Component.literal("T").setStyle(STYLE), -40, 45, white, false,
-                    poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
-        });
+                    fontRenderer.drawInBatch(
+                            Component.literal("T").setStyle(STYLE),
+                            -40,
+                            45,
+                            white,
+                            false,
+                            poseStack.last().pose(),
+                            bufferSource,
+                            Font.DisplayMode.NORMAL,
+                            0,
+                            combinedLight);
+                });
     }
 }

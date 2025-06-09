@@ -7,7 +7,6 @@ import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.capabilities.providers.SerializableLevelCapabilityProvider;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -24,13 +23,13 @@ public class Capabilities {
 
     public static final ResourceLocation TARDIS_LEVEL_KEY = new ResourceLocation(MODID, "tardis");
 
+    public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
+        return object == null ? LazyOptional.empty() : object.getCapability(cap);
+    }
+
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(ITARDISLevel.class);
-    }
-
-    public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
-        return object == null ? LazyOptional.empty() : object.getCapability(cap);
     }
 
     @Mod.EventBusSubscriber(modid = MODID)
@@ -38,13 +37,20 @@ public class Capabilities {
         @SubscribeEvent
         public static void AttachWorldCapabilities(AttachCapabilitiesEvent<Level> event) {
 
-            // For unregistered worlds, because some mods either aren't that bright or just as hacky and gimmicky as a nintendo console
-            if (event.getObject().registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getKey(event.getObject().dimensionType()) == null)
-                return;
+            // For unregistered worlds, because some mods either aren't that bright or just
+            // as hacky and gimmicky as a nintendo console
+            if (event.getObject()
+                            .registryAccess()
+                            .registryOrThrow(Registries.DIMENSION_TYPE)
+                            .getKey(event.getObject().dimensionType())
+                    == null) return;
 
             if (!event.getObject().dimensionTypeId().location().equals(MDimensions.TARDIS_DIM_TYPE.location())) return;
 
-            event.addCapability(Capabilities.TARDIS_LEVEL_KEY, new SerializableLevelCapabilityProvider<>(CapabilityConstants.TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
+            event.addCapability(
+                    Capabilities.TARDIS_LEVEL_KEY,
+                    new SerializableLevelCapabilityProvider<>(
+                            CapabilityConstants.TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
         }
     }
 }

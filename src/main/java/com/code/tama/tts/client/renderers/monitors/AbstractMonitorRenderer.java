@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
@@ -13,9 +12,6 @@ import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
     public final BlockEntityRendererProvider.Context context;
@@ -37,59 +35,65 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
     }
 
     @Override
-    public void render(@NotNull T monitor, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+    public void render(
+            @NotNull T monitor,
+            float partialTicks,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
+            int combinedLight,
+            int combinedOverlay) {
         if (monitor.getLevel() == null) return;
 
-        monitor.getLevel().getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            poseStack.pushPose();
+        monitor.getLevel()
+                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> {
+                    poseStack.pushPose();
 
-            this.ApplyDefaultTransforms(poseStack, monitor);
-            this.ApplyCustomTransforms(poseStack, bufferSource);
+                    this.ApplyDefaultTransforms(poseStack, monitor);
+                    this.ApplyCustomTransforms(poseStack, bufferSource);
 
-            if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
-                UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
-                    if (reg.get().getID() == monitor.getCategoryID()) {
-                        this.category = reg.get();
+                    if (this.category == null
+                            || (this.category != null && this.category.getID() != monitor.categoryID)) {
+                        UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
+                            if (reg.get().getID() == monitor.getCategoryID()) {
+                                this.category = reg.get();
+                            }
+                        });
                     }
+
+                    if (monitor.isPowered()) this.category.Render(monitor, poseStack, bufferSource, combinedLight);
+
+                    poseStack.popPose();
+                    poseStack.pushPose();
+
+                    this.ApplyDefaultTransforms(poseStack, monitor);
+
+                    renderUIComponents(monitor, poseStack, bufferSource, combinedLight);
+
+                    poseStack.popPose();
+                    poseStack.pushPose();
+
+                    this.ApplyDefaultTransforms(poseStack, monitor);
+
+                    renderRotatingImage(monitor, poseStack, bufferSource, combinedLight);
+
+                    poseStack.popPose();
+
+                    poseStack.pushPose();
+
+                    this.ApplyDefaultTransforms(poseStack, monitor);
+
+                    renderBackground(monitor, poseStack, bufferSource, combinedLight);
+
+                    poseStack.popPose();
+
+                    RenderSystem.enableDepthTest();
                 });
-            }
-
-
-            if (monitor.isPowered())
-                this.category.Render(monitor, poseStack, bufferSource, combinedLight);
-
-            poseStack.popPose();
-            poseStack.pushPose();
-
-            this.ApplyDefaultTransforms(poseStack, monitor);
-
-            renderUIComponents(monitor, poseStack, bufferSource, combinedLight);
-
-            poseStack.popPose();
-            poseStack.pushPose();
-
-            this.ApplyDefaultTransforms(poseStack, monitor);
-
-            renderRotatingImage(monitor, poseStack, bufferSource, combinedLight);
-
-            poseStack.popPose();
-
-            poseStack.pushPose();
-
-            this.ApplyDefaultTransforms(poseStack, monitor);
-
-            renderBackground(monitor, poseStack, bufferSource, combinedLight);
-
-            poseStack.popPose();
-
-            RenderSystem.enableDepthTest();
-
-        });
     }
 
-    private void renderRotatingImage(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
-        if (!monitor.isPowered())
-            return;
+    private void renderRotatingImage(
+            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
+        if (!monitor.isPowered()) return;
 
         ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/tiles/monitor/galifrayan.png");
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -97,7 +101,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         RenderSystem.enableDepthTest();
         RenderSystem.setShaderTexture(0, texture);
 
-        float rotationAngle = (monitor.getLevel().getGameTime() % 360) + Minecraft.getInstance().getFrameTime();
+        float rotationAngle = (monitor.getLevel().getGameTime() % 360)
+                + Minecraft.getInstance().getFrameTime();
 
         poseStack.translate(25, 70, 0);
         poseStack.scale(20, 20, 20);
@@ -120,7 +125,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
     }
 
-    private void renderUIComponents(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
+    private void renderUIComponents(
+            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
         ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.disableBlend();
@@ -153,18 +159,18 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
                 BufferUploader.drawWithShader(buffer.end());
             }
 
-//            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-//
-//            float XStart = 0;
-//            float YStart = 0;
-//            float XEnd = 16;
-//            float YEnd = 16;
-//
-//            buffer.vertex(matrix, XStart, YEnd, 0).uv(0, 1).endVertex();
-//            buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
-//            buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
-//            buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
-//            BufferUploader.drawWithShader(buffer.end());
+            // buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            //
+            // float XStart = 0;
+            // float YStart = 0;
+            // float XEnd = 16;
+            // float YEnd = 16;
+            //
+            // buffer.vertex(matrix, XStart, YEnd, 0).uv(0, 1).endVertex();
+            // buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
+            // buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
+            // buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
+            // BufferUploader.drawWithShader(buffer.end());
         }
 
         RenderSystem.disableDepthTest();
@@ -173,12 +179,11 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
     }
 
-
-    private void renderBackground(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
-        if(!monitor.isPowered()) return;
+    private void renderBackground(
+            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
+        if (!monitor.isPowered()) return;
         ResourceLocation texture;
-        if (this.category != null)
-            texture = this.category.getOverlay();
+        if (this.category != null) texture = this.category.getOverlay();
         else texture = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.disableBlend();
@@ -205,7 +210,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
         BufferUploader.drawWithShader(buffer.end());
 
-
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
 
@@ -216,9 +220,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         return 44.3f;
     }
 
-    public void ApplyCustomTransforms(PoseStack stack, MultiBufferSource bufferSource) {
-
-    }
+    public void ApplyCustomTransforms(PoseStack stack, MultiBufferSource bufferSource) {}
 
     public void ApplyDefaultTransforms(PoseStack poseStack, AbstractMonitorTile monitor) {
         poseStack.translate(0.5, 0.98, 0.5);
@@ -234,13 +236,14 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
             case EAST -> poseStack.translate(-Offset(), 0, 0);
         }
 
-        float yaw = switch (facing) {
-            case NORTH -> 0;
-            case SOUTH -> 180;
-            case WEST -> -90;
-            case EAST -> 90;
-            default -> 0;
-        };
+        float yaw =
+                switch (facing) {
+                    case NORTH -> 0;
+                    case SOUTH -> 180;
+                    case WEST -> -90;
+                    case EAST -> 90;
+                    default -> 0;
+                };
 
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
     }

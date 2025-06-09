@@ -17,7 +17,6 @@ public class RenderingHelper {
                 mc.getItemRenderer(),
                 mc.getEntityRenderDispatcher(),
                 mc.getEntityModels(),
-                mc.font
-        );
+                mc.font);
     }
 }

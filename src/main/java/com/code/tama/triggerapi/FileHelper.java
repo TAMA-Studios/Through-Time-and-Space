@@ -3,14 +3,9 @@ package com.code.tama.triggerapi;
 
 import java.io.*;
 import java.nio.file.Path;
-
 import net.minecraftforge.fml.loading.FMLPaths;
 
 public class FileHelper {
-    private static String getBaseDir() {
-        return "TriggerAPI/" + TriggerAPI.MOD_ID + "/stored";
-    }
-
     public static boolean createStoredFile(String fileName, String content) {
         Path dirPath = FMLPaths.GAMEDIR.get().resolve(getBaseDir());
         File directory = dirPath.toFile();
@@ -59,5 +54,9 @@ public class FileHelper {
     public static boolean storedFileExists(String fileName) {
         Path filePath = FMLPaths.GAMEDIR.get().resolve(getBaseDir()).resolve(fileName + ".txt");
         return filePath.toFile().exists();
+    }
+
+    private static String getBaseDir() {
+        return "TriggerAPI/" + TriggerAPI.MOD_ID + "/stored";
     }
 }

@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.tardis.control_lists;
 
 import java.util.HashMap;
-
 import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractControlList {

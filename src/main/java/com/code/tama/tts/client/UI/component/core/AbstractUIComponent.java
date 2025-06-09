@@ -1,15 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.component.core;
 
-import java.util.Map;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.math.Axis;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +39,8 @@ public abstract class AbstractUIComponent {
     }
 
     /**
-     * @return a map with an axis (XP or YP) and a float array (0 being minimum, 1 being maximum)
+     * @return a map with an axis (XP or YP) and a float array (0 being minimum, 1
+     *         being maximum)
      **/
     public abstract Map<Axis, Float[]> XYBounds();
 }

@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -11,19 +10,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class PowerControl extends AbstractControl {
     @Override
-    public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public SoundEvent GetSuccessSound() {
+    public SoundEvent GetFailSound() {
         return SoundEvents.NOTE_BLOCK_BIT.get();
     }
 
@@ -33,7 +20,19 @@ public class PowerControl extends AbstractControl {
     }
 
     @Override
-    public SoundEvent GetFailSound() {
+    public SoundEvent GetSuccessSound() {
         return SoundEvents.NOTE_BLOCK_BIT.get();
+    }
+
+    @Override
+    public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
+        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
+        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
+        return InteractionResult.SUCCESS;
     }
 }

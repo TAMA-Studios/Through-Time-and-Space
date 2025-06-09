@@ -3,6 +3,7 @@ package com.code.tama.tts.server.worlds.biomes;
 
 public class MTerrablender {
     public static void registerBiomes() {
-//        Regions.register(new GallifreyRegion(new ResourceLocation(MODID, "gallifrey"), 5));
+        // Regions.register(new GallifreyRegion(new ResourceLocation(MODID,
+        // "gallifrey"), 5));
     }
 }
