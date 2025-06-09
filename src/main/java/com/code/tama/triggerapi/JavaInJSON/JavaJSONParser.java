@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
 import com.google.gson.Gson;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static com.code.tama.mtm.MTMMod.LOGGER;
+import static com.code.tama.tts.TTSMod.LOGGER;
 
 public class JavaJSONParser {
 

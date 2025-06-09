@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
 import com.google.gson.annotations.SerializedName;

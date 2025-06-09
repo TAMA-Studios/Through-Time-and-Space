@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
 import net.minecraft.resources.ResourceKey;

@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.code.tama.triggerapi.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "mtm.refmap.json",
+  "refmap": "tts.refmap.json",
   "mixins": [
   ],
   "client": [

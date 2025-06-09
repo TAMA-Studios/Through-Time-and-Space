@@ -1,11 +1,12 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.mtm.MTMMod;
-import com.code.tama.mtm.server.dimensions.TARDISDimensionChunkGenerator;
-import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
-import com.code.tama.mtm.server.worlds.dimension.MDimensions;
 import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.server.dimensions.TARDISDimensionChunkGenerator;
+import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
+import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
@@ -54,7 +55,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import static com.code.tama.mtm.MTMMod.MODID;
+import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * DimensionAPI internal implementation
@@ -281,8 +282,7 @@ public final class DimensionManager implements DimensionAPI
 						destinationLevel = overworld;
 					}
 
-					@Nullable
-					BlockPos destinationPos = player.getRespawnPosition();
+					@Nullable BlockPos destinationPos = player.getRespawnPosition();
 					if (destinationPos == null)
 					{
 						destinationPos = destinationLevel.getSharedSpawnPos();
@@ -412,7 +412,7 @@ public final class DimensionManager implements DimensionAPI
 
 
 	public static void PrepareWorld(ChunkProgressListener chunkProgress, ServerLevel level){
-		MTMMod.LOGGER.info("Preparing dynamic dimension");
+		TTSMod.LOGGER.info("Preparing dynamic dimension");
 		chunkProgress.updateSpawnPos(new ChunkPos(level.getSharedSpawnPos()));
 		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11, Unit.INSTANCE);
 	}

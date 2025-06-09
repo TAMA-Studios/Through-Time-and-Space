@@ -1,0 +1,57 @@
+{
+	"texture": "tts:tiles/hartnell_door",
+	"texture_width": 128,
+	"texture_height": 128,
+	"scale": 1,
+	"groups": [
+		{
+			"group_name": "root",
+			"pivot": [0,24,0],
+			"rotation": [0,0,0],
+			"children": [
+				{
+					"group_name": "RightDoor",
+					"pivot": [23,0,0],
+					"rotation": [0,0,0],
+					"cubes": [
+						{
+							"uv": [30,48],
+							"size": [16,48,2],
+							"origin": [-15,-48,-1],
+							"inflate": 0,
+							"mirror": false
+						},
+						{
+							"uv": [0,0],
+							"size": [16,48,0],
+							"origin": [-15,-48,-1.5],
+							"inflate": 0,
+							"mirror": false
+						}
+					]
+				},
+				{
+					"group_name": "LeftDoor",
+					"pivot": [-7,0,0],
+					"rotation": [0,0,0],
+					"cubes": [
+						{
+							"uv": [92,48],
+							"size": [16,48,2],
+							"origin": [-1,-48,-1],
+							"inflate": 0,
+							"mirror": false
+						},
+						{
+							"uv": [62,0],
+							"size": [16,48,0],
+							"origin": [-1,-48,-1.5],
+							"inflate": 0,
+							"mirror": false
+						}
+					]
+				}
+			]
+		}
+	]
+}

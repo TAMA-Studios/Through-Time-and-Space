@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "xyx",
+    "rzr",
+    "tyt"
+  ],
+  "key": {
+    "x": {
+      "item": "stone"
+    },
+    "y": {
+      "item": "minecraft:repeater"
+    },
+    "r": {
+      "item": "minecraft:comparator"
+    },
+    "z": {
+      "item": "minecraft:lever"
+    },
+    "t": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "result": {
+    "item": "tts:power_lever",
+    "count": 1
+  },
+  "show_notification": true
+}

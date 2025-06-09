@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.miscs;
 
 import java.io.BufferedWriter;
@@ -9,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.code.tama.mtm.MTMMod.MODID;
+import static com.code.tama.tts.TTSMod.MODID;
 
 /** Trigger API Logger V1.0 (Don't use this it's old)**/
 @Deprecated

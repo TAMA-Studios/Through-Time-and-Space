@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.code.tama.mtm.MTMMod.LOGGER;
+import static com.code.tama.tts.TTSMod.LOGGER;
 import static com.mojang.math.Axis.*;
 
 public class JavaJSONRenderer {
