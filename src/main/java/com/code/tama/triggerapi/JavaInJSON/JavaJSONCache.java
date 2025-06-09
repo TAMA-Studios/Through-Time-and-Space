@@ -1,4 +1,10 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -7,11 +13,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class JavaJSONCache extends SimplePreparableReloadListener<Void> {

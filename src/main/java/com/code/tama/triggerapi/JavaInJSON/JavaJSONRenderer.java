@@ -1,22 +1,24 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
+
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.mojang.math.Axis.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.mtm.MTMMod.LOGGER;
-import static com.mojang.math.Axis.*;
 
 public class JavaJSONRenderer {
 

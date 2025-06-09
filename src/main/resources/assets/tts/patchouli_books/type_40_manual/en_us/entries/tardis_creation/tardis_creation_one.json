@@ -1,0 +1,11 @@
+{
+  "name": "First Step",
+  "category": "tts:tardis_creation",
+  "icon": "minecraft:crafting_table",
+  "pages": [
+    {
+      "type": "text",
+      "text": "TARDIS Creation, page one. $(br)In order to create your TARDIS, you must first place an exterior block"
+    }
+  ]
+}

@@ -1,10 +1,11 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
+
+import java.util.function.Consumer;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
-
-import java.util.function.Consumer;
 
 public class EventUtils {
     public static void onBlockLeftClick(Consumer<PlayerInteractEvent.LeftClickBlock> callback) {

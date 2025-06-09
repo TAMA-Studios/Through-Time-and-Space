@@ -1,7 +1,12 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import com.code.tama.mtm.MTMMod;
-import net.minecraftforge.fml.loading.FMLPaths;
+import java.io.File;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.code.tama.tts.TTSMod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -9,10 +14,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public class Logger {
     public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(TriggerAPI.getModId());
@@ -58,21 +60,21 @@ public class Logger {
 
     public static void info(String message, Object... args) {
         LOGGER.info(String.format(message, args));
-        MTMMod.LOGGER_SLF4J.info(message, args);
+        TTSMod.LOGGER_SLF4J.info(message, args);
     }
 
     public static void warn(String message, Object... args) {
         LOGGER.warn(String.format(message, args));
-        MTMMod.LOGGER_SLF4J.warn(message, args);
+        TTSMod.LOGGER_SLF4J.warn(message, args);
     }
 
     public static void error(String message, Object... args) {
         LOGGER.error(String.format(message, args));
-        MTMMod.LOGGER_SLF4J.error(message, args);
+        TTSMod.LOGGER_SLF4J.error(message, args);
     }
 
     public static void debug(String message, Object... args) {
         LOGGER.debug(String.format(message, args));
-        MTMMod.LOGGER_SLF4J.error(message, args);
+        TTSMod.LOGGER_SLF4J.error(message, args);
     }
 }

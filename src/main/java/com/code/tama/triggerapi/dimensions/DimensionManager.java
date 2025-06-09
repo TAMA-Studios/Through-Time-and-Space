@@ -1,15 +1,27 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.mtm.MTMMod;
-import com.code.tama.mtm.server.dimensions.TARDISDimensionChunkGenerator;
-import com.code.tama.mtm.server.networking.Networking;
-import com.code.tama.mtm.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
-import com.code.tama.mtm.server.worlds.dimension.MDimensions;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.server.dimensions.TARDISDimensionChunkGenerator;
+import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
+import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.core.*;
 import net.minecraft.core.RegistryAccess.ImmutableRegistryAccess;
@@ -46,15 +58,6 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
-import static com.code.tama.mtm.MTMMod.MODID;
 
 /**
  * DimensionAPI internal implementation
@@ -62,15 +65,15 @@ import static com.code.tama.mtm.MTMMod.MODID;
 public final class DimensionManager implements DimensionAPI
 {
 	private DimensionManager() {}
-	
+
 	/**
 	 * singleton impl instance -- prefer calling {@link DimensionAPI#get}
 	 */
 	public static final DimensionManager INSTANCE = new DimensionManager();
-	
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Set<ResourceKey<Level>> VANILLA_LEVELS = Set.of(Level.OVERWORLD, Level.NETHER, Level.END);
-	
+
 	private Set<ResourceKey<Level>> levelsPendingUnregistration = new HashSet<>();
 
 	/**
@@ -91,13 +94,13 @@ public final class DimensionManager implements DimensionAPI
 		@SuppressWarnings("deprecation")
 		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
 		@Nullable ServerLevel existingLevel = map.get(levelKey);
-		
+
 		// If the world already exists, return it
 		return existingLevel == null
 			? createAndRegisterLevel(server, map, levelKey, dimensionFactory)
 			: existingLevel;
 	}
-	
+
 	/**
 	 * Schedules a non-vanilla level/dimension to be unregistered and removed at the end of the current server tick.<br>
 	 * This will have the following effects:<br>
@@ -111,9 +114,9 @@ public final class DimensionManager implements DimensionAPI
 	 * If a level is re-registered after unregistering it, the level will retain all prior data (unless manually deleted by a server admin.)<br>
 	 * This has no effect on the vanilla dimensions (The Overworld, The Nether, and The End);
 	 * this is because vanilla will automatically reconstitute these anyway if we try to remove them,
-	 * so we disallow their removal to avoid strangeness.<br> 
+	 * so we disallow their removal to avoid strangeness.<br>
 	 * @param server The server to remove the dimension from
-	 * @param levelToRemove The resource key for the level to be unregistered 
+	 * @param levelToRemove The resource key for the level to be unregistered
 	 */
 	public void markDimensionForUnregistration(final MinecraftServer server, final ResourceKey<Level> levelToRemove)
 	{
@@ -131,13 +134,13 @@ public final class DimensionManager implements DimensionAPI
 	{
 		return ImmutableSet.copyOf(levelsPendingUnregistration);
 	}
-	
+
 	@SuppressWarnings("deprecation") // markWorldsDirty is deprecated, see below
 	private static ServerLevel createAndRegisterLevel(final MinecraftServer server, final Map<ResourceKey<Level>, ServerLevel> map, final ResourceKey<Level> levelKey, Supplier<LevelStem> dimensionFactory)
 	{
 		// get everything we need to create the dimension and the level
 		final ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-		
+
 		// dimension keys have a 1:1 relationship with level keys, they have the same IDs as well
 		final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, levelKey.location());
 		final LevelStem dimension = dimensionFactory.get();
@@ -148,12 +151,12 @@ public final class DimensionManager implements DimensionAPI
 		final LevelStorageAccess anvilConverter = ReflectionBuddy.MinecraftServerAccess.storageSource.apply(server);
 		final WorldData worldData = server.getWorldData();
 		final DerivedLevelData derivedLevelData = new DerivedLevelData(worldData, worldData.overworldData());
-		
+
 		// now we have everything we need to create the dimension and the level
 		// this is the same order server init creates levels:
 		// the dimensions are already registered when levels are created, we'll do that first
 		// then instantiate level, add border listener, add to map, fire world load event
-		
+
 		// register the actual dimension
 		Registry<LevelStem> dimensionRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
 		if (dimensionRegistry instanceof MappedRegistry<LevelStem> writableRegistry)
@@ -185,7 +188,7 @@ public final class DimensionManager implements DimensionAPI
 			false, // "tick time", true for overworld, always false for nether, end, and json dimensions
 			(RandomSequences)null // as of 1.20.1 this argument is always null in vanilla, indicating the level should load the sequence from storage
 			);
-		
+
 		// add world border listener, for parity with json dimensions
 		// the vanilla behaviour is that world borders exist in every dimension simultaneously with the same size and position
 		// these border listeners are automatically added to the overworld as worlds are loaded, so we should do that here too
@@ -208,13 +211,13 @@ public final class DimensionManager implements DimensionAPI
 		Networking.sendPacketToAll(new SyncDimensionsS2C(levelKey, true)); // Sync dimension
 		return newLevel;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private void unregisterScheduledDimensions(final MinecraftServer server)
 	{
 		if (this.levelsPendingUnregistration.isEmpty())
 			return;
-		
+
 		// flush the buffer
 		final Set<ResourceKey<Level>> keysToRemove = this.levelsPendingUnregistration;
 		this.levelsPendingUnregistration = new HashSet<>();
@@ -239,7 +242,7 @@ public final class DimensionManager implements DimensionAPI
 			LOGGER.warn("Cannot unload dimensions: composite registry not an instance of ImmutableRegistryAccess. There may be another mod causing incompatibility with Infiniverse, or Infiniverse may be updated for your version of forge/minecraft.");
 			return;
 		}
-		
+
 		final Set<ResourceKey<Level>> removedLevelKeys = new HashSet<>();
 		final ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
@@ -248,12 +251,12 @@ public final class DimensionManager implements DimensionAPI
 			final @Nullable ServerLevel levelToRemove = server.getLevel(levelKeyToRemove);
 			if (levelToRemove == null)
 				continue;
-			
+
 			UnregisterDimensionEvent unregisterDimensionEvent = new UnregisterDimensionEvent(levelToRemove);
 			MinecraftForge.EVENT_BUS.post(unregisterDimensionEvent);
 			if (unregisterDimensionEvent.isCanceled())
 				continue;
-			
+
 			// null if specified level not present
 			final @Nullable ServerLevel removedLevel = server.forgeGetWorldMap().remove(levelKeyToRemove);
 
@@ -281,8 +284,7 @@ public final class DimensionManager implements DimensionAPI
 						destinationLevel = overworld;
 					}
 
-					@Nullable
-					BlockPos destinationPos = player.getRespawnPosition();
+					@Nullable BlockPos destinationPos = player.getRespawnPosition();
 					if (destinationPos == null)
 					{
 						destinationPos = destinationLevel.getSharedSpawnPos();
@@ -349,10 +351,10 @@ public final class DimensionManager implements DimensionAPI
 			// as of 1.20.1 the dimension registry is stored in the server's layered registryaccess
 			// this has several immutable collections of sub-registryaccesses,
 			// so we'll need to recreate each of them.
-			
+
 			// Each ServerLevel has a reference to the layered registry access's *composite* registry access
 			// so we should edit the internal fields where possible (instead of reconstructing the registry accesses)
-			
+
 			List<RegistryAccess.Frozen> newRegistryAccessList = new ArrayList<>();
 			for (RegistryLayer layer : RegistryLayer.values())
 			{
@@ -371,15 +373,15 @@ public final class DimensionManager implements DimensionAPI
 				var registries = registryAccess.registries().toList();
 				for (var registryEntry : registries)
 				{
-					newRegistryMap.put(registryEntry.key(), registryEntry.value());					
+					newRegistryMap.put(registryEntry.key(), registryEntry.value());
 				}
 			}
 			ReflectionBuddy.LayeredRegistryAccessAccess.values.set(layeredRegistryAccess, List.copyOf(newRegistryAccessList));
 			ReflectionBuddy.ImmutableRegistryAccessAccess.registries.set(immutableRegistryAccess, newRegistryMap);
-			
+
 			// update the server's levels so dead levels don't get ticked
 			server.markWorldsDirty();
-			
+
 			// notify client of the removed levels
 			QuietPacketDistributors.sendToAll(Networking.INSTANCE, new UpdateDimensionsPacket(removedLevelKeys, false));
 		}
@@ -412,11 +414,11 @@ public final class DimensionManager implements DimensionAPI
 
 
 	public static void PrepareWorld(ChunkProgressListener chunkProgress, ServerLevel level){
-		MTMMod.LOGGER.info("Preparing dynamic dimension");
+		TTSMod.LOGGER.info("Preparing dynamic dimension");
 		chunkProgress.updateSpawnPos(new ChunkPos(level.getSharedSpawnPos()));
 		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11, Unit.INSTANCE);
 	}
-	
+
 	@EventBusSubscriber(modid = MODID)
 	private static class ForgeEventHandler
 	{
@@ -432,7 +434,7 @@ public final class DimensionManager implements DimensionAPI
 				}
 			}
 		}
-		
+
 		@SubscribeEvent
 		public static void onServerStopped(final ServerStoppedEvent event)
 		{

@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
 import net.minecraft.server.level.ServerLevel;
@@ -10,12 +11,12 @@ import net.minecraftforge.eventbus.api.Event;
 public class UnregisterDimensionEvent extends Event
 {
 	private final ServerLevel level;
-	
+
 	public UnregisterDimensionEvent(ServerLevel level)
 	{
 		this.level = level;
 	}
-	
+
 	/**
 	 * @return The level that is about to be unregistered.
 	 */

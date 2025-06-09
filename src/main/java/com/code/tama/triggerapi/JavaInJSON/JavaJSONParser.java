@@ -1,13 +1,7 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
-import com.google.gson.Gson;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
+import static com.code.tama.tts.TTSMod.LOGGER;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,7 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static com.code.tama.mtm.MTMMod.LOGGER;
+import com.google.gson.Gson;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 
 public class JavaJSONParser {
 
