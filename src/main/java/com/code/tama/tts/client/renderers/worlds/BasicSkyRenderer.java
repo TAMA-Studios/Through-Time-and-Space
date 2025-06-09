@@ -1,27 +1,26 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
-
-import java.util.Random;
-
 import com.code.tama.tts.client.renderers.worlds.helper.AbstractLevelRenderer;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Vector4i;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Vector4i;
+
+import java.util.Random;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
 
 public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
     private final int SkyColor[];
@@ -34,6 +33,7 @@ public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
     public void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/night_sky.png"), new Vector4i(255, 255, 255, (int) GetOpacityForSkybox(partialTicks)));
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/void.png"), new Vector4i(this.SkyColor[0], this.SkyColor[1], this.SkyColor[2], -(int) GetOpacityForSkybox(partialTicks)));
+        assert Minecraft.getInstance().level != null;
         renderPlanet(poseStack, new Vec3(30, 400, 0), Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())), new Vec3(0, 0, 0), 2,"sun");
         renderPlanet(poseStack, new Vec3(0, 450, 75), Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())), new Vec3(0, 0, 0), 2,"sun");
     }
