@@ -1,6 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
@@ -17,13 +24,6 @@ import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class ReflectionBuddy {
     /**

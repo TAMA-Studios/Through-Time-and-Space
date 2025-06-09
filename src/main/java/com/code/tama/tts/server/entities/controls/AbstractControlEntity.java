@@ -1,12 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
+import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlHitPacketC2S;
-import com.code.tama.triggerapi.ReflectionBuddy;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -21,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractControlEntity extends Entity {
     public AbstractControlEntity(EntityType<?> entity, Level level) {

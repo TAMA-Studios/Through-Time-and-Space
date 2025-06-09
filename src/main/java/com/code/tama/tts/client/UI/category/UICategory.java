@@ -6,6 +6,7 @@ import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

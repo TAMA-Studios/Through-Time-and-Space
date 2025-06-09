@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -12,8 +14,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class MBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_ZEITON_ORE = registerKey("add_zeiton_ore");

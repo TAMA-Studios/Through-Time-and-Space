@@ -5,6 +5,7 @@ import com.code.tama.tts.server.enums.SonicInteractionType;
 import com.code.tama.tts.server.items.SonicItem;
 import com.mojang.blaze3d.platform.InputConstants;
 import cpw.mods.util.Lazy;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;

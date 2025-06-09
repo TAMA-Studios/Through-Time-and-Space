@@ -8,6 +8,8 @@ import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimat
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSItems;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import org.jetbrains.annotations.NotNull;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<String> CONTROL = SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);

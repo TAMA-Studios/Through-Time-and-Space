@@ -5,11 +5,12 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.tileentities.ExampleTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import org.jetbrains.annotations.NotNull;
 
 //                                                             \/ Replace with Tile Entity class
 public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {

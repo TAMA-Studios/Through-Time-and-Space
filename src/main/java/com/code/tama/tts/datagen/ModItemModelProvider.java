@@ -1,8 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.LinkedHashMap;
+
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSItems;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,10 +23,6 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.LinkedHashMap;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModItemModelProvider extends ItemModelProvider {
     private static LinkedHashMap<ResourceKey<TrimMaterial>, Float> trimMaterials = new LinkedHashMap<>();

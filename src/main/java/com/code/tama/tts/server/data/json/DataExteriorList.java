@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.data.json.records.DataExterior;
 import com.code.tama.tts.server.misc.Exterior;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DataExteriorList {
     @Getter

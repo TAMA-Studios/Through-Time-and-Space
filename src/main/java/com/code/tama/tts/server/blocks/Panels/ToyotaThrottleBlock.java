@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import java.util.stream.Stream;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.stream.Stream;
 
 public class ToyotaThrottleBlock extends ThrottleBlock {
     public ToyotaThrottleBlock(Properties p_54120_) {

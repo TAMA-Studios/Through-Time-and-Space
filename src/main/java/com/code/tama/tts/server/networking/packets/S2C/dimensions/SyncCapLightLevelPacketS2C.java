@@ -1,12 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Used to sync the light level between the server and the client

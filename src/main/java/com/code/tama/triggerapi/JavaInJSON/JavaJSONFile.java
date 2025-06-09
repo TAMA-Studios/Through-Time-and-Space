@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
-import com.google.gson.annotations.SerializedName;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
-
 import java.awt.*;
 import java.util.Collections;
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
+
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 class JavaJSONFile {
 

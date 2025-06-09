@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
-import net.minecraft.world.level.levelgen.placement.*;
-
 import java.util.List;
+
+import net.minecraft.world.level.levelgen.placement.*;
 
 public class MOrePlacement {
     public static List<PlacementModifier> orePlacement(PlacementModifier placementModifier, PlacementModifier placementModifier1) {

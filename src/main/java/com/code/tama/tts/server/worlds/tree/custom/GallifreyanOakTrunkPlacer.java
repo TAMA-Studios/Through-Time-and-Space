@@ -1,10 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.tree.custom;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -15,11 +21,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class GallifreyanOakTrunkPlacer extends TrunkPlacer {
     public static final Codec<GallifreyanOakTrunkPlacer> CODEC = RecordCodecBuilder.create(gallifreyanOakTrunkPlacerInstance ->

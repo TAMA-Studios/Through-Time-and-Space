@@ -2,12 +2,12 @@
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.UUID;
-import java.util.function.Supplier;
 
 /** Blows up the creeper supplied by the packet **/
 public class BlowUpCreeperPacketC2S {

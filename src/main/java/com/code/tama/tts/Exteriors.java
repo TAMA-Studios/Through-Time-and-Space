@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import com.code.tama.tts.server.misc.Exterior;
-import net.minecraft.resources.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.code.tama.tts.server.misc.Exterior;
+
+import net.minecraft.resources.ResourceLocation;
 
 public class Exteriors {
     public static ArrayList<Exterior> EXTERIORS = new ArrayList<>();

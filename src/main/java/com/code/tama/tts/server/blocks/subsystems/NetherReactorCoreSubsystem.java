@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.subsystems;
 
+import java.util.Map;
+
 import com.code.tama.tts.server.registries.TTSBlocks;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Map;
 
 public class NetherReactorCoreSubsystem extends AbstractSubsystemBlock {
     public NetherReactorCoreSubsystem(Properties p_49795_) {

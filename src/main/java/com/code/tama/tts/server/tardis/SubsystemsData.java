@@ -4,6 +4,7 @@ package com.code.tama.tts.server.tardis;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitSubsystem;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

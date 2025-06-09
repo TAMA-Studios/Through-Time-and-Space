@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import net.minecraftforge.fml.loading.FMLPaths;
-
 import java.io.*;
 import java.nio.file.Path;
+
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public class FileHelper {
     private static String getBaseDir() {

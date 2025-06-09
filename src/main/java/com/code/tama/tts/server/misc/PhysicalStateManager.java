@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import static java.lang.Math.sin;
 
 import java.text.DecimalFormat;
 
-import static java.lang.Math.sin;
+import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.tileentities.ExteriorTile;
 
 public class PhysicalStateManager {
     long TicksOld, Ticks, Difference, DifferenceOld;

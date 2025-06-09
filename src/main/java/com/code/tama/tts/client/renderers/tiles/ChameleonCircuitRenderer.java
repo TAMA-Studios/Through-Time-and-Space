@@ -7,6 +7,8 @@ import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
@@ -15,7 +17,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import org.jetbrains.annotations.NotNull;
 
 public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
     public final BlockEntityRendererProvider.Context context;

@@ -1,8 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.UI.category.PlaceholderCategory;
 import com.code.tama.tts.client.UI.category.UICategory;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,8 +13,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ControlRegistry {
     public static final ResourceKey<Registry<UICategory>> UI_CATEGORY_REGISTRY_KEY =

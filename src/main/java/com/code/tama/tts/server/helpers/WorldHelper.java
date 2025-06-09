@@ -2,6 +2,8 @@
 package com.code.tama.tts.server.helpers;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
+import org.joml.Vector3d;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -12,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.joml.Vector3d;
 
 @SuppressWarnings("deprecation")
 public class WorldHelper {

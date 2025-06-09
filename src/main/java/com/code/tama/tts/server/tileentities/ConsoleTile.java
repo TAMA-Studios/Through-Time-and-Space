@@ -4,6 +4,7 @@ package com.code.tama.tts.server.tileentities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
 import com.code.tama.tts.server.tardis.control_lists.ControlLists;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

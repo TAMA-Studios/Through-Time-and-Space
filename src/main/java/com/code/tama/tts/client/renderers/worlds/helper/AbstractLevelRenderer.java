@@ -1,17 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.helper;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import org.joml.Matrix4f;
+import org.joml.Vector4i;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix4f;
-import org.joml.Vector4i;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public abstract class AbstractLevelRenderer {
     abstract ResourceLocation EffectsLocation();

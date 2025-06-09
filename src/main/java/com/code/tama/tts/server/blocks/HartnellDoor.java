@@ -1,9 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.code.tama.tts.server.tileentities.HartnellDoorTilePlaceholder;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,10 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class HartnellDoor extends Block implements EntityBlock {

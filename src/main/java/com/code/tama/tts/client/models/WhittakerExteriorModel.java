@@ -4,20 +4,21 @@ package com.code.tama.tts.client.models;// Made with Blockbench 4.12.4
 // Paste this class into your mod and generate all required imports
 
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.models.core.HierarchicalExteriorModel;
 import com.code.tama.tts.core.Constants;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class WhittakerExteriorModel<T extends ExteriorTile> extends HierarchicalExteriorModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor

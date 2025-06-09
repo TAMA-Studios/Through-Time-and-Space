@@ -14,7 +14,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 public final class QuietPacketDistributors
 {
 	private QuietPacketDistributors() {}
-	
+
 	// sends packets to all players but just the ones that have the provided channel
 	private static final PacketDistributor<SimpleChannel> ALL = new PacketDistributor<>(
 		(distributor, channelGetter) -> packet -> ServerLifecycleHooks.getCurrentServer()

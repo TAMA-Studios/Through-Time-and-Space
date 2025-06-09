@@ -1,18 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 
 public class CrashThread extends Thread {
     ITARDISLevel itardisLevel;

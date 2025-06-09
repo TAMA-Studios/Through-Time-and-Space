@@ -5,6 +5,8 @@ import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -15,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 /** Renderer for the ExteriorTile BlockItem **/
 public class ConsoleItemRenderer extends BlockEntityWithoutLevelRenderer {

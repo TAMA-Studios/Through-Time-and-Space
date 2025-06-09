@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.threads;
 
 import com.code.tama.tts.server.enums.Structures;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Mirror;

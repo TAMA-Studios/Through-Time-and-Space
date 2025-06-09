@@ -2,13 +2,14 @@
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
-import com.code.tama.tts.server.entities.controls.ModularControl;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.entities.controls.ModularControl;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class ControlClickedPacketC2S {
 

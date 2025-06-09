@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core;
 
-import net.minecraft.resources.ResourceLocation;
-
 import static com.code.tama.tts.TTSMod.MODID;
+
+import net.minecraft.resources.ResourceLocation;
 
 public class Constants {
     public static class ExteriorModelNames {

@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.HierarchicalExteriorModel;
 import com.code.tama.tts.core.Constants;
@@ -8,16 +12,13 @@ import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TTCapsuleModel<T extends ExteriorTile> extends HierarchicalExteriorModel {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(TTSMod.MODID, "ttcapsulemodel"), "main");

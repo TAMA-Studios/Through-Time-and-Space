@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.portal;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,8 +15,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 public class PortalSyncPacketS2C {
     private final BlockPos pos;
     private final ResourceKey<Level> targetLevel;

@@ -5,6 +5,8 @@ package com.code.tama.tts.client.renderers;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.registries.TTSItems;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -12,7 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
-import org.jetbrains.annotations.NotNull;
 
 public class ControlRenderer extends EntityRenderer<ModularControl> {
     public ControlRenderer(EntityRendererProvider.Context p_174008_) {

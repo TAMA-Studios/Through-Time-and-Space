@@ -2,6 +2,8 @@
 package com.code.tama.tts.client.models;
 
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.models.core.HierarchicalExteriorModel;
 import com.code.tama.tts.core.Constants;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -9,14 +11,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModernBoxModel<T extends ExteriorTile> extends HierarchicalExteriorModel {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor

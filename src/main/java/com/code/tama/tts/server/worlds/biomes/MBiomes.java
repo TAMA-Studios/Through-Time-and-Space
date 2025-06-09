@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.biomes;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.worlds.ModPlacedFeatures;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -14,8 +17,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class MBiomes {
     public static final ResourceKey<Biome> GALLIFREYAN_PLAINS = ResourceKey.create(Registries.BIOME,

@@ -1,12 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -22,11 +29,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class DoorBlock extends Block implements EntityBlock {

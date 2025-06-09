@@ -1,7 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+
 import com.code.tama.tts.server.registries.TTSBlocks;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -15,10 +20,6 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> ZEITON_ORE_PLACED_KEY = registerKey("zeiton_ore_placed");

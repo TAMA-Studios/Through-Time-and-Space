@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.providers;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class SerializableLevelCapabilityProvider<T extends INBTSerializable<C>, C extends Tag, I extends T> implements ICapabilitySerializable<C> {
 
@@ -36,4 +37,3 @@ public class SerializableLevelCapabilityProvider<T extends INBTSerializable<C>, 
         this.CapabilityInterface.deserializeNBT(nbt);
     }
 }
-

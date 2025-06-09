@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
-
-import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * API for creating and removing dimensions/levels during game runtime.<br>

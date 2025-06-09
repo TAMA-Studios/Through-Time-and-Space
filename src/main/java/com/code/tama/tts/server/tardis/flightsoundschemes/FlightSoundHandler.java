@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.flightsoundschemes;
 
-import com.code.tama.tts.TTSMod;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.code.tama.tts.TTSMod;
 
 public class FlightSoundHandler {
     public static int GetID(AbstractSoundScheme SoundScheme) {

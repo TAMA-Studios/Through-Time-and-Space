@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.interfaces;
 
-import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.code.tama.tts.server.tileentities.ExteriorTile;
+
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IExteriorModel<T extends BlockEntity> {
     Map<Integer, ArrayList<Float>> list = new HashMap<>();

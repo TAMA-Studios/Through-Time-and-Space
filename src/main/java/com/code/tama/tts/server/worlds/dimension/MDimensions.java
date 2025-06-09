@@ -1,8 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.dimension;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+import java.util.OptionalLong;
+
 import com.code.tama.tts.server.worlds.biomes.MBiomes;
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -19,11 +25,6 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-
-import java.util.List;
-import java.util.OptionalLong;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class MDimensions {
 

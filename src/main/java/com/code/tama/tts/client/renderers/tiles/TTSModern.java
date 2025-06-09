@@ -1,16 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.mojang.math.Axis.XP;
+
 import com.code.tama.triggerapi.JavaInJSON.IUseJavaJSON;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.mojang.math.Axis.XP;
 
 public class TTSModern<T extends BlockEntity> implements IUseJavaJSON, BlockEntityRenderer<T> {
     public TTSModern(BlockEntityRendererProvider.Context context) {

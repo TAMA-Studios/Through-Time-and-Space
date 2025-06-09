@@ -289,6 +289,13 @@ spotless {
 		removeUnusedImports()
 		// fix formatting of type annotations
 		formatAnnotations()
+
+//		cleanthat()
+
+		importOrder('java', 'javax', '', 'net.minecraft', group)
+
+		trimTrailingWhitespace()
+
 		// make sure every file has the following copyright header.
 		// optionally, Spotless can set copyright years by digging
 		// through git history (see "license" section)

@@ -2,6 +2,8 @@
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.server.registries.TTSBlocks;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.AxeItem;
@@ -10,7 +12,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ToolAction;
-import org.jetbrains.annotations.Nullable;
 
 public class ModFlammableRotatedPillarBlock extends RotatedPillarBlock {
     public ModFlammableRotatedPillarBlock(Properties pProperties) {

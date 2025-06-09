@@ -1,22 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
 import com.code.tama.tts.server.worlds.MBiomeModifiers;
 import com.code.tama.tts.server.worlds.MConfiguredFeatures;
 import com.code.tama.tts.server.worlds.ModPlacedFeatures;
 import com.code.tama.tts.server.worlds.biomes.MBiomes;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()

@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.tree;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanFoliagePlacer;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModFoliagePlacers {
     public static final DeferredRegister<FoliagePlacerType<?>> FOLIAGE_PLACERS =

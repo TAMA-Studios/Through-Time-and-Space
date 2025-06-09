@@ -1,9 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanFoliagePlacer;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -21,10 +26,6 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class MConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ZEITON_ORE_KEY = registerKey("zeiton_ore");

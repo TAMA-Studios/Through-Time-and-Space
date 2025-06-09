@@ -2,20 +2,21 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.triggerapi.JavaInJSON.IUseJavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class HartnellDoorRenderer implements BlockEntityRenderer<HartnellDoorTile>, IUseJavaJSON {
     boolean IsTransferring = false;

@@ -1,16 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSBlocks.PORTAL_BLOCK;
+
 import com.code.tama.tts.server.tileentities.*;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSBlocks.PORTAL_BLOCK;
 
 public class TTSTileEntities {
 

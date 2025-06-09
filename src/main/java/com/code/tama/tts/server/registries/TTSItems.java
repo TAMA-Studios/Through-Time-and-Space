@@ -1,9 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.items.ConsoleItem;
 import com.code.tama.tts.server.items.ExteriorItem;
 import com.code.tama.tts.server.items.SonicItem;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -11,8 +14,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class TTSItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, MODID);

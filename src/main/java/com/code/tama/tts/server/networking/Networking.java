@@ -1,6 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.code.tama.triggerapi.dimensions.UpdateDimensionsPacket;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
@@ -19,6 +26,7 @@ import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVari
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
+
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -35,13 +43,6 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
-
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class Networking {
 

@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class SyncButtonAnimationSetPacketS2C {
     HashMap<Vec3, Float> AnimationSet = new HashMap<>();

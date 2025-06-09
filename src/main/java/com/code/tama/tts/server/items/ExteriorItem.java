@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items;
 
+import java.util.function.Consumer;
+
 import com.code.tama.tts.client.renderers.items.ExteriorItemRenderer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-
-import java.util.function.Consumer;
 
 public class ExteriorItem extends BlockItem {
     public ExteriorItem(Block block, Item.Properties properties) {
@@ -29,4 +30,3 @@ public class ExteriorItem extends BlockItem {
         });
     }
 }
-

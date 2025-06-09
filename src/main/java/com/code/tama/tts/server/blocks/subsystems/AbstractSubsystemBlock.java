@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.subsystems;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -8,9 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSubsystemBlock extends Block implements INBTSerializable<CompoundTag> {
     boolean Activated;

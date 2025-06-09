@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.miscs;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,8 +11,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 /** Trigger API Logger V1.0 (Don't use this it's old)**/
 @Deprecated

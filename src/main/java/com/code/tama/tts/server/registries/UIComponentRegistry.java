@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.UI.component.all.UIComponentNext;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
 import com.code.tama.tts.client.UI.component.all.UIComponentPrevious;
@@ -11,6 +13,7 @@ import com.code.tama.tts.client.UI.component.destination.UIComponentYCoord;
 import com.code.tama.tts.client.UI.component.destination.UIComponentZCoord;
 import com.code.tama.tts.client.UI.component.int_props.UIComponentLightDown;
 import com.code.tama.tts.client.UI.component.int_props.UIComponentLightUp;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,8 +21,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class UIComponentRegistry {
     public static final ResourceKey<Registry<UIComponent>> UI_COMPONENT_REGISTRY_KEY =

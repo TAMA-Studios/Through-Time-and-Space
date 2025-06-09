@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
+
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {

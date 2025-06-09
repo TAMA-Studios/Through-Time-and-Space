@@ -2,6 +2,7 @@
 package com.code.tama.tts.config;
 
 import com.code.tama.tts.TTSMod;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

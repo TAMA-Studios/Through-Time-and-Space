@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.Set;
+
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
@@ -14,6 +18,9 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import com.code.tama.tts.server.threads.PlaceStructureThread;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -29,12 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends BlockEntity {
     private ResourceKey<Level> INTERIOR_DIMENSION;

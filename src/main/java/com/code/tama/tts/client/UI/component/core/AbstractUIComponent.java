@@ -1,17 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.component.core;
 
+import java.util.Map;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.Map;
 
 @Setter
 @Getter

@@ -1,15 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import static com.mojang.math.Axis.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,7 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mojang.math.Axis.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 
 public class JavaJSONModel extends Model {
 

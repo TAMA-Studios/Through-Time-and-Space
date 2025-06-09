@@ -2,10 +2,14 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.core.interfaces.IConsoleModel;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,9 +19,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<Entity> & IConsoleModel<T>> implements BlockEntityRenderer<T> {
     public final C MODEL;

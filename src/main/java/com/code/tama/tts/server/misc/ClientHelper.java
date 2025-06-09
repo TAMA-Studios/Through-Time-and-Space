@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import java.util.Set;
+
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientHelper {
