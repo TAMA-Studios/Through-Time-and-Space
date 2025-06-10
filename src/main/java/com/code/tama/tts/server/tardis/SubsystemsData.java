@@ -12,6 +12,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class SubsystemsData implements INBTSerializable<CompoundTag> {
     public DematerializationCircuitSubsystem DematerializationCircuit = new DematerializationCircuitSubsystem();
 
+    public SubsystemsData() {}
+
     public SubsystemsData(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);
     }

@@ -47,7 +47,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     ResourceKey<Level> ExteriorDimensionKey, DestinationDimensionKey;
     FlightTerminationProtocolEnum flightTerminationProtocol;
     AbstractSoundScheme FlightSoundScheme;
-    SubsystemsData SubsystemsData;
+    SubsystemsData SubsystemsData= new SubsystemsData();
 
     public TARDISLevelCapability(Level level) {
         this.level = level;
