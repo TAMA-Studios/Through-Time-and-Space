@@ -1,18 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis;
 
-import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitSubsystem;
+import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
+import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-@Getter @Setter
+@Getter
+@Setter
 public class SubsystemsData implements INBTSerializable<CompoundTag> {
-    public DematerializationCircuitSubsystem DematerializationCircuit = new DematerializationCircuitSubsystem();
+    public DematerializationCircuit DematerializationCircuit = null;
+    public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = null;
 
-    public SubsystemsData() {}
+    public SubsystemsData() {
+    }
 
     public SubsystemsData(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);
@@ -21,12 +24,20 @@ public class SubsystemsData implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("DematerializationCircuit", this.DematerializationCircuit.serializeNBT());
+        if (this.DematerializationCircuit != null)
+            compoundTag.put("DematerializationCircuit", this.DematerializationCircuit.serializeNBT());
+
+        if (this.NetherReactorCoreSubsystem != null)
+            compoundTag.put("NetherReactorCoreSubsystem", this.NetherReactorCoreSubsystem.serializeNBT());
         return compoundTag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.DematerializationCircuit.deserializeNBT(nbt.getCompound("DematerializationCircuit"));
+        if (nbt.contains("DematerializationCircuit"))
+            this.DematerializationCircuit.deserializeNBT(nbt.getCompound("DematerializationCircuit"));
+
+        if (nbt.contains("NetherReactorCoreSubsystem"))
+            this.NetherReactorCoreSubsystem.deserializeNBT(nbt.getCompound("NetherReactorCoreSubsystem"));
     }
 }

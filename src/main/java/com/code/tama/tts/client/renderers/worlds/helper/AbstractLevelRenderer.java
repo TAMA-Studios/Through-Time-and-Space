@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractLevelRenderer {
-    abstract ResourceLocation EffectsLocation();
+    public abstract ResourceLocation EffectsLocation();
 
     public final void Render(Camera camera, Matrix4f matrix4f, PoseStack poseStack, Frustum frustum, float partialTicks) {
 //        RenderVoid(poseStack);
@@ -26,9 +26,9 @@ public abstract class AbstractLevelRenderer {
         if(this.ShouldRenderVoid()) renderVoid(poseStack);
     }
 
-    abstract void RenderLevel(Camera camera, Matrix4f matrix4f, PoseStack poseStack, Frustum frustum, float partialTicks);
+    public abstract void RenderLevel(Camera camera, Matrix4f matrix4f, PoseStack poseStack, Frustum frustum, float partialTicks);
 
-    abstract boolean ShouldRenderVoid();
+    public abstract boolean ShouldRenderVoid();
 
     public float GetOpacityForSkybox(float PartialTicks) {
         assert Minecraft.getInstance().level != null;

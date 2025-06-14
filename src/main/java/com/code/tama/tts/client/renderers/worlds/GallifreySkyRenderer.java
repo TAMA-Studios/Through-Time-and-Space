@@ -27,12 +27,12 @@ import net.minecraft.world.phys.Vec3;
 public class GallifreySkyRenderer extends AbstractLevelRenderer {
 
     @Override
-    ResourceLocation EffectsLocation() {
+    public ResourceLocation EffectsLocation() {
         return MDimensions.DimensionEffects.GALLIFREY_EFFECTS;
     }
 
     @Override
-    void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
+    public void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
 //        RenderStars(poseStack, matrix4f, partialTicks);
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/night_sky.png"), new Vector4i(255, 255, 255, (int) GetOpacityForSkybox(partialTicks)));
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/void.png"), new Vector4i(226, 168, 121, -(int) GetOpacityForSkybox(partialTicks)));
@@ -41,7 +41,7 @@ public class GallifreySkyRenderer extends AbstractLevelRenderer {
 }
 
     @Override
-    boolean ShouldRenderVoid() {
+    public boolean ShouldRenderVoid() {
         return false;
     }
 

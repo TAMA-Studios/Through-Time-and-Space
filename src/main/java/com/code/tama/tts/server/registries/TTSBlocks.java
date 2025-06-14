@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 import com.code.tama.tts.core.annotations.DimensionalTab;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
-import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitSubsystem;
-import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreSubsystem;
+import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
+import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
 
 import net.minecraft.core.BlockPos;
@@ -84,10 +84,10 @@ public class TTSBlocks {
             () -> new FragmentLinksBlock(BlockBehaviour.Properties.of().strength(0.5f).sound(SoundType.SNOW)));
 
     public static final RegistryObject<Block> DEMATERIALIZATION_CIRCUIT_CORE = RegisterWithItem("dematerialization_circuit_core",
-            () -> new DematerializationCircuitSubsystem());
+            () -> new DematerializationCircuitCoreBlock());
 
     public static final RegistryObject<Block> NETHER_REACTOR_CORE = RegisterWithItem("nether_reactor_core",
-            () -> new NetherReactorCoreSubsystem(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+            () -> new NetherReactorCoreBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal_block",
             () -> new PortalBlock(BlockBehaviour.Properties.of()

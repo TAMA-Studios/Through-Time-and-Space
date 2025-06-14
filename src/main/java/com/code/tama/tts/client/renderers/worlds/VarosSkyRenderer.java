@@ -11,12 +11,12 @@ public class VarosSkyRenderer extends BasicSkyRenderer {
     }
 
     @Override
-    ResourceLocation EffectsLocation() {
+    public ResourceLocation EffectsLocation() {
         return MDimensions.DimensionEffects.VAROS_EFFECTS;
     }
 
     @Override
-    boolean ShouldRenderVoid() {
+    public boolean ShouldRenderVoid() {
         return false;
     }
 }

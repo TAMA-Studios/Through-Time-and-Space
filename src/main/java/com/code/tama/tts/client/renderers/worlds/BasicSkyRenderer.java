@@ -31,7 +31,7 @@ public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
     }
 
     @Override
-    void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
+    public void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/night_sky.png"), new Vector4i(255, 255, 255, (int) GetOpacityForSkybox(partialTicks)));
         CustomLevelRenderer.renderImageSky(poseStack, new ResourceLocation(MODID, "textures/environment/void.png"), new Vector4i(this.SkyColor[0], this.SkyColor[1], this.SkyColor[2], -(int) GetOpacityForSkybox(partialTicks)));
         renderPlanet(poseStack, new Vec3(30, 400, 0), Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())), new Vec3(0, 0, 0), 2,"sun");
@@ -39,7 +39,7 @@ public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
     }
 
     @Override
-    abstract boolean ShouldRenderVoid();
+    public abstract boolean ShouldRenderVoid();
 
     private static void RenderStars(@NotNull PoseStack poseStack, Matrix4f projectionMatrix, float PartialTicks) {
         RenderSystem.setShader(GameRenderer::getPositionShader);

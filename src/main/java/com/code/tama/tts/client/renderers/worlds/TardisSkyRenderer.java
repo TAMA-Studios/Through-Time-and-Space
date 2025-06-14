@@ -27,17 +27,17 @@ import net.minecraft.world.phys.Vec3;
 public class TardisSkyRenderer extends AbstractLevelRenderer {
 
     @Override
-    ResourceLocation EffectsLocation() {
+    public ResourceLocation EffectsLocation() {
         return MDimensions.TARDIS_DIM_TYPE.location();
     }
 
     @Override
-    boolean ShouldRenderVoid() {
+    public boolean ShouldRenderVoid() {
         return true;
     }
 
     @Override
-    void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
+    public void RenderLevel(@NotNull Camera camera, Matrix4f matrix4f, @NotNull PoseStack poseStack, Frustum frustum, float partialTicks) {
 //        RenderStars(poseStack, matrix4f, partialTicks);
         assert Minecraft.getInstance().player != null;
         Vec3 position = Minecraft.getInstance().player.position();

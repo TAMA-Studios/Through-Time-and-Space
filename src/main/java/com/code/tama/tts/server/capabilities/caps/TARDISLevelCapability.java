@@ -47,7 +47,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     ResourceKey<Level> ExteriorDimensionKey, DestinationDimensionKey;
     FlightTerminationProtocolEnum flightTerminationProtocol;
     AbstractSoundScheme FlightSoundScheme;
-    SubsystemsData SubsystemsData= new SubsystemsData();
+    SubsystemsData SubsystemsData = new SubsystemsData();
 
     public TARDISLevelCapability(Level level) {
         this.level = level;
@@ -224,10 +224,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public ResourceKey<Level> GetCurrentLevel() {
         if (this.level.isClientSide && this.ExteriorDimensionKey == null) this.UpdateClient();
         if (this.ExteriorDimensionKey == null) {
-            this.NullExteriorChecksAndFixes();
             if (this.GetExteriorTile() != null) {
                 this.ExteriorDimensionKey = this.GetExteriorTile().getLevel().dimension();
             }
+            else
+                this.SetCurrentLevel(this.level.getServer().overworld().dimension());
         }
 
         return this.ExteriorDimensionKey == null ? Level.OVERWORLD : this.ExteriorDimensionKey;
