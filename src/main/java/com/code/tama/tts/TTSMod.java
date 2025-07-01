@@ -23,7 +23,6 @@ import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
-import com.code.tama.tts.server.worlds.biomes.MTerrablender;
 import com.code.tama.tts.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
@@ -102,8 +101,6 @@ public class TTSMod {
         ModTrunkPlacerTypes.register(modEventBus);
 
         ModFoliagePlacers.register(modEventBus);
-
-        MTerrablender.registerBiomes();
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

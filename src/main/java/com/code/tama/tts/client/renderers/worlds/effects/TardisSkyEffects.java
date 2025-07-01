@@ -188,36 +188,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
         SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
         VertexBuffer.unbind();
 
-        //
-        //        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        //        BufferUploader.drawWithShader(drawPlanet(buffer, poseStack, position, rotation, PivotPoint, size));
-
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        poseStack.popPose();
-    }
-
-    private static void testVBO(PoseStack poseStack, Matrix4f projectionMatrix) {
-        poseStack.pushPose();
-        poseStack.scale(50, 50, 50);
-        VertexBuffer testVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        buffer.vertex(-1, -1, 0).endVertex();
-        buffer.vertex(1, -1, 0).endVertex();
-        buffer.vertex(1, 1, 0).endVertex();
-        buffer.vertex(-1, 1, 0).endVertex();
-        testVBO.bind();
-        testVBO.upload(buffer.end());
-        VertexBuffer.unbind();
-
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.disableDepthTest();
-        testVBO.bind();
-        testVBO.drawWithShader(poseStack.last().pose(), projectionMatrix, GameRenderer.getPositionShader());
-        VertexBuffer.unbind();
-        RenderSystem.enableDepthTest();
         poseStack.popPose();
     }
 }

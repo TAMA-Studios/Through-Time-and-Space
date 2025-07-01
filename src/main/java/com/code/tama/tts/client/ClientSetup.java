@@ -18,6 +18,6 @@ public class ClientSetup {
     public static void registerSkyRenderers(RegisterDimensionSpecialEffectsEvent event) {
         // Register your custom sky renderer for the TARDIS dimension
         event.register(MDimensions.TARDIS_DIM_TYPE.location(), new TardisSkyEffects(MDimensions.TARDIS_DIM_TYPE));
-        event.register(MDimensions.GALLIFREY_DIM_TYPE.location(), new GallifreyEffects());
+        event.register(MDimensions.DimensionEffects.GALLIFREY_EFFECTS, new GallifreyEffects());
     }
 }

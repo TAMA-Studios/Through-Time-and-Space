@@ -1,16 +1,27 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.IForgeDimensionSpecialEffects;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 public class GallifreyEffects extends DimensionSpecialEffects implements IForgeDimensionSpecialEffects {
+    private static VertexBuffer SunsVBO = null;
 
     public GallifreyEffects() {
         super(Float.NaN, false, SkyType.NONE, false, false);
@@ -51,14 +62,91 @@ public class GallifreyEffects extends DimensionSpecialEffects implements IForgeD
 
     @Override
     public boolean renderSky(
-            @NotNull ClientLevel level,
+            ClientLevel level,
             int ticks,
             float partialTick,
-            @NotNull PoseStack poseStack,
-            @NotNull Camera camera,
-            @NotNull Matrix4f projectionMatrix,
+            PoseStack poseStack,
+            Camera camera,
+            Matrix4f projectionMatrix,
             boolean isFoggy,
-            @NotNull Runnable setupFog) {
-        return true;
+            Runnable setupFog) {
+
+        renderSun(
+                poseStack,
+                projectionMatrix,
+                new Vec3(30, 400, 0),
+                Axis.ZP.rotation(Minecraft.getInstance()
+                        .level
+                        .getSunAngle(Minecraft.getInstance().level.getGameTime())),
+                new Vec3(0, 0, 0),
+                2);
+        renderSun(
+                poseStack,
+                projectionMatrix,
+                new Vec3(0, 450, 75),
+                Axis.ZP.rotation(Minecraft.getInstance()
+                        .level
+                        .getSunAngle(Minecraft.getInstance().level.getGameTime())),
+                new Vec3(0, 0, 0),
+                2);
+
+        renderPlanet(
+                poseStack,
+                new Vec3(30, 400, 0),
+                Axis.ZP.rotation(Minecraft.getInstance()
+                        .level
+                        .getSunAngle(Minecraft.getInstance().level.getGameTime())),
+                new Vec3(0, 0, 0),
+                2,
+                "sun");
+        renderPlanet(
+                poseStack,
+                new Vec3(0, 450, 75),
+                Axis.ZP.rotation(Minecraft.getInstance()
+                        .level
+                        .getSunAngle(Minecraft.getInstance().level.getGameTime())),
+                new Vec3(0, 0, 0),
+                2,
+                "sun");
+
+        return false;
+    }
+
+    public static void renderSun(
+            @NotNull PoseStack poseStack,
+            Matrix4f matrix4f,
+            @NotNull Vec3 position,
+            Quaternionf rotation,
+            Vec3 PivotPoint,
+            float size) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
+
+        poseStack.pushPose();
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
+        poseStack.translate(position.x, position.y, position.z);
+        poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
+        poseStack.scale(5.0F, 5.0F, 5.0F);
+
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+
+        if (SunsVBO == null) {
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            SunsVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
+            SunsVBO.bind();
+            SunsVBO.upload(drawPlanet(buffer, poseStack, position, rotation, PivotPoint, size));
+
+            VertexBuffer.unbind();
+        }
+
+        SunsVBO.bind();
+        SunsVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+        VertexBuffer.unbind();
+
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+        poseStack.popPose();
     }
 }
