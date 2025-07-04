@@ -13,18 +13,27 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.IForgeDimensionSpecialEffects;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-public class GallifreyEffects extends DimensionSpecialEffects implements IForgeDimensionSpecialEffects {
+public class GallifreyEffects extends DimensionSpecialEffects {
+
+    private static VertexBuffer StarsVBO = null;
     private static VertexBuffer SunsVBO = null;
 
-    public GallifreyEffects() {
+    // Private field to store the light value
+    private float lightValue = 1.0f; // Default light value is 1.0 (full brightness)
+
+    private final ResourceKey<DimensionType> targetType;
+
+    public GallifreyEffects(ResourceKey<DimensionType> targetType) {
         super(Float.NaN, false, SkyType.NONE, false, false);
+        this.targetType = targetType;
     }
 
     @Override

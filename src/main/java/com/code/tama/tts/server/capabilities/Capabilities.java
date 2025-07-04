@@ -37,8 +37,8 @@ public class Capabilities {
         @SubscribeEvent
         public static void AttachWorldCapabilities(AttachCapabilitiesEvent<Level> event) {
 
-            // For unregistered worlds, because some mods either aren't that bright or just
-            // as hacky and gimmicky as a nintendo console
+            // For unregistered worlds, because some mods either aren't that bright or just as hacky and gimmicky as a
+            // nintendo console
             if (event.getObject()
                             .registryAccess()
                             .registryOrThrow(Registries.DIMENSION_TYPE)

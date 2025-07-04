@@ -85,8 +85,8 @@ public class MDimensions {
                         256, // height
                         256, // logicalHeight
                         BlockTags.INFINIBURN_OVERWORLD, // infiniburn
-                        DimensionEffects
-                                .GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+                        DimensionEffects.GALLIFREY_EFFECTS
+                                .location(), // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                         1.0f, // ambientLight
                         new DimensionType.MonsterSettings(false, true, ConstantInt.of(0), 0)));
 
@@ -105,14 +105,16 @@ public class MDimensions {
                         256, // height
                         256, // logicalHeight
                         BlockTags.INFINIBURN_NETHER, // infiniburn
-                        DimensionEffects
-                                .GALLIFREY_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
+                        DimensionEffects.VAROS_EFFECTS, // effectsLocation // BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                         1.0f, // ambientLight
                         new DimensionType.MonsterSettings(true, false, ConstantInt.of(0), 0)));
     }
 
     public static class DimensionEffects {
-        public static final ResourceLocation GALLIFREY_EFFECTS = new ResourceLocation(MODID, "gallifrey_sky_property");
-        public static final ResourceLocation VAROS_EFFECTS = new ResourceLocation(MODID, "varos_sky_property");
+        public static final ResourceKey<DimensionType> GALLIFREY_EFFECTS =
+                ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(MODID, "gallifrey"));
+        public static final ResourceLocation VAROS_EFFECTS = new ResourceLocation(MODID, "varos");
+        public static ResourceKey<DimensionType> TARDIS_DIM_TYPE =
+                ResourceKey.create(Registries.DIMENSION_TYPE, new ResourceLocation(MODID, "tardis"));
     }
 }

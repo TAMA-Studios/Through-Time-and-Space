@@ -14,7 +14,7 @@ public class GallifreySkyRenderer extends AbstractLevelRenderer {
 
     @Override
     public ResourceLocation EffectsLocation() {
-        return MDimensions.DimensionEffects.GALLIFREY_EFFECTS;
+        return MDimensions.DimensionEffects.GALLIFREY_EFFECTS.location();
     }
 
     @Override

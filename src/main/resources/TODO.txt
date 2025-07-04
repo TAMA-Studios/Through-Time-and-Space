@@ -1,2 +1,6 @@
 TODO:
 IMPLEMENT ENGINES (MORE!)
+Fault Locator
+Subsystem/Control durability
+Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, etc.
+Add more subsystems

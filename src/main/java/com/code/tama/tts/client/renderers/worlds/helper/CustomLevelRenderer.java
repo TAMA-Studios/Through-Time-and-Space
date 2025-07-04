@@ -288,8 +288,8 @@ public class CustomLevelRenderer {
             Quaternionf rotation,
             Vec3 PivotPoint,
             float size) {
-        Matrix4f matrix = poseStack.last().pose();
-        float BaseSize = 0.0F;
+        Matrix4f matrix = new Matrix4f(); // poseStack.last().pose();
+        float BaseSize = 20.0F;
         buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
         buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
         buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)

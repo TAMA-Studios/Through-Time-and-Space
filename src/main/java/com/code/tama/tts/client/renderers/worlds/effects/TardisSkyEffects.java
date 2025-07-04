@@ -71,26 +71,33 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
             boolean isFoggy,
             Runnable setupFog) {
 
-        Vec3 position = Minecraft.getInstance().player.position();
+        Vec3 position = Minecraft.getInstance().player.getPosition(0);
 
+        poseStack.pushPose();
+
+        //        poseStack.translate(0 - position.x,  0 - position.y, 0 - position.z);
+
+        assert Minecraft.getInstance().level != null;
         renderSun(
                 poseStack,
                 projectionMatrix,
-                new Vec3(20 - position.x, 200 - position.y, -20 - position.z),
+                new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
                 Axis.YP.rotation(Minecraft.getInstance().level.getSunAngle(partialTick)),
                 new Vec3(0, 0, 0),
-                1);
+                10);
 
+        poseStack.popPose();
+
+        poseStack.pushPose();
         RenderStars(poseStack, projectionMatrix);
+        poseStack.popPose();
+
         setupFog.run();
         return false;
     }
 
     private static void RenderStars(@NotNull PoseStack poseStack, Matrix4f matrix4f) {
         poseStack.pushPose();
-        float size = 0.5f;
-        //        poseStack.translate(0, 100, 0);
-        //        poseStack.scale(300.0F, 300.0F, 300.0F);
 
         if (StarsVBO == null) {
             RandomSource randomsource = RandomSource.create(10842L);
@@ -150,6 +157,7 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
         RenderSystem.disableDepthTest();
         StarsVBO.bind();
         StarsVBO.drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
+
         VertexBuffer.unbind();
         RenderSystem.enableDepthTest();
 
@@ -168,15 +176,15 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
         RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
 
         poseStack.pushPose();
+
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
         poseStack.translate(position.x, position.y, position.z);
         poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
-        poseStack.scale(5.0F, 5.0F, 5.0F);
 
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-        if (SunVBO == null) {
+        if (SunVBO == null || SunVBO.isInvalid()) {
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             SunVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
             SunVBO.bind();
@@ -184,9 +192,13 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
             VertexBuffer.unbind();
         }
 
-        SunVBO.bind();
-        SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
-        VertexBuffer.unbind();
+        if (!SunVBO.isInvalid()) {
+            SunVBO.bind();
+            SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+            VertexBuffer.unbind();
+        }
+
+        SunVBO.close();
 
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
