@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 
+import static com.mojang.math.Axis.ZN;
+
 public class InteriorPropsUICategory extends UICategory {
     @Override
     public void Render(
@@ -23,13 +25,15 @@ public class InteriorPropsUICategory extends UICategory {
                     StringBuilder line1 = new StringBuilder();
                     for (int i = 1; i < 15; i++) {
                         if (i <= light) {
-                            line1.append("#");
-                        } else line1.append("-");
+                            line1.append("▀");
+                        } else line1.append("☐");
                     }
 
                     int white = 0xFFFFFF;
 
                     RenderSystem.disableDepthTest();
+
+                    poseStack.pushPose();
 
                     fontRenderer.drawInBatch(
                             "TARDISOS - 1.0",
@@ -55,10 +59,12 @@ public class InteriorPropsUICategory extends UICategory {
                             0,
                             combinedLight);
 
+                    poseStack.scale(1f, 0.5f, 0.5f);
+                    poseStack.mulPose(ZN.rotationDegrees(90));
                     fontRenderer.drawInBatch(
                             line1.toString(),
-                            -40,
-                            25,
+                            -150,
+                            -30,
                             white,
                             false,
                             poseStack.last().pose(),
@@ -66,6 +72,8 @@ public class InteriorPropsUICategory extends UICategory {
                             Font.DisplayMode.NORMAL,
                             0,
                             combinedLight);
+
+                    poseStack.popPose();
                 });
     }
 }

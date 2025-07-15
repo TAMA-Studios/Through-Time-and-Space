@@ -1,17 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
-
 import com.code.tama.tts.core.annotations.DimensionalTab;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -27,6 +22,12 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 
 public class TTSBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -114,6 +115,9 @@ public class TTSBlocks {
 
     public static final RegistryObject<HartnellDoor> HARTNELL_DOOR =
             RegisterWithItemSpecial("hartnell_door", () -> new HartnellDoor(TTSTileEntities.HARTNELL_DOOR));
+
+    public static final RegistryObject<WorkbenchBlock> WORKBENCH =
+            RegisterWithItemSpecial("workbench", () -> new WorkbenchBlock());
 
     public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem(
             "fragment_links",

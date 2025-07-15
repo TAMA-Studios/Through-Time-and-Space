@@ -4,9 +4,8 @@ package com.code.tama.tts.server.items;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.enums.SonicInteractionType;
-import com.code.tama.tts.server.misc.ClientUtil;
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
+import com.code.tama.tts.server.misc.sonic.SonicMode;
+import com.code.tama.tts.server.registries.SonicModeRegistry;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
@@ -41,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SonicItem extends Item {
-    public SonicInteractionType InteractionType = SonicInteractionType.BLOCKS;
+    public SonicMode InteractionType = SonicModeRegistry.BLOCKS.get();
 
     public SonicItem(Properties properties) {
         super(properties);
@@ -50,67 +48,14 @@ public class SonicItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             Level level, Player player, InteractionHand interactionHand) {
-        if (interactionHand == InteractionHand.OFF_HAND)
-            return InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
-
-        if (player.isCrouching()) {
-            this.InteractionType = SonicInteractionType.values()[
-                    this.InteractionType.ordinal() < SonicInteractionType.values().length - 1
-                            ? this.InteractionType.ordinal() + 1
-                            : 0];
-            if (!level.isClientSide) player.sendSystemMessage(this.InteractionType.Name());
-        }
-
-        if (this.InteractionType == SonicInteractionType.BLOCKS)
-            return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
-
-        if (!(this.InteractionType == SonicInteractionType.ENTITY))
-            // return
-            // InteractionResultHolder.pass(player.getItemInHand(InteractionHand.MAIN_HAND));
-            this.EntityInteraction(level);
 
         return super.use(level, player, interactionHand);
     }
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext useOnContext) {
-        switch (this.InteractionType) {
-            case BLOCKS -> this.BlockInteraction(useOnContext);
-            case SCANNER -> this.ScannerInteraction(useOnContext);
-            case ENTITY -> this.EntityInteraction(useOnContext.getLevel());
-        }
 
-        return InteractionResult.PASS;
-    }
-
-    public InteractionResult EntityInteraction(@NotNull Level level) {
-        if (level.isClientSide()) return InteractionResult.PASS;
-
-        Entity lookingAtEntity = ClientUtil.GetEntityClientIsLookingAt();
-
-        if (lookingAtEntity instanceof Creeper creeper) {
-            Networking.sendToServer(new BlowUpCreeperPacketC2S(creeper.getUUID()));
-            creeper.ignite();
-            return InteractionResult.SUCCESS;
-        }
-
-        // if (lookingAtEntity instanceof Skeleton skeleton) {
-        // buf.writeUUID(skeleton.getUUID());
-        // NetworkManager.sendToServer(NetworkHandler.KILL_ENTITY, buf);
-        // return InteractionResult.SUCCESS;
-        // }
-        //
-        // if (lookingAtEntity instanceof ZombieVillager zombieVillager) {
-        // buf.writeUUID(zombieVillager.getUUID());
-        // NetworkManager.sendToServer(NetworkHandler.CURE_VILLAGER, buf);
-        // return InteractionResult.SUCCESS;
-        // }
-
-        return InteractionResult.FAIL;
-    }
-
-    public InteractionResult ScannerInteraction(UseOnContext useOnContext) {
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     public InteractionResult BlockInteraction(@NotNull UseOnContext useOnContext) {

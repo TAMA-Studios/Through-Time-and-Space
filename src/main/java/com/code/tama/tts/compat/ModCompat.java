@@ -2,10 +2,11 @@
 package com.code.tama.tts.compat;
 
 import com.code.tama.tts.server.worlds.biomes.MTerrablender;
-import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraftforge.fml.ModList;
+
+import java.util.ArrayList;
 
 public class ModCompat {
     private static ArrayList<CompatThingy> compatList = new ArrayList<>();
@@ -16,7 +17,7 @@ public class ModCompat {
     }
 
     private static void RegisterCompat(String modid, CompatClass clazz) {
-        compatList.set(ID++, new CompatThingy(modid, clazz));
+        compatList.add(ID++, new CompatThingy(modid, clazz));
     }
 
     public static void Run() {
