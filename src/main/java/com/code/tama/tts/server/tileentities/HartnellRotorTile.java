@@ -14,7 +14,7 @@ public class HartnellRotorTile extends TickingTile {
     private AnimationState RotorAnimationState = new AnimationState();
 
     public HartnellRotorTile(BlockPos pos, BlockState state) {
-        super(TTSTileEntities.EXAMPLE_TILE.get(), pos, state);
+        super(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
     }
 
     @Override

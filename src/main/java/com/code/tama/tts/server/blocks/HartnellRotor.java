@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import com.code.tama.tts.server.tileentities.PortalTileEntity;
+import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -22,11 +22,11 @@ public class HartnellRotor extends Block implements EntityBlock {
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-        return PortalTileEntity::tick;
+        return HartnellRotorTile::tick;
     }
 
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new PortalTileEntity(pos, state);
+        return new HartnellRotorTile(pos, state);
     }
 }
