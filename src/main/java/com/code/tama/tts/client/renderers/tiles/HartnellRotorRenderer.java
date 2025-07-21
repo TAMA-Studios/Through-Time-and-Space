@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.core.interfaces.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,6 +15,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class HartnellRotorRenderer<
                 T extends HartnellRotorTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
@@ -41,14 +41,14 @@ public class HartnellRotorRenderer<
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
-        poseStack.translate(-0.5, -1.5, 0.5);
+        poseStack.translate(0.5, -1.5, -0.5);
         poseStack.scale(1f, 1f, 1f);
         assert Minecraft.getInstance().level != null;
         float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
         this.MODEL.SetupAnimations(Tile, ticks);
         this.MODEL.renderToBuffer(
                 poseStack,
-                bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE)),
+                bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE, true)),
                 combinedLight,
                 OverlayTexture.NO_OVERLAY,
                 1.0f,
