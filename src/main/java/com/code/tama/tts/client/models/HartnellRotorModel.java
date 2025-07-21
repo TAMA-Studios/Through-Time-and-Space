@@ -25,7 +25,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into
     // this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION =
-            new ModelLayerLocation(new ResourceLocation(TTSMod.MODID, "HartnellRotor"), "main");
+            new ModelLayerLocation(new ResourceLocation(TTSMod.MODID, "hartnellrotor"), "main");
     private final ModelPart bone;
     private final ModelPart glass;
     private final ModelPart bone3;
