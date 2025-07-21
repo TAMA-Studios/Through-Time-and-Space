@@ -1,21 +1,23 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.sonic;
 
 import com.code.tama.tts.server.misc.ClientUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SonicEntityMode extends SonicMode{
+public class SonicEntityMode extends SonicMode {
 
     @Override
-    public ResourceLocation getTexture() {
-        return null;
+    public Item getIcon() {
+        return Items.CREEPER_HEAD;
     }
 
     @Override
@@ -29,13 +31,13 @@ public class SonicEntityMode extends SonicMode{
             return;
         }
 
-         if (lookingAtEntity instanceof Skeleton skeleton) {
-             skeleton.kill();
-             return;
-         }
-         if (lookingAtEntity instanceof ZombieVillager zombieVillager) {
-             zombieVillager.convertTo(EntityType.VILLAGER, true);
-             return;
-         }
+        if (lookingAtEntity instanceof Skeleton skeleton) {
+            skeleton.kill();
+            return;
+        }
+        if (lookingAtEntity instanceof ZombieVillager zombieVillager) {
+            zombieVillager.convertTo(EntityType.VILLAGER, true);
+            return;
+        }
     }
 }

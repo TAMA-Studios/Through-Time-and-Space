@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
+
 import com.code.tama.tts.client.models.*;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
@@ -19,9 +23,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {
@@ -52,8 +53,9 @@ public class ClientRegistry {
         event.registerLayerDefinition(ModernBoxModel.LAYER_LOCATION, ModernBoxModel::createBodyLayer);
         event.registerLayerDefinition(WhittakerExteriorModel.LAYER_LOCATION, WhittakerExteriorModel::createBodyLayer);
         event.registerLayerDefinition(TTCapsuleModel.LAYER_LOCATION, TTCapsuleModel::createBodyLayer);
-        event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
-        event.registerLayerDefinition(HudolinConsole.LAYER_LOCATION, HudolinConsole::createBodyLayer);
+        event.registerLayerDefinition(
+                ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
+        event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -65,8 +67,12 @@ public class ClientRegistry {
         event.registerBlockEntityRenderer(
                 TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
                 context -> new ConsoleRenderer<>(
-                        context, new HudolinConsole<>(context.bakeLayer(HudolinConsole.LAYER_LOCATION))));
+                        context, new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
+        event.registerBlockEntityRenderer(
+                HARTNELL_ROTOR.get(),
+                context -> new HartnellRotorRenderer<>(
+                        context, new HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ChameleonCircuitRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);

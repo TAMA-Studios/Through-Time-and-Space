@@ -1,11 +1,11 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.workbench;
-
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class WorkBenchRecipe {
     Item Ingredients[] = new Item[4];
@@ -24,20 +24,21 @@ public class WorkBenchRecipe {
         this.Ingredients[2] = ThirdIngredient;
         this.Ingredients[3] = FourthIngredient;
     }
-    public WorkBenchRecipe AddReceivingItem(Item Received){
+
+    public WorkBenchRecipe AddReceivingItem(Item Received) {
         this.Result = Received;
         return this;
     }
 
-    public WorkBenchRecipe Get(){
+    public WorkBenchRecipe Get() {
         return this;
     }
 
-    public List<Item> GetList(){
+    public List<Item> GetList() {
         return Arrays.asList(this.Ingredients);
     }
 
-    public List<Ingredient> GetIngredientList(){
+    public List<Ingredient> GetIngredientList() {
         Ingredient ingredient1 = Ingredient.of(this.Ingredients[0].asItem());
         Ingredient ingredient2 = Ingredient.of(this.Ingredients[1].asItem());
         Ingredient ingredient3 = Ingredient.of(this.Ingredients[2].asItem());
@@ -48,10 +49,10 @@ public class WorkBenchRecipe {
         ingredients.add(ingredient3);
         ingredients.add(ingredient4);
         return ingredients;
-//        return
+        //        return
     }
 
-    public Item GetOutput(){
+    public Item GetOutput() {
         return this.Result;
     }
 }

@@ -4,7 +4,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.2
 // Paste this class into your mod and generate all required imports
 
 import com.code.tama.tts.client.animations.consoles.HudolinConsoleAnimation;
-import com.code.tama.tts.core.interfaces.IConsoleModel;
+import com.code.tama.tts.core.interfaces.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,7 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class HudolinConsole<T extends ConsoleTile> extends HierarchicalModel<Entity> implements IConsoleModel<T> {
+public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalModel<Entity>
+        implements IAnimateableModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION =
@@ -2024,7 +2025,7 @@ public class HudolinConsole<T extends ConsoleTile> extends HierarchicalModel<Ent
 
     private final ModelPart z;
 
-    public HudolinConsole(ModelPart root) {
+    public HudolinConsoleModel(ModelPart root) {
         this.root = root.getChild("root");
         this.console_plinth_one = this.root.getChild("console_plinth_one");
         this.console_plinth_two = this.root.getChild("console_plinth_two");

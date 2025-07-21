@@ -1,4 +1,7 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
 import com.code.tama.tts.server.misc.sonic.SonicEntityMode;
@@ -10,8 +13,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class SonicModeRegistry {
     public static final ResourceKey<Registry<SonicMode>> SONIC_MODE_REGISTRY_KEY =
@@ -26,8 +27,8 @@ public class SonicModeRegistry {
     public static final RegistryObject<SonicEntityMode> ENTITY = SONIC_MODE.register("entity", SonicEntityMode::new);
 
     public static void register(IEventBus modEventBus) {
-        SONIC_MODE.makeRegistry(() ->
-                new RegistryBuilder<SonicMode>().hasTags().disableSaving().disableSync());
+        SONIC_MODE.makeRegistry(
+                () -> new RegistryBuilder<SonicMode>().hasTags().disableSaving().disableSync());
         SONIC_MODE.register(modEventBus);
     }
 }

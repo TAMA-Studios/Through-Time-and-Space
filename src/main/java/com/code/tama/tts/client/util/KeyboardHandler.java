@@ -18,12 +18,14 @@ public class KeyboardHandler {
             while (SONIC_MODE.get().consumeClick()) {
                 if (Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SonicItem sonic) {
                     // TODO: what the hell is this fix it lmfao
-//                    sonic.InteractionType = SonicInteractionType.values()[
-//                            sonic.InteractionType.ordinal() < SonicInteractionType.values().length - 1
-//                                    ? sonic.InteractionType.ordinal() + 1
-//                                    : 0];
-//
-//                    Minecraft.getInstance().player.sendSystemMessage(sonic.InteractionType.Name());
+                    //                    sonic.InteractionType = SonicInteractionType.values()[
+                    //                            sonic.InteractionType.ordinal() < SonicInteractionType.values().length
+                    // - 1
+                    //                                    ? sonic.InteractionType.ordinal() + 1
+                    //                                    : 0];
+                    //
+                    //
+                    // Minecraft.getInstance().player.sendSystemMessage(sonic.InteractionType.Name());
                 }
             }
         }
