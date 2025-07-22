@@ -26,6 +26,8 @@ jobs:
       - name: Grant Execute Permissions for Gradlew
         run: chmod +x ./gradlew
 # yes this was copied from aseoha
+      - name: More gradle
+        run: ./gradlew wrapper
 
       - name: Build
         run: ./gradlew build
