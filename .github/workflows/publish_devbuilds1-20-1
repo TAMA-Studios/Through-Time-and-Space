@@ -25,9 +25,7 @@ jobs:
 
       - name: Grant Execute Permissions for Gradlew
         run: chmod +x ./gradlew
-# oh boy. this may cause issues but idrc rn
-      #- name: Run data generation
-      #  run: ./gradlew runData
+# yes this was copied from aseoha
 
       - name: Build
         run: ./gradlew build
