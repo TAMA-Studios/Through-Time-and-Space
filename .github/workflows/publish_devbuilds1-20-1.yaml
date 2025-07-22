@@ -36,7 +36,13 @@ jobs:
         run: ./gradlew build
         # env:
         #   BETA: 1 # exclude assets if it's a beta dev build
-
+      - name: Rename artifact with run number
+        run: |
+          for f in build/libs/*.jar; do
+            base="${f%.jar}"
+            mv "$f" "${base}-B${{ github.run_number }}.jar"
+          done
+    
       - name: Publish artifacts
         uses: DrTheodor/discord-webhook-upload-action@v1.2
         with:
