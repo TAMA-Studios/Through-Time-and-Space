@@ -22,6 +22,7 @@ public class HartnellRotorRenderer<
                 T extends HartnellRotorTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
         implements BlockEntityRenderer<T> {
     public static ResourceLocation TEXTURE;
+    public static ResourceLocation EMMISIVE_TEXTURE;
     public final C MODEL;
 
     public HartnellRotorRenderer(BlockEntityRendererProvider.Context context, C model) {
@@ -38,6 +39,7 @@ public class HartnellRotorRenderer<
             int combinedOverlay) {
 
         TEXTURE = new ResourceLocation(MODID, "textures/tiles/hartnell_rotor.png");
+        EMMISIVE_TEXTURE = new ResourceLocation(MODID, "textures/tiles/hartnell_rotor_emmisive.png");
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
@@ -48,8 +50,18 @@ public class HartnellRotorRenderer<
         this.MODEL.SetupAnimations(Tile, ticks);
         this.MODEL.renderToBuffer(
                 poseStack,
-                bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE, true)),
+                bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE)),
                 combinedLight,
+                OverlayTexture.NO_OVERLAY,
+                1.0f,
+                1.0f,
+                1.0f,
+                1.0f);
+
+        this.MODEL.renderToBuffer(
+                poseStack,
+                bufferSource.getBuffer(RenderType.entityCutout(EMMISIVE_TEXTURE)),
+                0xf000f0,
                 OverlayTexture.NO_OVERLAY,
                 1.0f,
                 1.0f,
