@@ -2,7 +2,7 @@ name: Automated donator builds
 
 on:
   push:
-    branches: [ "Master" ]
+    branches: [ "master" ]
 
 jobs:
   build:
