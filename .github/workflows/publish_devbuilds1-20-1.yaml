@@ -28,7 +28,10 @@ jobs:
 # yes this was copied from aseoha
       - name: More gradle
         run: gradle wrapper
+      - name: hold up. let him cook
+        run: ./gradlew spotlessApply
 
+        
       - name: Build
         run: ./gradlew build
         # env:
