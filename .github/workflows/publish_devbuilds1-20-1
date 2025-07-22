@@ -1,0 +1,47 @@
+name: Automated donator builds
+
+on:
+  push:
+    branches: [ "Master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+
+      - name: Grant Execute Permissions for Gradlew
+        run: chmod +x ./gradlew
+# oh boy. this may cause issues but idrc rn
+      #- name: Run data generation
+      #  run: ./gradlew runData
+
+      - name: Build
+        run: ./gradlew build
+        # env:
+        #   BETA: 1 # exclude assets if it's a beta dev build
+
+      - name: Publish artifacts
+        uses: DrTheodor/discord-webhook-upload-action@v1.2
+        with:
+          url: ${{ secrets.DEV_BUILDS }}
+          file: 'build/libs/*'
+          username: TAMAman
+          avatar: 'https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png'
+          commit: '> :sparkles: [%MESSAGE%](<%LINK%>) by [%AUTHOR%](<%AUTHOR_LINK%>) '
+          message: |
+            <:new1:1253371736510959636><:new2:1253371805734015006> New `Through Time and Space` dev build `#${{ github.run_number }}`:
+            %COMMITS%
