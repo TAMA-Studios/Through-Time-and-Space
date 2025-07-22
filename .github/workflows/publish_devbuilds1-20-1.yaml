@@ -27,7 +27,7 @@ jobs:
         run: chmod +x ./gradlew
 # yes this was copied from aseoha
       - name: More gradle
-        run: ./gradlew wrapper
+        run: gradle wrapper
 
       - name: Build
         run: ./gradlew build
