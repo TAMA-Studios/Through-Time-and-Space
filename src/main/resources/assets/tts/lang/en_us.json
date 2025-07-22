@@ -19,8 +19,8 @@
   "tts.tardis.control.increment_control": "Coordinate Increment Modifier",
   "tts.tardis.control.power_control": "Power Switch",
   "tts.tardis.control.facing_control": "Facing Modifier",
-  "tts.tab.main": "Tech Blocks (Modern TARDIS)",
-  "tts.tab.dimensional": "Dimensional Blocks (Modern TARDIS)",
-  "tts.keybinds.catagory": "Modern TARDIS Mod",
+  "tts.tab.main": "Tech Blocks (TTS)",
+  "tts.tab.dimensional": "Dimensional Blocks (TTS)",
+  "tts.keybinds.catagory": "Through Time and Space",
   "tts.keybinds.sonic_mode": "Change Sonic Interaction Mode"
 }
