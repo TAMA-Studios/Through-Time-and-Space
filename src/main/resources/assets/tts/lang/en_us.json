@@ -22,5 +22,10 @@
   "tts.tab.main": "Tech Blocks (TTS)",
   "tts.tab.dimensional": "Dimensional Blocks (TTS)",
   "tts.keybinds.catagory": "Through Time and Space",
-  "tts.keybinds.sonic_mode": "Change Sonic Interaction Mode"
+  "tts.keybinds.sonic_mode": "Change Sonic Interaction Mode",
+  "block.tts.dimentional.gallifreyan.gallifreyan_oak_log": "Gallifreyan Oak Log",
+  "block.tts.dimentional.gallifreyan.gallifreyan_sand": "Gallifreyan Sand",
+  "block.tts.dimentional.gallifreyan.gallifreyan_oak_wood": "Gallifreyan Oak wood",
+  "block.tts.dimentional.gallifreyan.gallifreyan_oak_log_stripped": "Stripped Gallifreyan Oak Log",
+  "block.tts.dimentional.gallifreyan.gallifreyan_oak_wood_stripped": "Stripped Gallifreyan Oak Wood"
 }
