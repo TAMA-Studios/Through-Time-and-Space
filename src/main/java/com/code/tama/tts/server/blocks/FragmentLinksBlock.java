@@ -66,7 +66,7 @@ public class FragmentLinksBlock extends Block {
 
     private boolean canConnectTo(LevelAccessor level, BlockPos neighborPos, Direction direction) {
         BlockState neighborState = level.getBlockState(neighborPos);
-        return neighborState.getBlock() instanceof FragmentLinksBlock;
+        return neighborState.getBlock() instanceof FragmentLinksBlock || neighborState.getBlock() instanceof AbstractSubsystemBlock || neighborState.getBlock() instanceof EngineBlock;
     }
 
 
