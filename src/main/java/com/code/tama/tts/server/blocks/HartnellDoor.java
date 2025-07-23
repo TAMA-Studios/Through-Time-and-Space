@@ -4,8 +4,6 @@ package com.code.tama.tts.server.blocks;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.code.tama.tts.server.tileentities.HartnellDoorTilePlaceholder;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +26,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 @SuppressWarnings("deprecation")
 public class HartnellDoor extends Block implements EntityBlock {
     private boolean IsOpen = false;
@@ -48,6 +49,7 @@ public class HartnellDoor extends Block implements EntityBlock {
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState state) {
+        if(levelAccessor.isClientSide()) return;
         this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
         super.destroy(levelAccessor, blockPos, state);
     }

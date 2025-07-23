@@ -8,7 +8,7 @@ import com.code.tama.tts.client.UI.component.core.UIComponent;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
-import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
+import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -50,7 +50,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
                     poseStack.pushPose();
 
                     this.ApplyDefaultTransforms(poseStack, monitor);
-                    this.ApplyCustomTransforms(poseStack, bufferSource);
 
                     if (this.category == null
                             || (this.category != null && this.category.getID() != monitor.categoryID)) {
@@ -220,7 +219,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         return 44.3f;
     }
 
-    public void ApplyCustomTransforms(PoseStack stack, MultiBufferSource bufferSource) {}
+    public void ApplyCustomTransforms(PoseStack stack) {}
 
     public void ApplyDefaultTransforms(PoseStack poseStack, AbstractMonitorTile monitor) {
         poseStack.translate(0.5, 0.98, 0.5);
@@ -246,5 +245,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
                 };
 
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        this.ApplyCustomTransforms(poseStack);
     }
 }

@@ -1,9 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
-import com.code.tama.tts.server.tileentities.MonitorPanelTile;
+import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class MonitorPanelRenderer extends AbstractMonitorRenderer<MonitorPanelTile> {
@@ -11,7 +10,7 @@ public class MonitorPanelRenderer extends AbstractMonitorRenderer<MonitorPanelTi
         super(context);
     }
 
-    public void ApplyCustomTransforms(PoseStack stack, MultiBufferSource bufferSource) {}
+    public void ApplyCustomTransforms(PoseStack stack) {}
 
     // public final BlockEntityRendererProvider.Context context;
     // public static final int fullBright = LightTexture.pack(15, 15);

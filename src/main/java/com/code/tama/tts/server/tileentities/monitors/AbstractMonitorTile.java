@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.tileentities;
+package com.code.tama.tts.server.tileentities.monitors;
 
-import com.code.tama.tts.server.blocks.AbstractMonitorBlock;
+import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;

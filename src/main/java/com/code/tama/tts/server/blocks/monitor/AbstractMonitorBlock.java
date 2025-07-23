@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.blocks;
+package com.code.tama.tts.server.blocks.monitor;
 
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
-import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
+import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +55,7 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
     @Override
     public @NotNull InteractionResult use(
             @NotNull BlockState state,
-            Level world,
+            @NotNull Level world,
             @NotNull BlockPos pos,
             @NotNull Player player,
             @NotNull InteractionHand hand,

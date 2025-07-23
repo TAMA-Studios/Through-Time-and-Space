@@ -5,7 +5,7 @@ import com.code.tama.tts.client.UI.component.core.ComponentTypes;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
-import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
+import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import net.minecraft.world.entity.player.Player;
 
 public class UIComponentXCoord extends UIComponent {

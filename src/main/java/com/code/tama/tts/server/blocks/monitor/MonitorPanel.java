@@ -1,35 +1,25 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.blocks;
+package com.code.tama.tts.server.blocks.monitor;
 
+import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.registries.TTSTileEntities;
-import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class MonitorBlock extends AbstractMonitorBlock {
-    private final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createShape().optimize());
+public class MonitorPanel extends AbstractMonitorBlock {
+    private static final VoxelRotatedShape SHAPE =
+            new VoxelRotatedShape(Block.box(0.25, 0.25, 15, 15.75, 15.75, 16).optimize());
 
-    public MonitorBlock(Properties p_49795_) {
+    public MonitorPanel(Properties p_49795_) {
         super(p_49795_);
-    }
-
-    public VoxelShape createShape() {
-        return Stream.of(
-                        Block.box(0, 0, 0, 16, 16, 2),
-                        Block.box(7, 1.500000009613037, 1.9403799999999993, 9, 8.500000009613037, 14.94038),
-                        Block.box(7, 0, 12.94038, 9, 3, 14.94038))
-                .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
-                .get();
     }
 
     public @NotNull VoxelShape getShape(
@@ -42,6 +32,6 @@ public class MonitorBlock extends AbstractMonitorBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return TTSTileEntities.MONITOR_TILE.get().create(blockPos, blockState);
+        return TTSTileEntities.MONITOR_PANEL_TILE.get().create(blockPos, blockState);
     }
 }

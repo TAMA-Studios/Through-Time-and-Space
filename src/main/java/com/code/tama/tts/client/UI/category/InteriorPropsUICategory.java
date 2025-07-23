@@ -1,15 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
-import static com.mojang.math.Axis.ZN;
-
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
-import com.code.tama.tts.server.tileentities.AbstractMonitorTile;
+import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+
+import static com.mojang.math.Axis.ZN;
 
 public class InteriorPropsUICategory extends UICategory {
     @Override

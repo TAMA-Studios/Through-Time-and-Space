@@ -3,6 +3,7 @@ package com.code.tama.tts.client;
 
 import com.code.tama.tts.client.models.*;
 import com.code.tama.tts.client.renderers.ControlRenderer;
+import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.*;
@@ -76,6 +77,7 @@ public class ClientRegistry {
                         context, new HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION))));
         event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ChameleonCircuitRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.CRT_MONITOR_TILE.get(), CRTMonitorRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
         // Register your renderer here, first value here \/ is the Tile RegistryObject
         // \/ is the renderer

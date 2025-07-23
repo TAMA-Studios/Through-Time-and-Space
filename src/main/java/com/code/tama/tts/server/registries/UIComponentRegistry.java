@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.client.UI.component.all.UIComponentNext;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
 import com.code.tama.tts.client.UI.component.all.UIComponentPrevious;
@@ -21,6 +19,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 public class UIComponentRegistry {
     public static final ResourceKey<Registry<UIComponent>> UI_COMPONENT_REGISTRY_KEY =
             ResourceKey.createRegistryKey(new ResourceLocation(MODID, "ui_components"));
@@ -38,6 +38,7 @@ public class UIComponentRegistry {
 
     public static final RegistryObject<UIComponent> NEXT = UI_COMPONENTS.register(
             "next", () -> new UIComponentNext(new Float[] {14f, 15f}, new Float[] {14f, 15f}, ComponentTypes.BUTTON));
+
     public static final RegistryObject<UIComponent> POWER = UI_COMPONENTS.register(
             "power",
             () -> new UIComponentPower(new Float[] {14.5f, 15.5f}, new Float[] {0.5f, 1.5f}, ComponentTypes.BUTTON));
