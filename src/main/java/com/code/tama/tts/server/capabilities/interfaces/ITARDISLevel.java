@@ -15,6 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+    /** Returns whether the TARDIS is capable of flight in its current state **/
+    boolean CanFly();
+
     public Direction NextDestinationFacing();
     /**
      * Crash's the TARDIS, basically explosion at the exterior, particles, maybe

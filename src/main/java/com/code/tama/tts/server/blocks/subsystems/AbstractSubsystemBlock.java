@@ -18,6 +18,8 @@ public abstract class AbstractSubsystemBlock extends Block {
 
     public abstract void OnActivate(Level level, BlockPos blockPos);
 
+    public abstract void OnDeActivate(Level level, BlockPos blockPos);
+
     /**
      * Called when the subsystem is tied into the engine block via fragment links
      *
@@ -26,6 +28,7 @@ public abstract class AbstractSubsystemBlock extends Block {
      *            verifying that it in indeed a valid multiblock structure
      **/
     public void OnIntegration(Level level, BlockPos blockPos) {
+        this.subsystem.setBlockPos(blockPos);
         if (this.subsystem.IsValid(level, blockPos)) this.subsystem.OnActivate(level, blockPos);
     }
 }

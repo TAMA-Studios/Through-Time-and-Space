@@ -26,7 +26,6 @@ public class DematerializationCircuit extends AbstractSubsystem {
         map.put(BlockPos.ZERO.south(), Blocks.IRON_TRAPDOOR.defaultBlockState());
         map.put(BlockPos.ZERO.west(), Blocks.IRON_TRAPDOOR.defaultBlockState());
         map.put(BlockPos.ZERO.east(), Blocks.IRON_TRAPDOOR.defaultBlockState());
-        map.put(BlockPos.ZERO.north(), Blocks.AIR.defaultBlockState());
         map.put(BlockPos.ZERO.north().east(), Blocks.IRON_BLOCK.defaultBlockState());
         map.put(BlockPos.ZERO.north().west(), Blocks.IRON_BLOCK.defaultBlockState());
         map.put(BlockPos.ZERO.south().east(), Blocks.IRON_BLOCK.defaultBlockState());
@@ -48,6 +47,13 @@ public class DematerializationCircuit extends AbstractSubsystem {
     @Override
     public void OnActivate(Level level, BlockPos blockPos) {
         this.Activated = true;
+        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
+    }
+
+    @Override
+    public void OnDeActivate(Level level, BlockPos blockPos) {
+        this.Activated = false;
         level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
     }

@@ -14,5 +14,12 @@ public class NetherReactorCoreBlock extends AbstractSubsystemBlock {
      * When the subsystem is activated
      **/
     @Override
-    public void OnActivate(Level level, BlockPos blockPos) {}
+    public void OnActivate(Level level, BlockPos blockPos) {
+        this.getSubsystem().OnActivate(level, blockPos);
+    }
+
+    @Override
+    public void OnDeActivate(Level level, BlockPos blockPos) {
+        this.getSubsystem().OnDeActivate(level, blockPos);
+    }
 }

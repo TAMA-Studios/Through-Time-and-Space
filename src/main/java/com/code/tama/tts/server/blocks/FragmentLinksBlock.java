@@ -103,7 +103,7 @@ public class FragmentLinksBlock extends Block {
      *            If this is the "Master" links, or the very first link that checks
      *            the others.
      */
-    public void LoopTest(Level level, BlockPos pos, Direction direction, boolean Master, int iteration) {
+    public void LoopTest(Level level, BlockPos pos, Direction direction, boolean Master, int iteration, boolean isBroken) {
         if (direction == null) direction = Direction.NORTH;
         for (Direction testing : Direction.values()) {
             if (!testing.equals(direction.getOpposite()) || Master) {
@@ -111,7 +111,7 @@ public class FragmentLinksBlock extends Block {
                         instanceof FragmentLinksBlock fragmentLinks) {
                     if (iteration > 14) return;
 
-                    fragmentLinks.LoopTest(level, pos.relative(testing, 1), testing, false, iteration + 1);
+                    fragmentLinks.LoopTest(level, pos.relative(testing, 1), testing, false, iteration + 1, isBroken);
                     makeParticle(level, pos.above());
 
                     System.out.println(iteration);
@@ -119,7 +119,9 @@ public class FragmentLinksBlock extends Block {
 
                 if (level.getBlockState(pos.relative(testing, 1)).getBlock()
                         instanceof AbstractSubsystemBlock abstractSubsystemBlock) {
-                    abstractSubsystemBlock.OnIntegration(level, pos.relative(testing, 1));
+                    if(!isBroken)
+                        abstractSubsystemBlock.OnIntegration(level, pos.relative(testing, 1));
+                    else abstractSubsystemBlock.OnDeActivate(level, pos.relative(testing, 1));
                 }
             }
         }
@@ -138,7 +140,13 @@ public class FragmentLinksBlock extends Block {
     @SuppressWarnings("deprecation")
     public void onPlace(BlockState state, Level level, BlockPos blockPos, BlockState state1, boolean p_60570_) {
         super.onPlace(state, level, blockPos, state1, p_60570_);
-        this.LoopTest(level, blockPos, Direction.NORTH, true, 0);
+        this.LoopTest(level, blockPos, Direction.NORTH, true, 0, false);
+    }
+
+    @Override
+    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState1, boolean b) {
+        this.LoopTest(level, blockPos, Direction.NORTH, true, 0, true);
+        super.onRemove(blockState, level, blockPos, blockState1, b);
     }
 
     @Override
@@ -157,7 +165,7 @@ public class FragmentLinksBlock extends Block {
                 return super.use(state, level, blockPos, player, interactionHand, blockHitResult);
 
             // TODO: Add sound
-            this.LoopTest(level, blockPos, null, true, 0);
+            this.LoopTest(level, blockPos, null, true, 0, false);
             return InteractionResult.SUCCESS;
         }
         return super.use(state, level, blockPos, player, interactionHand, blockHitResult);

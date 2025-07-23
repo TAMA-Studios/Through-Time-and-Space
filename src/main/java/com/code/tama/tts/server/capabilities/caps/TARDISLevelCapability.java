@@ -236,6 +236,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     @Override
+    public boolean CanFly() {
+        return this.GetSubsystemsData().getDematerializationCircuit().isActivated(this.level);
+    }
+
+    @Override
     public Direction NextDestinationFacing() {
         return this.DestinationFacing.getClockWise();
     }
@@ -385,7 +390,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void Dematerialize() {
-        if (!this.GetSubsystemsData().getDematerializationCircuit().isActivated()) return;
+        if (!this.CanFly()) return;
 
         if (this.IsInFlight()) return;
         if (this.GetExteriorTile() == null) {
