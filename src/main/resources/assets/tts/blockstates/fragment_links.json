@@ -1,0 +1,31 @@
+{
+  "multipart": [
+    {
+      "apply": { "model": "tts:block/fragment_links_core" }
+    },
+    {
+      "when": { "north": true },
+      "apply": { "model": "tts:block/fragment_links_side", "y": 0 }
+    },
+    {
+      "when": { "east": true },
+      "apply": { "model": "tts:block/fragment_links_side", "y": 90 }
+    },
+    {
+      "when": { "south": true },
+      "apply": { "model": "tts:block/fragment_links_side", "y": 180 }
+    },
+    {
+      "when": { "west": true },
+      "apply": { "model": "tts:block/fragment_links_side", "y": 270 }
+    },
+    {
+      "when": { "up": true },
+      "apply": { "model": "tts:block/fragment_links_side", "x": -90 }
+    },
+    {
+      "when": { "down": true },
+      "apply": { "model": "tts:block/fragment_links_side", "x": 90 }
+    }
+  ]
+}

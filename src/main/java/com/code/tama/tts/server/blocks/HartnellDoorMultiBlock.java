@@ -3,8 +3,6 @@ package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.code.tama.tts.server.tileentities.HartnellDoorTilePlaceholder;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +21,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class HartnellDoorMultiBlock extends Block implements EntityBlock {
     public boolean IsOpen;
@@ -65,7 +66,8 @@ public class HartnellDoorMultiBlock extends Block implements EntityBlock {
     public void neighborChanged(
             BlockState state, Level level, BlockPos blockPos, Block block, BlockPos blockPos1, boolean p_60514_) {
         HartnellDoorTile hartnellDoorTile = ((HartnellDoorTile) level.getBlockEntity(this.Controller));
-        this.IsOpen = hartnellDoorTile.IsOpen();
+        if(hartnellDoorTile != null)
+            this.IsOpen = hartnellDoorTile.IsOpen();
         HartnellDoorTilePlaceholder tile = (HartnellDoorTilePlaceholder) level.getBlockEntity(blockPos);
         if (tile != null) tile.SetIsOpen(this.IsOpen);
 

@@ -49,8 +49,8 @@ public class HartnellDoor extends Block implements EntityBlock {
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState state) {
-        if(levelAccessor.isClientSide()) return;
-        this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
+        if(!levelAccessor.isClientSide())
+            this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
         super.destroy(levelAccessor, blockPos, state);
     }
 
