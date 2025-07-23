@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -11,12 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
 public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag> {
     boolean Activated;
-    @Getter @Setter
+
+    @Getter
+    @Setter
     BlockPos blockPos;
 
     public boolean isActivated(Level level) {
@@ -63,8 +64,7 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("active", this.Activated);
-        if(this.blockPos != null)
-            tag.put("pos", NbtUtils.writeBlockPos(this.blockPos));
+        if (this.blockPos != null) tag.put("pos", NbtUtils.writeBlockPos(this.blockPos));
         return tag;
     }
 }

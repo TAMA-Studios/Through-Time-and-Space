@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
+
 import com.code.tama.tts.client.models.*;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
@@ -20,10 +24,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {

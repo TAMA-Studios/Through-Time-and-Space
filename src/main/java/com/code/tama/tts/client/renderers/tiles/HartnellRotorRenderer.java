@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.core.interfaces.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,8 +17,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class HartnellRotorRenderer<
                 T extends HartnellRotorTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>

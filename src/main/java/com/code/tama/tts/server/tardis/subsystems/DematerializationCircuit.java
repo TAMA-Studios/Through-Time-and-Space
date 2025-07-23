@@ -2,12 +2,11 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Map;
 
 public class DematerializationCircuit extends AbstractSubsystem {
     @Override

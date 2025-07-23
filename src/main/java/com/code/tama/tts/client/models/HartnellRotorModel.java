@@ -26,6 +26,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
     // this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION =
             new ModelLayerLocation(new ResourceLocation(TTSMod.MODID, "hartnellrotormodel"), "main");
+    private final ModelPart root;
     private final ModelPart bone;
     private final ModelPart glass;
     private final ModelPart bone3;
@@ -41,6 +42,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
     private final ModelPart bone2;
 
     public HartnellRotorModel(ModelPart root) {
+        this.root = root;
         this.bone = root.getChild("bone");
         this.glass = this.bone.getChild("glass");
         this.bone3 = this.bone.getChild("bone3");
@@ -369,12 +371,12 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
             float green,
             float blue,
             float alpha) {
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
     public ModelPart root() {
-        return this.bone;
+        return this.root;
     }
 
     @Override

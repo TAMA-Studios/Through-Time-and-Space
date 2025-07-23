@@ -150,6 +150,9 @@ dependencies {
 	// Building Gadgets
 	implementation fg.deobf("curse.maven:building-gadgets-298187:5144161")
 
+	// Worldedit
+	implementation fg.deobf("curse.maven:worldedit-225608:4586218")
+
 	// Patchouli
 	implementation fg.deobf("curse.maven:patchouli-306770:4966125")
 
@@ -175,7 +178,6 @@ dependencies {
 
 	// Mixin
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
 }
 
 shadowJar {

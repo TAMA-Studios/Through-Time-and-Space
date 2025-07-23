@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSBlocks.PORTAL_BLOCK;
+
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
@@ -11,9 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSBlocks.PORTAL_BLOCK;
 
 public class TTSTileEntities {
 
@@ -57,8 +57,8 @@ public class TTSTileEntities {
         MONITOR_TILE =
                 TILE_ENTITIES.register("monitor_tile", () -> create(MonitorTile::new, TTSBlocks.MONITOR_BLOCK.get()));
 
-        CRT_MONITOR_TILE =
-                TILE_ENTITIES.register("crt_monitor_tile", () -> create(CRTMonitorTile::new, TTSBlocks.CRT_MONITOR_BLOCK.get()));
+        CRT_MONITOR_TILE = TILE_ENTITIES.register(
+                "crt_monitor_tile", () -> create(CRTMonitorTile::new, TTSBlocks.CRT_MONITOR_BLOCK.get()));
 
         MONITOR_PANEL_TILE = TILE_ENTITIES.register(
                 "monitor_panel_tile", () -> create(MonitorPanelTile::new, TTSBlocks.MONITOR_PANEL.get()));

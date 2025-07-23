@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "tts:zeiton/zeiton_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "tts:purified_zeiton_7"
+  }
+}

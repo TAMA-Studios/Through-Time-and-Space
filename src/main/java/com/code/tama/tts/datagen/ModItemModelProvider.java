@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSItems;
-import java.util.LinkedHashMap;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +18,10 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.LinkedHashMap;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class ModItemModelProvider extends ItemModelProvider {
     private static LinkedHashMap<ResourceKey<TrimMaterial>, Float> trimMaterials = new LinkedHashMap<>();
@@ -61,7 +62,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         withExistingParent(TTSItems.EXTERIOR.getId().getPath(), mcLoc("block/air"));
         withExistingParent(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
         saplingItem(TTSBlocks.GALLIFREYAN_SAPLING);
-        // withExistingParent(TTSBlocks.GALLIFREYAN_OAK_LOG.getId().getPath(), new
+//        simplestBlockItem(TTSBlocks.BLUE_ROTOR);
+//        simplestBlockItem(TTSBlocks.COPPER_ROTOR);
+//        simplestBlockItem(TTSBlocks.AMETHYST_ROTOR);
+//        simplestBlockItem(TTSBlocks.CRT_MONITOR_BLOCK);
+//        // withExistingParent(TTSBlocks.GALLIFREYAN_OAK_LOG.getId().getPath(), new
         // ResourceLocation(MODID, "dimensional/gallifreyan/gallifreyan_oak_log"));
         // evenSimplerBlockItem(TTSBlocks.GALLIFREYAN_OAK_LOG);
         // evenSimplerBlockItem(TTSBlocks.GALLIFREYAN_OAK_LEAVES);
@@ -70,6 +75,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         // evenSimplerBlockItem(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_LOG);
         // evenSimplerBlockItem(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD);
         // evenSimplerBlockItem(TTSBlocks.GALLIFREYAN_SAND);
+        for(RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
+            ResourceLocation outputLoc = extendWithFolder(new ResourceLocation(modid, ("item/" + block.getId().getPath())));
+            if(!this.generatedModels.containsValue(outputLoc))
+                simplestBlockItem(block);
+        }
     }
 
     private void trimmedArmorItem(RegistryObject<Item> itemRegistryObject) {
@@ -199,6 +209,18 @@ public class ModItemModelProvider extends ItemModelProvider {
                         new ResourceLocation(MODID, "item/" + item.getId().getPath()));
     }
 
+    private ItemModelBuilder simplestBlockItem(RegistryObject<Block> item) {
+        assert item.getId() != null;
+        ResourceLocation resourceLocation = item.getId();
+        try {
+            return withExistingParent("item/" + resourceLocation.getPath(), new ResourceLocation(MODID, "block/" + item.getId().getPath()));
+        }
+        catch (Exception ignored) {
+            System.out.println("errored at " + item.getId());
+        }
+        return null;
+    }
+
     private ItemModelBuilder simpleBlockItemBlockTexture(RegistryObject<Block> item) {
         try {
             return withExistingParent(item.getId().getPath(), new ResourceLocation("item/generated"))
@@ -209,5 +231,12 @@ public class ModItemModelProvider extends ItemModelProvider {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ResourceLocation extendWithFolder(ResourceLocation rl) {
+        if (rl.getPath().contains("/")) {
+            return rl;
+        }
+        return new ResourceLocation(rl.getNamespace(), folder + "/" + rl.getPath());
     }
 }

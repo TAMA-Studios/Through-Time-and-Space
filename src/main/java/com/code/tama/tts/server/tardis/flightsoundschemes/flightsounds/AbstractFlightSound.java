@@ -32,21 +32,21 @@ public abstract class AbstractFlightSound {
     }
 
     public void PlayIfUnfinished(Level level, BlockPos blockPos) {
-//        if(this.Finished) {
-//            this.Started = false;
-//            this.Finished = false;
-//        }
-//        if (this.Started) return;
-//        this.Started = true;
-//        Thread(level, blockPos);
-        if(!level.isClientSide) return;
+        //        if(this.Finished) {
+        //            this.Started = false;
+        //            this.Finished = false;
+        //        }
+        //        if (this.Started) return;
+        //        this.Started = true;
+        //        Thread(level, blockPos);
+        if (!level.isClientSide) return;
 
-        if(this.startedTime == 0) {
+        if (this.startedTime == 0) {
             assert Minecraft.getInstance().level != null;
             this.startedTime = Minecraft.getInstance().level.getGameTime();
         }
         assert Minecraft.getInstance().level != null;
-        if(Minecraft.getInstance().level.getGameTime() - this.startedTime >= this.GetLength()) {
+        if (Minecraft.getInstance().level.getGameTime() - this.startedTime >= this.GetLength()) {
             this.startedTime = 0;
             assert Minecraft.getInstance().player != null;
             Minecraft.getInstance().player.playSound(this.GetSound());
@@ -59,10 +59,8 @@ public abstract class AbstractFlightSound {
     }
 
     public void Thread(Level level, BlockPos pos) {
-        if(this.flightSoundThread == null)
-            this.flightSoundThread = new FlightSoundThread(level, pos, this);
-        if(!this.flightSoundThread.isAlive())
-            this.flightSoundThread.start();
+        if (this.flightSoundThread == null) this.flightSoundThread = new FlightSoundThread(level, pos, this);
+        if (!this.flightSoundThread.isAlive()) this.flightSoundThread.start();
         else this.flightSoundThread.run();
     }
 }

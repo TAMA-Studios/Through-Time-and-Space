@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.25,
+  "group": "zeiton",
+  "ingredient": {
+    "item": "tts:zeiton/nether_zeiton_ore"
+  },
+  "result": "tts:purified_zeiton_7"
+}

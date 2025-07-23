@@ -1,0 +1,10 @@
+{
+  "values": [
+    "tts:zeiton/zeiton_block",
+    "tts:zeiton/raw_zeiton_block",
+    "tts:zeiton/zeiton_ore",
+    "tts:zeiton/deepslate_zeiton_ore",
+    "tts:zeiton/nether_zeiton_ore",
+    "tts:zeiton/end_stone_zeiton_ore"
+  ]
+}

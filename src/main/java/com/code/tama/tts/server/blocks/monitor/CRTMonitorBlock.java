@@ -8,6 +8,7 @@ import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.math.Axis;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
-
 @SuppressWarnings("deprecation")
 public class CRTMonitorBlock extends AbstractMonitorBlock {
     private final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createShape().optimize());
@@ -38,13 +37,14 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
 
     public VoxelShape createShape() {
         return Stream.of(
-                Block.box(0, 0, 0, 10, 16, 1),
-                Block.box(0, 0, 1, 10, 4, 15),
-                Block.box(0, 15, 1, 10, 16, 15),
-                Block.box(1, 4, 1, 10, 15, 15),
-                Block.box(0, 0, 15, 10, 16, 16),
-                Block.box(10, 0, 0, 16, 13, 16)
-        ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+                        Block.box(0, 0, 0, 10, 16, 1),
+                        Block.box(0, 0, 1, 10, 4, 15),
+                        Block.box(0, 15, 1, 10, 16, 15),
+                        Block.box(1, 4, 1, 10, 15, 15),
+                        Block.box(0, 0, 15, 10, 16, 16),
+                        Block.box(10, 0, 0, 16, 13, 16))
+                .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
+                .get();
     }
 
     public @NotNull VoxelShape getShape(
@@ -61,14 +61,19 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+    public @NotNull InteractionResult use(
+            @NotNull BlockState state,
+            @NotNull Level world,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            @NotNull BlockHitResult hit) {
 
         // Get the coordinates the player clicked on the screen
         Vec3 hitVec = hit.getLocation();
         double mouseX = hitVec.x() - (double) pos.getX();
         double mouseZ = hitVec.z() - (double) pos.getZ();
         double mouseY = hitVec.y() - (double) pos.getY();
-
 
         // Define shrink and offset values
         double xzShrink = 2.0;
@@ -99,7 +104,7 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
         switch (state.getValue(FACING)) {
             case NORTH -> {
                 break;
-//            case NORTH -> mouseX = 16 - mouseX;
+                //            case NORTH -> mouseX = 16 - mouseX;
             }
             case SOUTH -> mouseX = 16 - mouseX;
             case WEST -> mouseX = mouseZ;

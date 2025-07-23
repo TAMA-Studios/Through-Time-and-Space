@@ -18,5 +18,4 @@ public class CRTMonitorRenderer extends AbstractMonitorRenderer<CRTMonitorTile> 
     public float Offset() {
         return 40f;
     }
-
 }

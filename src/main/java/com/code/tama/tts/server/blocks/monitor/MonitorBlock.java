@@ -3,6 +3,7 @@ package com.code.tama.tts.server.blocks.monitor;
 
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -14,8 +15,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class MonitorBlock extends AbstractMonitorBlock {

@@ -2,12 +2,11 @@
 package com.code.tama.tts.server.threads;
 
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class FlightSoundThread extends Thread {
     BlockPos blockPos;
@@ -28,22 +27,21 @@ public class FlightSoundThread extends Thread {
 
     @Override
     public void run() {
-        if(!this.run) {
-//            this.stop();
+        if (!this.run) {
+            //            this.stop();
             return;
         }
         if (!this.level.isClientSide) return;
         int ticks = 0;
         while (!this.sound.IsFinished()) {
-            if(ticks == 0)
-                Minecraft.getInstance().player.playSound(this.sound.GetSound());
+            if (ticks == 0) Minecraft.getInstance().player.playSound(this.sound.GetSound());
             if (this.level.getGameTime() != OTicks) {
                 if (ticks == this.sound.GetLength()) this.sound.SetFinished(true);
                 ticks++;
                 OTicks = (int) this.level.getGameTime();
             }
         }
-//        jumpstarted = false;
+        //        jumpstarted = false;
         super.run();
     }
 }

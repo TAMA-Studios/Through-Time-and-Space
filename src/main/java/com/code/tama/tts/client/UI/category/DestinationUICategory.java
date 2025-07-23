@@ -6,12 +6,11 @@ import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Locale;
 
 public class DestinationUICategory extends UICategory {
     public DestinationUICategory() {

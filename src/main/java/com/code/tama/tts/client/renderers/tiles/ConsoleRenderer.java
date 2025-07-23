@@ -43,7 +43,7 @@ public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(-0.5, -1.5, 0.5);
         poseStack.scale(1f, 1f, 1f);
-        float ticks = (float) (Minecraft.getInstance().level.getGameTime() + partialTicks);
+        float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
         this.MODEL.SetupAnimations(ConsoleTile, ticks);
         this.MODEL.renderToBuffer(
                 poseStack,

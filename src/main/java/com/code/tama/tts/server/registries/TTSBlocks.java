@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
+
 import com.code.tama.tts.core.annotations.DimensionalTab;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
@@ -10,6 +14,7 @@ import com.code.tama.tts.server.blocks.monitor.MonitorPanel;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -25,12 +30,6 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 
 public class TTSBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -67,9 +66,7 @@ public class TTSBlocks {
                     BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> CRT_MONITOR_BLOCK = RegisterWithItem(
-            "crt_monitor_block",
-            () -> new CRTMonitorBlock(
-                    BlockBehaviour.Properties.copy(Blocks.TERRACOTTA)));
+            "crt_monitor_block", () -> new CRTMonitorBlock(BlockBehaviour.Properties.copy(Blocks.TERRACOTTA)));
 
     public static final RegistryObject<Block> MONITOR_PANEL = RegisterWithItem(
             "monitor_panel",
@@ -131,9 +128,7 @@ public class TTSBlocks {
             RegisterWithItemSpecial("workbench", WorkbenchBlock::new);
 
     public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem(
-            "fragment_links",
-            () -> new FragmentLinksBlock(
-                    BlockBehaviour.Properties.copy(Blocks.REDSTONE_WIRE)));
+            "fragment_links", () -> new FragmentLinksBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_WIRE)));
 
     public static final RegistryObject<Block> DEMATERIALIZATION_CIRCUIT_CORE =
             RegisterWithItem("dematerialization_circuit_core", DematerializationCircuitCoreBlock::new);

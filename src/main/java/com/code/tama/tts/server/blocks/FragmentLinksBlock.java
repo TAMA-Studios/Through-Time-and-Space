@@ -32,7 +32,8 @@ public class FragmentLinksBlock extends Block {
 
     public FragmentLinksBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any()
+        this.registerDefaultState(this.stateDefinition
+                .any()
                 .setValue(NORTH, false)
                 .setValue(EAST, false)
                 .setValue(SOUTH, false)
@@ -47,28 +48,42 @@ public class FragmentLinksBlock extends Block {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighborState,
+            LevelAccessor level,
+            BlockPos currentPos,
+            BlockPos neighborPos) {
         boolean canConnect = canConnectTo(level, neighborPos, direction);
         return state.setValue(getPropertyForDirection(direction), canConnect);
     }
 
     private BooleanProperty getPropertyForDirection(Direction direction) {
         switch (direction) {
-            case NORTH: return NORTH;
-            case EAST: return EAST;
-            case SOUTH: return SOUTH;
-            case WEST: return WEST;
-            case UP: return UP;
-            case DOWN: return DOWN;
-            default: throw new IllegalArgumentException("Invalid direction: " + direction);
+            case NORTH:
+                return NORTH;
+            case EAST:
+                return EAST;
+            case SOUTH:
+                return SOUTH;
+            case WEST:
+                return WEST;
+            case UP:
+                return UP;
+            case DOWN:
+                return DOWN;
+            default:
+                throw new IllegalArgumentException("Invalid direction: " + direction);
         }
     }
 
     private boolean canConnectTo(LevelAccessor level, BlockPos neighborPos, Direction direction) {
         BlockState neighborState = level.getBlockState(neighborPos);
-        return neighborState.getBlock() instanceof FragmentLinksBlock || neighborState.getBlock() instanceof AbstractSubsystemBlock || neighborState.getBlock() instanceof EngineBlock;
+        return neighborState.getBlock() instanceof FragmentLinksBlock
+                || neighborState.getBlock() instanceof AbstractSubsystemBlock
+                || neighborState.getBlock() instanceof EngineBlock;
     }
-
 
     private static void makeParticle(LevelAccessor levelAccessor, BlockPos blockPos) {
         Direction direction = Direction.NORTH;
@@ -103,7 +118,8 @@ public class FragmentLinksBlock extends Block {
      *            If this is the "Master" links, or the very first link that checks
      *            the others.
      */
-    public void LoopTest(Level level, BlockPos pos, Direction direction, boolean Master, int iteration, boolean isBroken) {
+    public void LoopTest(
+            Level level, BlockPos pos, Direction direction, boolean Master, int iteration, boolean isBroken) {
         if (direction == null) direction = Direction.NORTH;
         for (Direction testing : Direction.values()) {
             if (!testing.equals(direction.getOpposite()) || Master) {
@@ -119,8 +135,7 @@ public class FragmentLinksBlock extends Block {
 
                 if (level.getBlockState(pos.relative(testing, 1)).getBlock()
                         instanceof AbstractSubsystemBlock abstractSubsystemBlock) {
-                    if(!isBroken)
-                        abstractSubsystemBlock.OnIntegration(level, pos.relative(testing, 1));
+                    if (!isBroken) abstractSubsystemBlock.OnIntegration(level, pos.relative(testing, 1));
                     else abstractSubsystemBlock.OnDeActivate(level, pos.relative(testing, 1));
                 }
             }
@@ -172,7 +187,11 @@ public class FragmentLinksBlock extends Block {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState p_60555_, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_, @NotNull CollisionContext p_60558_) {
+    public @NotNull VoxelShape getShape(
+            @NotNull BlockState p_60555_,
+            @NotNull BlockGetter p_60556_,
+            @NotNull BlockPos p_60557_,
+            @NotNull CollisionContext p_60558_) {
         return Block.box(5, 5, 5, 11, 11, 11);
     }
 }

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tts:purified_zeiton_7_from_smelting_zeiton/end_stone_zeiton_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_zeiton/end_stone_zeiton_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "tts:zeiton/end_stone_zeiton_ore"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_zeiton/end_stone_zeiton_ore",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tts:purified_zeiton_7_from_smelting_zeiton/end_stone_zeiton_ore"
+    ]
+  },
+  "sends_telemetry_event": false
+}
