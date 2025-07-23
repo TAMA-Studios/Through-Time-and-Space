@@ -128,15 +128,15 @@ public class TTSBlocks {
             RegisterWithItemSpecial("hartnell_door", () -> new HartnellDoor(TTSTileEntities.HARTNELL_DOOR));
 
     public static final RegistryObject<WorkbenchBlock> WORKBENCH =
-            RegisterWithItemSpecial("workbench", () -> new WorkbenchBlock());
+            RegisterWithItemSpecial("workbench", WorkbenchBlock::new);
 
     public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem(
             "fragment_links",
             () -> new FragmentLinksBlock(
-                    BlockBehaviour.Properties.of().strength(0.5f).sound(SoundType.SNOW)));
+                    BlockBehaviour.Properties.copy(Blocks.REDSTONE_WIRE)));
 
     public static final RegistryObject<Block> DEMATERIALIZATION_CIRCUIT_CORE =
-            RegisterWithItem("dematerialization_circuit_core", () -> new DematerializationCircuitCoreBlock());
+            RegisterWithItem("dematerialization_circuit_core", DematerializationCircuitCoreBlock::new);
 
     public static final RegistryObject<Block> NETHER_REACTOR_CORE = RegisterWithItem(
             "nether_reactor_core",

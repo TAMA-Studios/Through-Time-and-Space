@@ -48,7 +48,7 @@ public class HartnellDoor extends Block implements EntityBlock {
     }
 
     @Override
-    public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState state) {
+    public void destroy(LevelAccessor levelAccessor, @NotNull BlockPos blockPos, @NotNull BlockState state) {
         if(!levelAccessor.isClientSide())
             this.destroyMultiblockStructure((ServerLevel) levelAccessor, blockPos);
         super.destroy(levelAccessor, blockPos, state);
@@ -73,8 +73,8 @@ public class HartnellDoor extends Block implements EntityBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(
-            BlockState state, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public @NotNull VoxelShape getCollisionShape(
+            @NotNull BlockState state, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull CollisionContext collisionContext) {
         if (this.IsOpen) return Shapes.empty();
         return super.getCollisionShape(state, blockGetter, blockPos, collisionContext);
     }
