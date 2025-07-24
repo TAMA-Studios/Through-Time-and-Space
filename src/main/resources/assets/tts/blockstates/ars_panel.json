@@ -16,33 +16,33 @@
       "y": 270
     },
     "facing=east,pressed_button=1": {
-      "model": "tts:block/control/ars_panel_1",
+      "model": "tts:block/control/ars_panel_2",
       "y": 90
     },
     "facing=north,pressed_button=1": {
-      "model": "tts:block/control/ars_panel_1"
+      "model": "tts:block/control/ars_panel_2"
     },
     "facing=south,pressed_button=1": {
-      "model": "tts:block/control/ars_panel_1",
+      "model": "tts:block/control/ars_panel_2",
       "y": 180
     },
     "facing=west,pressed_button=1": {
-      "model": "tts:block/control/ars_panel_1",
+      "model": "tts:block/control/ars_panel_2",
       "y": 270
     },
     "facing=east,pressed_button=2": {
-      "model": "tts:block/control/ars_panel_2",
+      "model": "tts:block/control/ars_panel_1",
       "y": 90
     },
     "facing=north,pressed_button=2": {
-      "model": "tts:block/control/ars_panel_2"
+      "model": "tts:block/control/ars_panel_1"
     },
     "facing=south,pressed_button=2": {
-      "model": "tts:block/control/ars_panel_2",
+      "model": "tts:block/control/ars_panel_1",
       "y": 180
     },
     "facing=west,pressed_button=2": {
-      "model": "tts:block/control/ars_panel_2",
+      "model": "tts:block/control/ars_panel_1",
       "y": 270
     }
   }

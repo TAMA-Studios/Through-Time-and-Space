@@ -2,14 +2,16 @@ package com.code.tama.tts.server.registries;
 
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.misc.ARSStructure;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 
 public class ARSRegistry {
     private static final ArrayList<ARSStructure> ARSStructures = new ArrayList<>();
 
-    public static ARSStructure CLEAN_INTERIOR = AddStructure(new ARSStructure(Structures.CleanInterior.GetRL(), new int[] {0, 0, 0}));
-    public static ARSStructure CITADEL_INTERIOR = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(), new int[] {0, 0, 0}));
+    public static ARSStructure CLEAN_INTERIOR = AddStructure(new ARSStructure(Structures.CleanInterior.GetRL() , Component.translatable("tts.ars.clean")));
+    public static ARSStructure CITADEL_INTERIOR = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.citadel")));
+    public static ARSStructure CLEAN_WORKSHOP = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.clean_workshop")));
 
     public static ARSStructure GetStructure(int ID) {
         return ARSStructures.get(ID);

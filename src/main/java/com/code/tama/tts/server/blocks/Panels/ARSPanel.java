@@ -53,13 +53,9 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
     public static VoxelShape createVoxelShape() {
         return Stream.of(
+                Block.box(3, 1, 5, 7, 2, 9),
+                Block.box(9, 1, 5, 13, 2, 9),
                 Block.box(0, 0, 0, 16, 1, 16),
-                Block.box(5.75, 0.5, 1.75, 10.25, 1.5, 6.25),
-                Block.box(6.25, 1.5, 2.25, 9.75, 2, 5.75),
-                Block.box(1.75, 0.5, 9.75, 6.25, 1.5, 14.25),
-                Block.box(2.25, 1.5, 10.25, 5.75, 2, 13.75),
-                Block.box(9.75, 0.5, 9.75, 14.25, 1.5, 14.25),
-                Block.box(10.25, 1.5, 10.25, 13.75, 2, 13.75),
                 Block.box(5, 0, -16, 11, 1, 0)
         ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     }
@@ -194,6 +190,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
             switch (button) {
                 case MINUS:
                     this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
+                    player.sendSystemMessage(Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
