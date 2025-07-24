@@ -1,19 +1,19 @@
 {
-	"format_version": "1.21.6",
+	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"render_type": "tts:emmisive",
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "tts:block/steel",
-		"2": "tts:block/green_button",
-		"particle": "tts:block/yellow_button"
+		"2": "tts:block/controls/green_button",
+		"particle": "tts:block/controls/yellow_button"
 	},
 	"elements": [
 		{
 			"name": "2",
-			"from": [3, 0.6, 5],
-			"to": [7, 1.6, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [3, -0.4, 7]},
+			"from": [3, 1, 5],
+			"to": [7, 2, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 0, 7]},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
 				"east": {"uv": [0, 0, 16, 16], "texture": "#2"},
@@ -25,9 +25,9 @@
 		},
 		{
 			"name": "0",
-			"from": [9, 1, 5],
-			"to": [13, 2, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [10, 0, 7]},
+			"from": [9, 0.6, 5],
+			"to": [13, 1.6, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, -0.4, 7]},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
 				"east": {"uv": [0, 0, 16, 16], "texture": "#2"},

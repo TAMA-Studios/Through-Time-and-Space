@@ -1,12 +1,12 @@
 {
-	"format_version": "1.21.6",
+	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"render_type": "tts:emmisive",
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "tts:block/steel",
-		"2": "tts:block/green_button",
-		"particle": "tts:block/yellow_button"
+		"2": "tts:block/controls/green_button",
+		"particle": "tts:block/controls/yellow_button"
 	},
 	"elements": [
 		{
