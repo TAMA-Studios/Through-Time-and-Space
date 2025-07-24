@@ -1,4 +1,5 @@
-// 1.20.1	2025-07-23T22:32:31.567551182	Loot Tables
+// 1.20.1	2025-07-24T18:33:19.09680346	Loot Tables
+fdb878e3ed0413129da0233d3ec0737507fac05f data/tts/loot_tables/blocks/ars_panel.json
 ddeef8f07cc80f97e4bd329ff6a1bd7ac01f4fd5 data/tts/loot_tables/blocks/chameleon_circuit_panel.json
 2c36e037b6cea7d6e9508134573253ea2e365a20 data/tts/loot_tables/blocks/coordinate_panel.json
 8d8e6a53ea2855c46ad70842829bb0ec9b8f8c0e data/tts/loot_tables/blocks/crt_monitor_block.json

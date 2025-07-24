@@ -1,4 +1,4 @@
-// 1.20.1	2025-07-23T22:32:31.566681015	Block States: tts
+// 1.20.1	2025-07-24T18:33:19.095545573	Block States: tts
 4e2eb042d0ff7d753af756bdea285e4a6d3bdb8b assets/tts/blockstates/dimensional/gallifreyan/gallifreyan_oak_leaves.json
 e0d6584511fcb79d48f93a12bb970ff9196d5e27 assets/tts/blockstates/dimensional/gallifreyan/gallifreyan_oak_log.json
 843e208abc89003e46dfb2c29c5bc243ce7706fb assets/tts/blockstates/dimensional/gallifreyan/gallifreyan_oak_log_stripped.json
@@ -14,6 +14,7 @@ b02792c281ea36d45271aeee852e48b953db0f10 assets/tts/blockstates/dimensional/gall
 8f46c9150e1e83366f6121cd45f17e824b02fc5a assets/tts/blockstates/zeiton/nether_zeiton_ore.json
 62308c5762fa872982e68820a4a5b0ca7626b44d assets/tts/blockstates/zeiton/zeiton_block.json
 47388a64cb2ab580728e8922bf1a55f25b24b95f assets/tts/blockstates/zeiton/zeiton_ore.json
+f8081fce5f2a7f148a48bdf910533ec578278b02 assets/tts/models/block/ars_panel.json
 f8081fce5f2a7f148a48bdf910533ec578278b02 assets/tts/models/block/chameleon_circuit_panel.json
 f8081fce5f2a7f148a48bdf910533ec578278b02 assets/tts/models/block/coordinate_panel.json
 f8081fce5f2a7f148a48bdf910533ec578278b02 assets/tts/models/block/crt_monitor_block.json
