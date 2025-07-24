@@ -43,7 +43,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
             int combinedLight,
             int combinedOverlay) {
         if (monitor.getLevel() == null) return;
-
+        int light = 0xf00f0;
         monitor.getLevel()
                 .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
@@ -59,7 +59,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
                             }
                         });
                     }
-
                     if (monitor.isPowered()) this.category.Render(monitor, poseStack, bufferSource, combinedLight);
 
                     poseStack.popPose();
@@ -67,14 +66,14 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
                     this.ApplyDefaultTransforms(poseStack, monitor);
 
-                    renderUIComponents(monitor, poseStack, bufferSource, combinedLight);
+                    renderUIComponents(monitor, poseStack, bufferSource, light);
 
                     poseStack.popPose();
                     poseStack.pushPose();
 
                     this.ApplyDefaultTransforms(poseStack, monitor);
 
-                    renderRotatingImage(monitor, poseStack, bufferSource, combinedLight);
+                    renderRotatingImage(monitor, poseStack, bufferSource, light);
 
                     poseStack.popPose();
 
@@ -82,7 +81,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
                     this.ApplyDefaultTransforms(poseStack, monitor);
 
-                    renderBackground(monitor, poseStack, bufferSource, combinedLight);
+                    renderBackground(monitor, poseStack, bufferSource, light);
 
                     poseStack.popPose();
 
