@@ -4,8 +4,8 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "tts:block/steel",
-		"2": "block/redstone_block",
-		"particle": "block/redstone_block"
+		"2": "tts:block/controls/button",
+		"particle": "tts:block/controls/button"
 	},
 	"elements": [
 		{
