@@ -188,6 +188,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         System.out.println(RoundTo48(pos.getX()));
         System.out.println(RoundTo48(pos.getY()));
         System.out.println(RoundTo48(pos.getZ()));
+        BlockPos posToPlace = new BlockPos(RoundTo48(pos.getX()), RoundTo48(pos.getY()), RoundTo48(pos.getZ()));
 
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
@@ -198,7 +199,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
                     world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
                     break;
                 case PLUS:
-                    new PlaceStructureThread((ServerLevel) world, pos, this.StoredStruct.getPath());
+                    new PlaceStructureThread((ServerLevel) world, posToPlace, this.StoredStruct.getPath()).start();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
