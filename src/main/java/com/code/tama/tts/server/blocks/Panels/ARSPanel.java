@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
@@ -46,8 +47,7 @@ import java.util.stream.Stream;
 public class ARSPanel extends HorizontalDirectionalBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
-    public static VoxelRotatedShape SHAPE =
-            new VoxelRotatedShape(createVoxelShape().optimize());
+    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
     public static List<Buttons> buttons = new ArrayList<>();
     private ARSStructure StoredStruct = ARSRegistry.GetStructure(0);
 
@@ -158,6 +158,9 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         }
     }
 
+    public int ReverseRoundTo48(int num) {
+        return MathUtils.reverseRound((float) num / 48) * 48;
+    }
     public int RoundTo48(int num) {
         return Math.round((float) num / 48) * 48;
     }
@@ -185,14 +188,22 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
-                case MINUS:
-                    this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
-                    player.sendSystemMessage(Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
-                    world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-                    world.scheduleTick(pos, this, 10);
-                    world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
+                case MODE:
+                    if(player.isCrouching()) {
+                        new PlaceStructureThread((ServerLevel) world, posToPlace.relative(state.getValue(FACING).getOpposite(), 48), ARSRegistry.GetByName("tts.ars.starter").getPath()).start();
+                        world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+                        world.scheduleTick(pos, this, 10);
+                        world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
+                    }
+                    else {
+                        this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
+                        player.sendSystemMessage(Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
+                        world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+                        world.scheduleTick(pos, this, 10);
+                        world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
+                    }
                     break;
-                case PLUS:
+                case SET:
                     new PlaceStructureThread((ServerLevel) world, posToPlace, this.StoredStruct.getPath()).start();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
@@ -214,8 +225,8 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
     public enum Buttons {
         EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F),
-        MINUS("ONE", 4.00f, 4.00f, 9.00f, 5.00f),
-        PLUS("TWO", 4.00f, 4.00f, 3.00f, 5.00f);
+        MODE("ONE", 4.00f, 4.00f, 9.00f, 5.00f),
+        SET("TWO", 4.00f, 4.00f, 3.00f, 5.00f);
 
         Component displayName;
         final float height;

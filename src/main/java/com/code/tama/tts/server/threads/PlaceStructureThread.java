@@ -28,9 +28,9 @@ public class PlaceStructureThread extends Thread {
 
             // Load the structure template
             StructureTemplate template = this.serverLevel.getStructureManager().getOrCreate(this.structure);
-            int X = -(template.getSize().getX() / 2);
-            int Y = -(template.getSize().getY() / 2);
-            int Z = -(template.getSize().getZ() / 2);
+            int X = -template.getSize().getX();
+            int Y = -template.getSize().getY();
+            int Z = -template.getSize().getZ();
 
             BlockPos offset = new BlockPos(X / 2, Y / 2, Z / 2);
             BlockPos structureStartPos = this.pos.offset(offset);

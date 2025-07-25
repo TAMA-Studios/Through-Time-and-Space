@@ -43,6 +43,9 @@ public class TTSBlocks {
     public static RegistryObject<HartnellRotor> HARTNELL_ROTOR = RegisterWithItemSpecial(
             "hartnell_rotor", () -> new HartnellRotor(BlockBehaviour.Properties.copy(Blocks.GLASS)));
 
+    public static RegistryObject<Block> HARD_LIGHT = RegisterWithItem(
+            "hard_light", () -> new HardLightBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(BlockState -> 8)));
+
     public static RegistryObject<ExteriorBlock> EXTERIOR_BLOCK = BLOCKS.register(
             "exterior_block",
             () -> new ExteriorBlock(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.EXTERIOR_TILE));

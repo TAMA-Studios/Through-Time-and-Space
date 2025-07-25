@@ -17,4 +17,17 @@ public class MathUtils {
     public static float lerp(float start, float end, float t) {
         return start + t * (end - start);
     }
+
+    public static int reverseRound(double value) {
+        int intPart = (int) value;
+        double decimalPart = Math.abs(value - intPart);
+
+        if (decimalPart >= 0.5) {
+            // Round toward zero
+            return intPart;
+        } else {
+            // Round away from zero
+            return value >= 0 ? intPart + 1 : intPart - 1;
+        }
+    }
 }

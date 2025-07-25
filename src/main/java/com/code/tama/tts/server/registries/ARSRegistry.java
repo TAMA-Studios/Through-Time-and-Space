@@ -23,9 +23,16 @@ public class ARSRegistry {
     }
 
     public static ARSStructure CycleStruct(ARSStructure structure) {
-        for(int i = 0; i < STRUCTURES.size(); i++) {
+        for(int i = 0; i < STRUCTURES.size() - 1; i++) {
             if(GetStructure(i).equals(structure)) return GetStructure(i + 1);
         }
         return GetStructure(0);
+    }
+
+    public static ARSStructure GetByName(String name) {
+        for(ARSStructure structure : STRUCTURES) {
+            if(structure.getName().equals(Component.translatable(name))) return structure;
+        }
+        return STRUCTURES.get(0);
     }
 }
