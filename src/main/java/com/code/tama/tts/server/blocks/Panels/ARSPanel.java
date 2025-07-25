@@ -49,7 +49,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
     public static VoxelRotatedShape SHAPE =
             new VoxelRotatedShape(createVoxelShape().optimize());
     public static List<Buttons> buttons = new ArrayList<>();
-    private ARSStructure StoredStruct = ARSRegistry.CLEAN_INTERIOR;
+    private ARSStructure StoredStruct = ARSRegistry.GetStructure(0);
 
     public static VoxelShape createVoxelShape() {
         return Stream.of(
@@ -181,9 +181,6 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
         if (button == null) return InteractionResult.FAIL;
 
-        System.out.println(RoundTo48(pos.getX()));
-        System.out.println(RoundTo48(pos.getY()));
-        System.out.println(RoundTo48(pos.getZ()));
         BlockPos posToPlace = new BlockPos(RoundTo48(pos.getX()), RoundTo48(pos.getY()), RoundTo48(pos.getZ()));
 
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
