@@ -4,13 +4,18 @@ package com.code.tama.triggerapi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.joml.Vector3d;
 
@@ -136,5 +141,29 @@ public class WorldHelper {
         player.getActiveEffects()
                 .forEach(
                         effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
+    }
+    public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
+
+        StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
+        int X = -template.getSize().getX();
+        int Y = -template.getSize().getY();
+        int Z = -template.getSize().getZ();
+
+        BlockPos offset = new BlockPos(X / 2, Y / 2, Z / 2);
+        BlockPos structureStartPos = pos.offset(offset);
+
+        // Placement settings (adjust as needed)
+        StructurePlaceSettings settings = new StructurePlaceSettings()
+                .setIgnoreEntities(false) // Include entities
+                // stored in the
+                // structure
+                .setRotation(Rotation.NONE) // No rotation
+                .setMirror(Mirror.NONE); // No mirroring
+
+        // Place the structure
+        template.placeInWorld(
+                serverLevel, structureStartPos, structureStartPos, settings, serverLevel.getRandom(), 3);
+
+        System.out.println("Placed structure at: " + structureStartPos);
     }
 }

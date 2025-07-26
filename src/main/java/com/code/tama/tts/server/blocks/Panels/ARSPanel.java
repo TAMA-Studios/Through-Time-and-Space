@@ -2,12 +2,12 @@
 package com.code.tama.tts.server.blocks.Panels;
 
 import com.code.tama.triggerapi.MathUtils;
+import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.misc.ARSStructure;
 import com.code.tama.tts.server.registries.ARSRegistry;
-import com.code.tama.tts.server.threads.PlaceStructureThread;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -184,7 +184,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
             switch (button) {
                 case MODE:
                     if(player.isCrouching()) {
-                        new PlaceStructureThread((ServerLevel) world, posToPlace.relative(state.getValue(FACING).getOpposite(), 48), ARSRegistry.GetByName("tts.ars.starter").getPath()).start();
+                        WorldHelper.PlaceStructure((ServerLevel) world, posToPlace.relative(state.getValue(FACING).getOpposite(), 48), ARSRegistry.GetByName("tts.ars.starter").getPath());
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
@@ -198,7 +198,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
                     }
                     break;
                 case SET:
-                    new PlaceStructureThread((ServerLevel) world, posToPlace, this.StoredStruct.getPath()).start();
+                    WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.getPath());
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

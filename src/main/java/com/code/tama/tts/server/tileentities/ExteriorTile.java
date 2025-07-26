@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.triggerapi.MathUtils;
+import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
@@ -12,7 +13,6 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
-import com.code.tama.tts.server.threads.PlaceStructureThread;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -156,11 +156,10 @@ public class ExteriorTile extends BlockEntity {
 
     public void PlaceInterior(Structures structure) {
         if (this.getLevel().isClientSide) return;
-        new PlaceStructureThread(
+        WorldHelper.PlaceStructure(
                         this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
-                        new BlockPos(MathUtils.RoundTo48(0), 128, 0),
-                        structure.GetRL())
-                .start();
+                        new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
+                        structure.GetRL());
         this.setChanged();
     }
 
