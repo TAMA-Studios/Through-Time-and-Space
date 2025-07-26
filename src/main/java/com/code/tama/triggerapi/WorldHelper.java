@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -18,6 +19,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class WorldHelper {
     public static boolean CanCollide(BlockState state) {
@@ -142,28 +147,105 @@ public class WorldHelper {
                 .forEach(
                         effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
     }
+//    public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
+//
+//        StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
+//        int X = -template.getSize().getX();
+//        int Y = -template.getSize().getY();
+//        int Z = -template.getSize().getZ();
+//
+//        BlockPos offset = new BlockPos(X / 2, Y / 2, Z / 2);
+//        BlockPos structureStartPos = pos.offset(offset);
+//
+//        // Placement settings (adjust as needed)
+//        StructurePlaceSettings settings = new StructurePlaceSettings()
+//                .setIgnoreEntities(false) // Include entities
+//                // stored in the
+//                // structure
+//                .setRotation(Rotation.NONE) // No rotation
+//                .setMirror(Mirror.NONE); // No mirroring
+//
+//        // Place the structure
+//        template.placeInWorld(
+//                serverLevel, structureStartPos, structureStartPos, settings, serverLevel.getRandom(), 3);
+//
+//        System.out.println("Placed structure at: " + structureStartPos);
+//    }
+
     public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
-
         StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
-        int X = -template.getSize().getX();
-        int Y = -template.getSize().getY();
-        int Z = -template.getSize().getZ();
 
-        BlockPos offset = new BlockPos(X / 2, Y / 2, Z / 2);
+        int sizeX = template.getSize().getX();
+        int sizeY = template.getSize().getY();
+        int sizeZ = template.getSize().getZ();
+
+        BlockPos offset = new BlockPos(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
         BlockPos structureStartPos = pos.offset(offset);
 
-        // Placement settings (adjust as needed)
         StructurePlaceSettings settings = new StructurePlaceSettings()
-                .setIgnoreEntities(false) // Include entities
-                // stored in the
-                // structure
-                .setRotation(Rotation.NONE) // No rotation
-                .setMirror(Mirror.NONE); // No mirroring
+                .setIgnoreEntities(false)
+                .setRotation(Rotation.NONE)
+                .setMirror(Mirror.NONE);
 
-        // Place the structure
-        template.placeInWorld(
-                serverLevel, structureStartPos, structureStartPos, settings, serverLevel.getRandom(), 3);
+        // Get all blocks from the template
+        List<StructureTemplate.StructureBlockInfo> blocks = template.filterBlocks(
+                structureStartPos,
+                settings,
+                net.minecraft.world.level.block.Blocks.AIR
+        );
 
-        System.out.println("Placed structure at: " + structureStartPos);
+        // Sort blocks by Y coordinate (bottom to top)
+        blocks.sort(Comparator.comparingInt(block -> block.pos().getY()));
+
+        // Group blocks by Y level
+        List<List<StructureTemplate.StructureBlockInfo>> layers = new ArrayList<>();
+        int currentY = blocks.get(0).pos().getY();
+        List<StructureTemplate.StructureBlockInfo> currentLayer = new ArrayList<>();
+
+        for (StructureTemplate.StructureBlockInfo block : blocks) {
+            if (block.pos().getY() != currentY) {
+                layers.add(currentLayer);
+                currentLayer = new ArrayList<>();
+                currentY = block.pos().getY();
+            }
+            currentLayer.add(block);
+        }
+        layers.add(currentLayer);
+
+        // Schedule block placement layer by layer
+        final int[] layerIndex = {0};
+
+        Runnable placeNextLayer = new Runnable() {
+            @Override
+            public void run() {
+                if (layerIndex[0] < layers.size()) {
+                    List<StructureTemplate.StructureBlockInfo> layer = layers.get(layerIndex[0]);
+
+                    // Place all blocks in current layer
+                    for (StructureTemplate.StructureBlockInfo block : layer) {
+                        serverLevel.setBlock(block.pos(), block.state(), 3);
+                        if (block.nbt() != null) {
+                            template.placeInWorld(serverLevel, block.pos(), block.pos(), settings, serverLevel.getRandom(), 3);
+                        }
+                    }
+
+                    layerIndex[0]++;
+
+                    // Schedule next layer (5 ticks delay)
+                    if (layerIndex[0] < layers.size()) {
+                        serverLevel.getServer().execute(new TickTask(5, this));
+                    } else {
+                        System.out.println("Finished placing structure at: " + structureStartPos);
+                    }
+                }
+            }
+        };
+
+        // Start the animation
+        serverLevel.getServer().execute(new TickTask(5, placeNextLayer));
+
+        System.out.println("Started animated structure placement at: " + structureStartPos);
     }
+
+
 }
