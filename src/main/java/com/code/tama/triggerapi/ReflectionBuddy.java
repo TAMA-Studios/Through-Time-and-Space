@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
@@ -21,8 +15,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class ReflectionBuddy {
     public static <FIELDHOLDER, FIELDTYPE> MutableInstanceField<FIELDHOLDER, FIELDTYPE> getInstanceField(
@@ -177,5 +179,10 @@ public class ReflectionBuddy {
     public static class WorldBorderAccess {
         public static final Function<WorldBorder, List<BorderChangeListener>> listeners =
                 getInstanceFieldGetter(WorldBorder.class, "f_61905_");
+    }
+
+    public static class StructureTemplateAccess {
+        public static final Function<StructureTemplate, List<StructureTemplate.Palette>> palettes =
+                getInstanceFieldGetter(StructureTemplate.class, "f_74482_");
     }
 }
