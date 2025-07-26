@@ -24,7 +24,7 @@ public class PlaceStructureThread extends Thread {
     @Override
     public void run() {
         if (this.serverLevel != null) {
-            // The resource location of the .nbt structure
+            // The resource location of the .nbt structure.
 
             // Load the structure template
             StructureTemplate template = this.serverLevel.getStructureManager().getOrCreate(this.structure);
