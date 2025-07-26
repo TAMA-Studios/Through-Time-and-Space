@@ -158,12 +158,6 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         }
     }
 
-    public int ReverseRoundTo48(int num) {
-        return MathUtils.reverseRound((float) num / 48) * 48;
-    }
-    public int RoundTo48(int num) {
-        return Math.round((float) num / 48) * 48;
-    }
 
     @Override
     public @NotNull InteractionResult use(
@@ -184,7 +178,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
         if (button == null) return InteractionResult.FAIL;
 
-        BlockPos posToPlace = new BlockPos(RoundTo48(pos.getX()), RoundTo48(pos.getY()), RoundTo48(pos.getZ()));
+        BlockPos posToPlace = new BlockPos(MathUtils.RoundTo48(pos.getX()), MathUtils.RoundTo48(pos.getY()), MathUtils.RoundTo48(pos.getZ()));
 
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {

@@ -30,4 +30,15 @@ public class MathUtils {
             return value >= 0 ? intPart + 1 : intPart - 1;
         }
     }
+
+    public static int ReverseRoundTo48(int num) {
+        return MathUtils.reverseRound((float) num / 48) * 48;
+    }
+    public static int RoundTo48(int num) {
+        return RoundToMultiple(num, 48);
+    }
+
+    public static int RoundToMultiple(int num, int multiple) {
+        return Math.round((float) num / multiple) * multiple;
+    }
 }
