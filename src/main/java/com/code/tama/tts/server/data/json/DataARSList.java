@@ -3,9 +3,8 @@ package com.code.tama.tts.server.data.json;
 
 import com.code.tama.tts.server.misc.ARSStructure;
 import com.code.tama.tts.server.registries.ARSRegistry;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 public class DataARSList {
     @Getter

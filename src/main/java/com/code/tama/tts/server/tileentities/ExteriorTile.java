@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.Exteriors;
@@ -13,6 +15,7 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -32,10 +35,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends BlockEntity {
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
@@ -157,9 +156,9 @@ public class ExteriorTile extends BlockEntity {
     public void PlaceInterior(Structures structure) {
         if (this.getLevel().isClientSide) return;
         WorldHelper.PlaceStructure(
-                        this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
-                        new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
-                        structure.GetRL());
+                this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
+                new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
+                structure.GetRL());
         this.setChanged();
     }
 

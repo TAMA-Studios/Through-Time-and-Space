@@ -1,26 +1,25 @@
-// src/main/java/com/code/tama/tts/core/ModShaders.java
-// IMPORTANT: Adjust this package to your *actual* file path
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core;
 
 import com.code.tama.tts.TTSMod;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import java.io.IOException;
+import java.util.function.Consumer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-
-import java.io.IOException;
-import java.util.function.Consumer;
 
 public class ShadersUtil {
 
     public static ShaderInstance CHROMIUM_SHADER;
 
     // We will register an instance of this listener in ClientSetup
-    public static final MinecraftShaderLoader CHROMIUM_SHADER_LOADER =
-            new MinecraftShaderLoader(new ResourceLocation(TTSMod.MODID, "chromium_shader"), DefaultVertexFormat.BLOCK, // Corrected VertexFormat
-                    (shader) -> CHROMIUM_SHADER = shader);
+    public static final MinecraftShaderLoader CHROMIUM_SHADER_LOADER = new MinecraftShaderLoader(
+            new ResourceLocation(TTSMod.MODID, "chromium_shader"),
+            DefaultVertexFormat.BLOCK, // Corrected VertexFormat
+            (shader) -> CHROMIUM_SHADER = shader);
 
     // No init method here anymore. The listener instance will be registered directly.
 
@@ -30,7 +29,8 @@ public class ShadersUtil {
         private final VertexFormat format;
         private final Consumer<ShaderInstance> consumer;
 
-        public MinecraftShaderLoader(ResourceLocation shaderProgramName, VertexFormat format, Consumer<ShaderInstance> consumer) {
+        public MinecraftShaderLoader(
+                ResourceLocation shaderProgramName, VertexFormat format, Consumer<ShaderInstance> consumer) {
             this.shaderProgramName = shaderProgramName;
             this.format = format;
             this.consumer = consumer;

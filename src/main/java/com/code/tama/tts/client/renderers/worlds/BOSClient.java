@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -23,14 +24,19 @@ public class BOSClient {
     public static boolean updateSky = false;
     private static boolean isRenderingSky = false;
 
-    public static final RenderType SKY_RENDER_TYPE = RenderType.create("blockofsky_sky", DefaultVertexFormat.POSITION,
-            VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder()
+    public static final RenderType SKY_RENDER_TYPE = RenderType.create(
+            "blockofsky_sky",
+            DefaultVertexFormat.POSITION,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            false,
+            RenderType.CompositeState.builder()
                     .setShaderState(new RenderStateShard.ShaderStateShard(BOSClient::getSkyShader))
-            .setTextureState(new RenderStateShard.EmptyTextureStateShard(BOSClient::setSkyTexture, () -> {}))
-            .createCompositeState(false));
+                    .setTextureState(new RenderStateShard.EmptyTextureStateShard(BOSClient::setSkyTexture, () -> {}))
+                    .createCompositeState(false));
 
-    public static void init() {
-    }
+    public static void init() {}
 
     public static ShaderInstance getSkyShader() {
         return skyShader;
@@ -48,8 +54,7 @@ public class BOSClient {
         }
     }
 
-    public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {
-    }
+    public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {}
 
     public static void renderSky(RenderData renderData) {
         if (isRenderingSky) {
@@ -81,7 +86,7 @@ public class BOSClient {
             skyRenderTarget = new TextureTarget(skyWidth, skyHeight, true, Minecraft.ON_OSX);
         }
 
-//        if (irisLoaded) IrisCompat.preRender(mc.levelRenderer);
+        //        if (irisLoaded) IrisCompat.preRender(mc.levelRenderer);
         mc.gameRenderer.setRenderBlockOutline(false);
         mc.levelRenderer.graphicsChanged();
         skyRenderTarget.bindWrite(true);
@@ -96,10 +101,8 @@ public class BOSClient {
         skyRenderTarget.unbindWrite();
         mc.levelRenderer.graphicsChanged();
         mainRenderTarget.bindWrite(true);
-//        if (irisLoaded) IrisCompat.postRender(mc.levelRenderer);
+        //        if (irisLoaded) IrisCompat.postRender(mc.levelRenderer);
     }
-
-
 
     public static void renderActualSky(Minecraft mc, RenderData renderData) {
         if (mc == null || mc.level == null || mc.player == null) {
@@ -116,14 +119,26 @@ public class BOSClient {
         Vec3 cameraPos = camera.getPosition();
         LightTexture lightTexture = gameRenderer.lightTexture();
 
-        FogRenderer.setupColor(camera, delta, mc.level, mc.options.getEffectiveRenderDistance(), gameRenderer.getDarkenWorldAmount(delta));
+        FogRenderer.setupColor(
+                camera,
+                delta,
+                mc.level,
+                mc.options.getEffectiveRenderDistance(),
+                gameRenderer.getDarkenWorldAmount(delta));
         FogRenderer.levelFogColor();
         RenderSystem.clear(16640, Minecraft.ON_OSX);
         final float renderDistance = gameRenderer.getRenderDistance();
-        final boolean hasSpecialFog = mc.level.effects().isFoggyAt(Mth.floor(cameraPos.x), Mth.floor(cameraPos.z)) || mc.gui.getBossOverlay().shouldCreateWorldFog();
+        final boolean hasSpecialFog = mc.level.effects().isFoggyAt(Mth.floor(cameraPos.x), Mth.floor(cameraPos.z))
+                || mc.gui.getBossOverlay().shouldCreateWorldFog();
         FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta);
         RenderSystem.setShader(GameRenderer::getPositionShader);
-        levelRenderer.renderSky(poseStack, projectionMatrix, delta, camera, false, () -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta));
+        levelRenderer.renderSky(
+                poseStack,
+                projectionMatrix,
+                delta,
+                camera,
+                false,
+                () -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta));
 
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
@@ -145,5 +160,4 @@ public class BOSClient {
         RenderSystem.applyModelViewMatrix();
         FogRenderer.setupNoFog();
     }
-
 }

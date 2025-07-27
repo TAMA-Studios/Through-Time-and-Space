@@ -1,14 +1,14 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Arrays;
 
 public class SkyBlockEntity extends BlockEntity {
 
@@ -51,7 +51,13 @@ public class SkyBlockEntity extends BlockEntity {
         int index = direction.ordinal();
 
         if (shouldRender[index] == null) {
-            shouldRender[index] = level == null || Block.shouldRenderFace(getBlockState(), level, getBlockPos(), direction, getBlockPos().relative(direction));
+            shouldRender[index] = level == null
+                    || Block.shouldRenderFace(
+                            getBlockState(),
+                            level,
+                            getBlockPos(),
+                            direction,
+                            getBlockPos().relative(direction));
         }
 
         return shouldRender[index];

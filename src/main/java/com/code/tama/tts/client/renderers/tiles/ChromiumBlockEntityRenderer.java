@@ -1,4 +1,4 @@
-// src/main/java/your/mod/client/renderer/ChromiumBlockEntityRenderer.java
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.tts.TTSMod;
@@ -18,16 +18,23 @@ public class ChromiumBlockEntityRenderer implements BlockEntityRenderer<Chromium
     public ChromiumBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ChromiumBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+    public void render(
+            ChromiumBlockEntity pBlockEntity,
+            float pPartialTick,
+            PoseStack pPoseStack,
+            MultiBufferSource pBufferSource,
+            int pPackedLight,
+            int pPackedOverlay) {
         // This is where your custom rendering logic goes.
 
         // Get the sprite for the block (your chromium texture)
         // You'll need to define this texture in your assets
-        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+        TextureAtlasSprite texture = Minecraft.getInstance()
+                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                 .apply(new ResourceLocation(TTSMod.MODID, "block/chromium_block"));
 
         // Bind your custom shader
-//        ShadersUtil.CHROMIUM_SHADER.apply();
+        //        ShadersUtil.CHROMIUM_SHADER.apply();
 
         // Pass uniforms to your shader (e.g., camera position, light data)
         // Minecraft automatically passes many uniforms, but custom ones need to be handled.
@@ -38,7 +45,8 @@ public class ChromiumBlockEntityRenderer implements BlockEntityRenderer<Chromium
 
         pPoseStack.pushPose();
         // Translate to block position
-        // pPoseStack.translate(pBlockEntity.getBlockPos().getX(), pBlockEntity.getBlockPos().getY(), pBlockEntity.getBlockPos().getZ());
+        // pPoseStack.translate(pBlockEntity.getBlockPos().getX(), pBlockEntity.getBlockPos().getY(),
+        // pBlockEntity.getBlockPos().getZ());
 
         // You'll need to draw quads manually or load a custom model here.
         // For simplicity, let's assume you're drawing a simple cube.
@@ -92,15 +100,17 @@ public class ChromiumBlockEntityRenderer implements BlockEntityRenderer<Chromium
         // Render a vanilla model, but with a custom render type and shader.
 
         // Instead of custom drawing, we'll try to get the vanilla model to render with our shader.
-        // This is complex because you need to override the RenderType and the shader program used by the vanilla model baker.
+        // This is complex because you need to override the RenderType and the shader program used by the vanilla model
+        // baker.
         // Minecraft's rendering usually bakes models into vertex data using a specific RenderType.
         // To use a custom shader, you need a custom RenderType.
 
         BlockState state = pBlockEntity.getBlockState();
         // This will attempt to get and render the default block model for your block.
         // We'll then try to hook into the shader system later.
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                state, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
+        Minecraft.getInstance()
+                .getBlockRenderer()
+                .renderSingleBlock(state, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
 
         // Reset to default shader if necessary (usually not needed if RenderSystem.setShader is used later)
         // RenderSystem.setShader(GameRenderer::getPositionTexColorNormalShader);

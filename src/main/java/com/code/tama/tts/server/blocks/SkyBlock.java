@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.server.tileentities.SkyBlockEntity;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.material.MapColor;
 
 public class SkyBlock extends BaseEntityBlock {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
     public SkyBlock() {
         super(Properties.of()
                 .mapColor(MapColor.STONE)
@@ -41,7 +43,13 @@ public class SkyBlock extends BaseEntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighborState,
+            LevelAccessor level,
+            BlockPos pos,
+            BlockPos neighborPos) {
         final BlockEntity blockEntity = level.getBlockEntity(pos);
 
         if (blockEntity instanceof SkyBlockEntity skyBlockEntity) {
@@ -53,7 +61,8 @@ public class SkyBlock extends BaseEntityBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+    public void neighborChanged(
+            BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         super.neighborChanged(state, level, pos, block, fromPos, notify);
 
         final BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -107,5 +116,4 @@ public class SkyBlock extends BaseEntityBlock {
             }
         }
     }
-
 }

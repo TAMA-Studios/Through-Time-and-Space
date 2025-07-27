@@ -34,6 +34,7 @@ public class MathUtils {
     public static int ReverseRoundTo48(int num) {
         return MathUtils.reverseRound((float) num / 48) * 48;
     }
+
     public static int RoundTo48(int num) {
         return RoundToMultiple(num, 48);
     }

@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSBlocks.*;
+
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
@@ -11,9 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSBlocks.*;
 
 public class TTSTileEntities {
 
@@ -46,15 +46,14 @@ public class TTSTileEntities {
                         ExampleTileEntity::new, // Tile entity class
                         TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
 
-         SKY_TILE =
-                 TILE_ENTITIES.register("sky_block", () -> create(SkyBlockEntity::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
+        SKY_TILE = TILE_ENTITIES.register(
+                "sky_block", () -> create(SkyBlockEntity::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
 
         PORTAL_TILE_ENTITY =
                 TILE_ENTITIES.register("portal_tile_entity", () -> create(PortalTileEntity::new, PORTAL_BLOCK.get()));
 
-        CHROMIUM_BLOCK_ENTITY =
-                TILE_ENTITIES.register("chromium_block_entity", () ->
-                        create(ChromiumBlockEntity::new, TTSBlocks.CHROMIUM_BLOCK.get()));
+        CHROMIUM_BLOCK_ENTITY = TILE_ENTITIES.register(
+                "chromium_block_entity", () -> create(ChromiumBlockEntity::new, TTSBlocks.CHROMIUM_BLOCK.get()));
 
         HARTNELL_ROTOR = TILE_ENTITIES.register(
                 "hartnell_rotor", () -> create(HartnellRotorTile::new, TTSBlocks.HARTNELL_ROTOR.get()));

@@ -1,4 +1,4 @@
-// src/main/java/your/mod/ChromiumBlockEntity.java
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.registries.TTSTileEntities;

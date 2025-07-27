@@ -1,17 +1,20 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.misc.ARSStructure;
-import net.minecraft.network.chat.Component;
-
 import java.util.ArrayList;
+import net.minecraft.network.chat.Component;
 
 public class ARSRegistry {
     public static ArrayList<ARSStructure> STRUCTURES = new ArrayList<>();
 
-    public static ARSStructure CLEAN_INTERIOR = AddStructure(new ARSStructure(Structures.CleanInterior.GetRL() , Component.translatable("tts.ars.clean")));
-//    public static ARSStructure CITADEL_INTERIOR = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.citadel")));
-//    public static ARSStructure CLEAN_WORKSHOP = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.clean_workshop")));
+    public static ARSStructure CLEAN_INTERIOR =
+            AddStructure(new ARSStructure(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean")));
+    //    public static ARSStructure CITADEL_INTERIOR = AddStructure(new
+    // ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.citadel")));
+    //    public static ARSStructure CLEAN_WORKSHOP = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(),
+    // Component.translatable("tts.ars.clean_workshop")));
 
     public static ARSStructure GetStructure(int ID) {
         return STRUCTURES.get(ID);
@@ -23,15 +26,15 @@ public class ARSRegistry {
     }
 
     public static ARSStructure CycleStruct(ARSStructure structure) {
-        for(int i = 0; i < STRUCTURES.size() - 1; i++) {
-            if(GetStructure(i).equals(structure)) return GetStructure(i + 1);
+        for (int i = 0; i < STRUCTURES.size() - 1; i++) {
+            if (GetStructure(i).equals(structure)) return GetStructure(i + 1);
         }
         return GetStructure(0);
     }
 
     public static ARSStructure GetByName(String name) {
-        for(ARSStructure structure : STRUCTURES) {
-            if(structure.getName().equals(Component.translatable(name))) return structure;
+        for (ARSStructure structure : STRUCTURES) {
+            if (structure.getName().equals(Component.translatable(name))) return structure;
         }
         return STRUCTURES.get(0);
     }

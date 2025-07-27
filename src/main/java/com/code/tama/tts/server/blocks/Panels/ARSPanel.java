@@ -8,6 +8,11 @@ import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.misc.ARSStructure;
 import com.code.tama.tts.server.registries.ARSRegistry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -37,27 +42,23 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
 @SuppressWarnings("deprecation")
 public class ARSPanel extends HorizontalDirectionalBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
-    public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
+    public static VoxelRotatedShape SHAPE =
+            new VoxelRotatedShape(createVoxelShape().optimize());
     public static List<Buttons> buttons = new ArrayList<>();
     private ARSStructure StoredStruct = ARSRegistry.GetStructure(0);
 
     public static VoxelShape createVoxelShape() {
         return Stream.of(
-                Block.box(3, 1, 5, 7, 2, 9),
-                Block.box(9, 1, 5, 13, 2, 9),
-                Block.box(0, 0, 0, 16, 1, 16),
-                Block.box(5, 0, -16, 11, 1, 0)
-        ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+                        Block.box(3, 1, 5, 7, 2, 9),
+                        Block.box(9, 1, 5, 13, 2, 9),
+                        Block.box(0, 0, 0, 16, 1, 16),
+                        Block.box(5, 0, -16, 11, 1, 0))
+                .reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
+                .get();
     }
 
     public ARSPanel(Properties p_49795_) {
@@ -158,7 +159,6 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         }
     }
 
-
     @Override
     public @NotNull InteractionResult use(
             @NotNull BlockState state,
@@ -169,7 +169,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
             @NotNull BlockHitResult hit) {
         // if (world.isClientSide) return InteractionResult.PASS;
         if (hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
-        if(world.isClientSide) return super.use(state, world, pos, player, hand, hit);
+        if (world.isClientSide) return super.use(state, world, pos, player, hand, hit);
 
         Buttons button = this.getButton(
                 (100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
@@ -178,20 +178,24 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 
         if (button == null) return InteractionResult.FAIL;
 
-        BlockPos posToPlace = new BlockPos(MathUtils.RoundTo48(pos.getX()), MathUtils.RoundTo48(pos.getY()), MathUtils.RoundTo48(pos.getZ()));
+        BlockPos posToPlace = new BlockPos(
+                MathUtils.RoundTo48(pos.getX()), MathUtils.RoundTo48(pos.getY()), MathUtils.RoundTo48(pos.getZ()));
 
         world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MODE:
-                    if(player.isCrouching()) {
-                        WorldHelper.PlaceStructure((ServerLevel) world, posToPlace.relative(state.getValue(FACING).getOpposite(), 48), ARSRegistry.GetByName("tts.ars.starter").getPath());
+                    if (player.isCrouching()) {
+                        WorldHelper.PlaceStructure(
+                                (ServerLevel) world,
+                                posToPlace.relative(state.getValue(FACING).getOpposite(), 48),
+                                ARSRegistry.GetByName("tts.ars.starter").getPath());
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
-                    }
-                    else {
+                    } else {
                         this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
-                        player.sendSystemMessage(Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
+                        player.sendSystemMessage(
+                                Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);

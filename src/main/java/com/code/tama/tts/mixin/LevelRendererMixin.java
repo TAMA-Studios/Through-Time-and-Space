@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin;
 
 import com.code.tama.tts.client.renderers.worlds.BOSClient;
@@ -22,17 +23,35 @@ public abstract class LevelRendererMixin implements LevelRendererBOS {
     @Final
     private RenderBuffers renderBuffers;
 
-    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch(Lnet/minecraft/client/renderer/RenderType;)V", ordinal = 6, shift = At.Shift.AFTER))
-    private void renderLevelBOS(PoseStack poseStack, float delta, long time, boolean blockOutlines, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix, CallbackInfo ci) {
+    @Inject(
+            method = "renderLevel",
+            at =
+                    @At(
+                            value = "INVOKE",
+                            target =
+                                    "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
+                            ordinal = 6,
+                            shift = At.Shift.AFTER))
+    private void renderLevelBOS(
+            PoseStack poseStack,
+            float delta,
+            long time,
+            boolean blockOutlines,
+            Camera camera,
+            GameRenderer gameRenderer,
+            LightTexture lightTexture,
+            Matrix4f matrix,
+            CallbackInfo ci) {
         renderBuffers.bufferSource().endBatch(BOSClient.SKY_RENDER_TYPE);
     }
 
-    @Shadow
-    private void renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {
-    }
+    @Shadow(remap = false)
+    private void renderSnowAndRain(
+            LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {}
 
     @Override
-    public void BOS$renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {
+    public void BOS$renderSnowAndRain(
+            LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {
         renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
     }
 }

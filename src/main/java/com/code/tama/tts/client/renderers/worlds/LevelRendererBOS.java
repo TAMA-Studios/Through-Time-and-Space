@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds;
 
 import net.minecraft.client.renderer.LightTexture;

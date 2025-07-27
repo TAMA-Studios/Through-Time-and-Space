@@ -142,6 +142,7 @@ public class WorldHelper {
                 .forEach(
                         effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
     }
+
     public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
 
         StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
@@ -161,87 +162,87 @@ public class WorldHelper {
                 .setMirror(Mirror.NONE); // No mirroring
 
         // Place the structure
-        template.placeInWorld(
-                serverLevel, structureStartPos, structureStartPos, settings, serverLevel.getRandom(), 3);
+        template.placeInWorld(serverLevel, structureStartPos, structureStartPos, settings, serverLevel.getRandom(), 3);
 
         System.out.println("Placed structure at: " + structureStartPos);
     }
 
-//    public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
-//        StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
-//
-//        int sizeX = template.getSize().getX();
-//        int sizeY = template.getSize().getY();
-//        int sizeZ = template.getSize().getZ();
-//
-//        BlockPos offset = new BlockPos(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
-//        BlockPos structureStartPos = pos.offset(offset);
-//
-//        StructurePlaceSettings settings = new StructurePlaceSettings()
-//                .setIgnoreEntities(false)
-//                .setRotation(Rotation.NONE)
-//                .setMirror(Mirror.NONE);
-//
-//        // Get all blocks from the template
-//        List<StructureTemplate.StructureBlockInfo> blocks = template.filterBlocks(
-//                structureStartPos,
-//                settings,
-//                net.minecraft.world.level.block.Blocks.AIR
-//        );
-//
-//        // Sort blocks by Y coordinate (bottom to top)
-//        blocks.sort(Comparator.comparingInt(block -> block.pos().getY()));
-//
-//        // Group blocks by Y level
-//        List<List<StructureTemplate.StructureBlockInfo>> layers = new ArrayList<>();
-//        int currentY = blocks.get(0).pos().getY();
-//        List<StructureTemplate.StructureBlockInfo> currentLayer = new ArrayList<>();
-//
-//        for (StructureTemplate.StructureBlockInfo block : blocks) {
-//            if (block.pos().getY() != currentY) {
-//                layers.add(currentLayer);
-//                currentLayer = new ArrayList<>();
-//                currentY = block.pos().getY();
-//            }
-//            currentLayer.add(block);
-//        }
-//        layers.add(currentLayer);
-//
-//        // Schedule block placement layer by layer
-//        final int[] layerIndex = {0};
-//
-//        Runnable placeNextLayer = new Runnable() {
-//            @Override
-//            public void run() {
-//                if (layerIndex[0] < layers.size()) {
-//                    List<StructureTemplate.StructureBlockInfo> layer = layers.get(layerIndex[0]);
-//
-//                    // Place all blocks in current layer
-//                    for (StructureTemplate.StructureBlockInfo block : ReflectionBuddy.StructureTemplateAccess.palettes.apply(template).get(0).blocks()) {
-//                        if(block.state().isAir()) continue;
-//                        serverLevel.setBlock(block.pos(), block.state(), 3);
-//                        if (block.nbt() != null) {
-//                            template.placeInWorld(serverLevel, block.pos(), block.pos(), settings, serverLevel.getRandom(), 3);
-//                        }
-//                    }
-//
-//                    layerIndex[0]++;
-//
-//                    // Schedule next layer (5 ticks delay)
-//                    if (layerIndex[0] < layers.size()) {
-//                        serverLevel.getServer().execute(new TickTask(5, this));
-//                    } else {
-//                        System.out.println("Finished placing structure at: " + structureStartPos);
-//                    }
-//                }
-//            }
-//        };
-//
-//        // Start the animation
-//        serverLevel.getServer().execute(new TickTask(5, placeNextLayer));
-//
-//        System.out.println("Started animated structure placement at: " + structureStartPos);
-//    }
-
+    //    public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
+    //        StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
+    //
+    //        int sizeX = template.getSize().getX();
+    //        int sizeY = template.getSize().getY();
+    //        int sizeZ = template.getSize().getZ();
+    //
+    //        BlockPos offset = new BlockPos(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
+    //        BlockPos structureStartPos = pos.offset(offset);
+    //
+    //        StructurePlaceSettings settings = new StructurePlaceSettings()
+    //                .setIgnoreEntities(false)
+    //                .setRotation(Rotation.NONE)
+    //                .setMirror(Mirror.NONE);
+    //
+    //        // Get all blocks from the template
+    //        List<StructureTemplate.StructureBlockInfo> blocks = template.filterBlocks(
+    //                structureStartPos,
+    //                settings,
+    //                net.minecraft.world.level.block.Blocks.AIR
+    //        );
+    //
+    //        // Sort blocks by Y coordinate (bottom to top)
+    //        blocks.sort(Comparator.comparingInt(block -> block.pos().getY()));
+    //
+    //        // Group blocks by Y level
+    //        List<List<StructureTemplate.StructureBlockInfo>> layers = new ArrayList<>();
+    //        int currentY = blocks.get(0).pos().getY();
+    //        List<StructureTemplate.StructureBlockInfo> currentLayer = new ArrayList<>();
+    //
+    //        for (StructureTemplate.StructureBlockInfo block : blocks) {
+    //            if (block.pos().getY() != currentY) {
+    //                layers.add(currentLayer);
+    //                currentLayer = new ArrayList<>();
+    //                currentY = block.pos().getY();
+    //            }
+    //            currentLayer.add(block);
+    //        }
+    //        layers.add(currentLayer);
+    //
+    //        // Schedule block placement layer by layer
+    //        final int[] layerIndex = {0};
+    //
+    //        Runnable placeNextLayer = new Runnable() {
+    //            @Override
+    //            public void run() {
+    //                if (layerIndex[0] < layers.size()) {
+    //                    List<StructureTemplate.StructureBlockInfo> layer = layers.get(layerIndex[0]);
+    //
+    //                    // Place all blocks in current layer
+    //                    for (StructureTemplate.StructureBlockInfo block :
+    // ReflectionBuddy.StructureTemplateAccess.palettes.apply(template).get(0).blocks()) {
+    //                        if(block.state().isAir()) continue;
+    //                        serverLevel.setBlock(block.pos(), block.state(), 3);
+    //                        if (block.nbt() != null) {
+    //                            template.placeInWorld(serverLevel, block.pos(), block.pos(), settings,
+    // serverLevel.getRandom(), 3);
+    //                        }
+    //                    }
+    //
+    //                    layerIndex[0]++;
+    //
+    //                    // Schedule next layer (5 ticks delay)
+    //                    if (layerIndex[0] < layers.size()) {
+    //                        serverLevel.getServer().execute(new TickTask(5, this));
+    //                    } else {
+    //                        System.out.println("Finished placing structure at: " + structureStartPos);
+    //                    }
+    //                }
+    //            }
+    //        };
+    //
+    //        // Start the animation
+    //        serverLevel.getServer().execute(new TickTask(5, placeNextLayer));
+    //
+    //        System.out.println("Started animated structure placement at: " + structureStartPos);
+    //    }
 
 }

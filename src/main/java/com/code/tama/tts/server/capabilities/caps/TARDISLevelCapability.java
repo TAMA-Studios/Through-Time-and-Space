@@ -251,8 +251,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (this.ExteriorDimensionKey == null) {
             if (this.GetExteriorTile() != null) {
                 this.ExteriorDimensionKey = this.GetExteriorTile().getLevel().dimension();
-            } else
-                if(!this.level.isClientSide) this.SetCurrentLevel(this.level.getServer().overworld().dimension());
+            } else if (!this.level.isClientSide)
+                this.SetCurrentLevel(this.level.getServer().overworld().dimension());
         }
 
         return this.ExteriorDimensionKey == null ? Level.OVERWORLD : this.ExteriorDimensionKey;

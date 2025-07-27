@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
+
 import com.code.tama.tts.core.annotations.DimensionalTab;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
@@ -10,6 +14,7 @@ import com.code.tama.tts.server.blocks.monitor.MonitorPanel;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -26,12 +31,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
-
 public class TTSBlocks {
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
 
@@ -42,9 +41,11 @@ public class TTSBlocks {
 
     public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
 
-    public static final RegistryObject<Block> VOID_BLOCK = RegisterWithItemSpecial("void_block", SkyBlock.VoidBlock::new);
+    public static final RegistryObject<Block> VOID_BLOCK =
+            RegisterWithItemSpecial("void_block", SkyBlock.VoidBlock::new);
 
-    public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem("chromium_block",
+    public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem(
+            "chromium_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .strength(5.0F, 6.0F)
@@ -54,7 +55,9 @@ public class TTSBlocks {
             "hartnell_rotor", () -> new HartnellRotor(BlockBehaviour.Properties.copy(Blocks.GLASS)));
 
     public static RegistryObject<Block> HARD_LIGHT = RegisterWithItem(
-            "hard_light", () -> new HardLightBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(BlockState -> 8)));
+            "hard_light",
+            () -> new HardLightBlock(
+                    BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(BlockState -> 8)));
 
     public static RegistryObject<ExteriorBlock> EXTERIOR_BLOCK = BLOCKS.register(
             "exterior_block",
