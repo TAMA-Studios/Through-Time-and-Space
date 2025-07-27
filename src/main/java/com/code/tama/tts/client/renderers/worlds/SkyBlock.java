@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public class BOSClient {
+public class SkyBlock {
     private static ShaderInstance skyShader;
     private static int skyWidth = -1;
     private static int skyHeight = -1;
@@ -25,15 +25,15 @@ public class BOSClient {
     private static boolean isRenderingSky = false;
 
     public static final RenderType SKY_RENDER_TYPE = RenderType.create(
-            "blockofsky_sky",
+            "sky",
             DefaultVertexFormat.POSITION,
             VertexFormat.Mode.QUADS,
             256,
             false,
             false,
             RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(BOSClient::getSkyShader))
-                    .setTextureState(new RenderStateShard.EmptyTextureStateShard(BOSClient::setSkyTexture, () -> {}))
+                    .setShaderState(new RenderStateShard.ShaderStateShard(SkyBlock::getSkyShader))
+                    .setTextureState(new RenderStateShard.EmptyTextureStateShard(SkyBlock::setSkyTexture, () -> {}))
                     .createCompositeState(false));
 
     public static void init() {}

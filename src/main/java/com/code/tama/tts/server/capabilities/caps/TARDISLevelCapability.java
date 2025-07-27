@@ -5,6 +5,7 @@ import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
+import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.Exterior;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.networking.Networking;
@@ -29,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -366,7 +368,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.SetTicksTillReachedDestination((int) Distance * 20);
         //////////////////////// CALCULATIONS END ////////////////////////
         // Make sure this is powered before continuing
-        if (!this.IsPoweredOn()) return;
+        if (!this.CanFly()) return;
         if (this.GetLevel().isClientSide()) return;
         if (this.GetExteriorTile() == null) return;
         ExteriorTile ext = this.GetExteriorTile();
@@ -382,11 +384,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
                 .setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), true);
 
         ext.UtterlyDestroy();
+
         exteriorLevel
                 .getServer()
                 .getLevel(exteriorLevel.dimension())
                 .setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), false);
         this.UpdateClient();
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
     }
 
     @Override
@@ -394,6 +398,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (!this.CanFly()) return;
 
         if (this.IsInFlight()) return;
+
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.START));
+
         if (this.GetExteriorTile() == null) {
             // Makes it so the TARDIS is supposed to be in-flight
             this.SetInFlight(true);
@@ -409,26 +416,31 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void Rematerialize() {
+        if (this.level.isClientSide) return;
+        if (!this.IsInFlight) return;
+
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.START));
         // TODO: This
         this.Land();
     }
 
     @Override
     public void Land() {
-        if (this.level.isClientSide) return;
-        if (!this.IsInFlight) return;
         this.IsInFlight = false;
         new LandThread(this).start();
         this.NullExteriorChecksAndFixes();
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
     }
 
     @Override
     public void Crash() {
         if (this.level.isClientSide) return;
         if (!this.IsInFlight) return;
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.START));
         this.IsInFlight = false;
         new CrashThread(this).start();
         this.NullExteriorChecksAndFixes();
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.END));
     }
 
     public static Rotation DirectionToRotation(Direction direction) {

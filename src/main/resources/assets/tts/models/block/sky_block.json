@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:block/cube_all",
 	"textures": {
-		"all": "blockofsky:block/sky_block"
+		"all": "tts:block/sky_block"
 	}
 }

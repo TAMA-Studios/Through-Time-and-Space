@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "blockofsky:block/void_block"
+      "model": "tts:block/void_block"
     }
   }
 }

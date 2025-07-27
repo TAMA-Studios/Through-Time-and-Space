@@ -11,7 +11,7 @@ import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.*;
-import com.code.tama.tts.client.renderers.worlds.BOSClient;
+import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
@@ -73,7 +73,7 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
-        BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(), SkyBlockEntityRenderer::new);
+        BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(), SkyTileRenderer::new);
         event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
         event.registerBlockEntityRenderer(
                 TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(), ChromiumBlockEntityRenderer::new);
@@ -117,10 +117,10 @@ public class ClientRegistry {
         try {
             // Load and register the shader
             ShaderInstance shader = new ShaderInstance(
-                    event.getResourceProvider(), new ResourceLocation("blockofsky_sky"), DefaultVertexFormat.POSITION);
+                    event.getResourceProvider(), new ResourceLocation("sky"), DefaultVertexFormat.POSITION);
 
             // Register the shader instance with your handler
-            event.registerShader(shader, BOSClient::setSkyShader);
+            event.registerShader(shader, SkyBlock::setSkyShader);
         } catch (IOException ex) {
             System.err.println("Failed to load shader");
             ex.printStackTrace();

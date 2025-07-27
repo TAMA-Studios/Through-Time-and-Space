@@ -1,21 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.enums.Structures;
+import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.Exterior;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -33,8 +31,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends BlockEntity {
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
@@ -181,6 +184,7 @@ public class ExteriorTile extends BlockEntity {
         ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
         assert Interior != null;
         Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START));
             float X, Y, Z;
             BlockPos pos = cap.GetDoorBlock().GetBlockPos().north();
             X = pos.getX() + 0.5f;
@@ -189,6 +193,7 @@ public class ExteriorTile extends BlockEntity {
             float yRot = cap.GetDoorData().getYRot() + EntityToTeleport.getYRot();
             System.out.println(yRot);
             EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
+            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END));
         });
     }
 
@@ -204,13 +209,13 @@ public class ExteriorTile extends BlockEntity {
     public void UtterlyDestroy() {
         assert this.level != null;
         // this.level.getServer().execute(new TickTask(5, () -> {
-        if (this.GetBlock() != null) {
-            this.GetBlock().MarkForRemoval();
-            this.level
-                    .getServer()
-                    .getLevel(this.level.dimension())
-                    .scheduleTick(this.getBlockPos(), this.GetBlock(), 1);
-        }
+//        if (this.GetBlock() != null) {
+//            this.GetBlock().MarkForRemoval();
+//            this.level
+//                    .getServer()
+//                    .getLevel(this.level.dimension())
+//                    .scheduleTick(this.getBlockPos(), this.GetBlock(), 1);
+//        }
         this.level.getServer().getLevel(this.level.dimension()).removeBlock(this.getBlockPos(), false);
         this.level.getServer().getLevel(this.level.dimension()).removeBlockEntity(this.getBlockPos());
         // }));

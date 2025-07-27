@@ -79,6 +79,7 @@ public class SkyRendererHelper {
 
         RenderSystem.disableDepthTest();
         StarsVBO.bind();
+        assert GameRenderer.getPositionShader() != null;
         StarsVBO.drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
 
         VertexBuffer.unbind();

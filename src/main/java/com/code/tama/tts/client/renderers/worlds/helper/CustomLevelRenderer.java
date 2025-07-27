@@ -4,8 +4,8 @@ package com.code.tama.tts.client.renderers.worlds.helper;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
-import com.code.tama.tts.client.renderers.worlds.BOSClient;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
+import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.TardisSkyRenderer;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -61,8 +61,8 @@ public class CustomLevelRenderer {
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
-            BOSClient.renderSky(new BOSClient.RenderData(
-                    event.getPoseStack(), event.getPartialTick(), event.getProjectionMatrix()));
+            SkyBlock.renderSky(
+                    new SkyBlock.RenderData(event.getPoseStack(), event.getPartialTick(), event.getProjectionMatrix()));
 
         Ticks = Minecraft.getInstance().level.getGameTime();
 

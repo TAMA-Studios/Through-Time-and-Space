@@ -4,6 +4,7 @@ package com.code.tama.tts.server.blocks;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.data.tardis.DoorData;
+import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
@@ -100,6 +102,7 @@ public class DoorBlock extends Block implements EntityBlock {
         if (EntityToTeleport.level().isClientSide) return;
         try {
             Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+                MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START));
                 BlockPos pos = cap.GetExteriorLocation().GetBlockPos().north(1);
                 if (Interior.getServer()
                                 .getLevel(cap.GetCurrentLevel())
@@ -117,6 +120,7 @@ public class DoorBlock extends Block implements EntityBlock {
                         Set.of(),
                         yRot,
                         0);
+                MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END));
             });
         } catch (Exception e) {
             TTSMod.LOGGER.error("EXTERIOR NOT FOUND");

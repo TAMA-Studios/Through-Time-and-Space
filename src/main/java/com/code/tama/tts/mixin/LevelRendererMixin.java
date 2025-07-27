@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin;
 
-import com.code.tama.tts.client.renderers.worlds.BOSClient;
 import com.code.tama.tts.client.renderers.worlds.LevelRendererBOS;
+import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
@@ -46,7 +46,7 @@ public abstract class LevelRendererMixin implements LevelRendererBOS {
             LightTexture lightTexture,
             Matrix4f matrix,
             CallbackInfo ci) {
-        renderBuffers.bufferSource().endBatch(BOSClient.SKY_RENDER_TYPE);
+        renderBuffers.bufferSource().endBatch(SkyBlock.SKY_RENDER_TYPE);
     }
 
     @Override

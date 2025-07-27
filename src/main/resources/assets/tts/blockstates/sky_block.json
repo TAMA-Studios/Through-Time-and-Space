@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "blockofsky:block/sky_block"
+			"model": "tts:block/sky_block"
 		}
 	}
 }

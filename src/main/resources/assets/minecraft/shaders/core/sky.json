@@ -4,8 +4,8 @@
 		"srcrgb": "srcalpha",
 		"dstrgb": "1-srcalpha"
 	},
-	"vertex": "blockofsky_sky",
-	"fragment": "blockofsky_sky",
+	"vertex": "sky",
+	"fragment": "sky",
 	"attributes": [
 		"Position"
 	],

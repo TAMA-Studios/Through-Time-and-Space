@@ -10,18 +10,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SkyBlockEntity extends BlockEntity {
+public class SkyTile extends BlockEntity {
 
     public enum SkyType {
         Overworld,
         Void,
     }
 
-    public SkyBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public SkyTile(BlockPos blockPos, BlockState blockState) {
         super(TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
     }
 
-    public SkyBlockEntity(SkyType skyType, BlockPos pos, BlockState state) {
+    public SkyTile(SkyType skyType, BlockPos pos, BlockState state) {
         this(pos, state);
         this.skyType = skyType;
     }

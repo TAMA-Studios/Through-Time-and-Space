@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import com.code.tama.tts.server.tileentities.SkyBlockEntity;
+import com.code.tama.tts.server.tileentities.SkyTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -32,7 +32,7 @@ public class SkyBlock extends BaseEntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new SkyBlockEntity(SkyBlockEntity.SkyType.Overworld, blockPos, blockState);
+        return new SkyTile(SkyTile.SkyType.Overworld, blockPos, blockState);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class SkyBlock extends BaseEntityBlock {
             BlockPos neighborPos) {
         final BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if (blockEntity instanceof SkyBlockEntity skyBlockEntity) {
-            skyBlockEntity.neighborChanged();
+        if (blockEntity instanceof SkyTile skyTile) {
+            skyTile.neighborChanged();
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
@@ -67,8 +67,8 @@ public class SkyBlock extends BaseEntityBlock {
 
         final BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if (blockEntity instanceof SkyBlockEntity skyBlockEntity) {
-            skyBlockEntity.neighborChanged();
+        if (blockEntity instanceof SkyTile skyTile) {
+            skyTile.neighborChanged();
         }
 
         if (!level.isClientSide) {
@@ -104,7 +104,7 @@ public class SkyBlock extends BaseEntityBlock {
 
         @Override
         public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-            return new SkyBlockEntity(SkyBlockEntity.SkyType.Void, blockPos, blockState);
+            return new SkyTile(SkyTile.SkyType.Void, blockPos, blockState);
         }
 
         @Override

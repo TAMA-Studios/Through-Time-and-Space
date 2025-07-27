@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:block/cube_all",
 	"textures": {
-		"all": "blockofsky:block/void_block"
+		"all": "tts:block/void_block"
 	}
 }

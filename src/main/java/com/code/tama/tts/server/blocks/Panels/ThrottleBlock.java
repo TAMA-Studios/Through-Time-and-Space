@@ -1,12 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
-
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
-import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -30,6 +27,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 @SuppressWarnings("deprecation")
 public class ThrottleBlock extends HorizontalDirectionalBlock {
@@ -141,37 +142,31 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
         interactionResultAtomicReference.set(InteractionResult.FAIL);
 
         state.setValue(POWERED, Power);
+
+        AtomicReference<SoundState> soundState = new AtomicReference<>(SoundState.FAIL);
         level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             POWER:
-            if (Power) {
-                if (!cap.IsInFlight()) {
-                    cap.Dematerialize();
-                    if (cap.GetExteriorTile() == null) {
-                        level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
-                        level.playSound(null, pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS);
-                        break POWER;
-                    }
-                    level.playSound(null, pos, TTSSounds.THROTTLE_ON.get(), SoundSource.BLOCKS);
-                    level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
-                } else {
-                    level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
-                    level.playSound(null, pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS);
-                }
+            if (!cap.IsInFlight()) {
+                cap.Dematerialize();
+                soundState.set(SoundState.ON);
+            } else if (cap.IsInFlight()) {
+                cap.Land();
+                soundState.set(SoundState.OFF);
             } else {
-                if (cap.IsInFlight()) {
-                    cap.Land();
-                    level.playSound(null, pos, TTSSounds.THROTTLE_OFF.get(), SoundSource.BLOCKS);
-                    level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
-                } else {
-                    level.setBlockAndUpdate(pos, state.setValue(POWERED, !Power));
-                    level.playSound(null, pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS);
-                }
+                soundState.set(SoundState.FAIL);
             }
+
+            level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
             interactionResultAtomicReference.set(InteractionResult.SUCCESS);
         });
 
         // level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F,
         // 0.5f);
+        switch (soundState.get()) {
+            case ON -> level.playSound(null, pos, TTSSounds.THROTTLE_ON.get(), SoundSource.BLOCKS);
+            case OFF -> level.playSound(null, pos, TTSSounds.THROTTLE_OFF.get(), SoundSource.BLOCKS);
+            default -> level.playSound(null, pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS);
+        }
         level.gameEvent(player, state.getValue(POWERED) ? GameEvent.BLOCK_ACTIVATE : GameEvent.BLOCK_DEACTIVATE, pos);
         return interactionResultAtomicReference.get();
     }
@@ -185,5 +180,9 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
 
     private void updateNeighbours(Level p_54682_, BlockPos p_54683_) {
         p_54682_.updateNeighborsAt(p_54683_, this);
+    }
+
+    public enum SoundState {
+        ON, OFF, FAIL;
     }
 }

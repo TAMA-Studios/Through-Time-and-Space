@@ -42,4 +42,9 @@ public class CommonEvents {
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
         event.level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Tick);
     }
+
+    @SubscribeEvent
+    public static void TARDISDemat(TardisEvent.TakeOff event) {
+        System.out.println(event.level.GetDestination());
+    }
 }

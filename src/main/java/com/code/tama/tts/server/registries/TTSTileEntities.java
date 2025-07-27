@@ -33,7 +33,7 @@ public class TTSTileEntities {
     public static final RegistryObject<BlockEntityType<PortalTileEntity>> PORTAL_TILE_ENTITY;
     public static final RegistryObject<BlockEntityType<WorkbenchTile>> WORKBENCH_TILE;
     public static final RegistryObject<BlockEntityType<ChromiumBlockEntity>> CHROMIUM_BLOCK_ENTITY;
-    public static final RegistryObject<BlockEntityType<SkyBlockEntity>> SKY_TILE;
+    public static final RegistryObject<BlockEntityType<SkyTile>> SKY_TILE;
     public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES;
 
     static {
@@ -46,8 +46,7 @@ public class TTSTileEntities {
                         ExampleTileEntity::new, // Tile entity class
                         TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
 
-        SKY_TILE = TILE_ENTITIES.register(
-                "sky_block", () -> create(SkyBlockEntity::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
+        SKY_TILE = TILE_ENTITIES.register("sky_block", () -> create(SkyTile::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
 
         PORTAL_TILE_ENTITY =
                 TILE_ENTITIES.register("portal_tile_entity", () -> create(PortalTileEntity::new, PORTAL_BLOCK.get()));
