@@ -1,0 +1,27 @@
+{
+  "vertex": "minecraft:rendertype_reflective",
+  "fragment": "minecraft:rendertype_reflective",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0",
+    "UV2",
+    "Normal"
+  ],
+  "uniforms": [
+    { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "IViewRotMat", "type": "matrix3x3", "count": 9, "values": [ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 ] },
+    { "name": "ChunkOffset", "type": "float3", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
+    { "name": "FogStart", "type": "float1", "count": 1, "values": [ 0.0 ] },
+    { "name": "FogEnd", "type": "float1", "count": 1, "values": [ 1.0 ] },
+    { "name": "FogColor", "type": "float4", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
+    { "name": "FogShape", "type": "int1", "count": 1, "values": [ 0 ] },
+    { "name": "ColorModulator", "type": "float4", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+    { "name": "Light0_Direction", "type": "float3", "count": 3, "values": [ 0.0, 0.0, 0.0 ] }
+  ],
+  "samplers": [
+    { "name": "Sampler0", "type": "sampler2d", "values": [ 0 ] },
+    { "name": "Sampler2", "type": "sampler2d", "values": [ 2 ] }
+  ]
+}

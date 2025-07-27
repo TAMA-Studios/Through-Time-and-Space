@@ -1,29 +1,37 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
-
 import com.code.tama.tts.client.models.*;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.*;
+import com.code.tama.tts.client.renderers.worlds.BOSClient;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
+import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {
@@ -31,6 +39,9 @@ public class ClientRegistry {
     @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void ClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent());
+        });
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
@@ -47,6 +58,7 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void onRegisterNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
         event.register("emmisive", RenderType.cutout(), Sheets.cutoutBlockSheet());
+        event.register("reflective", RenderType.cutout(), Sheets.cutoutBlockSheet());
     }
 
     @SubscribeEvent
@@ -62,7 +74,9 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
+        BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(), SkyBlockEntityRenderer::new);
         event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(), ChromiumBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(), HartnellDoorRenderer::new);
         event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
@@ -97,4 +111,22 @@ public class ClientRegistry {
     // e);
     // }
     // }
+
+    @SubscribeEvent
+    public static void onRegisterShaders(RegisterShadersEvent event) {
+        try {
+            // Load and register the shader
+            ShaderInstance shader = new ShaderInstance(
+                    event.getResourceProvider(),
+                    new ResourceLocation("blockofsky_sky"),
+                    DefaultVertexFormat.POSITION
+            );
+
+            // Register the shader instance with your handler
+            event.registerShader(shader, BOSClient::setSkyShader);
+        } catch (IOException ex) {
+            System.err.println("Failed to load shader");
+            ex.printStackTrace();
+        }
+    }
 }

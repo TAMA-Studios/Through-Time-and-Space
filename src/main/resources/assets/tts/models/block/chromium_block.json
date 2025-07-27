@@ -1,0 +1,10 @@
+{
+  "render_type": "tts:reflective",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "tts:block/plastic_side"
+  },
+  "forge_data": {
+    "has_block_entity_renderer": true
+  }
+}

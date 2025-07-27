@@ -1,18 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.dimensions.DimensionManager;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.UUID;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -45,6 +39,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -164,8 +165,6 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
             this.SetInteriorKey(tardisLevel.dimension());
 
             if (level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
-                exteriorTile.Init(tardisLevel.dimension());
-
                 tardisLevel
                         .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
                         .ifPresent((cap) -> {
@@ -174,6 +173,8 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
                             cap.SetDestination(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
                             cap.SetExteriorLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
                         });
+
+                exteriorTile.Init(tardisLevel.dimension());
             }
         });
         super.setPlacedBy(level, Pos, State, livingEntity, stack);

@@ -40,6 +40,16 @@ public class TTSBlocks {
     public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK =
             RegisterWithItemSpecial("example_tile_block", () -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
 
+    public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
+
+    public static final RegistryObject<Block> VOID_BLOCK = RegisterWithItemSpecial("void_block", SkyBlock.VoidBlock::new);
+
+    public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem("chromium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)));
+
     public static RegistryObject<HartnellRotor> HARTNELL_ROTOR = RegisterWithItemSpecial(
             "hartnell_rotor", () -> new HartnellRotor(BlockBehaviour.Properties.copy(Blocks.GLASS)));
 

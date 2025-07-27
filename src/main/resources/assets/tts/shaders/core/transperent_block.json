@@ -1,5 +1,5 @@
 {
   "blend": "additive",
   "vertex": "minecraft:shaders/core/pos_tex.vsh",
-  "fragment": "yourmodid:shaders/core/transparent_block.fsh"
+  "fragment": "tts:shaders/core/transparent_block.fsh"
 }
