@@ -429,7 +429,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.IsInFlight = false;
         new LandThread(this).start();
         this.NullExteriorChecksAndFixes();
-        MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
     }
 
     @Override

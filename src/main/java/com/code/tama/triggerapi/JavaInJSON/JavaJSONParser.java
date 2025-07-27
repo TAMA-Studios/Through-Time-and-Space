@@ -1,15 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
-import static com.code.tama.tts.TTSMod.LOGGER;
-
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -17,6 +9,15 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+import static com.code.tama.tts.TTSMod.LOGGER;
 
 public class JavaJSONParser {
 
@@ -26,7 +27,6 @@ public class JavaJSONParser {
     public static JavaJSONParsed.ModelInformation getModelInfo(ResourceLocation location) {
         try {
             Resource resource = Minecraft.getInstance().getResourceManager().getResourceOrThrow(location);
-            LOGGER.debug("Reading JSON model file: {}", location);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.open()))) {
                 StringBuilder builder = new StringBuilder();
                 String line;
@@ -34,11 +34,9 @@ public class JavaJSONParser {
                 String file = builder.toString();
 
                 JavaJSONFile parsedFile = GSON.fromJson(file, JavaJSONFile.class);
-                LOGGER.debug("Parsed JSON model: {}", parsedFile);
                 JavaJSONModel model = null;
 
                 if (parsedFile.getParent() != null) {
-                    LOGGER.debug("Loading parent model: {}", parsedFile.getParent());
                     model = getModelInfo(parsedFile.getParent()).getModel();
                 } else {
                     JavaJSONModel generatedModel = new JavaJSONModel(
@@ -48,7 +46,6 @@ public class JavaJSONParser {
                         List<ModelPart.Cube> cubes = new ArrayList<>();
                         CubeListBuilder cubeList = CubeListBuilder.create();
                         if (group.cubes != null) {
-                            LOGGER.debug("Processing {} cubes for group: {}", group.cubes.size(), group.name);
                             for (JavaJSONFile.Cube cube : group.cubes) {
                                 ModelPart.Cube modelCube = new ModelPart.Cube(
                                         cube.uv[0],
@@ -67,16 +64,6 @@ public class JavaJSONParser {
                                         parsedFile.texHeight,
                                         Set.of(Direction.values()));
                                 cubes.add(modelCube);
-                                LOGGER.debug(
-                                        "Created ModelPart.Cube: origin=({},{},{}), size=({},{},{}), uv=({},{})",
-                                        cube.origin[0],
-                                        cube.origin[1],
-                                        cube.origin[2],
-                                        cube.size[0],
-                                        cube.size[1],
-                                        cube.size[2],
-                                        cube.uv[0],
-                                        cube.uv[1]);
 
                                 cubeList.texOffs(cube.uv[0], cube.uv[1])
                                         .addBox(
@@ -102,19 +89,9 @@ public class JavaJSONParser {
                                 (float) Math.toRadians(-group.getRotation().x),
                                 (float) Math.toRadians(-group.getRotation().y),
                                 (float) Math.toRadians(-group.getRotation().z));
-                        LOGGER.debug(
-                                "Created renderer for group: {}, pivot=({},{},{}), rotations: xRot={}, yRot={}, zRot={}",
-                                group.name,
-                                group.pivot[0],
-                                group.pivot[1],
-                                group.pivot[2],
-                                renderer.xRot,
-                                renderer.yRot,
-                                renderer.zRot);
 
                         if (group.fontData != null) {
                             generatedModel.fontData.put(group.name, group.fontData);
-                            LOGGER.debug("Added font data for group: {}", group.name);
                         }
 
                         addChildren(generatedModel, group, renderer, parsedFile.texWidth, parsedFile.texHeight);
@@ -125,7 +102,6 @@ public class JavaJSONParser {
                     }
                 }
 
-                LOGGER.debug("Returning ModelInformation with texture: {}", parsedFile.getTexture());
                 return new JavaJSONParsed.ModelInformation(
                         model, parsedFile.getTexture(), parsedFile.getLightMap(), parsedFile.getAlphaMap());
             }
@@ -137,7 +113,6 @@ public class JavaJSONParser {
     }
 
     public static JavaJSONParsed loadModel(ResourceLocation location) {
-        LOGGER.debug("Loading model: {}", location);
         if (!JavaJSONCache.unbakedCache.contains(location)) JavaJSONCache.unbakedCache.add(location);
         if (JavaJSONCache.bakedCache.containsKey(location)) return JavaJSONCache.bakedCache.get(location);
 
@@ -153,7 +128,6 @@ public class JavaJSONParser {
             int texWidth,
             int texHeight) {
         if (parentGroup.children != null && !parentGroup.children.isEmpty()) {
-            LOGGER.debug("Processing {} children for group: {}", parentGroup.children.size(), parentGroup.name);
             for (JavaJSONFile.Group group : parentGroup.children) {
                 List<ModelPart.Cube> cubes = new ArrayList<>();
                 CubeListBuilder cubeList = CubeListBuilder.create();
@@ -176,16 +150,6 @@ public class JavaJSONParser {
                                 texHeight,
                                 Set.of(Direction.values()));
                         cubes.add(modelCube);
-                        LOGGER.debug(
-                                "Created ModelPart.Cube for child: origin=({},{},{}), size=({},{},{}), uv=({},{})",
-                                cube.origin[0],
-                                cube.origin[1],
-                                cube.origin[2],
-                                cube.size[0],
-                                cube.size[1],
-                                cube.size[2],
-                                cube.uv[0],
-                                cube.uv[1]);
 
                         cubeList.texOffs(cube.uv[0], cube.uv[1])
                                 .addBox(
@@ -211,15 +175,6 @@ public class JavaJSONParser {
                         (float) Math.toRadians(-group.getRotation().x),
                         (float) Math.toRadians(-group.getRotation().y),
                         (float) Math.toRadians(-group.getRotation().z));
-                LOGGER.debug(
-                        "Created child renderer for group: {}, pivot=({},{},{}), rotations: xRot={}, yRot={}, zRot={}",
-                        group.name,
-                        group.pivot[0],
-                        group.pivot[1],
-                        group.pivot[2],
-                        renderer.xRot,
-                        renderer.yRot,
-                        renderer.zRot);
 
                 addChildren(model, group, renderer, texWidth, texHeight);
 

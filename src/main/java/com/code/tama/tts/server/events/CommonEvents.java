@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -47,16 +48,40 @@ public class CommonEvents {
     @SubscribeEvent
     public static void TARDISDemat(TardisEvent.TakeOff event) {
         switch (event.state) {
-            case START -> TTSMod.LOGGER.info("Taking off with destination: {}", event.level.GetDestination());
-            case END -> TTSMod.LOGGER.info("Finished Taking off, now in flight");
+            case START: {
+                System.out.printf("Taking off with destination: %s", event.level.GetDestination());
+                CameraShakeHandler.startShake(0.5f, 9000);
+                break;
+            }
+            case END: {
+                CameraShakeHandler.endShake();
+                System.out.println("Finished Taking off, now in flight");
+                break;
+            }
         }
     }
 
     @SubscribeEvent
     public static void TARDISRemat(TardisEvent.Land event) {
         switch (event.state) {
-            case START -> TTSMod.LOGGER.info("Landing at: {}", event.level.GetExteriorLocation());
-            case END -> TTSMod.LOGGER.info("Finished Landing");
+            case START: {
+                CameraShakeHandler.startShake(0.5f, 9000);
+                System.out.printf("Landing at: %s", event.level.GetExteriorLocation());
+                break;
+            }
+            case END: {
+                CameraShakeHandler.endShake();
+                CameraShakeHandler.startShake(1, 1);
+                System.out.println("Finished Landing");
+                break;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void EntityLeaveTARDIS(TardisEvent.EntityExitTARDIS event) {
+        if(event.entity instanceof Player player) {
+            if(player.level().isClientSide) CameraShakeHandler.endShake();
         }
     }
 }

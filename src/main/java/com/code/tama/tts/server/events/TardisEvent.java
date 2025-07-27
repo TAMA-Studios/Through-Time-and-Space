@@ -3,6 +3,8 @@ package com.code.tama.tts.server.events;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 
 @AllArgsConstructor
@@ -35,14 +37,20 @@ public class TardisEvent extends Event {
     }
 
     public static class EntityEnterTARDIS extends TardisEvent {
-        public EntityEnterTARDIS(ITARDISLevel level, State state) {
+        @Getter
+        public final Entity entity;
+        public EntityEnterTARDIS(ITARDISLevel level, State state, Entity entity) {
             super(level, state);
+            this.entity = entity;
         }
     }
 
     public static class EntityExitTARDIS extends TardisEvent {
-        public EntityExitTARDIS(ITARDISLevel level, State state) {
+        @Getter
+        public final Entity entity;
+        public EntityExitTARDIS(ITARDISLevel level, State state, Entity entity) {
             super(level, state);
+            this.entity = entity;
         }
     }
 }

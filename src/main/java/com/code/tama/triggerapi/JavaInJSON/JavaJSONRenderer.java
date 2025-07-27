@@ -1,16 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.JavaInJSON;
 
-import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.mojang.math.Axis.*;
-
 import com.code.tama.triggerapi.ReflectionBuddy;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
@@ -18,14 +12,20 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.mojang.math.Axis.*;
+
 public class JavaJSONRenderer {
 
     protected static ResourceLocation generateAlphaOverlay(ResourceLocation texture) {
         try {
             Minecraft mc = Minecraft.getInstance();
             ResourceLocation newLocation =
-                    new ResourceLocation("javajson", "textures/generated/alpha_overlay/" + texture.getPath());
-            LOGGER.debug("Generating alpha overlay for texture: {}", texture);
+                    new ResourceLocation("tts", "textures/generated/alpha_overlay/" + texture.getPath());
 
             NativeImage originalImage = NativeImage.read(
                     mc.getResourceManager().getResourceOrThrow(texture).open());
@@ -48,7 +48,6 @@ public class JavaJSONRenderer {
 
             TextureManager textureManager = mc.getTextureManager();
             ResourceLocation registered = textureManager.register(newLocation.getPath(), new DynamicTexture(newImage));
-            LOGGER.debug("Registered alpha overlay texture: {}", registered);
             return registered;
         } catch (IOException e) {
             LOGGER.error("Failed to generate alpha overlay for texture: {}", texture, e);
@@ -57,12 +56,10 @@ public class JavaJSONRenderer {
     }
 
     protected static RenderType lightMapRenderType(ResourceLocation tex) {
-        LOGGER.debug("Using lightMap RenderType for texture: {}", tex);
         return RenderType.entityTranslucentEmissive(tex);
     }
 
     protected static RenderType transparentRenderType(ResourceLocation tex) {
-        LOGGER.debug("Using transparent RenderType for texture: {}", tex);
         return RenderType.entityTranslucent(tex);
     }
 
@@ -77,18 +74,15 @@ public class JavaJSONRenderer {
     public JavaJSONRenderer() {
         this.model = new JavaJSONModel();
         this.modelPart = new ModelPart(new ArrayList<>(), new java.util.HashMap<>());
-        LOGGER.debug("Created default JavaJSONRenderer with empty ModelPart");
     }
 
     public JavaJSONRenderer(JavaJSONModel model, ModelPart modelPart) {
         this.model = model;
         this.modelPart = modelPart;
-        LOGGER.debug("Created JavaJSONRenderer with modelPart: {}", modelPart);
     }
 
     public void addChild(JavaJSONRenderer child) {
         this.children.add(child);
-        LOGGER.debug("Added child renderer: {}", child);
     }
 
     public void render(
@@ -109,14 +103,6 @@ public class JavaJSONRenderer {
             if (this.xRot != 0) poseStack.mulPose(XP.rotation(this.xRot));
             if (this.yRot != 0) poseStack.mulPose(YP.rotation(this.yRot));
             if (this.zRot != 0) poseStack.mulPose(ZP.rotation(this.zRot));
-            LOGGER.debug(
-                    "Rendering group at pivot: x={}, y={}, z={}, rotations: xRot={}, yRot={}, zRot={}",
-                    this.x * scale,
-                    this.y * scale,
-                    this.z * scale,
-                    this.xRot,
-                    this.yRot,
-                    this.zRot);
 
             // Render cubes (origin is relative to pivot, in pixels)
             modelPart.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -128,7 +114,7 @@ public class JavaJSONRenderer {
 
             poseStack.popPose();
         } else {
-            LOGGER.warn("Skipping render: ModelPart is empty and no children present");
+            // TODO In debug logging (when i implement that) add something here like this: LOGGER.warn("Skipping render: ModelPart is empty and no children present");
         }
     }
 
@@ -136,13 +122,11 @@ public class JavaJSONRenderer {
         this.x = x;
         this.y = y;
         this.z = z;
-        LOGGER.debug("Set position for renderer: x={}, y={}, z={}", x, y, z);
     }
 
     public void setRotation(float xRot, float yRot, float zRot) {
         this.xRot = xRot;
         this.yRot = yRot;
         this.zRot = zRot;
-        LOGGER.debug("Set rotation for renderer: xRot={}, yRot={}, zRot={}", xRot, yRot, zRot);
     }
 }

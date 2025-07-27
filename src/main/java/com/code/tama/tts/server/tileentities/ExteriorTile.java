@@ -184,7 +184,7 @@ public class ExteriorTile extends BlockEntity {
         ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
         assert Interior != null;
         Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START));
+            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
             float X, Y, Z;
             BlockPos pos = cap.GetDoorBlock().GetBlockPos().north();
             X = pos.getX() + 0.5f;
@@ -193,7 +193,7 @@ public class ExteriorTile extends BlockEntity {
             float yRot = cap.GetDoorData().getYRot() + EntityToTeleport.getYRot();
             System.out.println(yRot);
             EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
-            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END));
+            MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
         });
     }
 

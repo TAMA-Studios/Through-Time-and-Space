@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import static com.code.tama.tts.server.registries.TTSBlocks.BLOCKS;
-import static com.code.tama.tts.server.registries.TTSCreativeTabs.CREATIVE_MODE_TABS;
-import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
-import static com.code.tama.tts.server.registries.TTSTileEntities.TILE_ENTITIES;
-
 import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
@@ -27,17 +21,10 @@ import com.code.tama.tts.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -48,6 +35,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.Logger;
 import terrablender.api.SurfaceRuleManager;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import static com.code.tama.tts.server.registries.TTSBlocks.BLOCKS;
+import static com.code.tama.tts.server.registries.TTSCreativeTabs.CREATIVE_MODE_TABS;
+import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
+import static com.code.tama.tts.server.registries.TTSTileEntities.TILE_ENTITIES;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
@@ -122,26 +119,6 @@ public class TTSMod {
         ModCompat.Run();
     }
 
-    @SubscribeEvent
-    public void onServerStarting(ServerStartedEvent event) {
-        LOGGER.info("Server Started!");
-    }
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("Server Starting");
-    }
-
-    @SubscribeEvent
-    public void onServerStopped(ServerStoppedEvent event) {
-        LOGGER.info("Server Stopped!");
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event) {
-        LOGGER.info("Server Stopping");
-    }
-
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         for (RegistryObject<Item> item : ITEMS.getEntries()) {
             if (AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
@@ -172,7 +149,6 @@ public class TTSMod {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MinecraftForge.EVENT_BUS.register(CameraShakeHandler.class);
-            LOGGER.info("Camera Shake Handler Registered");
             event.enqueueWork(() -> {});
         }
     }

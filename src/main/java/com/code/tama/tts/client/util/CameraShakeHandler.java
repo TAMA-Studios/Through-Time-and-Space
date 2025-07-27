@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.util;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.Random;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Random;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class CameraShakeHandler {
@@ -40,5 +41,10 @@ public class CameraShakeHandler {
     public static void startShake(float xIntensity, int t) {
         intensity = xIntensity;
         duration = t;
+    }
+
+    public static void endShake() {
+        intensity = 0;
+        duration = 0;
     }
 }
