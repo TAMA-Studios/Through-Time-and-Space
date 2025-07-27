@@ -74,7 +74,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     }
 
     public String ReadableStringShort() {
-        return Integer.toString((int) this.X) + ", " + Integer.toString((int) this.Y) + ", "
+        return Integer.toString((int) this.X) + " | " + Integer.toString((int) this.Y) + " | "
                 + Integer.toString((int) this.Z);
     }
 
@@ -94,5 +94,10 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         tag.putDouble("y", this.Y);
         tag.putDouble("z", this.Z);
         return tag;
+    }
+
+    @Override
+    public String toString() {
+        return this.ReadableString();
     }
 }
