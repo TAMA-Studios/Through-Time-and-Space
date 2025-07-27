@@ -23,6 +23,10 @@ public abstract class LevelRendererMixin implements LevelRendererBOS {
     @Final
     private RenderBuffers renderBuffers;
 
+    @Shadow
+    protected abstract void renderSnowAndRain(
+            LightTexture p_109704_, float p_109705_, double p_109706_, double p_109707_, double p_109708_);
+
     @Inject(
             method = "renderLevel",
             at =
@@ -44,10 +48,6 @@ public abstract class LevelRendererMixin implements LevelRendererBOS {
             CallbackInfo ci) {
         renderBuffers.bufferSource().endBatch(BOSClient.SKY_RENDER_TYPE);
     }
-
-    @Shadow(remap = false)
-    private void renderSnowAndRain(
-            LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {}
 
     @Override
     public void BOS$renderSnowAndRain(
