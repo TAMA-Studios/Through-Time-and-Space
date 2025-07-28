@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "Voxel Chibnall",
-    "modelname": "tts:models/exterior/voxel_chibnall.json"
+  "values" : {
+    "modelname" : "tts:models/exterior/voxel_chibnall.json",
+    "name" : "Voxel Chibnall"
   }
 }

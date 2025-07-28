@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "Voxel Moffat",
-    "modelname": "tts:models/exterior/voxel_moffat.json"
+  "values" : {
+    "modelname" : "tts:models/exterior/voxel_moffat.json",
+    "name" : "Voxel Moffat"
   }
 }

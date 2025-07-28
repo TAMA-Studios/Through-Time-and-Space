@@ -1,15 +1,13 @@
 {
-  "type": "patchouli:shaped_book_recipe",
-  "pattern": [
-    "B#"
-  ],
-  "key": {
-    "#": {
-      "item": "minecraft:green_dye"
+  "book" : "type_40_manual",
+  "key" : {
+    "#" : {
+      "item" : "minecraft:green_dye"
     },
-    "B": {
-      "item": "minecraft:book"
+    "B" : {
+      "item" : "minecraft:book"
     }
   },
-  "book": "type_40_manual"
+  "pattern" : [ "B#" ],
+  "type" : "patchouli:shaped_book_recipe"
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "tts:block/zeiton/deepslate_zeiton_ore"
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "tts:block/zeiton/deepslate_zeiton_ore"
   }
 }

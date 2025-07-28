@@ -1,31 +1,27 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
-  "pattern": [
-    "xyx",
-    "rzr",
-    "tyt"
-  ],
-  "key": {
-    "x": {
-      "item": "stone"
+  "category" : "redstone",
+  "key" : {
+    "r" : {
+      "item" : "minecraft:comparator"
     },
-    "y": {
-      "item": "minecraft:repeater"
+    "t" : {
+      "item" : "minecraft:quartz"
     },
-    "r": {
-      "item": "minecraft:comparator"
+    "x" : {
+      "item" : "stone"
     },
-    "z": {
-      "item": "minecraft:lever"
+    "y" : {
+      "item" : "minecraft:repeater"
     },
-    "t": {
-      "item": "minecraft:quartz"
+    "z" : {
+      "item" : "minecraft:lever"
     }
   },
-  "result": {
-    "item": "tts:power_lever",
-    "count": 1
+  "pattern" : [ "xyx", "rzr", "tyt" ],
+  "result" : {
+    "count" : 1,
+    "item" : "tts:power_lever"
   },
-  "show_notification": true
+  "show_notification" : true,
+  "type" : "minecraft:crafting_shaped"
 }

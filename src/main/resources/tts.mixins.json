@@ -1,15 +1,12 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "com.code.tama.tts.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "refmap": "tts.refmap.json",
-  "mixins": [
-  ],
-  "client": [
-    "LevelRendererMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  "client" : [ "LevelRendererMixin" ],
+  "compatibilityLevel" : "JAVA_8",
+  "injectors" : {
+    "defaultRequire" : 1
+  },
+  "minVersion" : "0.8",
+  "mixins" : [ ],
+  "package" : "com.code.tama.tts.mixin",
+  "refmap" : "tts.refmap.json",
+  "required" : true
 }

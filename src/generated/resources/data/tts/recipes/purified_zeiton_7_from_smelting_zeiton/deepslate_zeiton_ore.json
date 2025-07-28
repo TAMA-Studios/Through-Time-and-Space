@@ -1,11 +1,11 @@
 {
-  "type": "minecraft:smelting",
-  "category": "misc",
-  "cookingtime": 200,
-  "experience": 0.25,
-  "group": "zeiton",
-  "ingredient": {
-    "item": "tts:zeiton/deepslate_zeiton_ore"
+  "category" : "misc",
+  "cookingtime" : 200,
+  "experience" : 0.25,
+  "group" : "zeiton",
+  "ingredient" : {
+    "item" : "tts:zeiton/deepslate_zeiton_ore"
   },
-  "result": "tts:purified_zeiton_7"
+  "result" : "tts:purified_zeiton_7",
+  "type" : "minecraft:smelting"
 }

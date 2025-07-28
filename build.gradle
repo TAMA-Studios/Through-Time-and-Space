@@ -269,6 +269,12 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 spotless {
+	json {
+		target 'src/**/*.json'
+		jackson()
+				.feature('INDENT_OUTPUT', true)                // optional: true by default
+				.feature('ORDER_MAP_ENTRIES_BY_KEYS', true)    // optional: false by default
+	}
 	format 'misc', {
 		// define the files to apply `misc` to
 		target '*.gradle', '.gitattributes', '.gitignore'
@@ -276,13 +282,13 @@ spotless {
 		// define the steps to apply to those files
 		trimTrailingWhitespace()
 		leadingSpacesToTabs() // or leadingTabsToSpaces. Takes an integer argument if you don't like 4
-		endWithNewline()
+//		endWithNewline()
 	}
 	java {
 		removeUnusedImports()
 //		cleanthat()
 
-		importOrder('java', 'javax', '', 'net.minecraft', group)
+		importOrder('java', 'javax', '', 'net.minecraft', "com.code.tama.triggerapi", group)
 
 		trimTrailingWhitespace()
 

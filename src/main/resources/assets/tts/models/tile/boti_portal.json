@@ -1,21 +1,17 @@
 {
-	"texture": "",
-	"texture_width": 16,
-	"texture_height": 16,
-	"scale": 1,
-	"groups": [
-		{
-			"pivot": [0,24,0],
-			"rotation": [0,0,0],
-			"cubes": [
-				{
-					"uv": [-14,0],
-					"size": [16,32,2],
-					"origin": [-8,-32,-1],
-					"inflate": 0,
-					"mirror": false
-				}
-			]
-		}
-	]
+  "groups" : [ {
+    "cubes" : [ {
+      "inflate" : 0,
+      "mirror" : false,
+      "origin" : [ -8, -32, -1 ],
+      "size" : [ 16, 32, 2 ],
+      "uv" : [ -14, 0 ]
+    } ],
+    "pivot" : [ 0, 24, 0 ],
+    "rotation" : [ 0, 0, 0 ]
+  } ],
+  "scale" : 1,
+  "texture" : "",
+  "texture_height" : 16,
+  "texture_width" : 16
 }

@@ -1,19 +1,19 @@
 {
-  "variants": {
-    "facing=east": {
-      "model": "tts:block/monitor_panel",
-      "y": 90
+  "variants" : {
+    "facing=east" : {
+      "model" : "tts:block/monitor_panel",
+      "y" : 90
     },
-    "facing=north": {
-      "model": "tts:block/monitor_panel"
+    "facing=north" : {
+      "model" : "tts:block/monitor_panel"
     },
-    "facing=south": {
-      "model": "tts:block/monitor_panel",
-      "y": 180
+    "facing=south" : {
+      "model" : "tts:block/monitor_panel",
+      "y" : 180
     },
-    "facing=west": {
-      "model": "tts:block/monitor_panel",
-      "y": 270
+    "facing=west" : {
+      "model" : "tts:block/monitor_panel",
+      "y" : 270
     }
   }
 }

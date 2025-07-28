@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "tts.ars.ironclad",
-    "location": "tts:ironclad"
+  "values" : {
+    "location" : "tts:ironclad",
+    "name" : "tts.ars.ironclad"
   }
 }

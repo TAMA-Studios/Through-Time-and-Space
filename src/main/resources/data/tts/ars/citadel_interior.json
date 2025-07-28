@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "tts.ars.citadel",
-    "location": "tts:citadel"
+  "values" : {
+    "location" : "tts:citadel",
+    "name" : "tts.ars.citadel"
   }
 }

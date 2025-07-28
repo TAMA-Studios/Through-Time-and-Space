@@ -1,6 +1,6 @@
 {
-  "name": "TARDIS Creation",
-  "description": "Learn how to create your very own Type 40 TARDIS.",
-  "icon": "tts:exterior",
-  "sortnum": 0
+  "description" : "Learn how to create your very own Type 40 TARDIS.",
+  "icon" : "tts:exterior",
+  "name" : "TARDIS Creation",
+  "sortnum" : 0
 }

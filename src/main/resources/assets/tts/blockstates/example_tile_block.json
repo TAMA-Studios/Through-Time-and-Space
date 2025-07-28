@@ -1,4 +1,8 @@
 {
-  "comment": "File used for particles",
-  "variants": {"": {"model": "minecraft:block/air"}}
+  "comment" : "File used for particles",
+  "variants" : {
+    "" : {
+      "model" : "minecraft:block/air"
+    }
+  }
 }

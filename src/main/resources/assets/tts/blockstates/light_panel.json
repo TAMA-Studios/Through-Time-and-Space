@@ -1,49 +1,49 @@
 {
-  "variants": {
-    "facing=east,pressed_button=0": {
-      "model": "tts:block/control/light_panel",
-      "y": 90
+  "variants" : {
+    "facing=east,pressed_button=0" : {
+      "model" : "tts:block/control/light_panel",
+      "y" : 90
     },
-    "facing=north,pressed_button=0": {
-      "model": "tts:block/control/light_panel"
+    "facing=east,pressed_button=1" : {
+      "model" : "tts:block/control/light_panel_0",
+      "y" : 90
     },
-    "facing=south,pressed_button=0": {
-      "model": "tts:block/control/light_panel",
-      "y": 180
+    "facing=east,pressed_button=2" : {
+      "model" : "tts:block/control/light_panel_1",
+      "y" : 90
     },
-    "facing=west,pressed_button=0": {
-      "model": "tts:block/control/light_panel",
-      "y": 270
+    "facing=north,pressed_button=0" : {
+      "model" : "tts:block/control/light_panel"
     },
-    "facing=east,pressed_button=1": {
-      "model": "tts:block/control/light_panel_0",
-      "y": 90
+    "facing=north,pressed_button=1" : {
+      "model" : "tts:block/control/light_panel_0"
     },
-    "facing=north,pressed_button=1": {
-      "model": "tts:block/control/light_panel_0"
+    "facing=north,pressed_button=2" : {
+      "model" : "tts:block/control/light_panel_1"
     },
-    "facing=south,pressed_button=1": {
-      "model": "tts:block/control/light_panel_0",
-      "y": 180
+    "facing=south,pressed_button=0" : {
+      "model" : "tts:block/control/light_panel",
+      "y" : 180
     },
-    "facing=west,pressed_button=1": {
-      "model": "tts:block/control/light_panel_0",
-      "y": 270
+    "facing=south,pressed_button=1" : {
+      "model" : "tts:block/control/light_panel_0",
+      "y" : 180
     },
-    "facing=east,pressed_button=2": {
-      "model": "tts:block/control/light_panel_1",
-      "y": 90
+    "facing=south,pressed_button=2" : {
+      "model" : "tts:block/control/light_panel_1",
+      "y" : 180
     },
-    "facing=north,pressed_button=2": {
-      "model": "tts:block/control/light_panel_1"
+    "facing=west,pressed_button=0" : {
+      "model" : "tts:block/control/light_panel",
+      "y" : 270
     },
-    "facing=south,pressed_button=2": {
-      "model": "tts:block/control/light_panel_1",
-      "y": 180
+    "facing=west,pressed_button=1" : {
+      "model" : "tts:block/control/light_panel_0",
+      "y" : 270
     },
-    "facing=west,pressed_button=2": {
-      "model": "tts:block/control/light_panel_1",
-      "y": 270
+    "facing=west,pressed_button=2" : {
+      "model" : "tts:block/control/light_panel_1",
+      "y" : 270
     }
   }
 }

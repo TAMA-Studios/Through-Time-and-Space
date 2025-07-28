@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "tts.ars.starter",
-    "location": "tts:starter"
+  "values" : {
+    "location" : "tts:starter",
+    "name" : "tts.ars.starter"
   }
 }

@@ -21,6 +21,7 @@ import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -35,12 +36,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
     UUID OwnerUUID;
-    Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);;
+    Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);
+    ;
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
     DoorData InteriorDoorData;
     int TicksInFlight, TicksTillDestination, Increment = 1;
@@ -62,8 +62,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
-        if(this.OwnerUUID != null)
-            Tag.putUUID("ownerID", this.OwnerUUID);
+        if (this.OwnerUUID != null) Tag.putUUID("ownerID", this.OwnerUUID);
         Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
         Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
@@ -107,7 +106,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if(nbt.contains("ownerID")) this.OwnerUUID = nbt.getUUID("ownerID");
+        if (nbt.contains("ownerID")) this.OwnerUUID = nbt.getUUID("ownerID");
         if (nbt.contains("subsystems")) this.SubsystemsData.deserializeNBT(nbt.getCompound("subsystems"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
@@ -625,8 +624,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     Player GetOwner() {
-        if(this.level.isClientSide) return null;
-//        return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
+        if (this.level.isClientSide) return null;
+        //        return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
         return this.level.getServer().getPlayerList().getPlayer(this.OwnerUUID);
     }
 }

@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "Voxel RTD",
-    "modelname": "tts:models/exterior/voxel_rtd.json"
+  "values" : {
+    "modelname" : "tts:models/exterior/voxel_rtd.json",
+    "name" : "Voxel RTD"
   }
 }

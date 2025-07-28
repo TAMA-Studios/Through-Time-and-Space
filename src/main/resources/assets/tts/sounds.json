@@ -1,58 +1,44 @@
 {
-  "button_click_01": {
-    "sounds": [
-      {
-        "name": "tts:button_click_01",
-        "streaming": false
-      }
-    ]
+  "button_click_01" : {
+    "sounds" : [ {
+      "name" : "tts:button_click_01",
+      "streaming" : false
+    } ]
   },
-  "keyboard_press_01": {
-    "sounds": [
-      {
-        "name": "tts:keyboard_press_01",
-        "streaming": false
-      }
-    ]
+  "keyboard_press_01" : {
+    "sounds" : [ {
+      "name" : "tts:keyboard_press_01",
+      "streaming" : false
+    } ]
   },
-  "tardis_flight_loop": {
-    "sounds": [
-      {
-        "name": "tts:tardis_flight_loop",
-        "streaming": false
-      }
-    ]
+  "tardis_flight_loop" : {
+    "sounds" : [ {
+      "name" : "tts:tardis_flight_loop",
+      "streaming" : false
+    } ]
   },
-  "tardis_landing": {
-    "sounds": [
-      {
-        "name": "tts:tardis_landing",
-        "streaming": false
-      }
-    ]
+  "tardis_landing" : {
+    "sounds" : [ {
+      "name" : "tts:tardis_landing",
+      "streaming" : false
+    } ]
   },
-  "tardis_takeoff": {
-    "sounds": [
-      {
-        "name": "tts:tardis_takeoff",
-        "streaming": false
-      }
-    ]
+  "tardis_takeoff" : {
+    "sounds" : [ {
+      "name" : "tts:tardis_takeoff",
+      "streaming" : false
+    } ]
   },
-  "throttle_on": {
-    "sounds": [
-      {
-        "name": "tts:throttle_on",
-        "streaming": false
-      }
-    ]
+  "throttle_off" : {
+    "sounds" : [ {
+      "name" : "tts:throttle_off",
+      "streaming" : false
+    } ]
   },
-  "throttle_off": {
-    "sounds": [
-      {
-        "name": "tts:throttle_off",
-        "streaming": false
-      }
-    ]
+  "throttle_on" : {
+    "sounds" : [ {
+      "name" : "tts:throttle_on",
+      "streaming" : false
+    } ]
   }
 }

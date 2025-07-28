@@ -1,9 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -27,10 +30,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.atomic.AtomicReference;
-
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 @SuppressWarnings("deprecation")
 public class ThrottleBlock extends HorizontalDirectionalBlock {
@@ -183,6 +182,8 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
     }
 
     public enum SoundState {
-        ON, OFF, FAIL;
+        ON,
+        OFF,
+        FAIL;
     }
 }

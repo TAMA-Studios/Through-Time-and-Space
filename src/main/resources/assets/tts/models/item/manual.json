@@ -1,4 +1,4 @@
 {
-  "parent": "item/generated",
-  "layer0": "tts:item/manual"
+  "layer0" : "tts:item/manual",
+  "parent" : "item/generated"
 }

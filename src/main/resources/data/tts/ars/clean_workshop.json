@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "Clean Workshop",
-    "location": "tts:clean_workshop"
+  "values" : {
+    "location" : "tts:clean_workshop",
+    "name" : "Clean Workshop"
   }
 }

@@ -39,6 +39,7 @@ public class TardisEvent extends Event {
     public static class EntityEnterTARDIS extends TardisEvent {
         @Getter
         public final Entity entity;
+
         public EntityEnterTARDIS(ITARDISLevel level, State state, Entity entity) {
             super(level, state);
             this.entity = entity;
@@ -48,6 +49,7 @@ public class TardisEvent extends Event {
     public static class EntityExitTARDIS extends TardisEvent {
         @Getter
         public final Entity entity;
+
         public EntityExitTARDIS(ITARDISLevel level, State state, Entity entity) {
             super(level, state);
             this.entity = entity;

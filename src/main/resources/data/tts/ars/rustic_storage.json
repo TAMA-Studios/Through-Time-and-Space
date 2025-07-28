@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "tts.ars.rustic_storage",
-    "location": "tts:rustic_storage"
+  "values" : {
+    "location" : "tts:rustic_storage",
+    "name" : "tts.ars.rustic_storage"
   }
 }

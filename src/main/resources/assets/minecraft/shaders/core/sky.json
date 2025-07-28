@@ -1,65 +1,24 @@
 {
-	"blend": {
-		"func": "add",
-		"srcrgb": "srcalpha",
-		"dstrgb": "1-srcalpha"
-	},
-	"vertex": "sky",
-	"fragment": "sky",
-	"attributes": [
-		"Position"
-	],
-	"samplers": [
-		{
-			"name": "Sampler0"
-		}
-	],
-	"uniforms": [
-		{
-			"name": "ModelViewMat",
-			"type": "matrix4x4",
-			"count": 16,
-			"values": [
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0
-			]
-		},
-		{
-			"name": "ProjMat",
-			"type": "matrix4x4",
-			"count": 16,
-			"values": [
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				1.0
-			]
-		}
-	]
+  "attributes" : [ "Position" ],
+  "blend" : {
+    "dstrgb" : "1-srcalpha",
+    "func" : "add",
+    "srcrgb" : "srcalpha"
+  },
+  "fragment" : "sky",
+  "samplers" : [ {
+    "name" : "Sampler0"
+  } ],
+  "uniforms" : [ {
+    "count" : 16,
+    "name" : "ModelViewMat",
+    "type" : "matrix4x4",
+    "values" : [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ]
+  }, {
+    "count" : 16,
+    "name" : "ProjMat",
+    "type" : "matrix4x4",
+    "values" : [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ]
+  } ],
+  "vertex" : "sky"
 }

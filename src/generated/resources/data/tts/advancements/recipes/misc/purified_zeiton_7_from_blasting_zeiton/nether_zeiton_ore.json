@@ -1,35 +1,24 @@
 {
-  "parent": "minecraft:recipes/root",
-  "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "tts:purified_zeiton_7_from_blasting_zeiton/nether_zeiton_ore"
+  "criteria" : {
+    "has_the_recipe" : {
+      "conditions" : {
+        "recipe" : "tts:purified_zeiton_7_from_blasting_zeiton/nether_zeiton_ore"
       },
-      "trigger": "minecraft:recipe_unlocked"
+      "trigger" : "minecraft:recipe_unlocked"
     },
-    "has_zeiton/nether_zeiton_ore": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "tts:zeiton/nether_zeiton_ore"
-            ]
-          }
-        ]
+    "has_zeiton/nether_zeiton_ore" : {
+      "conditions" : {
+        "items" : [ {
+          "items" : [ "tts:zeiton/nether_zeiton_ore" ]
+        } ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger" : "minecraft:inventory_changed"
     }
   },
-  "requirements": [
-    [
-      "has_zeiton/nether_zeiton_ore",
-      "has_the_recipe"
-    ]
-  ],
-  "rewards": {
-    "recipes": [
-      "tts:purified_zeiton_7_from_blasting_zeiton/nether_zeiton_ore"
-    ]
+  "parent" : "minecraft:recipes/root",
+  "requirements" : [ [ "has_zeiton/nether_zeiton_ore", "has_the_recipe" ] ],
+  "rewards" : {
+    "recipes" : [ "tts:purified_zeiton_7_from_blasting_zeiton/nether_zeiton_ore" ]
   },
-  "sends_telemetry_event": false
+  "sends_telemetry_event" : false
 }

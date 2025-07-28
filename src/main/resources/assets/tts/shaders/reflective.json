@@ -1,13 +1,21 @@
 {
-  "blend": "add",
-  "vertex": "core/reflective.vsh",
-  "fragment": "core/reflective.fsh",
-  "samplers": [
-    { "name": "DiffuseSampler" }
-  ],
-  "uniforms": [
-    { "name": "Time", "type": "float", "values": [0.0] },
-    { "name": "CameraPosition", "type": "vec3", "values": [0.0, 0.0, 0.0] },
-    { "name": "LightDirection", "type": "vec3", "values": [0.0, -1.0, 0.0] }
-  ]
+  "blend" : "add",
+  "fragment" : "core/reflective.fsh",
+  "samplers" : [ {
+    "name" : "DiffuseSampler"
+  } ],
+  "uniforms" : [ {
+    "name" : "Time",
+    "type" : "float",
+    "values" : [ 0.0 ]
+  }, {
+    "name" : "CameraPosition",
+    "type" : "vec3",
+    "values" : [ 0.0, 0.0, 0.0 ]
+  }, {
+    "name" : "LightDirection",
+    "type" : "vec3",
+    "values" : [ 0.0, -1.0, 0.0 ]
+  } ],
+  "vertex" : "core/reflective.vsh"
 }

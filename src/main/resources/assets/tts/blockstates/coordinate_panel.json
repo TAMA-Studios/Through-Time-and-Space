@@ -1,64 +1,64 @@
 {
-  "variants": {
-    "facing=east,pressed_button=0": {
-      "model": "tts:block/control/coordinate_panel",
-      "y": 90
+  "variants" : {
+    "facing=east,pressed_button=0" : {
+      "model" : "tts:block/control/coordinate_panel",
+      "y" : 90
     },
-    "facing=north,pressed_button=0": {
-      "model": "tts:block/control/coordinate_panel"
+    "facing=east,pressed_button=1" : {
+      "model" : "tts:block/control/coordinate_panel_x",
+      "y" : 90
     },
-    "facing=south,pressed_button=0": {
-      "model": "tts:block/control/coordinate_panel",
-      "y": 180
+    "facing=east,pressed_button=2" : {
+      "model" : "tts:block/control/coordinate_panel_y",
+      "y" : 90
     },
-    "facing=west,pressed_button=0": {
-      "model": "tts:block/control/coordinate_panel",
-      "y": 270
+    "facing=east,pressed_button=3" : {
+      "model" : "tts:block/control/coordinate_panel_z",
+      "y" : 90
     },
-    "facing=east,pressed_button=1": {
-      "model": "tts:block/control/coordinate_panel_x",
-      "y": 90
+    "facing=north,pressed_button=0" : {
+      "model" : "tts:block/control/coordinate_panel"
     },
-    "facing=north,pressed_button=1": {
-      "model": "tts:block/control/coordinate_panel_x"
+    "facing=north,pressed_button=1" : {
+      "model" : "tts:block/control/coordinate_panel_x"
     },
-    "facing=south,pressed_button=1": {
-      "model": "tts:block/control/coordinate_panel_x",
-      "y": 180
+    "facing=north,pressed_button=2" : {
+      "model" : "tts:block/control/coordinate_panel_y"
     },
-    "facing=west,pressed_button=1": {
-      "model": "tts:block/control/coordinate_panel_x",
-      "y": 270
+    "facing=north,pressed_button=3" : {
+      "model" : "tts:block/control/coordinate_panel_z"
     },
-    "facing=east,pressed_button=2": {
-      "model": "tts:block/control/coordinate_panel_y",
-      "y": 90
+    "facing=south,pressed_button=0" : {
+      "model" : "tts:block/control/coordinate_panel",
+      "y" : 180
     },
-    "facing=north,pressed_button=2": {
-      "model": "tts:block/control/coordinate_panel_y"
+    "facing=south,pressed_button=1" : {
+      "model" : "tts:block/control/coordinate_panel_x",
+      "y" : 180
     },
-    "facing=south,pressed_button=2": {
-      "model": "tts:block/control/coordinate_panel_y",
-      "y": 180
+    "facing=south,pressed_button=2" : {
+      "model" : "tts:block/control/coordinate_panel_y",
+      "y" : 180
     },
-    "facing=west,pressed_button=2": {
-      "model": "tts:block/control/coordinate_panel_y",
-      "y": 270
+    "facing=south,pressed_button=3" : {
+      "model" : "tts:block/control/coordinate_panel_z",
+      "y" : 180
     },
-    "facing=east,pressed_button=3": {
-      "model": "tts:block/control/coordinate_panel_z",
-      "y": 90
+    "facing=west,pressed_button=0" : {
+      "model" : "tts:block/control/coordinate_panel",
+      "y" : 270
     },
-    "facing=north,pressed_button=3": {
-      "model": "tts:block/control/coordinate_panel_z"
+    "facing=west,pressed_button=1" : {
+      "model" : "tts:block/control/coordinate_panel_x",
+      "y" : 270
     },
-    "facing=south,pressed_button=3": {
-      "model": "tts:block/control/coordinate_panel_z",
-      "y": 180
+    "facing=west,pressed_button=2" : {
+      "model" : "tts:block/control/coordinate_panel_y",
+      "y" : 270
     },
-    "facing=west,pressed_button=3": {
-      "model": "tts:block/control/coordinate_panel_z",
-      "y": 270
+    "facing=west,pressed_button=3" : {
+      "model" : "tts:block/control/coordinate_panel_z",
+      "y" : 270
     }
   }
 }

@@ -1,6 +1,6 @@
 {
-  "values": {
-    "name": "tts.ars.clean",
-    "location": "tts:clean"
+  "values" : {
+    "location" : "tts:clean",
+    "name" : "tts.ars.clean"
   }
 }

@@ -38,13 +38,16 @@ public class LandThread extends Thread {
                     .GetBlockPos()
                     .atY(WorldHelper.SafeBottomY(
                             CurrentLevel,
-                            this.itardisLevel.GetDestination().GetBlockPos())); // BlockHelper.snapToGround(CurrentLevel,
+                            this.itardisLevel
+                                    .GetDestination()
+                                    .GetBlockPos())); // BlockHelper.snapToGround(CurrentLevel,
             // this.itardisLevel.GetDestination().GetBlockPos());
             pos.offset(
                     0,
                     WorldHelper.getSurfaceHeight(
-                            CurrentLevel, ((int) this.itardisLevel.GetDestination().GetX()), ((int)
-                                    this.itardisLevel.GetDestination().GetZ())),
+                            CurrentLevel,
+                            ((int) this.itardisLevel.GetDestination().GetX()),
+                            ((int) this.itardisLevel.GetDestination().GetZ())),
                     0);
 
             SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos);

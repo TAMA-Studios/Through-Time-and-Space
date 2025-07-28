@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -12,8 +14,6 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -79,8 +79,8 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void EntityLeaveTARDIS(TardisEvent.EntityExitTARDIS event) {
-        if(event.entity instanceof Player player) {
-            if(player.level().isClientSide) CameraShakeHandler.endShake();
+        if (event.entity instanceof Player player) {
+            if (player.level().isClientSide) CameraShakeHandler.endShake();
         }
     }
 }
