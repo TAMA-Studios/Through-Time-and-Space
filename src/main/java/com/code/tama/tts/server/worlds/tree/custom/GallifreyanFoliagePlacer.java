@@ -41,11 +41,11 @@ public class GallifreyanFoliagePlacer extends FoliagePlacer {
             int pOffset) {
 
         this.placeLeavesRow(
+                pLevel, pBlockSetter, pRandom, pConfig, pAttachment.pos(), 2, 2, pAttachment.doubleTrunk());
+        this.placeLeavesRow(
                 pLevel, pBlockSetter, pRandom, pConfig, pAttachment.pos().above(0), 2, 2, pAttachment.doubleTrunk());
         this.placeLeavesRow(
                 pLevel, pBlockSetter, pRandom, pConfig, pAttachment.pos().above(1), 2, 2, pAttachment.doubleTrunk());
-        this.placeLeavesRow(
-                pLevel, pBlockSetter, pRandom, pConfig, pAttachment.pos().above(2), 2, 2, pAttachment.doubleTrunk());
     }
 
     @Override

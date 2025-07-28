@@ -37,7 +37,6 @@ public class CommonEvents {
     public static void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new ExteriorDataLoader());
         event.addListener(new ARSDataLoader());
-        //        event.addListener(ShadersUtil.CHROMIUM_SHADER_LOADER);
     }
 
     @SubscribeEvent

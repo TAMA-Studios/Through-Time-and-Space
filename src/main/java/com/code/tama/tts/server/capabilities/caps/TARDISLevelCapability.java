@@ -28,19 +28,22 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
-    Exterior ExteriorVariant;
+    UUID OwnerUUID;
+    Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);;
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
     DoorData InteriorDoorData;
     int TicksInFlight, TicksTillDestination, Increment = 1;
-    Exterior ExteriorModelID = Exteriors.EXTERIORS.get(0);
     Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
     Level level;
     SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(),
@@ -59,6 +62,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag Tag = new CompoundTag();
+        if(this.OwnerUUID != null)
+            Tag.putUUID("ownerID", this.OwnerUUID);
         Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
         Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
@@ -102,6 +107,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        if(nbt.contains("ownerID")) this.OwnerUUID = nbt.getUUID("ownerID");
         if (nbt.contains("subsystems")) this.SubsystemsData.deserializeNBT(nbt.getCompound("subsystems"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
@@ -235,6 +241,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public Direction GetFacing() {
         return this.Facing;
+    }
+
+    @Override
+    public UUID GetOwnerID() {
+        return this.OwnerUUID;
+    }
+
+    @Override
+    public void SetOwner(UUID owner) {
+        this.OwnerUUID = owner;
     }
 
     @Override
@@ -606,5 +622,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public SubsystemsData GetSubsystemsData() {
         return this.SubsystemsData;
+    }
+
+    Player GetOwner() {
+        if(this.level.isClientSide) return null;
+//        return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
+        return this.level.getServer().getPlayerList().getPlayer(this.OwnerUUID);
     }
 }

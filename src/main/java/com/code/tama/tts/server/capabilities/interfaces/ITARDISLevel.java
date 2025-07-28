@@ -14,7 +14,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.UUID;
+
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+
+    /** Get the Owner of the TARDIS (basically who made it) **/
+    UUID GetOwnerID();
+    /** Sets the Owner of the TARDIS **/
+    void SetOwner(UUID owner);
+
     /** Returns whether the TARDIS is capable of flight in its current state **/
     boolean CanFly();
 
