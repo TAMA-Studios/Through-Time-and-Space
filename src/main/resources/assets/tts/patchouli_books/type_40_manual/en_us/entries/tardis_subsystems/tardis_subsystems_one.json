@@ -1,0 +1,9 @@
+{
+  "category" : "tts:tardis_subsystems",
+  "icon" : "tts:dematerialization_circuit_core",
+  "name" : "Dematerialization Circuit",
+  "pages" : [ {
+    "text" : "TARDIS Subsystems, page two, Dematerialization Circuit: $(br)The Dematerialization Circuit is an essential component for dematerialization. Without the Dematerialization Circuit, the TARDIS may as well be a glorified fortress",
+    "type" : "text"
+  } ]
+}

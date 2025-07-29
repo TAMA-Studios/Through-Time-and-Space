@@ -1,0 +1,9 @@
+{
+  "category" : "tts:tardis_subsystems",
+  "icon" : "tts:nether_reactor_core",
+  "name" : "Nether Reactor Core",
+  "pages" : [ {
+    "text" : "TARDIS Subsystems, page one, Nether Reactor Core: $(br)The Nether Reactor Core is essential for initiating a link between the TARDIS and THE NETHER, allowing for interdimensional travel to the nether dimension",
+    "type" : "text"
+  } ]
+}
