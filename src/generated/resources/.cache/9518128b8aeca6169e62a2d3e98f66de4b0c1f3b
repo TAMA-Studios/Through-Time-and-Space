@@ -1,8 +1,8 @@
-// 1.20.1	2025-07-24T18:33:19.093496825	Item Models: tts
+// 1.20.1	2025-07-29T20:21:52.065480794	Item Models: tts
 76c21e53d9406ae80e7c86fc7d1d65704bfade56 assets/tts/models/dimensional/gallifreyan/gallifreyan_oak_sapling.json
 c684e41980942b55f9a4c7737a8b459576e5a814 assets/tts/models/item/ars_panel.json
 4c08071c0808ed334b8c85153c0e5fb239edd0ec assets/tts/models/item/chameleon_circuit_panel.json
-2d1ade82820569936fd3021a877283474ced09d0 assets/tts/models/item/console_block.json
+759858435f78527910bf873b653afc47f5c87fe2 assets/tts/models/item/chromium_block.json
 1d38e6ce56ca3b5b11cb95eadcd4608a26404d05 assets/tts/models/item/coordinate_panel.json
 b9b2e6e790774765ff979300753916e2f4466b0b assets/tts/models/item/crt_monitor_block.json
 c09690f95908dcf2dbd2255702b77aa94ef82035 assets/tts/models/item/dematerialization_circuit_core.json
@@ -27,9 +27,9 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/gall
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/varos/rocks.json
 add7ed39bb0778a585dce802c6a584e165a07ef3 assets/tts/models/item/door_block.json
 c8be7e04bca7bcc9fdf08a67716e300913ca1102 assets/tts/models/item/example_tile_block.json
-2d1ade82820569936fd3021a877283474ced09d0 assets/tts/models/item/exterior.json
 65ab1c39567f446ec513c58f70f2aca99eb0fc5f assets/tts/models/item/exterior_block.json
 fc26f17246f46bffeaca15e2f15bc7345dd5ea12 assets/tts/models/item/fragment_links.json
+61fbaf3901b33d54b7299b8f8fc081d56ebe653d assets/tts/models/item/hard_light.json
 70ed2c4107d93f7af92240d7ab1fb08b70e8b7d8 assets/tts/models/item/hartnell_door.json
 491ba239b99edf17d1d6b2bee18978558c96ccb2 assets/tts/models/item/hartnell_door_placeholder.json
 de41222254a66349de43a6bdeccc3557f40d2da0 assets/tts/models/item/hartnell_rotor.json
@@ -43,9 +43,11 @@ b64ebe4ed594522695414be89d93d387c173a5cd assets/tts/models/item/power_lever.json
 2001b5c7a26f905747b108ba2c9bb25af70d1518 assets/tts/models/item/rotor/amethyst.json
 331b98fcd62f33189aad523b9e3cfb625b509977 assets/tts/models/item/rotor/blue.json
 4ca3bf08bae605f0b24b7686fc39ba25a7361ecb assets/tts/models/item/rotor/copper.json
+b443412e3addad4cfcaf17ae4958b1e9a05f67e6 assets/tts/models/item/sky_block.json
 afa4178d20ce0e01aa6f5755520b4e1fc160d99a assets/tts/models/item/tardis_engine.json
 70d03d80a75c7d51dcfd8a98a4b7c6e5db404b1e assets/tts/models/item/throttle.json
 15aa93d57e2ef7279aa1d715e475af8d4e625b5d assets/tts/models/item/toyota_throttle.json
+fd21a22276f16aea5c0bad294ea749dadb738f2f assets/tts/models/item/void_block.json
 cc3ca109dde3ab3dc5932ba60b2b8527b5152eec assets/tts/models/item/workbench.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/zeiton/deepslate_zeiton_ore.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/zeiton/end_stone_zeiton_ore.json

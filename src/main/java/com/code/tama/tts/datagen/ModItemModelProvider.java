@@ -4,7 +4,6 @@ package com.code.tama.tts.datagen;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.server.registries.TTSBlocks;
-import com.code.tama.tts.server.registries.TTSItems;
 import java.util.LinkedHashMap;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -57,8 +56,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         // withExistingParent(MItems.RHINO_SPANW_EGG.getId().getPath(),
         // mcLoc("item/template_spawn_egg"));
         // saplingItem(MBlocks.PINE_SAPLING);
-        withExistingParent(TTSItems.CONSOLE_TILE.getId().getPath(), mcLoc("block/air"));
-        withExistingParent(TTSItems.EXTERIOR.getId().getPath(), mcLoc("block/air"));
+        withExistingParent(TTSBlocks.EXTERIOR_BLOCK.getId().getPath(), mcLoc("block/air"));
         withExistingParent(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
         saplingItem(TTSBlocks.GALLIFREYAN_SAPLING);
         //        simplestBlockItem(TTSBlocks.BLUE_ROTOR);

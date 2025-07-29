@@ -1,6 +1,7 @@
-// 1.20.1	2025-07-24T18:33:19.09680346	Loot Tables
+// 1.20.1	2025-07-29T20:21:52.068328066	Loot Tables
 fdb878e3ed0413129da0233d3ec0737507fac05f data/tts/loot_tables/blocks/ars_panel.json
 ddeef8f07cc80f97e4bd329ff6a1bd7ac01f4fd5 data/tts/loot_tables/blocks/chameleon_circuit_panel.json
+7ee4455d27cd366d38f44661be593ae715ac7447 data/tts/loot_tables/blocks/chromium_block.json
 2c36e037b6cea7d6e9508134573253ea2e365a20 data/tts/loot_tables/blocks/coordinate_panel.json
 8d8e6a53ea2855c46ad70842829bb0ec9b8f8c0e data/tts/loot_tables/blocks/crt_monitor_block.json
 bbf220876144af0411c8829c054d19f09999ee7e data/tts/loot_tables/blocks/dematerialization_circuit_core.json
@@ -27,6 +28,7 @@ fdb46f2e36fdc137e863439ad139dbb5bba1dddf data/tts/loot_tables/blocks/dimensional
 b64999a7a5a282d7016e0dd2beace7dd01c403c4 data/tts/loot_tables/blocks/example_tile_block.json
 53aa724737ace7719f8205a12a99ee8a84e194cc data/tts/loot_tables/blocks/exterior_block.json
 7186b8167113e4dc838e78e97cccb2cc1a618092 data/tts/loot_tables/blocks/fragment_links.json
+799d0ecafb787481e3177497b3bfcc75ad80dc66 data/tts/loot_tables/blocks/hard_light.json
 b0e3a506fa3fab8eb9c0dd73a9664e51199fb497 data/tts/loot_tables/blocks/hartnell_door.json
 4faa1afa57bc8876b6d8e3e5927cc379105322eb data/tts/loot_tables/blocks/hartnell_door_placeholder.json
 09b05e80e5df4aff0196d61b9b7ae4f1377269ea data/tts/loot_tables/blocks/hartnell_rotor.json
@@ -40,9 +42,11 @@ b9334a43c64a6c0e9b95abe9cc40d4cbb654b515 data/tts/loot_tables/blocks/power_lever
 4269316ce63efe39026ec90cc99861e8a6d83079 data/tts/loot_tables/blocks/rotor/amethyst.json
 87e41f5a2b4242ad2ed03be18b4397856cc40a09 data/tts/loot_tables/blocks/rotor/blue.json
 7ae3631f87d84d9b12a6ef68446dbfef0b743fa8 data/tts/loot_tables/blocks/rotor/copper.json
+645661a2820a83c165319c4bb3b2598f33d63a61 data/tts/loot_tables/blocks/sky_block.json
 f38973cd4d3d253c0db988a8a95eca7478dc326e data/tts/loot_tables/blocks/tardis_engine.json
 9a2fc4463eeae3fd4362ae3457704471d71dbcc8 data/tts/loot_tables/blocks/throttle.json
 e9e854dec8c8c624f725d3d664aaa2c057c6e502 data/tts/loot_tables/blocks/toyota_throttle.json
+c8633931c2c61767c92f2899b5cdad68b135a5c2 data/tts/loot_tables/blocks/void_block.json
 8516f72506de54e842ea0a7f95da4233accd774f data/tts/loot_tables/blocks/workbench.json
 46873a6ea4971681297947168a17c7d771fa12a4 data/tts/loot_tables/blocks/zeiton/deepslate_zeiton_ore.json
 e8e74519674f77e76cdc368728b77060c1ab55de data/tts/loot_tables/blocks/zeiton/end_stone_zeiton_ore.json

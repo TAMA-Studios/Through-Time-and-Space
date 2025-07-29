@@ -1,7 +1,7 @@
 {
-  "book_texture" : "patchouli:textures/gui/book_green.png",
-  "categories" : [ "tts:test_category" ],
-  "creative_tab" : "minecraft:tools_and_utilities",
+  "book_texture" : "tts:textures/item/manual.png",
+  "categories" : [ "tts:main" ],
+  "creative_tab" : "tts:main_tab",
   "landing_text" : "Index File",
   "model" : "tts:manual",
   "name" : "TARDIS Manual",
