@@ -1,4 +1,4 @@
-// 1.20.1	2025-07-29T20:21:52.068328066	Loot Tables
+// 1.20.1	2025-07-31T22:28:19.091148062	Loot Tables
 fdb878e3ed0413129da0233d3ec0737507fac05f data/tts/loot_tables/blocks/ars_panel.json
 ddeef8f07cc80f97e4bd329ff6a1bd7ac01f4fd5 data/tts/loot_tables/blocks/chameleon_circuit_panel.json
 7ee4455d27cd366d38f44661be593ae715ac7447 data/tts/loot_tables/blocks/chromium_block.json
@@ -42,6 +42,7 @@ b9334a43c64a6c0e9b95abe9cc40d4cbb654b515 data/tts/loot_tables/blocks/power_lever
 4269316ce63efe39026ec90cc99861e8a6d83079 data/tts/loot_tables/blocks/rotor/amethyst.json
 87e41f5a2b4242ad2ed03be18b4397856cc40a09 data/tts/loot_tables/blocks/rotor/blue.json
 7ae3631f87d84d9b12a6ef68446dbfef0b743fa8 data/tts/loot_tables/blocks/rotor/copper.json
+a489687ab1913d8584c39f5351e8b63c3c8be5dd data/tts/loot_tables/blocks/roundel/quartz_block.json
 645661a2820a83c165319c4bb3b2598f33d63a61 data/tts/loot_tables/blocks/sky_block.json
 f38973cd4d3d253c0db988a8a95eca7478dc326e data/tts/loot_tables/blocks/tardis_engine.json
 9a2fc4463eeae3fd4362ae3457704471d71dbcc8 data/tts/loot_tables/blocks/throttle.json

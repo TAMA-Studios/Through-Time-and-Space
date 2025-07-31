@@ -8,7 +8,9 @@ import com.code.tama.tts.server.registries.TTSBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -178,10 +180,12 @@ public class MBlockStateProvider extends BlockStateProvider {
         }
     }
 
+    ///////////////////////////////////// HERE!
     @Override
     protected void registerStatesAndModels() {
         for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
             try {
+                if (block.getId().toString().contains("roundel")) Roundel(block);
                 blockWithItem(block);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -215,6 +219,12 @@ public class MBlockStateProvider extends BlockStateProvider {
         } catch (Exception e) {
             TTSMod.LOGGER.info(e.getMessage());
         }
+    }
+
+    private void Roundel(RegistryObject<Block> registryObject) {
+        ModelBuilder<BlockModelBuilder> modelBuilder =
+                models().cubeAll(name(registryObject.get()), blockTexture(registryObject.get()));
+        simpleBlock(registryObject.get(), modelBuilder);
     }
 
     private ResourceLocation key(Block block) {

@@ -6,6 +6,7 @@ import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
 import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 
 import com.code.tama.tts.core.annotations.DimensionalTab;
+import com.code.tama.tts.core.annotations.Roundel;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.monitor.CRTMonitorBlock;
@@ -43,6 +44,9 @@ public class TTSBlocks {
 
     public static final RegistryObject<Block> VOID_BLOCK =
             RegisterWithItemSpecial("void_block", SkyBlock.VoidBlock::new);
+
+    @Roundel
+    public static final RegistryObject<Block> QUARTZ_ROUNDEL = SetupRoundel("quartz_block");
 
     public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem(
             "chromium_block",
@@ -416,6 +420,16 @@ public class TTSBlocks {
     public static RegistryObject<Block> SetupBlock(String name) {
         return RegisterWithItem(
                 name, () -> new Block(BlockBehaviour.Properties.of().strength(1.25f)));
+    }
+
+    /**
+     * Registers the block and a {@link BlockItem}
+     **/
+    public static RegistryObject<Block> SetupRoundel(String name) {
+        return RegisterWithItem(
+                "roundel/" + name,
+                () -> new Block(BlockBehaviour.Properties.of().strength(1.25f).lightLevel(BlockState -> 15)),
+                new Item.Properties());
     }
 
     /**

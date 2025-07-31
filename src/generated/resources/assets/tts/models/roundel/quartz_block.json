@@ -1,6 +1,6 @@
 {
   "parent" : "minecraft:block/cube_all",
   "textures" : {
-    "all" : "tts:block/dematerialization_circuit_core"
+    "all" : "tts:block/roundel/quartz_block"
   }
 }

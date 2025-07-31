@@ -1,0 +1,30 @@
+{
+  "criteria" : {
+    "crafted_sonic" : {
+      "conditions" : {
+        "items" : [ {
+          "items" : [ "tts:sonic_screwdriver" ]
+        } ]
+      },
+      "trigger" : "minecraft:inventory_changed"
+    }
+  },
+  "display" : {
+    "announce_to_chat" : true,
+    "description" : {
+      "text" : "Go build a cabinet."
+    },
+    "frame" : "task",
+    "hidden" : false,
+    "icon" : {
+      "item" : "tts:sonic_screwdriver"
+    },
+    "show_toast" : true,
+    "title" : {
+      "text" : "You have a screwdriver!"
+    }
+  },
+  "parent" : "tts:tts",
+  "requirements" : [ [ "crafted_sonic" ] ],
+  "sends_telemetry_event" : true
+}

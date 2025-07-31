@@ -24,5 +24,6 @@
       "color" : "dark_purple",
       "text" : "It's bigger on the inside!"
     }
-  }
+  },
+  "parent" : "tts:tts"
 }

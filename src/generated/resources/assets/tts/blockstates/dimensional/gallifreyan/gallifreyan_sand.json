@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "tts:dimensional/gallifreyan/gallifreyan_sand"
+    }
+  }
+}

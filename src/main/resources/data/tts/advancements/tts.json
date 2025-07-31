@@ -1,0 +1,25 @@
+{
+  "criteria" : {
+    "tts" : {
+      "conditions" : { },
+      "trigger" : "minecraft:tick"
+    }
+  },
+  "display" : {
+    "announce_to_chat" : true,
+    "description" : {
+      "text" : "Through Time and Space!"
+    },
+    "frame" : "task",
+    "hidden" : false,
+    "icon" : {
+      "item" : "tts:exterior"
+    },
+    "show_toast" : true,
+    "title" : {
+      "text" : "A great adventure"
+    }
+  },
+  "requirements" : [ [ "tts" ] ],
+  "sends_telemetry_event" : true
+}
