@@ -1,9 +1,9 @@
 {
   "category" : "tts:tardis_subsystems",
-  "icon" : "tts:nether_reactor_core",
-  "name" : "Nether Reactor Core",
+  "icon" : "tts:fragment_links",
+  "name" : "Fragment Links",
   "pages" : [ {
-    "text" : "TARDIS Subsystems, page one, Nether Reactor Core: $(br)The Nether Reactor Core is essential for initiating a link between the TARDIS and THE NETHER, allowing for interdimensional travel to the nether dimension",
+    "text" : "TARDIS Subsystems, page one, Fragment Links: $(br)The Fragment links are essential to the functionality of the TARDIS $(br)The fragment links act as wires, connecting the subsystems to the engine interface.",
     "type" : "text"
   } ]
 }

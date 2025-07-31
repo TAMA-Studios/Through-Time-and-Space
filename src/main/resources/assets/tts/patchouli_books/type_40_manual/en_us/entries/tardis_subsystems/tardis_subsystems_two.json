@@ -1,9 +1,21 @@
 {
   "category" : "tts:tardis_subsystems",
-  "icon" : "tts:fragment_links",
-  "name" : "Fragment Links",
+  "icon" : "tts:nether_reactor_core",
+  "name" : "Nether Reactor Core",
   "pages" : [ {
-    "text" : "TARDIS Subsystems, page one, Fragment Links: $(br)The Fragment links are essential to the functionality of the TARDIS $(br)The fragment links act as wires, connecting the subsystems to the engine interface.",
+    "text" : "TARDIS Subsystems, page one, Nether Reactor Core: $(br)The Nether Reactor Core is essential for initiating a link between the TARDIS and THE NETHER, allowing for interdimensional travel to the nether dimension",
     "type" : "text"
+  }, {
+    "multiblock" : {
+      "mapping" : {
+        "0" : "minecraft:cobblestone",
+        "C" : "minecraft:cobblestone",
+        "G" : "minecraft:gold_block",
+        "T" : "tts:nether_reactor_core"
+      },
+      "pattern" : [ [ " C ", "CCC", " C " ], [ "C C", " T ", "C C" ], [ "GCG", "C0C", "GCG" ] ],
+      "symmetrical" : true
+    },
+    "type" : "multiblock"
   } ]
 }
