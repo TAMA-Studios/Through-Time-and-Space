@@ -36,10 +36,10 @@
     "from" : [ 0, 0, 0 ],
     "to" : [ 16, 16, 16 ]
   } ],
-  "format_version" : "1.21.6",
+  "format_version" : "1.9.0",
   "parent" : "block/block",
   "textures" : {
-    "4" : "tts:block/roundel/quartz_block_side",
+    "4" : "tts:block/roundel/quartz_block",
     "6" : "tts:block/roundel/quartz_block_top"
   }
 }
