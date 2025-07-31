@@ -5,5 +5,21 @@
   "pages" : [ {
     "text" : "TARDIS Subsystems, page two, Dematerialization Circuit: $(br)The Dematerialization Circuit is an essential component for dematerialization. Without the Dematerialization Circuit, the TARDIS may as well be a glorified fortress",
     "type" : "text"
+  }, {
+    "multiblock" : {
+      "mapping" : {
+        "0" : "minecraft:gold_block",
+        "B" : "minecraft:lapis_block",
+        "C" : "minecraft:copper_block",
+        "I" : "minecraft:iron_block",
+        "L" : "minecraft:redstone_lamp",
+        "R" : "minecraft:redstone_block",
+        "T" : "minecraft:iron_trapdoor",
+        "c" : "tts:dematerialization_circuit_core"
+      },
+      "pattern" : [ [ "CLC", "LRL", "CLC" ], [ "I I", "TcT", "ITI" ], [ "CBC", "R0R", "CRC" ] ],
+      "symmetrical" : false
+    },
+    "type" : "multiblock"
   } ]
 }
