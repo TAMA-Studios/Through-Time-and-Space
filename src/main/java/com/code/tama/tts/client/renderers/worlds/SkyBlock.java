@@ -113,7 +113,7 @@ public class SkyBlock {
         final float delta = renderData.partialTick();
         Matrix4f projectionMatrix = renderData.projectionMatrix();
         LevelRenderer levelRenderer = mc.levelRenderer;
-        LevelRendererBOS levelRendererBOS = (LevelRendererBOS) levelRenderer;
+        IHelpWithLevelRenderer IHelpWithLevelRenderer = (IHelpWithLevelRenderer) levelRenderer;
         GameRenderer gameRenderer = mc.gameRenderer;
         final Camera camera = gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
@@ -152,7 +152,7 @@ public class SkyBlock {
         }
 
         RenderSystem.depthMask(false);
-        levelRendererBOS.BOS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
+        IHelpWithLevelRenderer.BOS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();

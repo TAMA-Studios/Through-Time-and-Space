@@ -1,0 +1,28 @@
+{
+  "criteria" : {
+    "enter_tardis_biome" : {
+      "conditions" : {
+        "location" : {
+          "biome" : "tts:tardis"
+        }
+      },
+      "trigger" : "minecraft:location"
+    }
+  },
+  "display" : {
+    "announce_to_chat" : true,
+    "description" : {
+      "text" : "Three-dimensional euclidean geometry has been torn up, thrown in the air and SNOGGED TO DEATH!!"
+    },
+    "frame" : "task",
+    "hidden" : false,
+    "icon" : {
+      "item" : "tts:exterior"
+    },
+    "show_toast" : true,
+    "title" : {
+      "color" : "dark_purple",
+      "text" : "It's bigger on the inside!"
+    }
+  }
+}
