@@ -1,4 +1,6 @@
 {
-  "layer0" : "tts:item/manual",
-  "parent" : "item/generated"
+  "parent" : "item/generated",
+  "textures" : {
+    "layer0" : "tts:item/manual"
+  }
 }

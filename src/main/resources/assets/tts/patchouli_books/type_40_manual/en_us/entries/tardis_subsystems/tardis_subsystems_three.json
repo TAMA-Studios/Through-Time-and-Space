@@ -5,5 +5,11 @@
   "pages" : [ {
     "text" : "TARDIS Subsystems, page one, Fragment Links: $(br)The Fragment links are essential to the functionality of the TARDIS $(br)The fragment links act as wires, connecting the subsystems to the engine interface.",
     "type" : "text"
+  }, {
+    "item" : {
+      "item" : "tts:fragment_links"
+    },
+    "text" : "The Fragment links are used as the wire connecting the Subsystems to the Engine Interface. To Hotbind them, First connect the Subsystem Core to the Engine Interface using the Fragment Links, Then, Right Click the Fragment Links with a Sonic Screwdriver",
+    "type" : "patchouli:spotlight"
   } ]
 }
