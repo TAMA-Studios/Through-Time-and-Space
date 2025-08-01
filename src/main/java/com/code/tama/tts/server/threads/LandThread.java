@@ -37,10 +37,9 @@ public class LandThread extends Thread {
                     .GetDestination()
                     .GetBlockPos()
                     .atY(WorldHelper.SafeBottomY(
-                            CurrentLevel,
-                            this.itardisLevel
-                                    .GetDestination()
-                                    .GetBlockPos())); // BlockHelper.snapToGround(CurrentLevel,
+                                    CurrentLevel,
+                                    this.itardisLevel.GetDestination().GetBlockPos())
+                            + 1); // BlockHelper.snapToGround(CurrentLevel,
             // this.itardisLevel.GetDestination().GetBlockPos());
             pos.offset(
                     0,
