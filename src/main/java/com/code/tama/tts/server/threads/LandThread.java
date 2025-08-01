@@ -1,12 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import com.code.tama.triggerapi.WorldHelper;
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.server.blocks.ExteriorBlock;
-import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.registries.LandingTypeRegistry;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
@@ -29,25 +30,13 @@ public class LandThread extends Thread {
 
             ServerLevel CurrentLevel =
                     this.itardisLevel.GetLevel().getServer().getLevel(this.itardisLevel.GetCurrentLevel());
+            assert CurrentLevel != null;
             CurrentLevel.setChunkForced(
                     (int) (this.itardisLevel.GetDestination().GetX() / 16),
                     (int) (this.itardisLevel.GetDestination().GetZ() / 16),
                     true);
-            BlockPos pos = this.itardisLevel
-                    .GetDestination()
-                    .GetBlockPos()
-                    .atY(WorldHelper.SafeBottomY(
-                                    CurrentLevel,
-                                    this.itardisLevel.GetDestination().GetBlockPos())
-                            + 1); // BlockHelper.snapToGround(CurrentLevel,
-            // this.itardisLevel.GetDestination().GetBlockPos());
-            pos.offset(
-                    0,
-                    WorldHelper.getSurfaceHeight(
-                            CurrentLevel,
-                            ((int) this.itardisLevel.GetDestination().GetX()),
-                            ((int) this.itardisLevel.GetDestination().GetZ())),
-                    0);
+
+            BlockPos pos = LandingTypeRegistry.UP.GetLandingPos(this.itardisLevel.GetDestination(), CurrentLevel);
 
             SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos);
 
@@ -55,13 +44,11 @@ public class LandThread extends Thread {
             this.itardisLevel.SetDestination(coords);
             this.itardisLevel.SetFacing(this.itardisLevel.GetDestinationFacing());
 
-            BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK
-                    .get()
-                    .defaultBlockState()
-                    .rotate(TARDISLevelCapability.DirectionToRotation(this.itardisLevel.GetFacing()));
+            BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
 
-            ExteriorBlock exteriorBlock = (ExteriorBlock) exteriorBlockState.getBlock();
-            exteriorBlockState.setValue(ExteriorBlock.FACING, this.itardisLevel.GetFacing());
+            ExteriorBlock exteriorBlock = (ExteriorBlock) exteriorBlockState
+                    .setValue(FACING, this.itardisLevel.GetFacing())
+                    .getBlock();
             exteriorBlock.SetInteriorKey(this.itardisLevel.GetLevel().dimension());
 
             CurrentLevel.setBlock(
@@ -85,6 +72,7 @@ public class LandThread extends Thread {
             this.itardisLevel.SetPlayRotorAnimation(false);
             this.itardisLevel.UpdateClient();
         }
+
         MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this.itardisLevel, TardisEvent.State.END));
         super.run();
     }

@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -87,6 +88,7 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
     public ExteriorBlock(Properties p_49795_, Supplier<? extends BlockEntityType<? extends ExteriorTile>> factory) {
         super(p_49795_);
         this.exteriorType = factory;
+        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
 
     public void MarkForRemoval() {
@@ -184,6 +186,12 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public boolean skipRendering(@NotNull BlockState state, BlockState adjacentBlockState, @NotNull Direction side) {
         return adjacentBlockState.is(this); // Avoids rendering internal faces
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
