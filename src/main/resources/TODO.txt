@@ -1,6 +1,41 @@
 TODO:
-IMPLEMENT ENGINES (MORE!)
+IMPLEMENT ENGINES! (Not just the interface)
 Fault Locator
 Subsystem/Control durability
 Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome tempurature, etc.
 Add more subsystems
+Flight Speed
+
+Temporal Drift (Flying for long periods of time adds "Drift", more drift = landing farther off course) And a way to compensate
+Temporal Anchor (Keeps the TARDIS from taking off)
+Fix the Portal Block hologram
+Brakes (turning off brakes makes the screech sound go away)
+Emergency Jump, dumps all power (FE/AU) and insta-travels to a "Safe" spot, either the farthest waypoint, the gallifrey citadel (if unlocked) or spawn at the overworld.
+Emergency Program One: https://tardis.fandom.com/wiki/Emergency_Program_One
+
+Difficulty Modes
+    Casual Mode:
+        Very simple travel, auto-flight, no damage or drift, just set coords, take off, land, profit.
+    Normal Mode:
+        Full controls, but with UI prompts.
+    Expert/Manual Mode:
+        No help — figure out proper lever combos and diagnostics solo. Great for roleplayers and hardcore fans.
+
+Flight Events
+
+Example Flight Procedure:
+    Flip Power Switch
+    Input Coordinates (or enable Randomizer)
+    Enable the Coordinate Lock-In Switch
+    Disable Temporal Anchors
+    Set Artron Frequency Controller Modifier
+    (Optional) Enable APC
+    (Optional) Toggle Stabilizers
+    (Optional) Set Flight Termination Protocol (if unset, will default to Polite Terminus)
+    Release Handbrake
+    Pull Demat Lever
+    Monitor Diagnostic Screens
+    Adjust Temporal Vectors mid-flight to compensate for temporal drift (optional)
+    Engage Brakes
+    Once flight speed = 0: Pull Materialization Lever
+    Wait for Landing Confirmation

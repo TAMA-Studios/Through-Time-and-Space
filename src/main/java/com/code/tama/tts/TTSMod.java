@@ -37,6 +37,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -133,8 +134,9 @@ public class TTSMod {
         Networking.registerPackets();
         event.enqueueWork(() -> {
             LOGGER.info("Surface Rules Added");
-            SurfaceRuleManager.addSurfaceRules(
-                    SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, MSurfaceRules.makeRules());
+            if (ModList.get().isLoaded("terrablender"))
+                SurfaceRuleManager.addSurfaceRules(
+                        SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, MSurfaceRules.makeRules());
 
             WorkBenchRecipeReg.Register();
         });
