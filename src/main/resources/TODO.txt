@@ -1,8 +1,10 @@
 TODO:
+Valkyrian Skies compat!!
+
 IMPLEMENT ENGINES! (Not just the interface)
 Fault Locator
 Subsystem/Control durability
-Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome tempurature, etc.
+Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome temperature, etc.
 Add more subsystems
 Flight Speed
 
