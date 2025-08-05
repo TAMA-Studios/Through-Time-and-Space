@@ -40,7 +40,7 @@ jobs:
         run: |
           for f in build/libs/*.jar; do
             base="${f%.jar}"
-            mv "$f" "${base}-B${{ github.run_number }}.jar"
+            mv "$f" "${base}-B${{ github.run_number }}-${branch}.jar"
           done
     
       - name: Publish artifacts
