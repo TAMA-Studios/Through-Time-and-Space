@@ -5,18 +5,22 @@ import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.Exterior;
+import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -30,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,6 +44,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ExteriorTile extends BlockEntity {
+    public boolean ShouldMakeDimOnNextTick = false;
+    public LivingEntity Placer;
+
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
         if (blockEntity instanceof ExteriorTile exteriorTile) {
 
@@ -59,13 +67,43 @@ public class ExteriorTile extends BlockEntity {
             // }
             // tts.exteriorTileTickThread.Init(level, pos, state, exteriorTile);
             // tts.exteriorTileTickThread.run();
-            if (exteriorTile.GetInterior() == null) return;
 
             // if (level.getBlockState(pos).getBlock() instanceof ExteriorBlock
             // exteriorBlock)
             // if (exteriorBlock.GetInteriorKey() == null)
             // if (exteriorTile.GetInterior() != null)
             // exteriorTile.SetInteriorAndSyncWithBlock(exteriorTile.GetInterior());
+
+            if (exteriorTile.ShouldMakeDimOnNextTick) {
+                if (level.isClientSide || level.getServer() == null) return;
+                level.getServer().execute(() -> {
+                    ResourceKey<Level> resourceKey = ResourceKey.create(
+                            Registries.DIMENSION, new ResourceLocation(MODID, "tardis_" + UUID.randomUUID()));
+                    ServerLevel tardisLevel = DimensionAPI.get()
+                            .getOrCreateLevel(
+                                    level.getServer(),
+                                    resourceKey,
+                                    () -> DimensionManager.CreateTARDISLevelStem(level.getServer()));
+
+                    ((ExteriorBlock) state.getBlock()).SetInteriorKey(tardisLevel.dimension());
+
+                    tardisLevel
+                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                            .ifPresent((cap) -> {
+                                cap.SetExteriorTile(exteriorTile);
+                                cap.SetCurrentLevel(exteriorTile.getLevel().dimension());
+                                cap.SetDestination(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
+                                cap.SetExteriorLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
+                                assert exteriorTile.Placer != null;
+                                cap.SetOwner(exteriorTile.Placer.getUUID());
+                            });
+
+                    exteriorTile.Init(tardisLevel.dimension());
+                });
+                exteriorTile.ShouldMakeDimOnNextTick = false;
+            }
+
+            if (exteriorTile.GetInterior() == null) return;
 
             if (level != null
                     && !level.isClientSide

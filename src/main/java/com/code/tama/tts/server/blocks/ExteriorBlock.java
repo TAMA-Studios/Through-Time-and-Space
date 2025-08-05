@@ -1,23 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -155,31 +146,10 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
             @org.jetbrains.annotations.Nullable LivingEntity livingEntity,
             @NotNull ItemStack stack) {
         if (level.isClientSide || level.getServer() == null) return;
-        level.getServer().execute(() -> {
-            ResourceKey<Level> resourceKey = ResourceKey.create(
-                    Registries.DIMENSION, new ResourceLocation(MODID, "tardis_" + UUID.randomUUID()));
-            ServerLevel tardisLevel = DimensionAPI.get()
-                    .getOrCreateLevel(
-                            level.getServer(),
-                            resourceKey,
-                            () -> DimensionManager.CreateTARDISLevelStem(level.getServer()));
-            this.SetInteriorKey(tardisLevel.dimension());
-
-            if (level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
-                tardisLevel
-                        .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent((cap) -> {
-                            cap.SetExteriorTile(exteriorTile);
-                            cap.SetCurrentLevel(exteriorTile.getLevel().dimension());
-                            cap.SetDestination(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
-                            cap.SetExteriorLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
-                            assert livingEntity != null;
-                            cap.SetOwner(livingEntity.getUUID());
-                        });
-
-                exteriorTile.Init(tardisLevel.dimension());
-            }
-        });
+        if (level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
+            exteriorTile.ShouldMakeDimOnNextTick = true;
+            exteriorTile.Placer = livingEntity;
+        }
         super.setPlacedBy(level, Pos, State, livingEntity, stack);
     }
 
