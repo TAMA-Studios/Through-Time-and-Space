@@ -4,8 +4,10 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -51,6 +53,15 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
         poseStack.pushPose();
         poseStack.translate(0.5, 1, 0.5);
+        if (exteriorTile.getLevel() != null) {
+            poseStack.mulPose(exteriorTile
+                    .getLevel()
+                    .getBlockState(exteriorTile.getBlockPos())
+                    .getValue(ExteriorBlock.FACING)
+                    .getOpposite()
+                    .getRotation());
+            poseStack.mulPose(Axis.XN.rotationDegrees(90));
+        }
 
         AbstractJSONRenderer ext =
                 new AbstractJSONRenderer(exteriorTile.GetVariant().GetModelName());

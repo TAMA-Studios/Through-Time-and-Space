@@ -1,5 +1,6 @@
 TODO:
-Valkyrian Skies compat!!
+~~Valkyrian Skies compat!!~~ (DONE!)
+TODO: Figure out all these damn disconnected errors
 
 IMPLEMENT ENGINES! (Not just the interface)
 Fault Locator
