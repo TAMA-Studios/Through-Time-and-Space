@@ -1,0 +1,7 @@
+Java Launcher: C:\Users\The DJ Himself\.jdks\ms-17.0.16\bin\java.exe
+Arguments: '--inJar, C:\Users\The DJ Himself\Documents\git repos\Through-Time-and-Space\build\fg_cache\net\minecraftforge\forge\1.20.1-47.3.24\forge-1.20.1-47.3.24-injected.jar, --outJar, C:\Users\The DJ Himself\Documents\git repos\Through-Time-and-Space\build\fg_cache\net\minecraftforge\forge\1.20.1-47.3.24_mapped_official_1.20.1\forge-1.20.1-47.3.24_mapped_official_1.20.1.jar, --logFile, accesstransform.log, --atFile, C:\Users\The DJ Himself\Documents\git repos\Through-Time-and-Space\src\main\resources\META-INF\accesstransformer.cfg, --atFile, C:\Users\The DJ Himself\Documents\git repos\Through-Time-and-Space\build\_atJar_4\parent_at.cfg'
+Classpath:
+ - C:\Users\The DJ Himself\.gradle\caches\forge_gradle\maven_downloader\net\minecraftforge\accesstransformers\8.2.1\accesstransformers-8.2.1-fatjar.jar
+Working directory: C:\Users\The DJ Himself\Documents\git repos\Through-Time-and-Space\build\_atJar_4
+Main class: net.minecraftforge.accesstransformer.TransformerProcessor
+====================================
