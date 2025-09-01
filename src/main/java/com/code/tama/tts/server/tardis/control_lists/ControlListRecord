@@ -1,0 +1,3 @@
+package com.code.tama.tts.server.tardis.control_lists;
+
+public record ControlListRecord(Vec3 pos1, Vec3 pos2, int ID) {}
