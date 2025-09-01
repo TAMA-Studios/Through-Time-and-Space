@@ -15,7 +15,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalModel<Entity>
@@ -2132,9 +2131,8 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
     @Override
     public void SetupAnimations(ConsoleTile tile, float ageInTicks) {
         if (!tile.ControlAnimationMap.isEmpty()) {
-            if (tile.ControlAnimationMap.get(new Vec3(0.25f, 1.11f, 0.71f)) != null)
-                this.throttle.xRot =
-                        (float) Math.toRadians(tile.ControlAnimationMap.get(new Vec3(0.25f, 1.11f, 0.71f)) * 45);
+            if (tile.ControlAnimationMap.get(0) != null)
+                this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(0) * 45);
         }
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(tile.GetRotorAnimation(), HudolinConsoleAnimation.rotor_loop, ageInTicks);

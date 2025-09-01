@@ -7,6 +7,7 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSItems;
+import com.code.tama.tts.server.tardis.control_lists.ControlListRecord;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -41,12 +42,21 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     }
 
     public ModularControl(
-            Level p_19871_, AbstractConsoleTile consoleTile, Vec3 pos, float SizeX, float SizeY, float SizeZ) {
-        super(TTSEntities.MODULAR_CONTROL.get(), p_19871_);
+            Level level, AbstractConsoleTile consoleTile, Vec3 pos, float SizeX, float SizeY, float SizeZ) {
+        super(TTSEntities.MODULAR_CONTROL.get(), level);
         this.Position = pos;
         this.size = new AABB(0, 0, 0, SizeX, SizeY, SizeZ);
         this.SetDimensions(EntityDimensions.scalable(SizeX, SizeY));
         this.consoleTile = consoleTile;
+    }
+
+    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlListRecord record) {
+        super(TTSEntities.MODULAR_CONTROL.get(), level);
+        this.Position = new Vec3(record.minX(), record.minY(), record.minZ());
+        this.size = new AABB(0, 0, 0, record.maxX(), record.maxY(), record.maxZ());
+        this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
+        this.consoleTile = consoleTile;
+        this.setPos(this.Position);
     }
 
     public Controls GetControl() {

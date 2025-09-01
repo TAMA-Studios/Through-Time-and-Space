@@ -36,7 +36,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         }
     }
 
-    public HashMap<Vec3, Float> ControlAnimationMap = new HashMap<>();
+    public HashMap<Integer, Float> ControlAnimationMap = new HashMap<>();
     public HashMap<Vec3, UUID> ControlMap = new HashMap<>();
     int AnimationMapSize = 0;
     int ControlSize = 0;
@@ -162,11 +162,9 @@ public abstract class AbstractConsoleTile extends BlockEntity {
     private void summonButtons(Level level) {
         BlockPos blockPos = this.getBlockPos();
         Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-        this.GetControlList().GetPositionSizeMap().forEach((summonPos, Sizes) -> {
-            summonPos = centerPos.add(summonPos);
-            ModularControl entity =
-                    new ModularControl(level, this, summonPos, (float) Sizes.x, (float) Sizes.y, (float) Sizes.z);
-            entity.setPos(summonPos);
+        this.GetControlList().GetPositionSizeMap().forEach((record) -> {
+            Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY(), record.minZ()));
+            ModularControl entity = new ModularControl(level, this, record);
             level.addFreshEntity(entity);
             this.ControlSize++;
             this.ControlAnimationMap.put(summonPos, 0.0f);
