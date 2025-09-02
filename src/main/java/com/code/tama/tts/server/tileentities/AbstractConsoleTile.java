@@ -161,6 +161,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         this.GetControlList().getPositionSizeMap().forEach((record) -> {
             Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY(), record.minZ()));
             ModularControl entity = new ModularControl(level, this, record);
+            entity.setPos(summonPos);
             level.addFreshEntity(entity);
             this.ControlSize++;
             this.ControlAnimationMap.put(record.ID(), 0.0f);

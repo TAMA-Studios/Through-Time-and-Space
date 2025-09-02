@@ -50,7 +50,6 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
         this.consoleTile = consoleTile;
         this.ID = record.ID();
-        this.setPos(this.Position);
     }
 
     public Controls GetControl() {
