@@ -53,7 +53,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         this.setRemoved();
     }
 
-    public HashMap<Vec3, Float> GetControlAnimationMap() {
+    public HashMap<Integer, Float> GetControlAnimationMap() {
         return this.ControlAnimationMap;
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         return this.RotorAnimationState;
     }
 
-    public void SetControlAnimationMapValue(Vec3 pos, float state) {
+    public void SetControlAnimationMapValue(Integer pos, float state) {
         this.ControlAnimationMap.remove(pos);
         this.ControlAnimationMap.put(pos, state);
     }
@@ -76,11 +76,9 @@ public abstract class AbstractConsoleTile extends BlockEntity {
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         this.AnimationMapSize = 0;
-        this.ControlAnimationMap.forEach((pos, state) -> {
+        this.ControlAnimationMap.forEach((id, state) -> {
             this.AnimationMapSize++;
-            tag.putDouble("x_" + this.AnimationMapSize, pos.x);
-            tag.putDouble("y_" + this.AnimationMapSize, pos.y);
-            tag.putDouble("z_" + this.AnimationMapSize, pos.z);
+            tag.putInt("id", id);
             tag.putFloat("state_" + this.AnimationMapSize, state);
         });
         tag.putInt("animation_map_size", this.AnimationMapSize);
@@ -94,9 +92,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         // Start syncing
         this.AnimationMapSize = tag.getInt("animation_map_size");
         for (int i = 1; i <= this.ControlSize; i++) {
-            this.ControlAnimationMap.put(
-                    new Vec3(tag.getDouble("x_" + i), tag.getDouble("y_" + i), tag.getDouble("z_" + i)),
-                    tag.getFloat("state_" + i));
+            this.ControlAnimationMap.put(tag.getInt("id"), tag.getFloat("state_" + i));
         }
         super.handleUpdateTag(tag);
     }
@@ -162,12 +158,12 @@ public abstract class AbstractConsoleTile extends BlockEntity {
     private void summonButtons(Level level) {
         BlockPos blockPos = this.getBlockPos();
         Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-        this.GetControlList().GetPositionSizeMap().forEach((record) -> {
+        this.GetControlList().getPositionSizeMap().forEach((record) -> {
             Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY(), record.minZ()));
             ModularControl entity = new ModularControl(level, this, record);
             level.addFreshEntity(entity);
             this.ControlSize++;
-            this.ControlAnimationMap.put(summonPos, 0.0f);
+            this.ControlAnimationMap.put(record.ID(), 0.0f);
             this.ControlMap.put(summonPos, entity.getUUID());
             level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
         });

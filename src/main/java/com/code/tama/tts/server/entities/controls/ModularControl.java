@@ -7,7 +7,7 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSItems;
-import com.code.tama.tts.server.tardis.control_lists.ControlListRecord;
+import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,29 +33,23 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     private static final EntityDataAccessor<String> CONTROL =
             SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);
     public Vec3 Position;
-
+    public final int ID;
     public AbstractConsoleTile consoleTile;
     public AABB size;
 
+    /** DO NOT CALL THIS! Use {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}**/
     public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
         super(modularControlEntityType, level);
+        this.ID = 0;
     }
 
-    public ModularControl(
-            Level level, AbstractConsoleTile consoleTile, Vec3 pos, float SizeX, float SizeY, float SizeZ) {
-        super(TTSEntities.MODULAR_CONTROL.get(), level);
-        this.Position = pos;
-        this.size = new AABB(0, 0, 0, SizeX, SizeY, SizeZ);
-        this.SetDimensions(EntityDimensions.scalable(SizeX, SizeY));
-        this.consoleTile = consoleTile;
-    }
-
-    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlListRecord record) {
+    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
         super(TTSEntities.MODULAR_CONTROL.get(), level);
         this.Position = new Vec3(record.minX(), record.minY(), record.minZ());
         this.size = new AABB(0, 0, 0, record.maxX(), record.maxY(), record.maxZ());
         this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
         this.consoleTile = consoleTile;
+        this.ID = record.ID();
         this.setPos(this.Position);
     }
 
@@ -79,6 +73,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
             return;
         }
         InteractionResult interactionResult = this.GetControl().GetControl().OnRightClick(capability, player);
+
         this.level()
                 .playSound(
                         null,
@@ -110,7 +105,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
                                 : this.GetControl().GetControl().GetFailSound(),
                         SoundSource.BLOCKS);
 
-        if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {}
+        if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {
+            System.out.println("Needs Update!");
+        }
     }
 
     public void SetControl(Controls control) {
@@ -126,13 +123,13 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public void UpdateConsoleAnimationMap() {
         if (this.consoleTile == null) return;
         if (!this.GetControl().GetControl().NeedsUpdate()) return;
-        if (!this.consoleTile.GetControlAnimationMap().containsKey(this.Position)) return;
-        if (this.consoleTile.GetControlAnimationMap().get(this.Position)
+        if (!this.consoleTile.GetControlAnimationMap().containsKey(this.ID)) return;
+        if (this.consoleTile.GetControlAnimationMap().get(this.ID)
                 == this.GetControl().GetControl().GetAnimationState()) return;
-        this.consoleTile.GetControlAnimationMap().remove(this.Position);
+        this.consoleTile.GetControlAnimationMap().remove(this.ID);
         this.consoleTile
                 .GetControlAnimationMap()
-                .put(this.Position, this.GetControl().GetControl().GetAnimationState());
+                .put(this.ID, this.GetControl().GetControl().GetAnimationState());
     }
 
     @Override
