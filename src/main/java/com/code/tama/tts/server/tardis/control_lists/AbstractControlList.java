@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public abstract class AbstractControlList {
     @Getter
-    public ArrayList<ControlEntityRecord> PositionSizeMap;
+    public ArrayList<ControlEntityRecord> PositionSizeMap = new ArrayList<>();
 
     private int ID = 0;
 
