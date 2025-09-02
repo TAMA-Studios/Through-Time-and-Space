@@ -2131,8 +2131,8 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
     @Override
     public void SetupAnimations(ConsoleTile tile, float ageInTicks) {
         if (!tile.ControlAnimationMap.isEmpty()) {
-            if (tile.ControlAnimationMap.get(0) != null)
-                this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(0) * 45);
+            if (tile.ControlAnimationMap.get(71) != null)
+                this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(71) * 45);
         }
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(tile.GetRotorAnimation(), HudolinConsoleAnimation.rotor_loop, ageInTicks);

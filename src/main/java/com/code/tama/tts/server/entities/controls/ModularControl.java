@@ -9,10 +9,12 @@ import com.code.tama.tts.server.registries.TTSEntities;
 import com.code.tama.tts.server.registries.TTSItems;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,7 +35,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     private static final EntityDataAccessor<String> CONTROL =
             SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);
     public Vec3 Position;
-    public final int ID;
+    public int ID;
     public AbstractConsoleTile consoleTile;
     public AABB size;
 
@@ -115,16 +117,19 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public Component TranslationKey() {
-        return Component.translatable(
+        MutableComponent component = Component.translatable(
                 "tts.tardis.control." + this.GetControl().name().toLowerCase());
+
+        if (Minecraft.getInstance().options.advancedItemTooltips) component.append(String.format("%nID: %s", this.ID));
+        return component;
     }
 
     public void UpdateConsoleAnimationMap() {
         if (this.consoleTile == null) return;
         if (!this.GetControl().GetControl().NeedsUpdate()) return;
-        if (!this.consoleTile.GetControlAnimationMap().containsKey(this.ID)) return;
-        if (this.consoleTile.GetControlAnimationMap().get(this.ID)
-                == this.GetControl().GetControl().GetAnimationState()) return;
+        if (this.consoleTile.GetControlAnimationMap().containsKey(this.ID)
+                && this.consoleTile.GetControlAnimationMap().get(this.ID)
+                        == this.GetControl().GetControl().GetAnimationState()) return;
         this.consoleTile.GetControlAnimationMap().remove(this.ID);
         this.consoleTile
                 .GetControlAnimationMap()
@@ -140,6 +145,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     public void readSpawnData(FriendlyByteBuf buf) {
         this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.SetControl(Controls.values()[buf.readInt()]);
+        this.ID = buf.readInt();
     }
 
     @Override
@@ -156,6 +162,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
             buf.writeDouble(this.size.getZsize());
         }
         if (this.GetControl() != null) buf.writeInt(this.GetControl().ordinal());
+        buf.writeInt(this.ID);
     }
 
     @Override
@@ -172,6 +179,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         Tag.putDouble("vec_x", this.Position.x);
         Tag.putDouble("vec_y", this.Position.y);
         Tag.putDouble("vec_z", this.Position.z);
+        Tag.putInt("id", this.ID);
     }
 
     @Override
@@ -195,6 +203,8 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
                     .getBlockEntity(
                             new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")));
         this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
+
+        this.ID = Tag.getInt("id");
     }
 
     void CycleControlBackward() {

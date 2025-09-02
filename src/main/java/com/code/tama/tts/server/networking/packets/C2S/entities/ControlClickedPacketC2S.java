@@ -26,6 +26,7 @@ public class ControlClickedPacketC2S {
                     .getServer()
                     .getLevel(context.get().getSender().level().dimension())
                     .getEntity(mes.control);
+            assert control != null;
             control.OnControlClicked(
                     context.get()
                             .getSender()
