@@ -188,21 +188,21 @@ public class ARSPanel extends HorizontalDirectionalBlock {
                         WorldHelper.PlaceStructure(
                                 (ServerLevel) world,
                                 posToPlace.relative(state.getValue(FACING).getOpposite(), 48),
-                                ARSRegistry.GetByName("tts.ars.starter").getPath());
+                                ARSRegistry.GetByName("tts.ars.starter").path());
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
                     } else {
                         this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
                         player.sendSystemMessage(
-                                Component.literal("ARS Structure set to: ").append(this.StoredStruct.getName()));
+                                Component.literal("ARS Structure set to: ").append(this.StoredStruct.Name()));
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
                         world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
                     }
                     break;
                 case SET:
-                    WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.getPath());
+                    WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.path());
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
                     world.scheduleTick(pos, this, 10);
                     world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

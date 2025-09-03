@@ -26,6 +26,12 @@ public enum Controls {
         } else return Controls.values()[this.ordinal() + 1];
     }
 
+    public Controls CycleBackwards() {
+        if (this.ordinal() - 1 <= 0) {
+            return Controls.values()[Controls.values().length];
+        } else return Controls.values()[this.ordinal() - 1];
+    }
+
     public AbstractControl GetControl() {
         return this.control;
     }

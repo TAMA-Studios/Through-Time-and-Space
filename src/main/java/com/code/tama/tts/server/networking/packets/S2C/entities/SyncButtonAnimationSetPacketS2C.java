@@ -14,20 +14,17 @@ public class SyncButtonAnimationSetPacketS2C {
     private final HashMap<Integer, Float> animationSet;
     private final BlockPos pos;
 
-    // --- Encode ---
     public static void encode(SyncButtonAnimationSetPacketS2C packet, FriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeMap(packet.animationSet, FriendlyByteBuf::writeInt, FriendlyByteBuf::writeFloat);
     }
 
-    // --- Decode ---
     public static SyncButtonAnimationSetPacketS2C decode(FriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         Map<Integer, Float> map = buffer.readMap(FriendlyByteBuf::readInt, FriendlyByteBuf::readFloat);
         return new SyncButtonAnimationSetPacketS2C(new HashMap<>(map), pos);
     }
 
-    // --- Handle ---
     public static void handle(SyncButtonAnimationSetPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
@@ -39,7 +36,6 @@ public class SyncButtonAnimationSetPacketS2C {
         context.setPacketHandled(true);
     }
 
-    // --- Constructor ---
     public SyncButtonAnimationSetPacketS2C(HashMap<Integer, Float> animationSet, BlockPos pos) {
         this.animationSet = animationSet;
         this.pos = pos;

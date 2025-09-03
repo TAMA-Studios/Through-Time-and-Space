@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items;
 
+import com.code.tama.tts.server.items.core.IAmAttunable;
 import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
 import com.code.tama.tts.server.misc.sonic.SonicMode;
 import lombok.Getter;
@@ -32,7 +33,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SonicItem extends Item {
+public class SonicItem extends IAmAttunable {
     @Getter
     @Setter
     public @NotNull SonicMode InteractionType = new SonicBlockMode();

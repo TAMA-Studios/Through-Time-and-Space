@@ -11,7 +11,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 @Getter
 public class DoorData implements INBTSerializable<CompoundTag> {
     float YRot;
-
     SpaceTimeCoordinate location = new SpaceTimeCoordinate();
 
     public DoorData() {}

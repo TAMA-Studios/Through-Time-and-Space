@@ -78,8 +78,8 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
         switch (state.getValue(FACING)) {
             case NORTH -> mouseX = 16 - mouseX;
             case SOUTH -> mouseX = mouseX; // <- Yes, I know this line seems redundant, but if I don't include it,
-                // mouseX is just always 16.0f, dunno why, don't care, if it ain't broke
-                // don't fix it and if it works it ain't stupid.
+            // mouseX is just always 16.0f, dunno why, don't care, if it ain't broke
+            // don't fix it and if it works it ain't stupid.
             case WEST -> mouseX = mouseZ;
             case EAST -> mouseX = 16 - mouseZ;
         }

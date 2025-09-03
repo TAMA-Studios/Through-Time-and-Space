@@ -8,6 +8,8 @@ import com.code.tama.tts.server.registries.TTSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -184,7 +186,9 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
             if (!this.TestForEngine(level, blockPos))
                 return super.use(state, level, blockPos, player, interactionHand, blockHitResult);
 
-            // TODO: Add sound
+            // TODO: Add custom sound
+            level.playSound(player, blockPos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1, 1);
+
             this.LoopTest(level, blockPos, null, true, 0, false);
             return InteractionResult.SUCCESS;
         }
@@ -192,6 +196,7 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(
             @NotNull BlockState p_60555_,
             @NotNull BlockGetter p_60556_,
