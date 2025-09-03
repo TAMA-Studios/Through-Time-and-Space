@@ -5,4 +5,8 @@ public class ControlLists {
     public static AbstractControlList GetHudolin() {
         return new HudolinControlList();
     }
+
+    public static AbstractControlList GetTokamak() {
+        return new TokamakControlList();
+    }
 }

@@ -1,9 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSBlocks.*;
-
+import com.code.tama.tts.client.renderers.tiles.FragmentLinksTile;
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
@@ -14,6 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSBlocks.*;
 
 public class TTSTileEntities {
 
@@ -30,6 +31,7 @@ public class TTSTileEntities {
     public static final RegistryObject<BlockEntityType<MonitorPanelTile>> MONITOR_PANEL_TILE;
     public static final RegistryObject<BlockEntityType<MonitorTile>> MONITOR_TILE;
     public static final RegistryObject<BlockEntityType<CRTMonitorTile>> CRT_MONITOR_TILE;
+    public static final RegistryObject<BlockEntityType<FragmentLinksTile>> FRAGMENT_LINKS_TILE;
     public static final RegistryObject<BlockEntityType<PortalTileEntity>> PORTAL_TILE_ENTITY;
     public static final RegistryObject<BlockEntityType<WorkbenchTile>> WORKBENCH_TILE;
     public static final RegistryObject<BlockEntityType<ChromiumBlockEntity>> CHROMIUM_BLOCK_ENTITY;
@@ -47,6 +49,8 @@ public class TTSTileEntities {
                         TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
 
         SKY_TILE = TILE_ENTITIES.register("sky_block", () -> create(SkyTile::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
+
+        FRAGMENT_LINKS_TILE = TILE_ENTITIES.register("fragment_links_tile", () -> create(FragmentLinksTile::new, FRAGMENT_LINKS.get()));
 
         PORTAL_TILE_ENTITY =
                 TILE_ENTITIES.register("portal_tile_entity", () -> create(PortalTileEntity::new, PORTAL_BLOCK.get()));

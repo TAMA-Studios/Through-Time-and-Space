@@ -4,6 +4,7 @@ package com.code.tama.tts.server.blocks;
 import com.code.tama.tts.server.blocks.subsystems.AbstractSubsystemBlock;
 import com.code.tama.tts.server.enums.SonicInteractionType;
 import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.tts.server.registries.TTSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -14,6 +15,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -21,8 +24,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class FragmentLinksBlock extends Block {
+@SuppressWarnings("deprecation")
+public class FragmentLinksBlock extends Block implements EntityBlock {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
     public static final BooleanProperty SOUTH = BooleanProperty.create("south");
@@ -166,13 +171,13 @@ public class FragmentLinksBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public InteractionResult use(
-            BlockState state,
-            Level level,
-            BlockPos blockPos,
+    public @NotNull InteractionResult use(
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
             Player player,
-            InteractionHand interactionHand,
-            BlockHitResult blockHitResult) {
+            @NotNull InteractionHand interactionHand,
+            @NotNull BlockHitResult blockHitResult) {
         if (player.getItemInHand(interactionHand).getItem() instanceof SonicItem sonicItem) {
             if (!sonicItem.InteractionType.equals(SonicInteractionType.BLOCKS))
                 return super.use(state, level, blockPos, player, interactionHand, blockHitResult);
@@ -193,5 +198,10 @@ public class FragmentLinksBlock extends Block {
             @NotNull BlockPos p_60557_,
             @NotNull CollisionContext p_60558_) {
         return Block.box(5, 5, 5, 11, 11, 11);
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
+        return TTSTileEntities.CRT_MONITOR_TILE.get().create(p_153215_, p_153216_);
     }
 }

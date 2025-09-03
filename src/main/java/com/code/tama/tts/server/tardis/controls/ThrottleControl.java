@@ -34,8 +34,8 @@ public class ThrottleControl extends AbstractControl {
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
         this.itardisLevel = itardisLevel;
         this.SetNeedsUpdate(true);
+        this.SetAnimationState(0.0f);
         if (itardisLevel.IsInFlight()) {
-            this.SetAnimationState(0.0f);
             itardisLevel.GetFlightScheme().GetLanding().Play(itardisLevel.GetLevel(), new BlockPos(0, 0, 0));
             itardisLevel.Land();
         }
@@ -47,8 +47,8 @@ public class ThrottleControl extends AbstractControl {
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         this.itardisLevel = itardisLevel;
         this.SetNeedsUpdate(true);
+        this.SetAnimationState(1.0f);
         if (!itardisLevel.IsInFlight()) {
-            this.SetAnimationState(1.0f);
             itardisLevel.GetFlightScheme().GetTakeoff().Play(itardisLevel.GetLevel(), new BlockPos(0, 0, 0));
             itardisLevel.Dematerialize();
         }

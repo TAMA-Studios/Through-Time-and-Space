@@ -1,27 +1,34 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
+import com.code.tama.tts.client.renderers.tiles.FragmentLinksTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.capabilities.providers.SerializableLevelCapabilityProvider;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Capabilities {
 
     public static final ResourceLocation TARDIS_LEVEL_KEY = new ResourceLocation(MODID, "tardis");
+    public static final ResourceLocation FRAGMENT_LINKS = new ResourceLocation(MODID, "fragment_links");
 
     public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
         return object == null ? LazyOptional.empty() : object.getCapability(cap);
@@ -51,6 +58,27 @@ public class Capabilities {
                     Capabilities.TARDIS_LEVEL_KEY,
                     new SerializableLevelCapabilityProvider<>(
                             CapabilityConstants.TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
+        }
+
+        @SubscribeEvent
+        public static void attachEnergyCapability(AttachCapabilitiesEvent<BlockEntity> event) {
+            if (event.getObject() instanceof FragmentLinksTile) {
+                EnergyStorage energyStorage = new EnergyStorage(10000, 1000);
+                LazyOptional<EnergyStorage> energyCap = LazyOptional.of(() -> energyStorage);
+
+                event.addCapability(Capabilities.FRAGMENT_LINKS, new ICapabilityProvider() {
+                    @Override
+                    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
+                        if (cap == ForgeCapabilities.ENERGY) {
+                            return energyCap.cast();
+                        }
+                        return LazyOptional.empty();
+                    }
+                });
+
+                // Optional: make sure it cleans up when the tile is removed
+                event.addListener(energyCap::invalidate);
+            }
         }
     }
 }

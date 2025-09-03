@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.items;
 
 import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
+import com.code.tama.tts.server.misc.sonic.SonicMode;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 public class SonicItem extends Item {
     @Getter
     @Setter
-    public @NotNull SonicBlockMode InteractionType = new SonicBlockMode();
+    public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
     public SonicItem(Properties properties) {
         super(properties);
