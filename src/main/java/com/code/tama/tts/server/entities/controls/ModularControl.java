@@ -141,6 +141,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void readSpawnData(FriendlyByteBuf buf) {
+        this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.SetControl(Controls.values()[buf.readInt()]);
         this.ID = buf.readInt();
@@ -155,21 +156,30 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buf) {
-        if (this.size != null) {
+            buf.writeDouble(this.Position.x);
+            buf.writeDouble(this.Position.y);
+            buf.writeDouble(this.Position.z);
+
             buf.writeDouble(this.size.getXsize());
             buf.writeDouble(this.size.getYsize());
             buf.writeDouble(this.size.getZsize());
-        }
+
         if (this.GetControl() != null) buf.writeInt(this.GetControl().ordinal());
         buf.writeInt(this.ID);
     }
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
+        Tag.putDouble("pos_x", this.Position.x);
+        Tag.putDouble("pos_y", this.Position.y);
+        Tag.putDouble("pos_z", this.Position.z);
+
         Tag.putString("control", this.GetControl().name());
+
         Tag.putDouble("maxX", this.size.maxX);
         Tag.putDouble("maxY", this.size.maxY);
         Tag.putDouble("maxZ", this.size.maxZ);
+
         if (this.consoleTile != null) {
             Tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
             Tag.putInt("console_y", this.consoleTile.getBlockPos().getY());
@@ -189,6 +199,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
         this.SetControl(Controls.valueOf(Tag.getString("control")));
+
+        this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
+
         this.size = new AABB(0, 0, 0, Tag.getDouble("maxX"), Tag.getDouble("maxY"), Tag.getDouble("maxZ"));
         if(this.level().getServer() != null) {
             if (this.level()
