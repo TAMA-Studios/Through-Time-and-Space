@@ -11,10 +11,6 @@ public class ARSRegistry {
 
     public static ARSStructure CLEAN_INTERIOR =
             AddStructure(new ARSStructure(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean")));
-    //    public static ARSStructure CITADEL_INTERIOR = AddStructure(new
-    // ARSStructure(Structures.CitadelInterior.GetRL(), Component.translatable("tts.ars.citadel")));
-    //    public static ARSStructure CLEAN_WORKSHOP = AddStructure(new ARSStructure(Structures.CitadelInterior.GetRL(),
-    // Component.translatable("tts.ars.clean_workshop")));
 
     public static ARSStructure GetStructure(int ID) {
         return STRUCTURES.get(ID);
@@ -34,7 +30,7 @@ public class ARSRegistry {
 
     public static ARSStructure GetByName(String name) {
         for (ARSStructure structure : STRUCTURES) {
-            if (structure.getName().equals(Component.translatable(name))) return structure;
+            if (structure.Name().equals(Component.translatable(name))) return structure;
         }
         return STRUCTURES.get(0);
     }

@@ -81,7 +81,6 @@ minecraft {
 
 			property 'forge.enabledGameTestNamespaces', mod_id
 			workingDirectory project.file('run')
-			jvmArg "-XX:+AllowEnhancedClassRedefinition"
 			property 'forge.logging.markers', 'REGISTRIES'
 			property 'forge.logging.console.level', 'debug'
 			property 'forge.enabledGameTestNamespaces', 'tts'

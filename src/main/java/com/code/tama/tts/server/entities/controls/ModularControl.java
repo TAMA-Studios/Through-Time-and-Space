@@ -120,13 +120,11 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         MutableComponent component = Component.translatable(
                 "tts.tardis.control." + this.GetControl().name().toLowerCase());
 
-        if (Minecraft.getInstance().options.advancedItemTooltips) component.append(String.format("%nID: %s", this.ID));
+        if (Minecraft.getInstance().options.advancedItemTooltips) component.append(String.format("ID: %s", this.ID));
         return component;
     }
 
     public void UpdateConsoleAnimationMap() {
-        if (this.consoleTile == null) return;
-        if (!this.GetControl().GetControl().NeedsUpdate()) return;
         if (this.consoleTile.GetControlAnimationMap().containsKey(this.ID)
                 && this.consoleTile.GetControlAnimationMap().get(this.ID)
                         == this.GetControl().GetControl().GetAnimationState()) return;
@@ -150,7 +148,8 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void tick() {
-        this.UpdateConsoleAnimationMap();
+        if(this.consoleTile != null && this.GetControl().GetControl().NeedsUpdate())
+            this.UpdateConsoleAnimationMap();
         super.tick();
     }
 
@@ -191,24 +190,28 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
         this.SetControl(Controls.valueOf(Tag.getString("control")));
         this.size = new AABB(0, 0, 0, Tag.getDouble("maxX"), Tag.getDouble("maxY"), Tag.getDouble("maxZ"));
-        if (this.level()
-                        .getServer()
-                        .getLevel(this.level().dimension())
-                        .getBlockEntity(
-                                new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")))
-                != null)
-            this.consoleTile = (AbstractConsoleTile) this.level()
+        if(this.level().getServer() != null) {
+            if (this.level()
                     .getServer()
                     .getLevel(this.level().dimension())
                     .getBlockEntity(
-                            new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")));
+                            new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")))
+                    != null)
+                this.consoleTile = (AbstractConsoleTile) this.level()
+                        .getServer()
+                        .getLevel(this.level().dimension())
+                        .getBlockEntity(
+                                new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")));
+        }
         this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
 
         this.ID = Tag.getInt("id");
+
+        this.GetControl().GetControl().SetNeedsUpdate(true);
     }
 
     void CycleControlBackward() {
-        this.SetControl(this.GetControl().Cycle());
+        this.SetControl(this.GetControl().CycleBackwards());
     }
 
     void CycleControlForward() {

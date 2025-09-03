@@ -32,7 +32,7 @@ public class SyncCapLightLevelPacketS2C {
         context.setPacketHandled(true);
     }
 
-    private final float level; // Block position
+    private final float level;
 
     public SyncCapLightLevelPacketS2C(float LightLevel) {
         this.level = LightLevel;
