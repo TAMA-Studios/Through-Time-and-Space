@@ -23,7 +23,7 @@ public enum FlightTerminationProtocolEnum {
     private final float LandShakeAmount;
     // Modifier used in calculations for how fast the TARDIS flies
     private final float Speed;
-    // How much the floaterior shakes during demat
+    // How much the exterior shakes during demat
     private final float TakeoffShakeAmount;
     private final String name;
 
