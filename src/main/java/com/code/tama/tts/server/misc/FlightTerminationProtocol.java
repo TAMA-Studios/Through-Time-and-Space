@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
 import com.code.tama.tts.server.tardis.terminationprotocol.TerminationProtocol;

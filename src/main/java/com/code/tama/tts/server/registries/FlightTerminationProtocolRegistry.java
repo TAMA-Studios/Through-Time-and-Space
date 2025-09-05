@@ -3,14 +3,20 @@ package com.code.tama.tts.server.registries;
 
 import com.code.tama.tts.server.misc.FlightTerminationProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocol;
-
 import java.util.ArrayList;
 
 public class FlightTerminationProtocolRegistry {
     public static ArrayList<FlightTerminationProtocol> FLIGHT_TERMINATION_PROTOCOLS = new ArrayList<>();
 
-    public static FlightTerminationProtocol POLITE_TERMINUS =
-            AddProtocol(FlightTerminationProtocol.builder().name("polite_terminus").LandShakeAmount(0.1f).TakeoffShakeAmount(0.1f).Accuracy(0.8f).Speed(0.5f).IsSelectable(true).terminationProtocol(new PoliteTerminusProtocol()).build());
+    public static FlightTerminationProtocol POLITE_TERMINUS = AddProtocol(FlightTerminationProtocol.builder()
+            .name("polite_terminus")
+            .LandShakeAmount(0.1f)
+            .TakeoffShakeAmount(0.1f)
+            .Accuracy(0.8f)
+            .Speed(0.5f)
+            .IsSelectable(true)
+            .terminationProtocol(new PoliteTerminusProtocol())
+            .build());
 
     public static FlightTerminationProtocol GetProtocol(int ID) {
         return FLIGHT_TERMINATION_PROTOCOLS.get(ID);

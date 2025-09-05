@@ -17,15 +17,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class SonicOverlayRenderer {
     public static int light = 0xf00f0;
     public static int white = 0xFFFFFF;
 
-    public static void Render(PoseStack stack) {
+    public static void Render(PoseStack stack, MultiBufferSource.BufferSource bufferSource) {
         Player player = Minecraft.getInstance().player;
         if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
             RenderSystem.enableBlend();
@@ -98,7 +96,7 @@ public class SonicOverlayRenderer {
                             0xf000f0,
                             0,
                             stack,
-                            Minecraft.getInstance().renderBuffers().bufferSource(),
+                            bufferSource,
                             Minecraft.getInstance().level,
                             0);
 
@@ -108,17 +106,32 @@ public class SonicOverlayRenderer {
 
             stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
 
-            HitResult result = RayTraceUtils.rayTraceFromEntity(Minecraft.getInstance().player, 10, false);
-            if(result.getType().equals(HitResult.Type.BLOCK)) {
-                assert Minecraft.getInstance().level != null;
-                BlockPos hit = new BlockPos((int) result.getLocation().x, (int) result.getLocation().y, (int) result.getLocation().z);
-                BlockState state = Minecraft.getInstance().level.getBlockState(hit);
-                if(state != null) {
+            BlockPos hit = RayTraceUtils.getLookingAtBlock(10);
+            assert Minecraft.getInstance().level != null;
+            if (hit != null)
+                if (Minecraft.getInstance().level.getBlockState(hit) != null) {
                     BlockEntity ent = Minecraft.getInstance().level.getBlockEntity(hit);
-                    if(ent != null && ent.getCapability(ForgeCapabilities.ENERGY).isPresent())
-                        Minecraft.getInstance().font.drawInBatch(Component.literal(String.format("FE: %s", ent.getCapability(ForgeCapabilities.ENERGY).orElseGet(null).getEnergyStored())).withStyle(ChatFormatting.WHITE), -40, 5, white, false, stack.last().pose(), MultiBufferSource.immediate(builder), Font.DisplayMode.NORMAL, 0, light);
+                    if (ent != null
+                            && ent.getCapability(ForgeCapabilities.ENERGY).isPresent())
+                        Minecraft.getInstance()
+                                .font
+                                .drawInBatch(
+                                        Component.literal(String.format(
+                                                        "FE: %s",
+                                                        ent.getCapability(ForgeCapabilities.ENERGY)
+                                                                .orElseGet(null)
+                                                                .getEnergyStored()))
+                                                .withStyle(ChatFormatting.WHITE),
+                                        0,
+                                        -15,
+                                        white,
+                                        false,
+                                        stack.last().pose(),
+                                        bufferSource,
+                                        Font.DisplayMode.NORMAL,
+                                        0,
+                                        light);
                 }
-            }
 
             stack.popPose();
 

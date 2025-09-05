@@ -207,6 +207,6 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
-        return TTSTileEntities.CRT_MONITOR_TILE.get().create(p_153215_, p_153216_);
+        return TTSTileEntities.FRAGMENT_LINKS_TILE.get().create(p_153215_, p_153216_);
     }
 }

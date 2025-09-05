@@ -1,9 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.control_lists;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
+import lombok.Getter;
 
 public abstract class AbstractControlList {
     @Getter

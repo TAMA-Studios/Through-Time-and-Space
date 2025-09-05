@@ -1,8 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -38,5 +41,32 @@ public class RayTraceUtils {
                         ClipContext.Block.OUTLINE,
                         hitFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE,
                         entity));
+    }
+
+    public static BlockPos getLookingAtBlock(double reachDistance) {
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc.player == null || mc.level == null) {
+            return null;
+        }
+
+        Vec3 eyePosition = mc.player.getEyePosition(1.0F);
+        Vec3 lookVector = mc.player.getViewVector(1.0F);
+        Vec3 reachVector = eyePosition.add(lookVector.scale(reachDistance));
+
+        // Proper ray trace using ClipContext
+        BlockHitResult rayTrace = mc.level.clip(new ClipContext(
+                eyePosition, // start
+                reachVector, // end
+                ClipContext.Block.OUTLINE, // what blocks to hit
+                ClipContext.Fluid.NONE, // ignore fluids
+                mc.player // the entity doing the tracing
+                ));
+
+        if (rayTrace.getType() == HitResult.Type.BLOCK) {
+            return rayTrace.getBlockPos();
+        }
+
+        return null;
     }
 }

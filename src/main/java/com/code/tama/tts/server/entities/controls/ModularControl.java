@@ -149,20 +149,19 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void tick() {
-        if(this.consoleTile != null && this.GetControl().GetControl().NeedsUpdate())
-            this.UpdateConsoleAnimationMap();
+        if (this.consoleTile != null && this.GetControl().GetControl().NeedsUpdate()) this.UpdateConsoleAnimationMap();
         super.tick();
     }
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buf) {
-            buf.writeDouble(this.Position.x);
-            buf.writeDouble(this.Position.y);
-            buf.writeDouble(this.Position.z);
+        buf.writeDouble(this.Position.x);
+        buf.writeDouble(this.Position.y);
+        buf.writeDouble(this.Position.z);
 
-            buf.writeDouble(this.size.getXsize());
-            buf.writeDouble(this.size.getYsize());
-            buf.writeDouble(this.size.getZsize());
+        buf.writeDouble(this.size.getXsize());
+        buf.writeDouble(this.size.getYsize());
+        buf.writeDouble(this.size.getZsize());
 
         if (this.GetControl() != null) buf.writeInt(this.GetControl().ordinal());
         buf.writeInt(this.ID);
@@ -203,18 +202,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
 
         this.size = new AABB(0, 0, 0, Tag.getDouble("maxX"), Tag.getDouble("maxY"), Tag.getDouble("maxZ"));
-        if(this.level().getServer() != null) {
+        if (this.level().getServer() != null) {
             if (this.level()
-                    .getServer()
-                    .getLevel(this.level().dimension())
-                    .getBlockEntity(
-                            new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")))
+                            .getServer()
+                            .getLevel(this.level().dimension())
+                            .getBlockEntity(new BlockPos(
+                                    Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")))
                     != null)
                 this.consoleTile = (AbstractConsoleTile) this.level()
                         .getServer()
                         .getLevel(this.level().dimension())
-                        .getBlockEntity(
-                                new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")));
+                        .getBlockEntity(new BlockPos(
+                                Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z")));
         }
         this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
 

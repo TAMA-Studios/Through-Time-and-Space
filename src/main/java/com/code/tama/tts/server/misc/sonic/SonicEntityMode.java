@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.misc.sonic;
 
 import com.code.tama.tts.server.misc.ClientUtil;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
@@ -11,7 +10,7 @@ import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.UseOnContext;
 
 public class SonicEntityMode extends SonicMode {
 
@@ -21,7 +20,8 @@ public class SonicEntityMode extends SonicMode {
     }
 
     @Override
-    public void onUse(Player player, BlockState usedOn, BlockPos usedPos) {
+    public void onUse(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player.level().isClientSide()) return;
 
         Entity lookingAtEntity = ClientUtil.GetEntityClientIsLookingAt();

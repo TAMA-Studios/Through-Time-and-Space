@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items.core;
 
 import com.code.tama.tts.TTSMod;
@@ -15,15 +16,19 @@ public abstract class IAmAttunable extends Item {
     }
 
     public void Attune(ITARDISLevel level, ItemStack stack) {
-        this.getShareTag(stack).putString("tardis", level.GetLevel().dimension().location().toString());
+        this.getShareTag(stack)
+                .putString("tardis", level.GetLevel().dimension().location().toString());
     }
 
     public boolean IsAttunedTo(ITARDISLevel level, ItemStack stack) {
-        return this.getShareTag(stack).getString("tardis").equals(level.GetLevel().dimension().location().toString());
+        return this.getShareTag(stack)
+                .getString("tardis")
+                .equals(level.GetLevel().dimension().location().toString());
     }
 
     public ResourceKey<Level> GetAttuned(ItemStack stack) {
-        ResourceLocation levelLoc = ResourceLocation.parse(TTSMod.MODID + ":" + this.getShareTag(stack).getString("tardis"));
+        ResourceLocation levelLoc = ResourceLocation.parse(
+                TTSMod.MODID + ":" + this.getShareTag(stack).getString("tardis"));
         return ResourceKey.create(Registries.DIMENSION, levelLoc);
     }
 }

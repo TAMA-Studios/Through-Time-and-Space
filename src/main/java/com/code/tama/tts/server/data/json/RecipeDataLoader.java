@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.misc.ARSStructure;
+import com.code.tama.tts.server.data.json.records.DataRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,13 +19,13 @@ import net.minecraft.util.GsonHelper;
 import org.slf4j.Logger;
 
 @Getter
-public class ARSDataLoader implements ResourceManagerReloadListener {
+public class RecipeDataLoader implements ResourceManagerReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final List<ARSStructure> dataRoom = new ArrayList<>(); // List to store Data ars objects
+    private final List<DataRecipe> dataRecipes = new ArrayList<>(); // List to store Data recipe objects
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        dataRoom.clear(); // Reset the list of Data ars objects
+        dataRecipes.clear(); // Reset the list of Data recipe objects
 
         // Log namespaces
         LOGGER.info("Loaded namespaces: {}", resourceManager.getNamespaces());
@@ -38,7 +37,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
             // List all resources in this namespace inside 'data' folder, looking for .json
             // files
             Map<ResourceLocation, Resource> resources = resourceManager.listResources(
-                    "tts/ars", fileName -> fileName.toString().endsWith(".json"));
+                    "tts/recipes", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
             LOGGER.info("Searching for nbt under {}:structures/", namespace);
@@ -62,15 +61,39 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
                         if (isValidJson(jsonObject)) {
                             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-                            String name = valuesObject.get("name").getAsString();
-                            String location = valuesObject.get("location").getAsString();
-                            ResourceLocation structureLocation = new ResourceLocation(location);
+                            ResourceLocation itemOne =
+                                    new ResourceLocation(valuesObject.get("1").getAsString());
+                            ResourceLocation itemTwo =
+                                    new ResourceLocation(valuesObject.get("2").getAsString());
+                            ResourceLocation itemThree =
+                                    new ResourceLocation(valuesObject.get("3").getAsString());
+                            ResourceLocation itemFour =
+                                    new ResourceLocation(valuesObject.get("4").getAsString());
+                            ResourceLocation itemFive =
+                                    new ResourceLocation(valuesObject.get("5").getAsString());
+                            ResourceLocation itemSix =
+                                    new ResourceLocation(valuesObject.get("6").getAsString());
+                            ResourceLocation nozzle = new ResourceLocation(
+                                    valuesObject.get("nozzle").getAsString());
+                            ResourceLocation result = new ResourceLocation(
+                                    valuesObject.get("result").getAsString());
+                            int time = valuesObject.get("time").getAsInt();
 
-                            // Create Data ars rooms and add it to the list
-                            ARSStructure Structure = new ARSStructure(structureLocation, Component.translatable(name));
-                            dataRoom.add(Structure);
+                            // Create Data recipe rooms and add it to the list
+                            DataRecipe recipe = DataRecipe.builder()
+                                    .item1(itemOne)
+                                    .item2(itemTwo)
+                                    .item3(itemThree)
+                                    .item4(itemFour)
+                                    .item5(itemFive)
+                                    .item6(itemSix)
+                                    .nozzle(nozzle)
+                                    .result(result)
+                                    .TimeInTicks(time)
+                                    .build();
+                            dataRecipes.add(recipe);
 
-                            LOGGER.info("Loaded ARS Structure from {}: {}", location, Structure);
+                            LOGGER.info("Loaded recipe Structure {}", recipe);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", rl);
                         }
@@ -81,8 +104,8 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
             }
         }
 
-        // Store the list of Data ars room objects in the Data ars Array
-        DataARSList.setList(dataRoom);
+        // Store the list of Data recipe room objects in the Data recipe Array
+        DataRecipeList.setList(dataRecipes);
     }
 
     private boolean isValidJson(JsonObject jsonObject) {

@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSBlocks.*;
+
 import com.code.tama.tts.client.renderers.tiles.FragmentLinksTile;
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
@@ -12,9 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSBlocks.*;
 
 public class TTSTileEntities {
 
@@ -50,7 +50,8 @@ public class TTSTileEntities {
 
         SKY_TILE = TILE_ENTITIES.register("sky_block", () -> create(SkyTile::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
 
-        FRAGMENT_LINKS_TILE = TILE_ENTITIES.register("fragment_links_tile", () -> create(FragmentLinksTile::new, FRAGMENT_LINKS.get()));
+        FRAGMENT_LINKS_TILE = TILE_ENTITIES.register(
+                "fragment_links_tile", () -> create(FragmentLinksTile::new, FRAGMENT_LINKS.get()));
 
         PORTAL_TILE_ENTITY =
                 TILE_ENTITIES.register("portal_tile_entity", () -> create(PortalTileEntity::new, PORTAL_BLOCK.get()));

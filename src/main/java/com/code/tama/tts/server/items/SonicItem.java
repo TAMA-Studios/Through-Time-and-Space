@@ -2,11 +2,15 @@
 package com.code.tama.tts.server.items;
 
 import com.code.tama.tts.server.items.core.IAmAttunable;
+import com.code.tama.tts.server.misc.GrammarNazi;
 import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
+import com.code.tama.tts.server.misc.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.misc.sonic.SonicMode;
+import com.code.tama.tts.server.registries.SonicModeRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +24,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,16 +46,65 @@ public class SonicItem extends IAmAttunable {
         super(properties);
     }
 
+    public boolean canAttackBlock(BlockState p_40962_, Level p_40963_, BlockPos p_40964_, Player p_40965_) {
+        if (!p_40963_.isClientSide) {
+            if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode)
+                sonicBuilderMode.handleInteraction(
+                        p_40965_,
+                        p_40962_,
+                        p_40963_,
+                        p_40964_,
+                        false,
+                        p_40965_.getItemInHand(InteractionHand.MAIN_HAND),
+                        this.getDescriptionId());
+        }
+
+        return false;
+    }
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             Level level, Player player, InteractionHand interactionHand) {
-
+        if (interactionHand == InteractionHand.OFF_HAND) return super.use(level, player, interactionHand);
+        if (player.isCrouching()) {
+            for (int i = 0; i < SonicModeRegistry.SONIC_MODE.getEntries().size(); i++) {
+                SonicMode mode = SonicModeRegistry.SONIC_MODE.getEntries().stream()
+                        .toList()
+                        .get(i)
+                        .get();
+                if (mode.getClass().equals(this.InteractionType.getClass())) {
+                    RegistryObject<SonicMode> nextMode = SonicModeRegistry.SONIC_MODE.getEntries().stream()
+                            .toList()
+                            .get((i + 1
+                                                    < SonicModeRegistry.SONIC_MODE
+                                                            .getEntries()
+                                                            .size()
+                                            ? i + 1
+                                            : 0)
+                                    % SonicModeRegistry.SONIC_MODE.getEntries().size());
+                    this.InteractionType = nextMode.get();
+                    assert nextMode.getId() != null;
+                    player.sendSystemMessage(Component.literal(GrammarNazi.CapitalizeFirstLetters(
+                            GrammarNazi.ScoreToSpace(nextMode.getId().getPath()))));
+                    break;
+                }
+            }
+        } else
+            this.useOn(new UseOnContext(
+                    player,
+                    interactionHand,
+                    new BlockHitResult(
+                            player.getEyePosition(),
+                            player.getDirection(),
+                            BlockPos.containing(player.getEyePosition()
+                                    .add(player.getViewVector(1.0F).scale(5.0D))),
+                            false)));
         return super.use(level, player, interactionHand);
     }
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext useOnContext) {
-
+        this.InteractionType.onUse(useOnContext);
         return InteractionResult.SUCCESS;
     }
 

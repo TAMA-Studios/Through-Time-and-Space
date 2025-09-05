@@ -2,10 +2,11 @@
 package com.code.tama.tts.server.data.json.records;
 
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public record DataExterior(String name, ResourceLocation ModelName) {
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "DataExterior{" + "name='" + name + '\'' + ", modelname=" + ModelName + '}';
     }
 }

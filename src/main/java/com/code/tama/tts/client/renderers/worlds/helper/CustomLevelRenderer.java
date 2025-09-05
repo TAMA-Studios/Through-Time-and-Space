@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.helper;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
@@ -10,6 +12,7 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -21,10 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector4i;
-
-import java.util.ArrayList;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class CustomLevelRenderer {
     public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
@@ -94,7 +93,8 @@ public class CustomLevelRenderer {
 
     @SubscribeEvent
     public static void onRenderGUI(RenderGuiEvent event) {
-        SonicOverlayRenderer.Render(event.getGuiGraphics().pose());
+        SonicOverlayRenderer.Render(
+                event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
     }
 
     public static void renderImageSky(PoseStack poseStack, ResourceLocation resourceLocation, Vector4i Colors) {

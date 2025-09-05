@@ -37,7 +37,7 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
             // List all resources in this namespace inside 'data' folder, looking for .json
             // files
             Map<ResourceLocation, Resource> resources = resourceManager.listResources(
-                    "exteriors", fileName -> fileName.toString().endsWith(".json"));
+                    "tts/exteriors", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
             LOGGER.info("Searching for resources under: data/{}/exterior/", namespace);
