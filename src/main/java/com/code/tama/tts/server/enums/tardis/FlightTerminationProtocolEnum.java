@@ -19,7 +19,7 @@ public enum FlightTerminationProtocolEnum {
     private final float Accuracy;
     // Whether the Pilot is able to select the termination protocol
     private final boolean IsSelectable;
-    // How much the floaterior shakes during remat
+    // How much the exterior shakes during remat
     private final float LandShakeAmount;
     // Modifier used in calculations for how fast the TARDIS flies
     private final float Speed;
