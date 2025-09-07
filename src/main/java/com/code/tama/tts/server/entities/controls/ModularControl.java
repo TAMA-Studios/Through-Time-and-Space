@@ -34,15 +34,17 @@ import org.jetbrains.annotations.NotNull;
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<String> CONTROL =
             SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);
+
+    private static final EntityDataAccessor<Integer> IDENTIFIER =
+            SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.INT);
+
     public Vec3 Position;
-    public int Identifier;
     public AbstractConsoleTile consoleTile;
     public AABB size;
 
     /** DO NOT CALL THIS! Use {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}**/
     public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
         super(modularControlEntityType, level);
-        this.Identifier = 0;
     }
 
     public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
@@ -51,7 +53,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.size = new AABB(0, 0, 0, record.maxX(), record.maxY(), record.maxZ());
         this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
         this.consoleTile = consoleTile;
-        this.Identifier = record.ID();
+        this.SetIdentifier(record.ID());
     }
 
     public Controls GetControl() {
@@ -116,22 +118,30 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.entityData.set(CONTROL, control.name());
     }
 
+    public void SetIdentifier(int id) {
+        this.entityData.set(IDENTIFIER, id);
+    }
+
+    public int Identifier() {
+        return this.entityData.get(IDENTIFIER);
+    }
+
     @Override
     public Component TranslationKey() {
         MutableComponent component = Component.translatable(
                 "tts.tardis.control." + this.GetControl().name().toLowerCase());
 
         if (Minecraft.getInstance().options.advancedItemTooltips)
-            component.append(String.format("ID: %s", this.Identifier));
+            component.append(String.format("ID: %s", this.Identifier()));
         return component;
     }
 
     public void UpdateConsoleAnimationMap() {
-        if (this.consoleTile.GetControlAnimationMap().containsKey(this.Identifier))
-            this.consoleTile.GetControlAnimationMap().remove(this.Identifier);
+        if (this.consoleTile.GetControlAnimationMap().containsKey(this.Identifier()))
+            this.consoleTile.GetControlAnimationMap().remove(this.Identifier());
         this.consoleTile
                 .GetControlAnimationMap()
-                .put(this.Identifier, this.GetControl().GetControl().GetAnimationState());
+                .put(this.Identifier(), this.GetControl().GetControl().GetAnimationState());
 
         if (!this.level().isClientSide)
             Networking.sendPacketToDimension(
@@ -151,7 +161,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.SetControl(Controls.values()[buf.readInt()]);
-        this.Identifier = buf.readInt();
+        this.SetIdentifier(buf.readInt());
     }
 
     @Override
@@ -171,7 +181,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         buf.writeDouble(this.size.getZsize());
 
         if (this.GetControl() != null) buf.writeInt(this.GetControl().ordinal());
-        buf.writeInt(this.Identifier);
+        buf.writeInt(this.Identifier());
     }
 
     @Override
@@ -194,12 +204,13 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         Tag.putDouble("vec_x", this.Position.x);
         Tag.putDouble("vec_y", this.Position.y);
         Tag.putDouble("vec_z", this.Position.z);
-        Tag.putInt("identifier", this.Identifier);
+        Tag.putInt("identifier", this.Identifier());
     }
 
     @Override
     protected void defineSynchedData() {
         this.entityData.define(CONTROL, Controls.EMPTY.name());
+        this.entityData.define(IDENTIFIER, -1);
     }
 
     @Override
@@ -224,7 +235,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         }
         this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
 
-        this.Identifier = Tag.getInt("identifier");
+        this.SetIdentifier(Tag.getInt("identifier"));
 
         this.GetControl().GetControl().SetNeedsUpdate(true);
     }

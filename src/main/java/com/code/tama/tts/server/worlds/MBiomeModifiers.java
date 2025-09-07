@@ -33,6 +33,13 @@ public class MBiomeModifiers {
         // GenerationStep.Decoration.UNDERGROUND_ORES));
 
         context.register(
+                ADD_ZEITON_ORE,
+                new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                        biomes.getOrThrow(BiomeTags.IS_HILL),
+                        HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.ZEITON_ORE_PLACED_KEY)),
+                        GenerationStep.Decoration.UNDERGROUND_ORES));
+
+        context.register(
                 ADD_NETHER_ZEITON_ORE,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_NETHER),

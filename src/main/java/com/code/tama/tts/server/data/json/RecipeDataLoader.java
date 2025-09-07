@@ -88,6 +88,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
                                     .result(result)
                                     .TimeInTicks(time)
                                     .build();
+
                             if (!dataRecipes.contains(recipe)) dataRecipes.add(recipe);
                             //                            LOGGER.info("Loaded recipe Structure {}", recipe);
                         } else {
