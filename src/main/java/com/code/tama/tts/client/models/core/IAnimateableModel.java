@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.core.interfaces;
+package com.code.tama.tts.client.models.core;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 

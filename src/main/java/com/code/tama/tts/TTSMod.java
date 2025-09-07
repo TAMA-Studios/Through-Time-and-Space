@@ -14,11 +14,9 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.compat.ModCompat;
-import com.code.tama.tts.core.annotations.DimensionalTab;
-import com.code.tama.tts.core.annotations.MainTab;
-import com.code.tama.tts.core.workbench.WorkBenchRecipeHandler;
-import com.code.tama.tts.core.workbench.WorkBenchRecipeReg;
 import com.code.tama.tts.server.dimensions.Biomes;
+import com.code.tama.tts.server.items.tabs.DimensionalTab;
+import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.loots.ModLootModifiers;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.registries.*;
@@ -51,7 +49,6 @@ import terrablender.api.SurfaceRuleManager;
 @SuppressWarnings("removal")
 public class TTSMod {
 
-    public static WorkBenchRecipeHandler WorkBenchRecipeHandler = new WorkBenchRecipeHandler();
     public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
     public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
     // Define mod id in a common place for everything to reference
@@ -137,8 +134,6 @@ public class TTSMod {
             if (ModList.get().isLoaded("terrablender"))
                 SurfaceRuleManager.addSurfaceRules(
                         SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, MSurfaceRules.makeRules());
-
-            WorkBenchRecipeReg.Register();
         });
     }
 

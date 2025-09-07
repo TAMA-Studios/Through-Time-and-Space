@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.models.core;
 
-import com.code.tama.tts.core.interfaces.IExteriorModel;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;

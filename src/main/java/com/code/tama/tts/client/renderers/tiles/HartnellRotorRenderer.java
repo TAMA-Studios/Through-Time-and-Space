@@ -3,7 +3,7 @@ package com.code.tama.tts.client.renderers.tiles;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.core.interfaces.IAnimateableModel;
+import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

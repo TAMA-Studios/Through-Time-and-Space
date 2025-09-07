@@ -4,7 +4,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.5
 // Paste this class into your mod and generate all required imports
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.core.interfaces.IAnimateableModel;
+import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.tts.core.abstractClasses.TickingTile;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;

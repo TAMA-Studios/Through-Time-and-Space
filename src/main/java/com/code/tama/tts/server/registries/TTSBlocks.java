@@ -5,8 +5,6 @@ import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
 import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 
-import com.code.tama.tts.core.annotations.DimensionalTab;
-import com.code.tama.tts.core.annotations.Roundel;
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.monitor.CRTMonitorBlock;
@@ -14,6 +12,8 @@ import com.code.tama.tts.server.blocks.monitor.MonitorBlock;
 import com.code.tama.tts.server.blocks.monitor.MonitorPanel;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
+import com.code.tama.tts.server.items.tabs.DimensionalTab;
+import com.code.tama.tts.server.items.tabs.Roundel;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;

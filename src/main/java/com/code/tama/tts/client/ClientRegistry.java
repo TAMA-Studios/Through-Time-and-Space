@@ -5,7 +5,9 @@ import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
 import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
 
-import com.code.tama.tts.client.models.*;
+import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
+import com.code.tama.tts.client.models.HartnellRotorModel;
+import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
@@ -62,9 +64,6 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(ModernBoxModel.LAYER_LOCATION, ModernBoxModel::createBodyLayer);
-        event.registerLayerDefinition(WhittakerExteriorModel.LAYER_LOCATION, WhittakerExteriorModel::createBodyLayer);
-        event.registerLayerDefinition(TTCapsuleModel.LAYER_LOCATION, TTCapsuleModel::createBodyLayer);
         event.registerLayerDefinition(HartnellRotorModel.LAYER_LOCATION, HartnellRotorModel::createBodyLayer);
         event.registerLayerDefinition(
                 ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
