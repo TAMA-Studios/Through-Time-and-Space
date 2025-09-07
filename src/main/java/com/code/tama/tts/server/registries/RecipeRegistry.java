@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import com.code.tama.tts.server.data.json.records.DataRecipe;
+import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import java.util.ArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -33,8 +33,6 @@ public class RecipeRegistry {
     public static Item GetRecipeResult(
             Item item1, Item item2, Item item3, Item item4, Item item5, Item item6, Item nozzle) {
         for (DataRecipe recipe : RECIPES) {
-            System.out.printf("%s", BuiltInRegistries.ITEM.getKey(nozzle));
-
             if (recipe.item1.equals(BuiltInRegistries.ITEM.getKey(item1))
                     && recipe.item2.equals(BuiltInRegistries.ITEM.getKey(item2))
                     && recipe.item3.equals(BuiltInRegistries.ITEM.getKey(item3))

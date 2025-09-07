@@ -1689,14 +1689,18 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offset(-4.52F, -17.8958F, 12.0975F));
 
         PartDefinition handbrake = root.addOrReplaceChild(
-                "handbrake", CubeListBuilder.create(), PartPose.offset(4.7098F, -18.2762F, -15.4415F));
+                "handbrake",
+                CubeListBuilder.create(),
+                PartPose.offsetAndRotation(4.671F, -18.3584F, -15.4904F, 0.7418F, 0.0F, 0.0F));
 
         PartDefinition lever_section_2_r1 = handbrake.addOrReplaceChild(
                 "lever_section_2_r1",
                 CubeListBuilder.create()
                         .texOffs(138, 72)
-                        .addBox(-0.5F, -1.9F, 0.1F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(0.0F, 2.0F, -4.0F, -0.829F, -0.0107F, 0.0091F));
+                        .addBox(-0.5104F, 2.5259F, -1.4577F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+                        .texOffs(48, 134)
+                        .addBox(-0.5104F, -0.4555F, -0.4753F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(0.011F, 0.2711F, 0.0615F, -1.5708F, -0.0107F, 0.0091F));
 
         PartDefinition lever_section_1_r1 = handbrake.addOrReplaceChild(
                 "lever_section_1_r1",
@@ -2130,11 +2134,14 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
 
     @Override
     public void SetupAnimations(ConsoleTile tile, float ageInTicks) {
+        this.root().getAllParts().forEach(ModelPart::resetPose);
         if (!tile.ControlAnimationMap.isEmpty()) {
             if (tile.ControlAnimationMap.get(71) != null)
-                this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(71) * 45);
+                this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(71) * -45);
+            if (tile.ControlAnimationMap.get(1) != null) {
+                this.handbrake.yRot = (float) Math.toRadians(tile.ControlAnimationMap.get(1) * 90);
+            }
         }
-        this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(tile.GetRotorAnimation(), HudolinConsoleAnimation.rotor_loop, ageInTicks);
     }
 

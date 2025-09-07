@@ -35,14 +35,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     private static final EntityDataAccessor<String> CONTROL =
             SynchedEntityData.defineId(ModularControl.class, EntityDataSerializers.STRING);
     public Vec3 Position;
-    public int ID;
+    public int Identifier;
     public AbstractConsoleTile consoleTile;
     public AABB size;
 
     /** DO NOT CALL THIS! Use {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}**/
     public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
         super(modularControlEntityType, level);
-        this.ID = 0;
+        this.Identifier = 0;
     }
 
     public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
@@ -51,7 +51,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.size = new AABB(0, 0, 0, record.maxX(), record.maxY(), record.maxZ());
         this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
         this.consoleTile = consoleTile;
-        this.ID = record.ID();
+        this.Identifier = record.ID();
     }
 
     public Controls GetControl() {
@@ -61,7 +61,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     @Override
     public void OnControlClicked(ITARDISLevel capability, Player player) {
         if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem().equals(TTSItems.SONIC_SCREWDRIVER.get())) {
+        if (player.getMainHandItem().getItem().equals(TTSItems.SONIC_SCREWDRIVER.get())) {
             if (player.isCrouching()) {
                 this.CycleControlBackward();
                 player.sendSystemMessage(Component.literal(
@@ -108,6 +108,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
         if (this.GetControl().GetControl().NeedsUpdate() && !this.level().isClientSide) {
             System.out.println("Needs Update!");
+            this.UpdateConsoleAnimationMap();
         }
     }
 
@@ -120,18 +121,24 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         MutableComponent component = Component.translatable(
                 "tts.tardis.control." + this.GetControl().name().toLowerCase());
 
-        if (Minecraft.getInstance().options.advancedItemTooltips) component.append(String.format("ID: %s", this.ID));
+        if (Minecraft.getInstance().options.advancedItemTooltips)
+            component.append(String.format("ID: %s", this.Identifier));
         return component;
     }
 
     public void UpdateConsoleAnimationMap() {
-        if (this.consoleTile.GetControlAnimationMap().containsKey(this.ID)
-                && this.consoleTile.GetControlAnimationMap().get(this.ID)
-                        == this.GetControl().GetControl().GetAnimationState()) return;
-        this.consoleTile.GetControlAnimationMap().remove(this.ID);
+        if (this.consoleTile.GetControlAnimationMap().containsKey(this.Identifier))
+            this.consoleTile.GetControlAnimationMap().remove(this.Identifier);
         this.consoleTile
                 .GetControlAnimationMap()
-                .put(this.ID, this.GetControl().GetControl().GetAnimationState());
+                .put(this.Identifier, this.GetControl().GetControl().GetAnimationState());
+
+        if (!this.level().isClientSide)
+            Networking.sendPacketToDimension(
+                    this.level().dimension(),
+                    new SyncButtonAnimationSetPacketS2C(
+                            this.consoleTile.ControlAnimationMap, this.consoleTile.getBlockPos()));
+        this.GetControl().GetControl().SetNeedsUpdate(false);
     }
 
     @Override
@@ -144,7 +151,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
         this.SetControl(Controls.values()[buf.readInt()]);
-        this.ID = buf.readInt();
+        this.Identifier = buf.readInt();
     }
 
     @Override
@@ -164,7 +171,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         buf.writeDouble(this.size.getZsize());
 
         if (this.GetControl() != null) buf.writeInt(this.GetControl().ordinal());
-        buf.writeInt(this.ID);
+        buf.writeInt(this.Identifier);
     }
 
     @Override
@@ -187,7 +194,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         Tag.putDouble("vec_x", this.Position.x);
         Tag.putDouble("vec_y", this.Position.y);
         Tag.putDouble("vec_z", this.Position.z);
-        Tag.putInt("id", this.ID);
+        Tag.putInt("identifier", this.Identifier);
     }
 
     @Override
@@ -217,7 +224,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         }
         this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
 
-        this.ID = Tag.getInt("id");
+        this.Identifier = Tag.getInt("identifier");
 
         this.GetControl().GetControl().SetNeedsUpdate(true);
     }

@@ -48,16 +48,16 @@ public class SonicItem extends IAmAttunable {
 
     public boolean canAttackBlock(
             @NotNull BlockState p_40962_, Level p_40963_, @NotNull BlockPos p_40964_, @NotNull Player p_40965_) {
-        if (!p_40963_.isClientSide) {
-            if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode)
-                sonicBuilderMode.handleInteraction(
-                        p_40965_,
-                        p_40962_,
-                        p_40963_,
-                        p_40964_,
-                        false,
-                        p_40965_.getItemInHand(InteractionHand.MAIN_HAND),
-                        this.getDescriptionId());
+        if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode) {
+            sonicBuilderMode.handleInteraction(
+                    p_40965_,
+                    p_40962_,
+                    p_40963_,
+                    p_40964_,
+                    false,
+                    p_40965_.getItemInHand(InteractionHand.MAIN_HAND),
+                    this.getDescriptionId());
+            return false;
         }
 
         return false;
@@ -85,8 +85,9 @@ public class SonicItem extends IAmAttunable {
                                     % SonicModeRegistry.SONIC_MODE.getEntries().size());
                     this.InteractionType = nextMode.get();
                     assert nextMode.getId() != null;
-                    player.sendSystemMessage(Component.literal(GrammarNazi.CapitalizeFirstLetters(
-                            GrammarNazi.ScoreToSpace(nextMode.get().getName()))));
+                    if (!player.level().isClientSide)
+                        player.sendSystemMessage(Component.literal(GrammarNazi.CapitalizeFirstLetters(
+                                GrammarNazi.ScoreToSpace(nextMode.get().getName()))));
                     break;
                 }
             }

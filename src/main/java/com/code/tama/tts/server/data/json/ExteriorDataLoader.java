@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.data.json.records.DataExterior;
+import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -29,7 +29,7 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
         // Iterate over all namespaces
         for (String namespace : resourceManager.getNamespaces()) {
-            LOGGER.info("Searching resources in namespace: {}", namespace);
+            //            LOGGER.info("Searching resources in namespace: {}", namespace);
 
             // List all resources in this namespace inside 'data' folder, looking for .json
             // files
@@ -37,17 +37,17 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
                     "tts/exteriors", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
-            LOGGER.info("Searching for resources under: data/{}/exterior/", namespace);
+            //            LOGGER.info("Searching for resources under: data/{}/exterior/", namespace);
 
             // Log the resources found in this namespace
-            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
+            //            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
 
             if (resources.isEmpty()) {
                 LOGGER.warn("No resources found for namespace: {}", namespace);
             }
 
             for (ResourceLocation location : resources.keySet()) { // Iterate over the keys
-                LOGGER.info("Found resource: {}", location);
+                //                LOGGER.info("Found resource: {}", location);
 
                 Resource resource = resources.get(location);
 
@@ -64,9 +64,10 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
                             // Create DataExterior and add it to the list
                             DataExterior dataExterior = new DataExterior(name, modelLocation);
-                            dataExteriorList.add(dataExterior);
+                            if (!dataExteriorList.contains(dataExterior)) dataExteriorList.add(dataExterior);
 
-                            LOGGER.info("Loaded DataExterior from {}: {}", location, dataExterior);
+                            //                            LOGGER.info("Loaded DataExterior from {}: {}", location,
+                            // dataExterior);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", location);
                         }

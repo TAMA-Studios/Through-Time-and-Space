@@ -30,7 +30,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 
         // Iterate over all namespaces
         for (String namespace : resourceManager.getNamespaces()) {
-            LOGGER.info("Searching resources in namespace: {}", namespace);
+            //            LOGGER.info("Searching resources in namespace: {}", namespace);
 
             // List all resources in this namespace inside 'data' folder, looking for .json
             // files
@@ -38,17 +38,17 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
                     "tts/ars", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
-            LOGGER.info("Searching for nbt under {}:structures/", namespace);
+            //            LOGGER.info("Searching for nbt under {}:structures/", namespace);
 
             // Log the resources found in this namespace
-            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
+            //            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
 
             if (resources.isEmpty()) {
                 LOGGER.warn("No resources found for namespace: {}", namespace);
             }
 
             for (ResourceLocation rl : resources.keySet()) { // Iterate over the keys
-                LOGGER.info("Found resource: {}", rl);
+                //                LOGGER.info("Found resource: {}", rl);
 
                 Resource resource = resources.get(rl);
 
@@ -65,9 +65,10 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 
                             // Create Data ars rooms and add it to the list
                             ARSStructure Structure = new ARSStructure(structureLocation, Component.translatable(name));
-                            dataRoom.add(Structure);
+                            if (!dataRoom.contains(Structure)) dataRoom.add(Structure);
 
-                            LOGGER.info("Loaded ARS Structure from {}: {}", location, Structure);
+                            //                            LOGGER.info("Loaded ARS Structure from {}: {}", location,
+                            // Structure);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", rl);
                         }
@@ -86,7 +87,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
         if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
-            // Validate name and texture fields
+            // Validate name and structure fields
             if (valuesObject.has("name") && valuesObject.has("location")) {
                 String name = valuesObject.get("name").getAsString();
                 String location = valuesObject.get("location").getAsString();
@@ -97,11 +98,11 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
                     return false;
                 }
 
-                // Validate texture as ResourceLocation
+                // Validate structure as ResourceLocation
                 try {
                     ResourceLocation.parse(location); // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid texture ResourceLocation: {}", location);
+                    LOGGER.warn("Invalid structure ResourceLocation: {}", location);
                     return false;
                 }
 

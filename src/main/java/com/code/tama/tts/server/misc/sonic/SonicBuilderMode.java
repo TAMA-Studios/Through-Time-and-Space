@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -60,42 +59,36 @@ public class SonicBuilderMode extends SonicMode {
             boolean p_150807_,
             ItemStack p_150808_,
             String descID) {
-        if (!p_150803_.canUseGameMasterBlocks()) {
+        Block block = p_150804_.getBlock();
+        StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
+        Collection<Property<?>> collection = statedefinition.getProperties();
+        String s = BuiltInRegistries.BLOCK.getKey(block).toString();
+        if (collection.isEmpty()) {
+            message(p_150803_, Component.translatable(descID + ".empty", s));
             return false;
         } else {
-            Block block = p_150804_.getBlock();
-            StateDefinition<Block, BlockState> statedefinition = block.getStateDefinition();
-            Collection<Property<?>> collection = statedefinition.getProperties();
-            String s = BuiltInRegistries.BLOCK.getKey(block).toString();
-            if (collection.isEmpty()) {
-                message(p_150803_, Component.translatable(descID + ".empty", s));
-                return false;
-            } else {
-                CompoundTag compoundtag = p_150808_.getOrCreateTagElement("DebugProperty");
-                String s1 = compoundtag.getString(s);
-                Property<?> property = statedefinition.getProperty(s1);
-                if (p_150807_) {
-                    if (property == null) {
-                        property = collection.iterator().next();
-                    }
-
-                    BlockState blockstate = cycleState(p_150804_, property, p_150803_.isSecondaryUseActive());
-                    p_150805_.setBlock(p_150806_, blockstate, 18);
-                    message(
-                            p_150803_,
-                            Component.translatable(
-                                    descID + ".update", property.getName(), getNameHelper(blockstate, property)));
-                } else {
-                    property = getRelative(collection, property, p_150803_.isSecondaryUseActive());
-                    String s2 = property.getName();
-                    compoundtag.putString(s, s2);
-                    message(
-                            p_150803_,
-                            Component.translatable(descID + ".select", s2, getNameHelper(p_150804_, property)));
+            CompoundTag compoundtag = p_150808_.getOrCreateTagElement("DebugProperty");
+            String s1 = compoundtag.getString(s);
+            Property<?> property = statedefinition.getProperty(s1);
+            if (p_150807_) {
+                if (property == null) {
+                    property = collection.iterator().next();
                 }
 
-                return true;
+                BlockState blockstate = cycleState(p_150804_, property, p_150803_.isSecondaryUseActive());
+                p_150805_.setBlock(p_150806_, blockstate, 18);
+                message(
+                        p_150803_,
+                        Component.translatable(
+                                descID + ".update", property.getName(), getNameHelper(blockstate, property)));
+            } else {
+                property = getRelative(collection, property, p_150803_.isSecondaryUseActive());
+                String s2 = property.getName();
+                compoundtag.putString(s, s2);
+                message(p_150803_, Component.translatable(descID + ".select", s2, getNameHelper(p_150804_, property)));
             }
+
+            return true;
         }
     }
 
@@ -113,7 +106,7 @@ public class SonicBuilderMode extends SonicMode {
     }
 
     private static void message(Player p_40957_, Component p_40958_) {
-        ((ServerPlayer) p_40957_).sendSystemMessage(p_40958_, true);
+        p_40957_.sendSystemMessage(p_40958_);
     }
 
     private static <T extends Comparable<T>> String getNameHelper(BlockState p_40967_, Property<T> p_40968_) {

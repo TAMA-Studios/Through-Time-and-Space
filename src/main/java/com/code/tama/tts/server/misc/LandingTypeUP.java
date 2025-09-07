@@ -17,4 +17,14 @@ public class LandingTypeUP extends LandingType {
                                 level, ((int) CurrentLandingPos.GetX()), ((int) CurrentLandingPos.GetZ())),
                         0);
     }
+
+    @Override
+    public BlockPos GetLandingPos(BlockPos CurrentLandingPos, ServerLevel level) {
+        return CurrentLandingPos.atY(WorldHelper.SafeBottomY(level, CurrentLandingPos) + 1)
+                .offset(
+                        0,
+                        WorldHelper.getSurfaceHeight(
+                                level, ((int) CurrentLandingPos.getX()), ((int) CurrentLandingPos.getZ())),
+                        0);
+    }
 }

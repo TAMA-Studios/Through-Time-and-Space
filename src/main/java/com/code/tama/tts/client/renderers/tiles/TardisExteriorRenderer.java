@@ -3,6 +3,7 @@ package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
+import com.code.tama.tts.client.renderers.HalfBOTI;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -61,6 +62,19 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                     .getOpposite()
                     .getRotation());
             poseStack.mulPose(Axis.XN.rotationDegrees(90));
+        }
+
+        try {
+            HalfBOTI.render(
+                    exteriorTile.getLevel(),
+                    exteriorTile,
+                    poseStack,
+                    bufferSource,
+                    partialTicks,
+                    combinedLight,
+                    combinedOverlay);
+        } catch (Exception ignored) {
+            System.out.println(ignored.getMessage());
         }
 
         AbstractJSONRenderer ext =

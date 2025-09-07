@@ -459,7 +459,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.IsInFlight = false;
         new CrashThread(this).start();
         this.NullExteriorChecksAndFixes();
-        MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.END));
     }
 
     public static Rotation DirectionToRotation(Direction direction) {

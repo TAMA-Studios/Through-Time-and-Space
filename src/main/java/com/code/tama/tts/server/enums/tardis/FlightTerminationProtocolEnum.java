@@ -4,10 +4,10 @@ package com.code.tama.tts.server.enums.tardis;
 import com.code.tama.tts.server.tardis.terminationprotocol.*;
 
 public enum FlightTerminationProtocolEnum {
-    EMERGENCY_STOP("emergency_stop", 1.0f, 0.3f, new EmergencyStopProtocol()),
-    POLITE("polite_terminus", 0.1f, 0.1f, 0.8f, 0.5f, new PoliteTerminusProtocol(), true),
-    QUICK_STOP("quick_stop", 0.2f, 0.7f, 0.7f, 0.7f, new QuickStopProtocol(), true),
-    URGENT_STOP("urgent_stop", 0.2f, 1.0f, 1.0f, 0.9f, new UrgentStopProtocol(), true);
+    EMERGENCY_STOP("emergency_stop", 1.0f, 0.3f, new EmergencyStopProtocolHandler()),
+    POLITE("polite_terminus", 0.1f, 0.1f, 0.8f, 0.5f, new PoliteTerminusProtocolHandler(), true),
+    QUICK_STOP("quick_stop", 0.2f, 0.7f, 0.7f, 0.7f, new QuickStopProtocolHandler(), true),
+    URGENT_STOP("urgent_stop", 0.2f, 1.0f, 1.0f, 0.9f, new UrgentStopProtocolHandler(), true);
 
     public static FlightTerminationProtocolEnum GetFromName(String name) {
         for (FlightTerminationProtocolEnum protocol : FlightTerminationProtocolEnum.values()) {
@@ -29,17 +29,17 @@ public enum FlightTerminationProtocolEnum {
 
     // Stores the termination protocol which stores code that gets executed on
     // landing
-    private final TerminationProtocol terminationProtocol;
+    private final TerminationProtocolHandler terminationProtocolHandler;
 
     FlightTerminationProtocolEnum(
-            String name, float ShakeAmount, float Accuracy, TerminationProtocol terminationProtocol) {
+            String name, float ShakeAmount, float Accuracy, TerminationProtocolHandler terminationProtocolHandler) {
         this.TakeoffShakeAmount = ShakeAmount;
         this.LandShakeAmount = ShakeAmount;
         this.name = name;
         this.Accuracy = Accuracy;
         this.Speed = 0.0f;
         this.IsSelectable = false;
-        this.terminationProtocol = terminationProtocol;
+        this.terminationProtocolHandler = terminationProtocolHandler;
     }
 
     FlightTerminationProtocolEnum(
@@ -48,7 +48,7 @@ public enum FlightTerminationProtocolEnum {
             float LandShakeAmount,
             float Accuracy,
             float Speed,
-            TerminationProtocol terminationProtocol,
+            TerminationProtocolHandler terminationProtocolHandler,
             boolean IsSelectable) {
         this.TakeoffShakeAmount = TakeoffShakeAmount;
         this.LandShakeAmount = LandShakeAmount;
@@ -56,7 +56,7 @@ public enum FlightTerminationProtocolEnum {
         this.Accuracy = Accuracy;
         this.Speed = Speed;
         this.IsSelectable = IsSelectable;
-        this.terminationProtocol = terminationProtocol;
+        this.terminationProtocolHandler = terminationProtocolHandler;
     }
 
     public float GetAccuracy() {
@@ -71,8 +71,8 @@ public enum FlightTerminationProtocolEnum {
         return this.name;
     }
 
-    public TerminationProtocol GetProtocol() {
-        return this.terminationProtocol;
+    public TerminationProtocolHandler GetProtocol() {
+        return this.terminationProtocolHandler;
     }
 
     public float GetSpeed() {

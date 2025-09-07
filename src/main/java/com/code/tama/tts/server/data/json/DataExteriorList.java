@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.data.json;
 
 import com.code.tama.tts.Exteriors;
-import com.code.tama.tts.server.data.json.records.DataExterior;
+import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
 import com.code.tama.tts.server.misc.Exterior;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;

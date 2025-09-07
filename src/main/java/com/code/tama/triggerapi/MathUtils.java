@@ -42,4 +42,34 @@ public class MathUtils {
     public static int RoundToMultiple(int num, int multiple) {
         return Math.round((float) num / multiple) * multiple;
     }
+
+    /**
+     * Adjusts the slope based on the desired rotation around the Y-axis.
+     *
+     * @param slope      The slope (pitch).
+     * @param desiredRot The desired rotation around the Y-axis in degrees.
+     * @return The adjusted slope after applying the rotation.
+     */
+    public static float getSlopedRotation(float slope, float desiredRot) {
+        // Normalize desiredRot to [0, 360)
+        desiredRot = ((desiredRot % 360) + 360) % 360;
+
+        // If no rotation, keep slope
+        if (desiredRot == 0f) {
+            return slope;
+        }
+
+        // For 180° around Y, invert the slope
+        if (desiredRot == 180f) {
+            return -slope;
+        }
+
+        // Otherwise interpolate based on rotation
+        // After 90° yaw, slope pitch becomes 0
+        // After 270° yaw, slope pitch becomes 0
+        double radians = Math.toRadians(desiredRot);
+        float newX = (float) (slope * Math.cos(radians));
+
+        return newX;
+    }
 }

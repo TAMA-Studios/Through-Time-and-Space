@@ -6,6 +6,7 @@ import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.events.TardisEvent;
+import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.LandingTypeRegistry;
 import com.code.tama.tts.server.registries.TTSBlocks;
@@ -36,7 +37,14 @@ public class LandThread extends Thread {
                     (int) (this.itardisLevel.GetDestination().GetZ() / 16),
                     true);
 
-            BlockPos pos = LandingTypeRegistry.UP.GetLandingPos(this.itardisLevel.GetDestination(), CurrentLevel);
+            BlockPos pos = BlockHelper.snapToGround(
+                    this.itardisLevel.GetLevel(),
+                    this.itardisLevel.GetDestination().GetBlockPos());
+
+            this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().OnLand(this.itardisLevel, pos, CurrentLevel);
+            pos = this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
+
+            pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
 
             SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos);
 
@@ -59,12 +67,14 @@ public class LandThread extends Thread {
                     .GetLevel()
                     .getBlockState(this.itardisLevel.GetExteriorLocation().GetBlockPos());
             this.itardisLevel.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), blockState);
-            if (CurrentLevel.getBlockEntity(pos) != null)
+            if (CurrentLevel.getBlockEntity(pos) != null) {
+                BlockPos finalPos = pos; // pos used in lambda must be final or effectively final
                 CurrentLevel.getServer()
                         .execute(new TickTask(
                                 1,
                                 () -> this.itardisLevel.SetExteriorTile(
-                                        ((ExteriorTile) CurrentLevel.getBlockEntity(pos)))));
+                                        ((ExteriorTile) CurrentLevel.getBlockEntity(finalPos)))));
+            }
             CurrentLevel.setChunkForced(
                     (int) (this.itardisLevel.GetDestination().GetX() / 16),
                     (int) (this.itardisLevel.GetDestination().GetZ() / 16),

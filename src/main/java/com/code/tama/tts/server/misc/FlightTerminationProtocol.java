@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
-import com.code.tama.tts.server.tardis.terminationprotocol.TerminationProtocol;
+import com.code.tama.tts.server.tardis.terminationprotocol.TerminationProtocolHandler;
 import lombok.Builder;
 
 @Builder
@@ -17,5 +17,5 @@ public class FlightTerminationProtocol {
     // How much the exterior shakes during demat
     public final float TakeoffShakeAmount;
     public final String name;
-    private final TerminationProtocol terminationProtocol;
+    private final TerminationProtocolHandler terminationProtocolHandler;
 }

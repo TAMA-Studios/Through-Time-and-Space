@@ -1,0 +1,9 @@
+{
+  "category" : "tts:tardis_protocols",
+  "icon" : "minecraft:crafting_table",
+  "name" : "Flight Termination Protocol",
+  "pages" : [ {
+    "text" : "TARDIS Protocols, page one. $(br)The Flight Termination Protocol is a safety protocol that gets pre-set before flight and handles how the TARDIS will react in the case of an emergency landing/crash. The selected protocol effects flight speed, fuel drain, landing accuracy, and interior gravitational stabilization (how much the interior shakes when taking off/landing). $(br)There are four selectable Flight Termination Protocols. $(br)Polite Terminus: has a speed modifier of 1x (default TARDIS speed), landing accuracy of 0.8 (fairly accurate), fuel drain of 1x (default fuel consumption), and interior gravitational stabilization of 0.1x",
+    "type" : "text"
+  } ]
+}

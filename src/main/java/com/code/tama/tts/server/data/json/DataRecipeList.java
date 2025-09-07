@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.data.json.records.DataRecipe;
+import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import com.code.tama.tts.server.registries.RecipeRegistry;
 import java.util.List;
 import lombok.Getter;

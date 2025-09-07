@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.data.json.records.DataRecipe;
+import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -37,17 +37,17 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
                     "tts/recipes", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
-            LOGGER.info("Searching for nbt under {}:tts/recipes/", namespace);
+            //            LOGGER.info("Searching for nbt under {}:tts/recipes/", namespace);
 
             // Log the resources found in this namespace
-            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
+            //            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
 
             if (resources.isEmpty()) {
                 LOGGER.warn("No resources found for namespace: {}", namespace);
             }
 
             for (ResourceLocation rl : resources.keySet()) { // Iterate over the keys
-                LOGGER.info("Found resource: {}", rl);
+                //                LOGGER.info("Found resource: {}", rl);
 
                 Resource resource = resources.get(rl);
 
@@ -88,9 +88,8 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
                                     .result(result)
                                     .TimeInTicks(time)
                                     .build();
-                            dataRecipes.add(recipe);
-
-                            LOGGER.info("Loaded recipe Structure {}", recipe);
+                            if (!dataRecipes.contains(recipe)) dataRecipes.add(recipe);
+                            //                            LOGGER.info("Loaded recipe Structure {}", recipe);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", rl);
                         }
@@ -130,7 +129,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
                 try {
                     BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)); // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid texture ResourceLocation: {}", result);
+                    LOGGER.warn("Invalid result ResourceLocation: {}", result);
                     return false;
                 }
 
