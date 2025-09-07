@@ -1,0 +1,13 @@
+{
+  "values" : {
+    "1" : "minecraft:iron_ingot",
+    "2" : "minecraft:redstone",
+    "3" : "minecraft:redstone_lamp",
+    "4" : "minecraft:glass_pane",
+    "5" : "minecraft:iron_ingot",
+    "6" : "minecraft:iron_ingot",
+    "nozzle" : "tts:basic_nozzle",
+    "result" : "tts:sonic_screwdriver",
+    "time" : "160"
+  }
+}

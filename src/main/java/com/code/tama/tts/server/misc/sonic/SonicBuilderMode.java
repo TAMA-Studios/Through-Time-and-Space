@@ -29,6 +29,11 @@ public class SonicBuilderMode extends SonicMode {
     }
 
     @Override
+    public String getName() {
+        return "builder_mode";
+    }
+
+    @Override
     public void onUse(UseOnContext context) {
         Player player = context.getPlayer();
         Level level = context.getLevel();

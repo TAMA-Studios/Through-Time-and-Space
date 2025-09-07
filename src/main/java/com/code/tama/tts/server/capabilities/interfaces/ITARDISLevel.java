@@ -5,6 +5,7 @@ import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.tts.server.misc.Exterior;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.tardis.data.ControlParameters;
 import com.code.tama.tts.server.tardis.data.SubsystemsData;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -115,6 +116,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
     int GetPreviousIncrement();
 
     SubsystemsData GetSubsystemsData();
+
+    ControlParameters GetControlData();
     /**
      * Gets the amount of ticks the TARDIS has been flying for (Not currently
      * implemented TODO: Implement this)

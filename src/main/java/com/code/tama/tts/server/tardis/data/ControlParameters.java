@@ -1,14 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.data;
 
-import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
+import com.code.tama.tts.server.misc.FlightTerminationProtocol;
+import com.code.tama.tts.server.registries.FlightTerminationProtocolRegistry;
+import lombok.NoArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
+@NoArgsConstructor
 public class ControlParameters implements INBTSerializable<CompoundTag> {
-    boolean APCState;
+    boolean APCState, Brakes;
     int ArtronPacketOutput;
-    FlightTerminationProtocolEnum flightTerminationProtocolEnum = FlightTerminationProtocolEnum.POLITE;
+    FlightTerminationProtocol flightTerminationProtocolEnum = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 
     public ControlParameters(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);
@@ -40,7 +43,15 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
         return this.ArtronPacketOutput;
     }
 
-    public FlightTerminationProtocolEnum GetTerminationProtocol() {
+    public boolean GetBrakes() {
+        return this.Brakes;
+    }
+
+    public void SetBrakes(boolean brakes) {
+        this.Brakes = brakes;
+    }
+
+    public FlightTerminationProtocol GetTerminationProtocol() {
         return this.flightTerminationProtocolEnum;
     }
 
@@ -52,18 +63,14 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
         this.ArtronPacketOutput = ArtronPacketOutput;
     }
 
-    public void SetTerminationProtocol(FlightTerminationProtocolEnum terminationProtocol) {
+    public void SetTerminationProtocol(FlightTerminationProtocol terminationProtocol) {
         this.flightTerminationProtocolEnum = terminationProtocol;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-
-        // for(FlightTerminationProtocolEnum Protocol :
-        // FlightTerminationProtocolEnum.values())
-        // if(Protocol.ordinal() == prot) this.flightTerminationProtocolEnum = Protocol;
-
-        this.flightTerminationProtocolEnum = FlightTerminationProtocolEnum.values()[nbt.getInt("termination_protocol")];
+        this.flightTerminationProtocolEnum =
+                FlightTerminationProtocolRegistry.FLIGHT_TERMINATION_PROTOCOLS.get(nbt.getInt("termination_protocol"));
         this.APCState = nbt.getBoolean("APC");
         this.ArtronPacketOutput = nbt.getInt("ArtronPacketOutput");
     }
@@ -71,7 +78,10 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putInt("termination_protocol", this.flightTerminationProtocolEnum.ordinal());
+        compoundTag.putInt(
+                "termination_protocol",
+                FlightTerminationProtocolRegistry.FLIGHT_TERMINATION_PROTOCOLS.indexOf(
+                        this.flightTerminationProtocolEnum));
         compoundTag.putBoolean("APC", this.APCState);
         compoundTag.putInt("ArtronPacketOutput", this.ArtronPacketOutput);
         return compoundTag;

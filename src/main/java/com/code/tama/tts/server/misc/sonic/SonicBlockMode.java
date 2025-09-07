@@ -10,6 +10,10 @@ public class SonicBlockMode extends SonicMode {
         return Blocks.GRASS_BLOCK.asItem();
     }
 
+    public String getName() {
+        return "block_mode";
+    }
+
     public void onUse(UseOnContext context) {
         //        BlockState State = player.level().getBlockState(usedPos);
         //        Level Level = player.level();

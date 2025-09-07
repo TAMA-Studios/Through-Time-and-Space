@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -27,12 +28,8 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
     public void onResourceManagerReload(ResourceManager resourceManager) {
         dataRecipes.clear(); // Reset the list of Data recipe objects
 
-        // Log namespaces
-        LOGGER.info("Loaded namespaces: {}", resourceManager.getNamespaces());
-
         // Iterate over all namespaces
         for (String namespace : resourceManager.getNamespaces()) {
-            LOGGER.info("Searching resources in namespace: {}", namespace);
 
             // List all resources in this namespace inside 'data' folder, looking for .json
             // files
@@ -40,7 +37,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
                     "tts/recipes", fileName -> fileName.toString().endsWith(".json"));
 
             // Log the paths being searched for resources
-            LOGGER.info("Searching for nbt under {}:structures/", namespace);
+            LOGGER.info("Searching for nbt under {}:tts/recipes/", namespace);
 
             // Log the resources found in this namespace
             LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
@@ -108,26 +105,46 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
         DataRecipeList.setList(dataRecipes);
     }
 
+    @SuppressWarnings("deprecation")
     private boolean isValidJson(JsonObject jsonObject) {
         if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
             // Validate name and texture fields
-            if (valuesObject.has("name") && valuesObject.has("location")) {
-                String name = valuesObject.get("name").getAsString();
-                String location = valuesObject.get("location").getAsString();
+            if (valuesObject.has("nozzle")
+                    && valuesObject.has("result")
+                    && valuesObject.has("1")
+                    && valuesObject.has("time")) {
+                String nozzle = valuesObject.get("nozzle").getAsString();
+                String result = valuesObject.get("result").getAsString();
 
-                // Check for non-empty name
-                if (name.isEmpty()) {
-                    LOGGER.warn("Empty name field");
+                // Validate nozzle as ResourceLocation
+                try {
+                    BuiltInRegistries.ITEM.get(ResourceLocation.parse(nozzle)); // Will throw exception if invalid
+                } catch (IllegalArgumentException e) {
+                    LOGGER.warn("Invalid nozzle ResourceLocation: {}", result);
                     return false;
                 }
 
-                // Validate texture as ResourceLocation
+                // Validate result as ResourceLocation
                 try {
-                    ResourceLocation.parse(location); // Will throw exception if invalid
+                    BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)); // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid texture ResourceLocation: {}", location);
+                    LOGGER.warn("Invalid texture ResourceLocation: {}", result);
+                    return false;
+                }
+
+                try {
+                    for (int i = 1; i <= 6; i++) {
+                        String itemKey = String.valueOf(i);
+                        if (valuesObject.has(itemKey)) {
+                            String itemValue = valuesObject.get(itemKey).getAsString();
+                            BuiltInRegistries.ITEM.get(
+                                    ResourceLocation.parse(itemValue)); // Will throw exception if invalid
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    LOGGER.warn("Invalid item ResourceLocation: {}", result);
                     return false;
                 }
 

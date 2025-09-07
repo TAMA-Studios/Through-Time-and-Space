@@ -13,6 +13,7 @@ import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCap
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.tardis.data.ControlParameters;
 import com.code.tama.tts.server.tardis.data.SubsystemsData;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tardis.flightsoundschemes.FlightSoundHandler;
@@ -40,7 +41,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
     UUID OwnerUUID;
     Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);
-    ;
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
     DoorData InteriorDoorData;
     int TicksInFlight, TicksTillDestination, Increment = 1;
@@ -54,6 +54,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     FlightTerminationProtocolEnum flightTerminationProtocol;
     AbstractSoundScheme FlightSoundScheme;
     SubsystemsData SubsystemsData = new SubsystemsData();
+    ControlParameters ControlData = new ControlParameters();
 
     public TARDISLevelCapability(Level level) {
         this.level = level;
@@ -64,6 +65,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         CompoundTag Tag = new CompoundTag();
         if (this.OwnerUUID != null) Tag.putUUID("ownerID", this.OwnerUUID);
         Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
+        Tag.put("controlData", this.GetControlData().serializeNBT());
         Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
         Tag.putInt("increment", this.Increment);
@@ -107,7 +109,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         if (nbt.contains("ownerID")) this.OwnerUUID = nbt.getUUID("ownerID");
-        if (nbt.contains("subsystems")) this.SubsystemsData.deserializeNBT(nbt.getCompound("subsystems"));
+        if (nbt.contains("subsystems")) this.SubsystemsData = new SubsystemsData(nbt.getCompound("subsystems"));
+        if (nbt.contains("controlData")) this.ControlData = new ControlParameters(nbt.getCompound("controlData"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
         this.IsInFlight = nbt.getBoolean("isInFlight");
@@ -305,6 +308,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void SetExteriorTile(ExteriorTile exteriorTile) {
         this.exteriorTile = exteriorTile;
+        assert exteriorTile.getLevel() != null;
         this.ExteriorDimensionKey = exteriorTile.getLevel().dimension();
     }
 
@@ -391,6 +395,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         // Set the TARDIS in flight
         this.SetInFlight(true);
 
+        assert ext != null;
         Level exteriorLevel = ext.getLevel();
         assert exteriorLevel != null;
         exteriorLevel
@@ -623,6 +628,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
         return this.SubsystemsData;
     }
 
+    @Override
+    public ControlParameters GetControlData() {
+        return this.ControlData;
+    }
+
+    @Nullable
     Player GetOwner() {
         if (this.level.isClientSide) return null;
         //        return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());

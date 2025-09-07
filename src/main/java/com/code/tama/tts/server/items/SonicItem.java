@@ -46,7 +46,8 @@ public class SonicItem extends IAmAttunable {
         super(properties);
     }
 
-    public boolean canAttackBlock(BlockState p_40962_, Level p_40963_, BlockPos p_40964_, Player p_40965_) {
+    public boolean canAttackBlock(
+            @NotNull BlockState p_40962_, Level p_40963_, @NotNull BlockPos p_40964_, @NotNull Player p_40965_) {
         if (!p_40963_.isClientSide) {
             if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode)
                 sonicBuilderMode.handleInteraction(
@@ -64,7 +65,7 @@ public class SonicItem extends IAmAttunable {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
-            Level level, Player player, InteractionHand interactionHand) {
+            @NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (interactionHand == InteractionHand.OFF_HAND) return super.use(level, player, interactionHand);
         if (player.isCrouching()) {
             for (int i = 0; i < SonicModeRegistry.SONIC_MODE.getEntries().size(); i++) {
@@ -85,7 +86,7 @@ public class SonicItem extends IAmAttunable {
                     this.InteractionType = nextMode.get();
                     assert nextMode.getId() != null;
                     player.sendSystemMessage(Component.literal(GrammarNazi.CapitalizeFirstLetters(
-                            GrammarNazi.ScoreToSpace(nextMode.getId().getPath()))));
+                            GrammarNazi.ScoreToSpace(nextMode.get().getName()))));
                     break;
                 }
             }
@@ -108,6 +109,7 @@ public class SonicItem extends IAmAttunable {
         return InteractionResult.SUCCESS;
     }
 
+    @SuppressWarnings("deprecation")
     private @NotNull HitResult calculateHitResult(LivingEntity livingEntity) {
         final double MAX_BRUSH_DISTANCE = Math.sqrt(ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) - 1.0;
         return ProjectileUtil.getHitResultOnViewVector(
@@ -115,7 +117,8 @@ public class SonicItem extends IAmAttunable {
     }
 
     @Override
-    public void onUseTick(Level level, LivingEntity livingEntity, ItemStack itemStack, int i) {
+    public void onUseTick(
+            @NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int i) {
         //        if (this.InteractionType != SonicInteractionType.SCANNER) return;
         if (i >= 0 && livingEntity instanceof Player player) {
             HitResult hitResult = this.calculateHitResult(livingEntity);

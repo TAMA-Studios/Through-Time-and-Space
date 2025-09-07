@@ -27,9 +27,6 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
     public void onResourceManagerReload(ResourceManager resourceManager) {
         dataExteriorList.clear(); // Reset the list of DataExterior objects
 
-        // Log namespaces
-        LOGGER.info("Loaded namespaces: {}", resourceManager.getNamespaces());
-
         // Iterate over all namespaces
         for (String namespace : resourceManager.getNamespaces()) {
             LOGGER.info("Searching resources in namespace: {}", namespace);

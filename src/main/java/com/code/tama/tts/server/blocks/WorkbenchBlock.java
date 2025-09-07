@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.server.items.SonicItem;
-import com.code.tama.tts.server.items.core.AbstractNozzleItem;
+import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.registries.RecipeRegistry;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.WorkbenchTile;
@@ -64,6 +64,7 @@ public class WorkbenchBlock extends Block implements EntityBlock {
             @NotNull BlockHitResult blockHitResult) {
         BlockEntity tile = level.getBlockEntity(blockPos);
         if (tile != null && tile instanceof WorkbenchTile workbenchTile) {
+            if (interactionHand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
             // If player's holding a sonic, it should attempt to craft the result
             if (player.getMainHandItem().getItem() instanceof SonicItem) {
                 //                if(RecipeRegistry.RECIPES.contains())
@@ -74,7 +75,7 @@ public class WorkbenchBlock extends Block implements EntityBlock {
                         workbenchTile.StoredItems.size() > 3 ? workbenchTile.StoredItems.get(3) : Items.AIR,
                         workbenchTile.StoredItems.size() > 4 ? workbenchTile.StoredItems.get(4) : Items.AIR,
                         workbenchTile.StoredItems.size() > 5 ? workbenchTile.StoredItems.get(5) : Items.AIR,
-                        workbenchTile.StoredItems.size() > 6 ? workbenchTile.StoredItems.get(6) : Items.AIR);
+                        workbenchTile.nozzle != null ? workbenchTile.nozzle : Items.AIR);
                 if (result != Items.AIR) {
                     assert result != null;
                     player.getInventory().add(result.getDefaultInstance());
@@ -83,8 +84,11 @@ public class WorkbenchBlock extends Block implements EntityBlock {
                 }
                 return InteractionResult.PASS;
             }
-            // If player isn't holding sonic, and the workbench isn't full, add the players mainhand item
-            else if (workbenchTile.StoredItems.size() < 6) {
+
+            // If player isn't holding sonic, and the workbench isn't full, (and they're not holding a nozzle) add the
+            // players mainhand item
+            else if (workbenchTile.StoredItems.size() < 6
+                    && !(player.getMainHandItem().getItem() instanceof NozzleItem)) {
                 if (!player.getMainHandItem().isEmpty()
                         && player.getMainHandItem().getItem() != Items.AIR) {
                     workbenchTile.StoredItems.add(player.getMainHandItem().getItem());
@@ -94,8 +98,11 @@ public class WorkbenchBlock extends Block implements EntityBlock {
             }
 
             // If the player is crouching, and holding a nozzleitem, attempt to add it to the workbench
-            if (player.getMainHandItem().getItem() instanceof AbstractNozzleItem abstractNozzleItem) {
-                workbenchTile.nozzle = abstractNozzleItem;
+            if (player.getMainHandItem().getItem() instanceof NozzleItem nozzleItem) {
+                if (workbenchTile.nozzle != null && workbenchTile.nozzle != Items.AIR)
+                    player.getInventory().add(workbenchTile.nozzle.getDefaultInstance());
+                workbenchTile.nozzle = nozzleItem;
+                player.getMainHandItem().shrink(1);
                 return InteractionResult.PASS;
             }
 

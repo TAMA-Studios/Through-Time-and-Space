@@ -4,17 +4,17 @@ package com.code.tama.tts.server.tardis.data;
 import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
 import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SubsystemsData implements INBTSerializable<CompoundTag> {
     public DematerializationCircuit DematerializationCircuit = new DematerializationCircuit();
     public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = new NetherReactorCoreSubsystem();
-
-    public SubsystemsData() {}
 
     public SubsystemsData(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);

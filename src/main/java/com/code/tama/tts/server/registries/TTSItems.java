@@ -6,6 +6,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 import com.code.tama.tts.server.items.ConsoleItem;
 import com.code.tama.tts.server.items.ExteriorItem;
 import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.tts.server.items.core.NozzleItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -29,6 +30,8 @@ public class TTSItems {
 
     public static final RegistryObject<SonicItem> SONIC_SCREWDRIVER;
 
+    public static final RegistryObject<NozzleItem> BASIC_NOZZLE;
+
     public static final RegistryObject<Item> ZEITON;
 
     static {
@@ -51,5 +54,7 @@ public class TTSItems {
                 "console_block", () -> new ConsoleItem(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), new Item.Properties()));
 
         SONIC_SCREWDRIVER = ITEMS.register("sonic_screwdriver", () -> new SonicItem(new Item.Properties()));
+
+        BASIC_NOZZLE = ITEMS.register("basic_nozzle", NozzleItem::new);
     }
 }

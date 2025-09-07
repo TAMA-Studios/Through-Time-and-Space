@@ -20,6 +20,11 @@ public class SonicEntityMode extends SonicMode {
     }
 
     @Override
+    public String getName() {
+        return "entity_mode";
+    }
+
+    @Override
     public void onUse(UseOnContext context) {
         Player player = context.getPlayer();
         if (player.level().isClientSide()) return;

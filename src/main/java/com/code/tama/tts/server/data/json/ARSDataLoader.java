@@ -28,9 +28,6 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
     public void onResourceManagerReload(ResourceManager resourceManager) {
         dataRoom.clear(); // Reset the list of Data ars objects
 
-        // Log namespaces
-        LOGGER.info("Loaded namespaces: {}", resourceManager.getNamespaces());
-
         // Iterate over all namespaces
         for (String namespace : resourceManager.getNamespaces()) {
             LOGGER.info("Searching resources in namespace: {}", namespace);
