@@ -40,5 +40,11 @@
       "name" : "tts:throttle_on",
       "streaming" : false
     } ]
+  },
+  "thud" : {
+    "sounds" : [ {
+      "name" : "tts:thud",
+      "streaming" : false
+    } ]
   }
 }

@@ -28,6 +28,8 @@ public class TTSSounds {
 
     public static final RegistryObject<SoundEvent> THROTTLE_ON = registerSound("throttle_on");
 
+    public static final RegistryObject<SoundEvent> THUD = registerSound("thud");
+
     public static void register(IEventBus modEventBus) {
         SOUNDS.register(modEventBus);
     }

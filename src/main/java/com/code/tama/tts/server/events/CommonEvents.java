@@ -4,6 +4,7 @@ package com.code.tama.tts.server.events;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.CapabilityConstants;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -11,6 +12,7 @@ import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.RecipeDataLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -72,14 +74,23 @@ public class CommonEvents {
     public static void TARDISRemat(TardisEvent.Land event) {
         switch (event.state) {
             case START: {
-                CameraShakeHandler.startShake(
-                        event.level.GetFlightTerminationPolicy().GetTakeoffShakeAmount(), 9000);
+                if (event.level.GetControlData().GetBrakes())
+                    CameraShakeHandler.startShake(
+                            event.level.GetFlightTerminationPolicy().GetTakeoffShakeAmount(), 9000);
                 System.out.printf("Landing at: %s", event.level.GetExteriorLocation());
                 break;
             }
             case END: {
                 CameraShakeHandler.endShake();
-                CameraShakeHandler.startShake(1, 1); // Thud, TODO: Thud noise
+                if (event.level.GetControlData().GetBrakes())
+                    CameraShakeHandler.startShake(1, 1); // Thud, TODO: Thud noise
+                if (event.level.GetLevel() != null)
+                    event.level.GetLevel()
+                            .playSound(
+                                    null,
+                                    event.level.GetExteriorLocation().GetBlockPos(),
+                                    TTSSounds.THUD.get(),
+                                    SoundSource.BLOCKS);
                 System.out.println("Finished Landing");
                 break;
             }
