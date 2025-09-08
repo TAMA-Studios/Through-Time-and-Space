@@ -4,7 +4,7 @@ package com.code.tama.tts.server.blocks.Panels;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -122,7 +122,7 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 
             return InteractionResult.SUCCESS;
         } else {
-            level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+            level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                     .ifPresent(cap -> cap.SetPowered(!state.getValue(POWERED)));
 
             blockstate1 = this.pull(state, level, blockPos);

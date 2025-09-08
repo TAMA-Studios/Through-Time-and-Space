@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
+
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -46,14 +47,14 @@ public class DematerializationCircuit extends AbstractSubsystem {
     @Override
     public void OnActivate(Level level, BlockPos blockPos) {
         this.Activated = true;
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
     }
 
     @Override
     public void OnDeActivate(Level level, BlockPos blockPos) {
         this.Activated = false;
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
     }
 }

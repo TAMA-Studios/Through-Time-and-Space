@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
 import com.code.tama.tts.Exteriors;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
@@ -47,7 +47,7 @@ public class SyncTARDISCapPacketS2C {
             if (Minecraft.getInstance().level != null) {
                 Minecraft.getInstance()
                         .level
-                        .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                         .ifPresent(cap -> {
                             cap.SetLightLevel(packet.LightLevel);
                             cap.SetExteriorLocation(new SpaceTimeCoordinate(packet.Location));

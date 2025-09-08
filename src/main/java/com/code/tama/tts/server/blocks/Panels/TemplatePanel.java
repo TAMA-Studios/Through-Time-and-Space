@@ -3,7 +3,8 @@ package com.code.tama.tts.server.blocks.Panels;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -173,7 +174,7 @@ public class TemplatePanel extends HorizontalDirectionalBlock {
 
         if (button == null) return InteractionResult.FAIL;
 
-        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+        world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case ONE:
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);

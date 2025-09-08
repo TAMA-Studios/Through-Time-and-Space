@@ -5,7 +5,7 @@ import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
@@ -45,7 +45,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
         if (monitor.getLevel() == null) return;
         int light = 0xf00f0;
         monitor.getLevel()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
                     poseStack.pushPose();
 

@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.blocks.monitor;
 
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.registries.UICategoryRegistry;
 import com.code.tama.tts.server.registries.UIComponentRegistry;
@@ -129,7 +129,7 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
             }
         });
 
-        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {});
+        world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {});
         return InteractionResult.SUCCESS;
     }
 }

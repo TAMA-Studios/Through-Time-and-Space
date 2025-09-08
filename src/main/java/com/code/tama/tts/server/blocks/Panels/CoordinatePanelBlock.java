@@ -4,7 +4,7 @@ package com.code.tama.tts.server.blocks.Panels;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,7 +168,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
             boolean Crouching = player.isCrouching();
             if (button == null) return InteractionResult.FAIL;
             else
-                world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+                world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
                     SpaceTimeCoordinate destination = tardisLevelCapability.GetDestination();
                     int DestOffset = tardisLevelCapability.GetIncrement();
                     switch (button) {

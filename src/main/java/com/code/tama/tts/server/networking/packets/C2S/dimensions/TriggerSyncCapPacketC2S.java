@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.dimensions;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import java.util.function.Supplier;
@@ -29,7 +29,7 @@ public class TriggerSyncCapPacketC2S {
         context.enqueueWork(() -> {
             ServerLifecycleHooks.getCurrentServer()
                     .getLevel(packet.TARDISLevel)
-                    .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                    .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                     .ifPresent(cap -> Networking.sendPacketToDimension(
                             packet.TARDISLevel,
                             new SyncTARDISCapPacketS2C(

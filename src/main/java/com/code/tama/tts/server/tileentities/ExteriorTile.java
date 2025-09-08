@@ -9,7 +9,7 @@ import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.dimensions.DimensionManager;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.Exterior;
@@ -88,7 +88,7 @@ public class ExteriorTile extends BlockEntity {
                     ((ExteriorBlock) state.getBlock()).SetInteriorKey(tardisLevel.dimension());
 
                     tardisLevel
-                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                            .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                             .ifPresent((cap) -> {
                                 cap.SetExteriorTile(exteriorTile);
                                 cap.SetCurrentLevel(exteriorTile.getLevel().dimension());
@@ -110,7 +110,7 @@ public class ExteriorTile extends BlockEntity {
                     && level.getServer().getLevel(exteriorTile.GetInterior()) != null) {
                 level.getServer()
                         .getLevel(exteriorTile.GetInterior())
-                        .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                         .ifPresent(cap -> {
                             if ((!exteriorTile
                                             .getBlockPos()
@@ -220,7 +220,7 @@ public class ExteriorTile extends BlockEntity {
         if (this.INTERIOR_DIMENSION == null) return;
         ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
         assert Interior != null;
-        Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+        Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             MinecraftForge.EVENT_BUS.post(
                     new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
             float X, Y, Z;
@@ -376,7 +376,7 @@ public class ExteriorTile extends BlockEntity {
         if (this.level instanceof ServerLevel serverLevel) {
             ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
             if (level1 != null) {
-                level1.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                         .ifPresent(cap -> {
                             this.ModelIndex = cap.GetExteriorModel().GetModelName();
                             this.Variant = cap.GetExteriorVariant();

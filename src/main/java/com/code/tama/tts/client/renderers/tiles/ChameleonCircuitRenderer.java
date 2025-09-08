@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -38,7 +38,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
         if (chameleonCircuit.getLevel() == null) return;
         chameleonCircuit
                 .getLevel()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
                     cap.GetExteriorVariant().GetModelName();
 

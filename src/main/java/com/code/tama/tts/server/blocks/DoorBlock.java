@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
@@ -73,7 +73,7 @@ public class DoorBlock extends Block implements EntityBlock {
             @NotNull BlockPos blockPos,
             @NotNull BlockState blockState,
             boolean p_60570_) {
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             cap.SetDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
             Direction direction = state.getValue(FACING);
             // float yRot = switch (direction) {
@@ -99,15 +99,15 @@ public class DoorBlock extends Block implements EntityBlock {
     }
 
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
-        if (Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).isPresent())
+        if (Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
             MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(
-                    Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                    Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                             .orElse(null),
                     TardisEvent.State.START,
                     EntityToTeleport));
         if (EntityToTeleport.level().isClientSide) return;
         try {
-            Interior.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+            Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
                 BlockPos pos = cap.GetExteriorLocation().GetBlockPos().north(1);
                 if (Interior.getServer()
                                 .getLevel(cap.GetCurrentLevel())
