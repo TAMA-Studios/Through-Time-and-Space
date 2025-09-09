@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public abstract class AbstractConsoleTile extends BlockEntity {
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
         if (blockEntity instanceof ConsoleTile consoleTile) {
-            level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 if (level.isClientSide)
                     consoleTile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int)
                             level.getGameTime());

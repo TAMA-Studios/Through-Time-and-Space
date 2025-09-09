@@ -5,7 +5,8 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
+
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -143,7 +144,7 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
         state.setValue(POWERED, Power);
 
         AtomicReference<SoundState> soundState = new AtomicReference<>(SoundState.FAIL);
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             POWER:
             if (!cap.IsInFlight()) {
                 cap.Dematerialize();

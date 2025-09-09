@@ -5,7 +5,7 @@ import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.ARSStructure;
 import com.code.tama.tts.server.registries.ARSRegistry;
 import java.util.ArrayList;
@@ -181,7 +181,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         BlockPos posToPlace = new BlockPos(
                 MathUtils.RoundTo48(pos.getX()), MathUtils.RoundTo48(pos.getY()), MathUtils.RoundTo48(pos.getZ()));
 
-        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+        world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MODE:
                     if (player.isCrouching()) {

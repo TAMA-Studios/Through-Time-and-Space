@@ -6,7 +6,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
@@ -50,7 +50,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        event.level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Tick);
+        event.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Tick);
     }
 
     @SubscribeEvent

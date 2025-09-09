@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.ExampleTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.LightTexture;
@@ -31,7 +31,7 @@ public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
 
         // If the TARDIS level cap is present
         example.getLevel()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
                     // Do all of this ("cap" is the TARDIS level capability)
                     poseStack.pushPose();

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -31,7 +31,7 @@ public class ControlClickedPacketC2S {
                     context.get()
                             .getSender()
                             .level()
-                            .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                            .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                             .orElse(null),
                     context.get().getSender());
         });

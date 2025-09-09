@@ -13,10 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -29,6 +26,8 @@ public class Capabilities {
 
     public static final ResourceLocation TARDIS_LEVEL_KEY = new ResourceLocation(MODID, "tardis");
     public static final ResourceLocation FRAGMENT_LINKS = new ResourceLocation(MODID, "fragment_links");
+    public static final Capability<ITARDISLevel> TARDIS_LEVEL_CAPABILITY =
+            CapabilityManager.get(new CapabilityToken<>() {});
 
     public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
         return object == null ? LazyOptional.empty() : object.getCapability(cap);
@@ -57,7 +56,7 @@ public class Capabilities {
             event.addCapability(
                     Capabilities.TARDIS_LEVEL_KEY,
                     new SerializableLevelCapabilityProvider<>(
-                            CapabilityConstants.TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
+                            TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
         }
 
         @SubscribeEvent

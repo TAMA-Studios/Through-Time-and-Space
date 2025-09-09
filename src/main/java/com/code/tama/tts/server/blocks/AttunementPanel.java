@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.items.SonicItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class AttunementPanel extends Block {
             @NotNull Player player,
             @NotNull InteractionHand p_60507_,
             @NotNull BlockHitResult p_60508_) {
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardis -> {
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardis -> {
             if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
                 ItemStack sonic = player.getMainHandItem();
                 sonicItem.Attune(tardis, sonic);

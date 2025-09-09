@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.AnimationState;
@@ -21,7 +21,7 @@ public class HartnellRotorTile extends TickingTile {
     @Override
     public void tick() {
         assert level != null;
-        level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             if (level.isClientSide)
                 this.getRotorAnimationState().animateWhen(cap.ShouldPlayRotorAnimation(), (int) level.getGameTime());
             if (cap.ShouldPlayRotorAnimation()) {

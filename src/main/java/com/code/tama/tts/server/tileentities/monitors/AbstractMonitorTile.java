@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.tileentities.monitors;
 
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +61,7 @@ public abstract class AbstractMonitorTile extends BlockEntity {
     @Override
     public void onLoad() {
         this.getLevel()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(ITARDISLevel::UpdateClient);
         super.onLoad();
     }

@@ -5,7 +5,7 @@ import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
@@ -193,7 +193,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 
         if (button == null) return InteractionResult.FAIL;
 
-        world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+        world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MINUS:
                     tardisLevelCapability.SetExteriorModel(

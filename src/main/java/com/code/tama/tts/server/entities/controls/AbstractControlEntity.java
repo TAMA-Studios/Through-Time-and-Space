@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.entities.controls;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
@@ -70,7 +70,7 @@ public abstract class AbstractControlEntity extends Entity {
         Networking.sendToServer(new ControlHitPacketC2S(this.uuid));
         source.getEntity()
                 .level()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(c -> this.OnControlHit(c, source.getEntity()));
         return false;
     }

@@ -4,7 +4,7 @@ package com.code.tama.tts.server.blocks.Panels;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.enums.Controls;
 import com.code.tama.tts.server.misc.GrammarNazi;
 import java.util.ArrayList;
@@ -180,7 +180,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 
             if (button == null) return InteractionResult.FAIL;
 
-            world.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+            world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
                 switch (button) {
                     case INCREMENT:
                         tardisLevelCapability.SetIncrement(tardisLevelCapability.GetNextIncrement());

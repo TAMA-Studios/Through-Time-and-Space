@@ -3,7 +3,7 @@ package com.code.tama.tts.client.UI.category;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.capabilities.CapabilityConstants;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,7 +25,7 @@ public class LocationUICategory extends UICategory {
     public void Render(
             AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
         monitor.getLevel()
-                .getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
                     Font fontRenderer = Minecraft.getInstance().font;
 
