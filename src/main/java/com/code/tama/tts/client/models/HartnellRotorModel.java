@@ -19,7 +19,9 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
 public class HartnellRotorModel<T extends HartnellRotorTile> extends HierarchicalModel<Entity>
         implements IAnimateableModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into
@@ -354,7 +356,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
 
     @Override
     public void setupAnim(
-            Entity entity,
+            @NotNull Entity entity,
             float limbSwing,
             float limbSwingAmount,
             float ageInTicks,
@@ -363,8 +365,8 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
 
     @Override
     public void renderToBuffer(
-            PoseStack poseStack,
-            VertexConsumer vertexConsumer,
+            @NotNull PoseStack poseStack,
+            @NotNull VertexConsumer vertexConsumer,
             int packedLight,
             int packedOverlay,
             float red,
@@ -375,7 +377,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
     }
 
     @Override
-    public ModelPart root() {
+    public @NotNull ModelPart root() {
         return this.root;
     }
 

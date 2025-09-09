@@ -46,6 +46,14 @@ public class MConfiguredFeatures {
                         TTSBlocks.DEEPSLATE_ZEITON_ORE.get().defaultBlockState()));
 
         register(context, OVERWORLD_ZEITON_ORE_KEY, Feature.ORE, new OreConfiguration(overworldSapphireOres, 9));
+
+        //        register(context, OVERWORLD_ZEITON_ORE_KEY, Feature.ORE, new OreConfiguration(
+        //                stoneReplaceable, TTSBlocks.ZEITON_ORE.get().defaultBlockState(), 20));
+        //
+        //
+        //        register(context, OVERWORLD_ZEITON_ORE_KEY, Feature.ORE, new OreConfiguration(
+        //                deepslateReplaceables, TTSBlocks.DEEPSLATE_ZEITON_ORE.get().defaultBlockState(), 20));
+
         register(
                 context,
                 NETHER_ZEITON_ORE_KEY,

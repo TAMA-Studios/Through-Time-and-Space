@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -159,8 +160,10 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         BlockPos blockPos = this.getBlockPos();
         Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
         this.GetControlList().getPositionSizeMap().forEach((record) -> {
-            Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY(), record.minZ()));
-            ModularControl entity = new ModularControl(level, this, record);
+            boolean isOnSlab = level.getBlockState(this.worldPosition.below()).getBlock() instanceof SlabBlock;
+            Vec3 summonPos =
+                    centerPos.add(new Vec3(record.minX(), record.minY() - (isOnSlab ? 0.5 : 0), record.minZ()));
+            ModularControl entity = new ModularControl(level, this, record, isOnSlab);
             entity.setPos(summonPos);
             level.addFreshEntity(entity);
             this.ControlSize++;

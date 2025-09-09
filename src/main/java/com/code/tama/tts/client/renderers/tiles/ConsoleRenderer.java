@@ -16,11 +16,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.SlabBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
         implements BlockEntityRenderer<T> {
     public static ResourceLocation TEXTURE;
+    public static ResourceLocation EMMISIVE;
     public final C MODEL;
 
     public ConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
@@ -37,11 +39,18 @@ public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<
             int combinedOverlay) {
 
         TEXTURE = new ResourceLocation(MODID, "textures/tiles/console/hudolin_console.png");
+        EMMISIVE = new ResourceLocation(MODID, "textures/tiles/console/hudolin_emmisives.png");
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
-        poseStack.translate(-0.5, -1.5, 0.5);
+        poseStack.translate(-0.5, 0, 0.5);
+        if (ConsoleTile.getLevel() != null)
+            if (ConsoleTile.getLevel()
+                            .getBlockState(ConsoleTile.getBlockPos().below())
+                            .getBlock()
+                    instanceof SlabBlock) poseStack.translate(0, 0.5, 0);
+
         poseStack.scale(1f, 1f, 1f);
         float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
         this.MODEL.SetupAnimations(ConsoleTile, ticks);
@@ -49,6 +58,16 @@ public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<
                 poseStack,
                 bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE)),
                 combinedLight,
+                OverlayTexture.NO_OVERLAY,
+                1.0f,
+                1.0f,
+                1.0f,
+                1.0f);
+
+        this.MODEL.renderToBuffer(
+                poseStack,
+                bufferSource.getBuffer(RenderType.entityTranslucent(EMMISIVE)),
+                0xf000f0,
                 OverlayTexture.NO_OVERLAY,
                 1.0f,
                 1.0f,

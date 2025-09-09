@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class TTSModern<T extends BlockEntity> implements IUseJavaJSON, BlockEntityRenderer<T> {
     public TTSModern() {
@@ -23,7 +24,7 @@ public class TTSModern<T extends BlockEntity> implements IUseJavaJSON, BlockEnti
 
     @Override
     public void render(
-            T exampleTileEntity, float v, PoseStack poseStack, MultiBufferSource bufferSource, int i, int i1) {
+            @NotNull T exampleTileEntity, float v, PoseStack poseStack, MultiBufferSource bufferSource, int i, int i1) {
         poseStack.pushPose();
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(XP.rotationDegrees(180));

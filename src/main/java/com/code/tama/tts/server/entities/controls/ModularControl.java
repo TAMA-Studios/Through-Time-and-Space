@@ -47,11 +47,12 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         super(modularControlEntityType, level);
     }
 
-    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
+    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record, boolean IsOnSlab) {
         super(TTSEntities.MODULAR_CONTROL.get(), level);
-        this.Position = new Vec3(record.minX(), record.minY(), record.minZ());
-        this.size = new AABB(0, 0, 0, record.maxX(), record.maxY(), record.maxZ());
-        this.SetDimensions(EntityDimensions.scalable(record.maxX(), record.maxY()));
+        this.Position = new Vec3(record.minX(), record.minY() - (IsOnSlab ? 0.5 : 0), record.minZ());
+        double Y = record.maxY() - (IsOnSlab ? 0.5 : 0);
+        this.size = new AABB(0, 0 - (IsOnSlab ? 0.5 : 0), 0, record.maxX(), Y, record.maxZ());
+        this.SetDimensions(EntityDimensions.scalable(record.maxX(), (float) Y));
         this.consoleTile = consoleTile;
         this.SetIdentifier(record.ID());
     }

@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
+@SuppressWarnings("deprecation")
 public class TTSItems {
     public static final RegistryObject<Item> CONSOLE_TILE;
 
@@ -27,6 +28,10 @@ public class TTSItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, MODID);
 
     public static final RegistryObject<Item> RAW_ZEITON;
+
+    public static final RegistryObject<Item> BASIC_CONTROL_CIRCUIT;
+
+    public static final RegistryObject<Item> ADVANCED_CONTROL_CIRCUIT;
 
     public static final RegistryObject<SonicItem> SONIC_SCREWDRIVER;
 
@@ -56,5 +61,9 @@ public class TTSItems {
         SONIC_SCREWDRIVER = ITEMS.register("sonic_screwdriver", () -> new SonicItem(new Item.Properties()));
 
         BASIC_NOZZLE = ITEMS.register("basic_nozzle", NozzleItem::new);
+
+        BASIC_CONTROL_CIRCUIT = ITEMS.register("basic_control_circuit", () -> new Item(new Item.Properties()));
+
+        ADVANCED_CONTROL_CIRCUIT = ITEMS.register("advanced_control_circuit", () -> new Item(new Item.Properties()));
     }
 }

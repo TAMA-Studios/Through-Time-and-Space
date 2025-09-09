@@ -33,6 +33,7 @@ public class FacingControl extends AbstractControl {
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         itardisLevel.SetDestinationFacing(itardisLevel.NextDestinationFacing());
+        this.SetAnimationState(itardisLevel.GetDestinationFacing().toYRot());
         return InteractionResult.SUCCESS;
     }
 }

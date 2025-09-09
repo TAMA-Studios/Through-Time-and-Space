@@ -3,6 +3,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.animations.consoles.HudolinConsoleAnimation;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
@@ -17,19 +18,231 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
 public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalModel<Entity>
         implements IAnimateableModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION =
-            new ModelLayerLocation(new ResourceLocation("modid", "hudolinconsole"), "main");
+            new ModelLayerLocation(new ResourceLocation(TTSMod.MODID, "hudolinconsolemodel"), "main");
+
+    private final ModelPart console;
+    private final ModelPart root;
+    private final ModelPart console_plinth_one;
+    private final ModelPart console_plinth_two;
+    private final ModelPart console_plinth_two2;
+    private final ModelPart bone11;
+    private final ModelPart bone12;
+    private final ModelPart bone13;
+    private final ModelPart bone14;
+    private final ModelPart bone15;
+    private final ModelPart bone16;
+    private final ModelPart console_plinth_three;
+    private final ModelPart clawlegs;
+    private final ModelPart clawlegs2;
+    private final ModelPart clawlegs3;
+    private final ModelPart under_console_struts;
+    private final ModelPart console_corners;
+    private final ModelPart console_collar_one;
+    private final ModelPart console_collar_two;
+    private final ModelPart bone17;
+    private final ModelPart bone18;
+    private final ModelPart bone19;
+    private final ModelPart bone20;
+    private final ModelPart bone21;
+    private final ModelPart bone22;
+    private final ModelPart panel;
+    private final ModelPart panel2;
+    private final ModelPart panel3;
+    private final ModelPart panel4;
+    private final ModelPart panel5;
+    private final ModelPart panel6;
+    private final ModelPart bone2;
+    private final ModelPart bone3;
+    private final ModelPart bone4;
+    private final ModelPart bone;
+    private final ModelPart base;
+    private final ModelPart bottom_rotor;
+    private final ModelPart bottom_rotor_ring;
+    private final ModelPart bone29;
+    private final ModelPart bone30;
+    private final ModelPart bone31;
+    private final ModelPart bone32;
+    private final ModelPart bone33;
+    private final ModelPart bone34;
+    private final ModelPart top_rotor;
+    private final ModelPart top_rotor_ring;
+    private final ModelPart bone35;
+    private final ModelPart bone36;
+    private final ModelPart bone37;
+    private final ModelPart bone38;
+    private final ModelPart bone39;
+    private final ModelPart bone40;
+    private final ModelPart upper_console_one;
+    private final ModelPart bone23;
+    private final ModelPart bone24;
+    private final ModelPart bone25;
+    private final ModelPart bone26;
+    private final ModelPart bone27;
+    private final ModelPart bone28;
+    private final ModelPart upper_console_two;
+    private final ModelPart ConsoleCollarTwo3;
+    private final ModelPart ConsoleCollarOne6;
+    private final ModelPart panel_two_glowies;
+    private final ModelPart bone5;
+    private final ModelPart bone6;
+    private final ModelPart dials;
+    private final ModelPart crank_lever;
+    private final ModelPart bone7;
+    private final ModelPart buttons;
+    private final ModelPart control_two;
+    private final ModelPart panel_three_lights;
+    private final ModelPart control_three;
+    private final ModelPart control_four;
+    private final ModelPart bone8;
+    private final ModelPart bone9;
+    private final ModelPart bone10;
+    private final ModelPart useless_ass_panel;
+    private final ModelPart lamp;
+    private final ModelPart throttle;
+    private final ModelPart handbrake;
+    private final ModelPart x;
+    private final ModelPart y;
+    private final ModelPart z;
+    private final ModelPart increment;
+    private final ModelPart randomiser;
+    private final ModelPart communicator;
+    private final ModelPart monitor;
+    private final ModelPart refuller;
+    private final ModelPart door_control;
+    private final ModelPart dimension_changer;
+    private final ModelPart exterior_facing;
+    private final ModelPart fast_return_switch;
+    private final ModelPart glowies;
+    private final ModelPart bone42;
+    private final ModelPart bone41;
+    private final ModelPart bone43;
+    private final ModelPart bone44;
+    private final ModelPart bone45;
+    private final ModelPart bone46;
+    private final ModelPart bone47;
+    private final ModelPart bone48;
+    private final ModelPart bone49;
+
+    public HudolinConsoleModel(ModelPart root) {
+        this.console = root.getChild("console");
+        this.root = this.console.getChild("root");
+        this.console_plinth_one = this.root.getChild("console_plinth_one");
+        this.console_plinth_two = this.root.getChild("console_plinth_two");
+        this.console_plinth_two2 = this.console_plinth_two.getChild("console_plinth_two2");
+        this.bone11 = this.console_plinth_two2.getChild("bone11");
+        this.bone12 = this.console_plinth_two2.getChild("bone12");
+        this.bone13 = this.console_plinth_two2.getChild("bone13");
+        this.bone14 = this.console_plinth_two2.getChild("bone14");
+        this.bone15 = this.console_plinth_two2.getChild("bone15");
+        this.bone16 = this.console_plinth_two2.getChild("bone16");
+        this.console_plinth_three = this.root.getChild("console_plinth_three");
+        this.clawlegs = this.root.getChild("clawlegs");
+        this.clawlegs2 = this.root.getChild("clawlegs2");
+        this.clawlegs3 = this.root.getChild("clawlegs3");
+        this.under_console_struts = this.root.getChild("under_console_struts");
+        this.console_corners = this.root.getChild("console_corners");
+        this.console_collar_one = this.root.getChild("console_collar_one");
+        this.console_collar_two = this.root.getChild("console_collar_two");
+        this.bone17 = this.console_collar_two.getChild("bone17");
+        this.bone18 = this.console_collar_two.getChild("bone18");
+        this.bone19 = this.console_collar_two.getChild("bone19");
+        this.bone20 = this.console_collar_two.getChild("bone20");
+        this.bone21 = this.console_collar_two.getChild("bone21");
+        this.bone22 = this.console_collar_two.getChild("bone22");
+        this.panel = this.root.getChild("panel");
+        this.panel2 = this.root.getChild("panel2");
+        this.panel3 = this.root.getChild("panel3");
+        this.panel4 = this.root.getChild("panel4");
+        this.panel5 = this.root.getChild("panel5");
+        this.panel6 = this.root.getChild("panel6");
+        this.bone2 = this.root.getChild("bone2");
+        this.bone3 = this.root.getChild("bone3");
+        this.bone4 = this.root.getChild("bone4");
+        this.bone = this.root.getChild("bone");
+        this.base = this.root.getChild("base");
+        this.bottom_rotor = this.root.getChild("bottom_rotor");
+        this.bottom_rotor_ring = this.bottom_rotor.getChild("bottom_rotor_ring");
+        this.bone29 = this.bottom_rotor_ring.getChild("bone29");
+        this.bone30 = this.bottom_rotor_ring.getChild("bone30");
+        this.bone31 = this.bottom_rotor_ring.getChild("bone31");
+        this.bone32 = this.bottom_rotor_ring.getChild("bone32");
+        this.bone33 = this.bottom_rotor_ring.getChild("bone33");
+        this.bone34 = this.bottom_rotor_ring.getChild("bone34");
+        this.top_rotor = this.root.getChild("top_rotor");
+        this.top_rotor_ring = this.top_rotor.getChild("top_rotor_ring");
+        this.bone35 = this.top_rotor_ring.getChild("bone35");
+        this.bone36 = this.top_rotor_ring.getChild("bone36");
+        this.bone37 = this.top_rotor_ring.getChild("bone37");
+        this.bone38 = this.top_rotor_ring.getChild("bone38");
+        this.bone39 = this.top_rotor_ring.getChild("bone39");
+        this.bone40 = this.top_rotor_ring.getChild("bone40");
+        this.upper_console_one = this.root.getChild("upper_console_one");
+        this.bone23 = this.upper_console_one.getChild("bone23");
+        this.bone24 = this.upper_console_one.getChild("bone24");
+        this.bone25 = this.upper_console_one.getChild("bone25");
+        this.bone26 = this.upper_console_one.getChild("bone26");
+        this.bone27 = this.upper_console_one.getChild("bone27");
+        this.bone28 = this.upper_console_one.getChild("bone28");
+        this.upper_console_two = this.root.getChild("upper_console_two");
+        this.ConsoleCollarTwo3 = this.root.getChild("ConsoleCollarTwo3");
+        this.ConsoleCollarOne6 = this.root.getChild("ConsoleCollarOne6");
+        this.panel_two_glowies = this.root.getChild("panel_two_glowies");
+        this.bone5 = this.root.getChild("bone5");
+        this.bone6 = this.root.getChild("bone6");
+        this.dials = this.bone6.getChild("dials");
+        this.crank_lever = this.root.getChild("crank_lever");
+        this.bone7 = this.root.getChild("bone7");
+        this.buttons = this.root.getChild("buttons");
+        this.control_two = this.root.getChild("control_two");
+        this.panel_three_lights = this.root.getChild("panel_three_lights");
+        this.control_three = this.root.getChild("control_three");
+        this.control_four = this.root.getChild("control_four");
+        this.bone8 = this.root.getChild("bone8");
+        this.bone9 = this.root.getChild("bone9");
+        this.bone10 = this.root.getChild("bone10");
+        this.useless_ass_panel = this.root.getChild("useless_ass_panel");
+        this.lamp = this.root.getChild("lamp");
+        this.throttle = this.root.getChild("throttle");
+        this.handbrake = this.root.getChild("handbrake");
+        this.x = this.root.getChild("x");
+        this.y = this.root.getChild("y");
+        this.z = this.root.getChild("z");
+        this.increment = this.root.getChild("increment");
+        this.randomiser = this.root.getChild("randomiser");
+        this.communicator = this.root.getChild("communicator");
+        this.monitor = this.root.getChild("monitor");
+        this.refuller = this.root.getChild("refuller");
+        this.door_control = this.root.getChild("door_control");
+        this.dimension_changer = this.root.getChild("dimension_changer");
+        this.exterior_facing = this.root.getChild("exterior_facing");
+        this.fast_return_switch = this.root.getChild("fast_return_switch");
+        this.glowies = this.root.getChild("glowies");
+        this.bone42 = this.root.getChild("bone42");
+        this.bone41 = this.root.getChild("bone41");
+        this.bone43 = this.root.getChild("bone43");
+        this.bone44 = this.root.getChild("bone44");
+        this.bone45 = this.root.getChild("bone45");
+        this.bone46 = this.root.getChild("bone46");
+        this.bone47 = this.root.getChild("bone47");
+        this.bone48 = this.root.getChild("bone48");
+        this.bone49 = this.root.getChild("bone49");
+    }
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
+        PartDefinition console = partdefinition.addOrReplaceChild(
+                "console", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+
         PartDefinition root =
-                partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+                console.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
         PartDefinition cube_r1 = root.addOrReplaceChild(
                 "cube_r1",
@@ -369,7 +582,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(0.0F, 26.7F, 0.0F, -3.1416F, 0.0F, 3.1416F));
 
         PartDefinition clawlegs = root.addOrReplaceChild(
-                "clawlegs", CubeListBuilder.create(), PartPose.offset(-6.2419F, 4.3721F, 3.8953F));
+                "clawlegs", CubeListBuilder.create(), PartPose.offset(-6.2419F, 4.3721F, 3.8952F));
 
         PartDefinition cube_r16 = clawlegs.addOrReplaceChild(
                 "cube_r16",
@@ -397,7 +610,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
         PartDefinition clawlegs2 = root.addOrReplaceChild(
                 "clawlegs2",
                 CubeListBuilder.create(),
-                PartPose.offsetAndRotation(-0.0919F, 4.3721F, -7.1797F, 0.0F, -2.0944F, 0.0F));
+                PartPose.offsetAndRotation(-0.0919F, 4.3721F, -7.1798F, 0.0F, -2.0944F, 0.0F));
 
         PartDefinition cube_r19 = clawlegs2.addOrReplaceChild(
                 "cube_r19",
@@ -712,7 +925,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "cube_r35",
                 CubeListBuilder.create()
                         .texOffs(0, 30)
-                        .addBox(-11.3F, -6.1321F, 4.799F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
+                        .addBox(-11.3F, -6.1321F, 4.7989F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(1.0371F, -2.2283F, -0.8187F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition panel3 = root.addOrReplaceChild(
@@ -726,7 +939,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "cube_r36",
                 CubeListBuilder.create()
                         .texOffs(0, 30)
-                        .addBox(-11.5F, -6.1321F, 4.799F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
+                        .addBox(-11.5F, -6.1321F, 4.7989F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(1.0371F, -2.2283F, -0.8187F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition panel4 = root.addOrReplaceChild(
@@ -740,7 +953,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "cube_r37",
                 CubeListBuilder.create()
                         .texOffs(0, 30)
-                        .addBox(-11.5F, -6.1321F, 4.799F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
+                        .addBox(-11.5F, -6.1321F, 4.7989F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(1.0371F, -2.2283F, -0.8187F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition panel5 = root.addOrReplaceChild(
@@ -754,7 +967,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "cube_r38",
                 CubeListBuilder.create()
                         .texOffs(0, 30)
-                        .addBox(-11.5F, -6.1321F, 4.799F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
+                        .addBox(-11.5F, -6.1321F, 4.7989F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(1.0371F, -2.2283F, -0.8187F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition panel6 = root.addOrReplaceChild(
@@ -768,7 +981,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "cube_r39",
                 CubeListBuilder.create()
                         .texOffs(0, 30)
-                        .addBox(-11.5F, -6.1321F, 4.799F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
+                        .addBox(-11.5F, -6.1321F, 4.7989F, 21.0F, 0.0F, 13.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(1.0371F, -2.2283F, -0.8187F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition bone2 = root.addOrReplaceChild(
@@ -791,7 +1004,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(12.2802F, 2.7799F, -6.2383F, 0.0F, 0.0F, 0.9163F));
 
         PartDefinition bone3 = root.addOrReplaceChild(
-                "bone3", CubeListBuilder.create(), PartPose.offset(-6.3884F, -20.7191F, 11.8912F));
+                "bone3", CubeListBuilder.create(), PartPose.offset(-6.3884F, -20.719F, 11.8912F));
 
         PartDefinition corner_r9 = bone3.addOrReplaceChild(
                 "corner_r9",
@@ -810,7 +1023,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
         PartDefinition bone4 = root.addOrReplaceChild(
                 "bone4",
                 CubeListBuilder.create(),
-                PartPose.offsetAndRotation(-6.9884F, -20.7191F, -11.4088F, 0.0F, -2.0944F, 0.0F));
+                PartPose.offsetAndRotation(-6.9884F, -20.719F, -11.4088F, 0.0F, -2.0944F, 0.0F));
 
         PartDefinition corner_r11 = bone4.addOrReplaceChild(
                 "corner_r11",
@@ -824,25 +1037,25 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 CubeListBuilder.create()
                         .texOffs(80, 116)
                         .addBox(-11.0181F, 5.2816F, -0.0915F, 3.0F, 14.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(8.6884F, 2.7191F, -12.2912F, 0.0F, 0.0F, 0.9163F));
+                PartPose.offsetAndRotation(8.6884F, 2.719F, -12.2912F, 0.0F, 0.0F, 0.9163F));
 
         PartDefinition bone = root.addOrReplaceChild(
                 "bone",
                 CubeListBuilder.create()
                         .texOffs(118, 118)
-                        .addBox(-13.7738F, 5.9336F, 4.6663F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
+                        .addBox(-13.7738F, 5.9336F, 4.6664F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
                         .texOffs(120, 59)
                         .addBox(-13.2808F, 5.2736F, 5.1563F, 4.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
                         .texOffs(108, 84)
                         .addBox(-13.2808F, 5.0736F, 6.1563F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offset(6.6188F, -21.6496F, 12.4767F));
+                PartPose.offset(6.6188F, -21.6496F, 12.4766F));
 
         PartDefinition cube_r40 = bone.addOrReplaceChild(
                 "cube_r40",
                 CubeListBuilder.create()
                         .texOffs(118, 113)
                         .addBox(-2.4855F, -0.41F, -1.9865F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-1.4083F, 6.6436F, 5.6878F, -0.0436F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(-1.4083F, 6.6436F, 5.6879F, -0.0436F, 0.0F, 0.0F));
 
         PartDefinition cube_r41 = bone.addOrReplaceChild(
                 "cube_r41",
@@ -861,7 +1074,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                         .addBox(3.72F, -0.525F, 2.678F, 3.0F, 0.0F, 2.0F, new CubeDeformation(0.0F))
                         .texOffs(68, 36)
                         .addBox(-7.14F, -0.6F, 5.42F, 15.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-6.9538F, 1.3496F, -2.3367F, -0.7418F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(-6.9538F, 1.3496F, -2.3366F, -0.7418F, 0.0F, 0.0F));
 
         PartDefinition base = root.addOrReplaceChild(
                 "base",
@@ -875,7 +1088,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 CubeListBuilder.create()
                         .texOffs(116, 0)
                         .addBox(-3.0F, -4.1F, -0.5F, 6.0F, 9.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-5.0887F, -4.918F, 3.1862F, 0.0F, -1.0472F, 0.0F));
+                PartPose.offsetAndRotation(-5.0886F, -4.918F, 3.1862F, 0.0F, -1.0472F, 0.0F));
 
         PartDefinition cube_r43 = base.addOrReplaceChild(
                 "cube_r43",
@@ -1040,7 +1253,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 CubeListBuilder.create()
                         .texOffs(96, 116)
                         .addBox(-0.525F, -10.0F, -0.85F, 1.0F, 16.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(2.137F, -7.16F, -1.9058F, 0.0F, 1.5708F, 0.0F));
+                PartPose.offsetAndRotation(2.137F, -7.16F, -1.9059F, 0.0F, 1.5708F, 0.0F));
 
         PartDefinition cube_r59 = top_rotor.addOrReplaceChild(
                 "cube_r59",
@@ -1404,7 +1617,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.7418F, -2.0944F, 0.0F));
 
         PartDefinition bone6 = root.addOrReplaceChild(
-                "bone6", CubeListBuilder.create(), PartPose.offset(4.5826F, -19.6656F, -13.8459F));
+                "bone6", CubeListBuilder.create(), PartPose.offset(4.5827F, -19.6656F, -13.8459F));
 
         PartDefinition lights_right_r1 = bone6.addOrReplaceChild(
                 "lights_right_r1",
@@ -1413,10 +1626,10 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                         .addBox(5.8F, -2.4F, 0.1F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0F))
                         .texOffs(116, 33)
                         .addBox(-2.4F, -2.4F, 0.1F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-8.2376F, 0.1919F, 1.8456F, -0.829F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(-8.2377F, 0.1919F, 1.8456F, -0.829F, 0.0F, 0.0F));
 
         PartDefinition dials = bone6.addOrReplaceChild(
-                "dials", CubeListBuilder.create(), PartPose.offset(-4.7026F, -3.6492F, 3.3765F));
+                "dials", CubeListBuilder.create(), PartPose.offset(-4.7027F, -3.6492F, 3.3765F));
 
         PartDefinition cube_r77 = dials.addOrReplaceChild(
                 "cube_r77",
@@ -1430,7 +1643,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.829F, 0.0F, 0.0F));
 
         PartDefinition crank_lever = root.addOrReplaceChild(
-                "crank_lever", CubeListBuilder.create(), PartPose.offset(4.5826F, -19.6656F, -13.8459F));
+                "crank_lever", CubeListBuilder.create(), PartPose.offset(4.5827F, -19.6656F, -13.8459F));
 
         PartDefinition base_r1 = crank_lever.addOrReplaceChild(
                 "base_r1",
@@ -1447,6 +1660,8 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
         PartDefinition base_r2 = bone7.addOrReplaceChild(
                 "base_r2",
                 CubeListBuilder.create()
+                        .texOffs(28, 140)
+                        .addBox(-1.84F, -4.54F, -0.22F, 3.0F, 7.0F, 0.0F, new CubeDeformation(0.0F))
                         .texOffs(54, 128)
                         .addBox(-1.84F, -4.54F, -0.02F, 3.0F, 7.0F, 0.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.829F, 0.0F, 0.0F));
@@ -1455,8 +1670,8 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 "switches_r1",
                 CubeListBuilder.create()
                         .texOffs(100, 116)
-                        .addBox(-0.5F, -3.5F, -0.5F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-0.3176F, 1.6204F, 0.355F, -0.9959F, 0.4981F, -0.6353F));
+                        .addBox(-0.5F, -3.5F, -1.0F, 0.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(0.1823F, 1.6204F, 0.355F, -0.829F, 0.0F, 0.0F));
 
         PartDefinition buttons = root.addOrReplaceChild(
                 "buttons", CubeListBuilder.create(), PartPose.offset(1.115F, -18.0429F, -17.24F));
@@ -1699,15 +1914,8 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                         .texOffs(138, 72)
                         .addBox(-0.5104F, 2.5259F, -1.4577F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                         .texOffs(48, 134)
-                        .addBox(-0.5104F, -0.4555F, -0.4753F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
+                        .addBox(-0.5104F, -0.4554F, -0.4753F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
                 PartPose.offsetAndRotation(0.011F, 0.2711F, 0.0615F, -1.5708F, -0.0107F, 0.0091F));
-
-        PartDefinition lever_section_1_r1 = handbrake.addOrReplaceChild(
-                "lever_section_1_r1",
-                CubeListBuilder.create()
-                        .texOffs(48, 134)
-                        .addBox(-0.5F, -3.5F, 0.3F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(-0.0133F, 1.6435F, -2.453F, -0.829F, -0.0107F, 0.0091F));
 
         PartDefinition x =
                 root.addOrReplaceChild("x", CubeListBuilder.create(), PartPose.offset(12.3022F, -19.5876F, -6.1706F));
@@ -1823,34 +2031,34 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(-0.95F, 0.75F, 0.0F, -0.7418F, 1.0472F, 0.0F));
 
         PartDefinition glowies = root.addOrReplaceChild(
-                "glowies", CubeListBuilder.create(), PartPose.offset(-11.2607F, -17.8381F, 6.5058F));
+                "glowies", CubeListBuilder.create(), PartPose.offset(-11.2607F, -17.838F, 6.5058F));
 
         PartDefinition cube_r98 = glowies.addOrReplaceChild(
                 "cube_r98",
                 CubeListBuilder.create()
                         .texOffs(122, 139)
                         .addBox(-0.3F, -7.9067F, 11.9478F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(12.2107F, -2.9119F, -7.2808F, -0.7418F, -1.0472F, 0.0F));
+                PartPose.offsetAndRotation(12.2107F, -2.912F, -7.2808F, -0.7418F, -1.0472F, 0.0F));
 
         PartDefinition bone42 = root.addOrReplaceChild(
-                "bone42", CubeListBuilder.create(), PartPose.offset(-10.4607F, -17.7881F, 7.7798F));
+                "bone42", CubeListBuilder.create(), PartPose.offset(-10.4607F, -17.788F, 7.7798F));
 
         PartDefinition cube_r99 = bone42.addOrReplaceChild(
                 "cube_r99",
                 CubeListBuilder.create()
                         .texOffs(126, 139)
                         .addBox(1.2F, -7.9567F, 11.9478F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(11.4607F, -2.9119F, -8.5798F, -0.7418F, -1.0472F, 0.0F));
+                PartPose.offsetAndRotation(11.4607F, -2.912F, -8.5798F, -0.7418F, -1.0472F, 0.0F));
 
         PartDefinition bone41 = root.addOrReplaceChild(
-                "bone41", CubeListBuilder.create(), PartPose.offset(-11.9607F, -17.7881F, 5.1817F));
+                "bone41", CubeListBuilder.create(), PartPose.offset(-11.9607F, -17.788F, 5.1817F));
 
         PartDefinition cube_r100 = bone41.addOrReplaceChild(
                 "cube_r100",
                 CubeListBuilder.create()
                         .texOffs(126, 139)
                         .addBox(-1.8F, -7.9567F, 11.9478F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(12.9607F, -2.9119F, -5.9817F, -0.7418F, -1.0472F, 0.0F));
+                PartPose.offsetAndRotation(12.9607F, -2.912F, -5.9817F, -0.7418F, -1.0472F, 0.0F));
 
         PartDefinition bone43 = root.addOrReplaceChild(
                 "bone43", CubeListBuilder.create(), PartPose.offset(-11.8691F, -19.993F, -2.5036F));
@@ -1880,7 +2088,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 CubeListBuilder.create()
                         .texOffs(24, 124)
                         .addBox(-1.3F, -7.6067F, 7.3478F, 2.5F, 0.0F, 4.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(10.3941F, -0.707F, 6.0588F, -0.7418F, -2.0944F, 0.0F));
+                PartPose.offsetAndRotation(10.3941F, -0.707F, 6.0587F, -0.7418F, -2.0944F, 0.0F));
 
         PartDefinition bone46 = root.addOrReplaceChild(
                 "bone46", CubeListBuilder.create(), PartPose.offset(-8.1191F, -19.993F, -8.9988F));
@@ -1913,223 +2121,16 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
                 PartPose.offsetAndRotation(9.6887F, -0.0239F, 3.7174F, -0.7418F, -2.0944F, 0.0F));
 
         PartDefinition bone49 = root.addOrReplaceChild(
-                "bone49", CubeListBuilder.create(), PartPose.offset(-6.2387F, -21.4261F, -7.1154F));
+                "bone49", CubeListBuilder.create(), PartPose.offset(-6.2387F, -21.4261F, -7.1155F));
 
         PartDefinition cube_r107 = bone49.addOrReplaceChild(
                 "cube_r107",
                 CubeListBuilder.create()
                         .texOffs(130, 0)
                         .addBox(-2.375F, -7.9067F, 6.5728F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(8.1887F, -0.0239F, 6.3154F, -0.7418F, -2.0944F, 0.0F));
+                PartPose.offsetAndRotation(8.1887F, -0.0239F, 6.3155F, -0.7418F, -2.0944F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 256, 256);
-    }
-
-    private final ModelPart ConsoleCollarOne6;
-    private final ModelPart ConsoleCollarTwo3;
-    private final ModelPart base;
-    private final ModelPart bone;
-    private final ModelPart bone10;
-    private final ModelPart bone11;
-    private final ModelPart bone12;
-    private final ModelPart bone13;
-    private final ModelPart bone14;
-    private final ModelPart bone15;
-    private final ModelPart bone16;
-    private final ModelPart bone17;
-    private final ModelPart bone18;
-    private final ModelPart bone19;
-    private final ModelPart bone2;
-    private final ModelPart bone20;
-    private final ModelPart bone21;
-    private final ModelPart bone22;
-    private final ModelPart bone23;
-    private final ModelPart bone24;
-    private final ModelPart bone25;
-    private final ModelPart bone26;
-    private final ModelPart bone27;
-    private final ModelPart bone28;
-    private final ModelPart bone29;
-    private final ModelPart bone3;
-    private final ModelPart bone30;
-    private final ModelPart bone31;
-    private final ModelPart bone32;
-    private final ModelPart bone33;
-    private final ModelPart bone34;
-    private final ModelPart bone35;
-    private final ModelPart bone36;
-    private final ModelPart bone37;
-    private final ModelPart bone38;
-    private final ModelPart bone39;
-    private final ModelPart bone4;
-    private final ModelPart bone40;
-    private final ModelPart bone41;
-    private final ModelPart bone42;
-    private final ModelPart bone43;
-    private final ModelPart bone44;
-    private final ModelPart bone45;
-    private final ModelPart bone46;
-    private final ModelPart bone47;
-    private final ModelPart bone48;
-    private final ModelPart bone49;
-    private final ModelPart bone5;
-    private final ModelPart bone6;
-    private final ModelPart bone7;
-    private final ModelPart bone8;
-    private final ModelPart bone9;
-    private final ModelPart bottom_rotor;
-    private final ModelPart bottom_rotor_ring;
-    private final ModelPart buttons;
-    private final ModelPart clawlegs;
-    private final ModelPart clawlegs2;
-    private final ModelPart clawlegs3;
-    private final ModelPart communicator;
-    private final ModelPart console_collar_one;
-    private final ModelPart console_collar_two;
-    private final ModelPart console_corners;
-    private final ModelPart console_plinth_one;
-    private final ModelPart console_plinth_three;
-    private final ModelPart console_plinth_two;
-    private final ModelPart console_plinth_two2;
-    private final ModelPart control_four;
-    private final ModelPart control_three;
-    private final ModelPart control_two;
-    private final ModelPart crank_lever;
-    private final ModelPart dials;
-    private final ModelPart dimension_changer;
-    private final ModelPart door_control;
-    private final ModelPart exterior_facing;
-    private final ModelPart fast_return_switch;
-    private final ModelPart glowies;
-    private final ModelPart handbrake;
-    private final ModelPart increment;
-    private final ModelPart lamp;
-    private final ModelPart monitor;
-    private final ModelPart panel;
-    private final ModelPart panel2;
-    private final ModelPart panel3;
-    private final ModelPart panel4;
-    private final ModelPart panel5;
-    private final ModelPart panel6;
-    private final ModelPart panel_three_lights;
-    private final ModelPart panel_two_glowies;
-    private final ModelPart randomiser;
-    private final ModelPart refuller;
-    private final ModelPart root;
-    private final ModelPart throttle;
-    private final ModelPart top_rotor;
-    private final ModelPart top_rotor_ring;
-    private final ModelPart under_console_struts;
-    private final ModelPart upper_console_one;
-    private final ModelPart upper_console_two;
-    private final ModelPart useless_ass_panel;
-    private final ModelPart x;
-    private final ModelPart y;
-
-    private final ModelPart z;
-
-    public HudolinConsoleModel(ModelPart root) {
-        this.root = root.getChild("root");
-        this.console_plinth_one = this.root.getChild("console_plinth_one");
-        this.console_plinth_two = this.root.getChild("console_plinth_two");
-        this.console_plinth_two2 = this.console_plinth_two.getChild("console_plinth_two2");
-        this.bone11 = this.console_plinth_two2.getChild("bone11");
-        this.bone12 = this.console_plinth_two2.getChild("bone12");
-        this.bone13 = this.console_plinth_two2.getChild("bone13");
-        this.bone14 = this.console_plinth_two2.getChild("bone14");
-        this.bone15 = this.console_plinth_two2.getChild("bone15");
-        this.bone16 = this.console_plinth_two2.getChild("bone16");
-        this.console_plinth_three = this.root.getChild("console_plinth_three");
-        this.clawlegs = this.root.getChild("clawlegs");
-        this.clawlegs2 = this.root.getChild("clawlegs2");
-        this.clawlegs3 = this.root.getChild("clawlegs3");
-        this.under_console_struts = this.root.getChild("under_console_struts");
-        this.console_corners = this.root.getChild("console_corners");
-        this.console_collar_one = this.root.getChild("console_collar_one");
-        this.console_collar_two = this.root.getChild("console_collar_two");
-        this.bone17 = this.console_collar_two.getChild("bone17");
-        this.bone18 = this.console_collar_two.getChild("bone18");
-        this.bone19 = this.console_collar_two.getChild("bone19");
-        this.bone20 = this.console_collar_two.getChild("bone20");
-        this.bone21 = this.console_collar_two.getChild("bone21");
-        this.bone22 = this.console_collar_two.getChild("bone22");
-        this.panel = this.root.getChild("panel");
-        this.panel2 = this.root.getChild("panel2");
-        this.panel3 = this.root.getChild("panel3");
-        this.panel4 = this.root.getChild("panel4");
-        this.panel5 = this.root.getChild("panel5");
-        this.panel6 = this.root.getChild("panel6");
-        this.bone2 = this.root.getChild("bone2");
-        this.bone3 = this.root.getChild("bone3");
-        this.bone4 = this.root.getChild("bone4");
-        this.bone = this.root.getChild("bone");
-        this.base = this.root.getChild("base");
-        this.bottom_rotor = this.root.getChild("bottom_rotor");
-        this.bottom_rotor_ring = this.bottom_rotor.getChild("bottom_rotor_ring");
-        this.bone29 = this.bottom_rotor_ring.getChild("bone29");
-        this.bone30 = this.bottom_rotor_ring.getChild("bone30");
-        this.bone31 = this.bottom_rotor_ring.getChild("bone31");
-        this.bone32 = this.bottom_rotor_ring.getChild("bone32");
-        this.bone33 = this.bottom_rotor_ring.getChild("bone33");
-        this.bone34 = this.bottom_rotor_ring.getChild("bone34");
-        this.top_rotor = this.root.getChild("top_rotor");
-        this.top_rotor_ring = this.top_rotor.getChild("top_rotor_ring");
-        this.bone35 = this.top_rotor_ring.getChild("bone35");
-        this.bone36 = this.top_rotor_ring.getChild("bone36");
-        this.bone37 = this.top_rotor_ring.getChild("bone37");
-        this.bone38 = this.top_rotor_ring.getChild("bone38");
-        this.bone39 = this.top_rotor_ring.getChild("bone39");
-        this.bone40 = this.top_rotor_ring.getChild("bone40");
-        this.upper_console_one = this.root.getChild("upper_console_one");
-        this.bone23 = this.upper_console_one.getChild("bone23");
-        this.bone24 = this.upper_console_one.getChild("bone24");
-        this.bone25 = this.upper_console_one.getChild("bone25");
-        this.bone26 = this.upper_console_one.getChild("bone26");
-        this.bone27 = this.upper_console_one.getChild("bone27");
-        this.bone28 = this.upper_console_one.getChild("bone28");
-        this.upper_console_two = this.root.getChild("upper_console_two");
-        this.ConsoleCollarTwo3 = this.root.getChild("ConsoleCollarTwo3");
-        this.ConsoleCollarOne6 = this.root.getChild("ConsoleCollarOne6");
-        this.panel_two_glowies = this.root.getChild("panel_two_glowies");
-        this.bone5 = this.root.getChild("bone5");
-        this.bone6 = this.root.getChild("bone6");
-        this.dials = this.bone6.getChild("dials");
-        this.crank_lever = this.root.getChild("crank_lever");
-        this.bone7 = this.root.getChild("bone7");
-        this.buttons = this.root.getChild("buttons");
-        this.control_two = this.root.getChild("control_two");
-        this.panel_three_lights = this.root.getChild("panel_three_lights");
-        this.control_three = this.root.getChild("control_three");
-        this.control_four = this.root.getChild("control_four");
-        this.bone8 = this.root.getChild("bone8");
-        this.bone9 = this.root.getChild("bone9");
-        this.bone10 = this.root.getChild("bone10");
-        this.useless_ass_panel = this.root.getChild("useless_ass_panel");
-        this.lamp = this.root.getChild("lamp");
-        this.throttle = this.root.getChild("throttle");
-        this.handbrake = this.root.getChild("handbrake");
-        this.x = this.root.getChild("x");
-        this.y = this.root.getChild("y");
-        this.z = this.root.getChild("z");
-        this.increment = this.root.getChild("increment");
-        this.randomiser = this.root.getChild("randomiser");
-        this.communicator = this.root.getChild("communicator");
-        this.monitor = this.root.getChild("monitor");
-        this.refuller = this.root.getChild("refuller");
-        this.door_control = this.root.getChild("door_control");
-        this.dimension_changer = this.root.getChild("dimension_changer");
-        this.exterior_facing = this.root.getChild("exterior_facing");
-        this.fast_return_switch = this.root.getChild("fast_return_switch");
-        this.glowies = this.root.getChild("glowies");
-        this.bone42 = this.root.getChild("bone42");
-        this.bone41 = this.root.getChild("bone41");
-        this.bone43 = this.root.getChild("bone43");
-        this.bone44 = this.root.getChild("bone44");
-        this.bone45 = this.root.getChild("bone45");
-        this.bone46 = this.root.getChild("bone46");
-        this.bone47 = this.root.getChild("bone47");
-        this.bone48 = this.root.getChild("bone48");
-        this.bone49 = this.root.getChild("bone49");
     }
 
     @Override
@@ -2139,7 +2140,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
             if (tile.ControlAnimationMap.get(71) != null)
                 this.throttle.xRot = (float) Math.toRadians(tile.ControlAnimationMap.get(71) * -45);
             if (tile.ControlAnimationMap.get(1) != null) {
-                this.handbrake.yRot = (float) Math.toRadians(tile.ControlAnimationMap.get(1) * 90);
+                this.handbrake.yRot = (float) Math.toRadians(tile.ControlAnimationMap.get(1));
             }
         }
         this.animate(tile.GetRotorAnimation(), HudolinConsoleAnimation.rotor_loop, ageInTicks);
@@ -2164,5 +2165,5 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
     }
 
     @Override
-    public void setupAnim(Entity entity, float v, float v1, float v2, float v3, float v4) {}
+    public void setupAnim(@NotNull Entity entity, float v, float v1, float v2, float v3, float v4) {}
 }

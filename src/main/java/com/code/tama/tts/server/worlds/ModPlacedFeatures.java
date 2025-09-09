@@ -35,7 +35,7 @@ public class ModPlacedFeatures {
                 ZEITON_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(MConfiguredFeatures.OVERWORLD_ZEITON_ORE_KEY),
                 MOrePlacement.commonOrePlacement(
-                        42, HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(80))));
+                        48, HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(80))));
 
         register(
                 context,
@@ -49,7 +49,7 @@ public class ModPlacedFeatures {
                 END_ZEITON_ORE_PLACED_KEY,
                 configuredFeatures.getOrThrow(MConfiguredFeatures.END_ZEITON_ORE_KEY),
                 MOrePlacement.commonOrePlacement(
-                        12, HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(80))));
+                        12, HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(124))));
 
         register(
                 context,

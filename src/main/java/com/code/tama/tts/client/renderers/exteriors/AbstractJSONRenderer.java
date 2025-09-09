@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class AbstractJSONRenderer implements IUseJavaJSON, BlockEntityRenderer<ExteriorTile> {
     public AbstractJSONRenderer(ResourceLocation model) {
@@ -17,7 +18,12 @@ public class AbstractJSONRenderer implements IUseJavaJSON, BlockEntityRenderer<E
 
     @Override
     public void render(
-            ExteriorTile exteriorTile, float v, PoseStack poseStack, MultiBufferSource bufferSource, int i, int i1) {
+            @NotNull ExteriorTile exteriorTile,
+            float v,
+            PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
+            int i,
+            int i1) {
         poseStack.pushPose();
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(XP.rotationDegrees(180));
@@ -25,7 +31,6 @@ public class AbstractJSONRenderer implements IUseJavaJSON, BlockEntityRenderer<E
         if (getModel() != null)
             getModel()
                     .renderToBuffer(poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
-        // Extra
         poseStack.popPose();
     }
 }

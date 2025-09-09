@@ -35,7 +35,7 @@ public class MBiomeModifiers {
         context.register(
                 ADD_ZEITON_ORE,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                        biomes.getOrThrow(BiomeTags.IS_HILL),
+                        biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.ZEITON_ORE_PLACED_KEY)),
                         GenerationStep.Decoration.UNDERGROUND_ORES));
 

@@ -2,8 +2,8 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
-import com.code.tama.tts.client.renderers.HalfBOTI;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.tts.client.renderers.BOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -64,39 +64,33 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             poseStack.mulPose(Axis.XN.rotationDegrees(90));
         }
 
-        try {
-            HalfBOTI.render(
-                    exteriorTile.getLevel(),
-                    exteriorTile,
-                    poseStack,
-                    bufferSource,
-                    partialTicks,
-                    combinedLight,
-                    combinedOverlay);
-        } catch (Exception ignored) {
-            System.out.println(ignored.getMessage());
-        }
+        BOTIRenderer.render(
+                exteriorTile.getLevel(),
+                exteriorTile,
+                poseStack,
+                bufferSource,
+                partialTicks,
+                combinedLight,
+                combinedOverlay);
 
         AbstractJSONRenderer ext =
                 new AbstractJSONRenderer(exteriorTile.GetVariant().GetModelName());
 
-        JavaJSONParsed parsed = JavaJSON.getParsedJavaJSON(ext);
+        JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
         parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(Math.max(FrameLeft * 13.333, 0)); // (float)
         // Math.toRadians(0);
         parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-Math.max(FrameRight * 13.333, 0));
 
-        parsed.getModelInfo()
-                .getModel()
-                .renderToBuffer(
-                        poseStack,
-                        bufferSource.getBuffer(ext.getRenderType()),
-                        combinedLight,
-                        OverlayTexture.NO_OVERLAY,
-                        1.0f,
-                        1.0f,
-                        1.0f,
-                        transparency);
+        parsed.renderToBuffer(
+                poseStack,
+                bufferSource.getBuffer(ext.getRenderType()),
+                combinedLight,
+                OverlayTexture.NO_OVERLAY,
+                1.0f,
+                1.0f,
+                1.0f,
+                transparency);
 
         poseStack.popPose();
     }
