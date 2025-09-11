@@ -57,6 +57,12 @@ public class SyncTARDISCapPacketS2C {
                             cap.SetPlayRotorAnimation(packet.ShouldPlayRotorAnimation);
                             cap.SetCurrentLevel(packet.ExteriorLevel);
                             cap.SetExteriorModel(Exteriors.GetByName(packet.ExteriorModelIndex));
+
+                            if (cap.GetExteriorTile() != null) {
+                                cap.GetExteriorTile().Variant = cap.GetExteriorVariant();
+                                cap.GetExteriorTile()
+                                        .setModelIndex(cap.GetExteriorModel().GetModelName());
+                            }
                         });
             }
         });

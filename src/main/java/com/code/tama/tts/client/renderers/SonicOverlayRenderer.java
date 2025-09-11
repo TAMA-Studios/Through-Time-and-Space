@@ -5,17 +5,18 @@ import com.code.tama.triggerapi.RayTraceUtils;
 import com.code.tama.tts.server.items.SonicItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
@@ -48,36 +49,36 @@ public class SonicOverlayRenderer {
             builder.vertex(stack.last().pose(), 0, 0, 0)
                     .uv((float) 1 / 256, (float) 23 / 256)
                     .endVertex();
-
-            stack.translate(30, 2.5, 0);
-
-            builder.vertex(stack.last().pose(), 0, 25, 0)
-                    .uv((float) 1 / 256, (float) 45 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 25, 25, 0)
-                    .uv((float) 23 / 256, (float) 45 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 25, 0, 0)
-                    .uv((float) 23 / 256, (float) 23 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 0, 0, 0)
-                    .uv((float) 1 / 256, (float) 23 / 256)
-                    .endVertex();
-
-            stack.translate(25, 0, 0);
-
-            builder.vertex(stack.last().pose(), 0, 25, 0)
-                    .uv((float) 1 / 256, (float) 45 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 25, 25, 0)
-                    .uv((float) 23 / 256, (float) 45 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 25, 0, 0)
-                    .uv((float) 23 / 256, (float) 23 / 256)
-                    .endVertex();
-            builder.vertex(stack.last().pose(), 0, 0, 0)
-                    .uv((float) 1 / 256, (float) 23 / 256)
-                    .endVertex();
+            //
+            //            stack.translate(30, 2.5, 0);
+            //
+            //            builder.vertex(stack.last().pose(), 0, 25, 0)
+            //                    .uv((float) 1 / 256, (float) 45 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 25, 25, 0)
+            //                    .uv((float) 23 / 256, (float) 45 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 25, 0, 0)
+            //                    .uv((float) 23 / 256, (float) 23 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 0, 0, 0)
+            //                    .uv((float) 1 / 256, (float) 23 / 256)
+            //                    .endVertex();
+            //
+            //            stack.translate(25, 0, 0);
+            //
+            //            builder.vertex(stack.last().pose(), 0, 25, 0)
+            //                    .uv((float) 1 / 256, (float) 45 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 25, 25, 0)
+            //                    .uv((float) 23 / 256, (float) 45 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 25, 0, 0)
+            //                    .uv((float) 23 / 256, (float) 23 / 256)
+            //                    .endVertex();
+            //            builder.vertex(stack.last().pose(), 0, 0, 0)
+            //                    .uv((float) 1 / 256, (float) 23 / 256)
+            //                    .endVertex();
 
             stack.popPose();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -85,16 +86,18 @@ public class SonicOverlayRenderer {
             BufferUploader.drawWithShader(builder.end());
 
             stack.pushPose();
-            stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
+            stack.translate(19.5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 20.5, 0);
+            stack.mulPose(Axis.XP.rotationDegrees(180));
+            stack.scale(20, 20, 20);
             // Main square
-            //            sonicItem.InteractionType.getIcon().getDefaultInstance()
+
             Minecraft.getInstance()
                     .getItemRenderer()
                     .renderStatic(
-                            Blocks.GRANITE.asItem().getDefaultInstance(),
-                            ItemDisplayContext.NONE,
+                            sonicItem.InteractionType.getIcon().getDefaultInstance(),
+                            ItemDisplayContext.GUI,
                             0xf000f0,
-                            0,
+                            OverlayTexture.NO_OVERLAY,
                             stack,
                             bufferSource,
                             Minecraft.getInstance().level,

@@ -4,7 +4,6 @@ package com.code.tama.tts.server.blocks.Panels;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

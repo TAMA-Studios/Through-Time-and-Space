@@ -91,6 +91,7 @@ public class ExteriorTile extends BlockEntity {
                             .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                             .ifPresent((cap) -> {
                                 cap.SetExteriorTile(exteriorTile);
+                                assert exteriorTile.getLevel() != null;
                                 cap.SetCurrentLevel(exteriorTile.getLevel().dimension());
                                 cap.SetDestination(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
                                 cap.SetExteriorLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
@@ -116,7 +117,6 @@ public class ExteriorTile extends BlockEntity {
                                             .getBlockPos()
                                             .equals(cap.GetExteriorLocation().GetBlockPos())
                                     || cap.IsInFlight())) exteriorTile.UtterlyDestroy();
-                            exteriorTile.Variant = cap.GetExteriorVariant();
                         });
             } else {
             }
@@ -190,7 +190,7 @@ public class ExteriorTile extends BlockEntity {
     public void NeedsClientUpdate() {
         if (this.level == null) return;
         if (this.level.isClientSide) return;
-        this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
+        this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
     }
 
     public void PlaceInterior(Structures structure) {
@@ -270,6 +270,13 @@ public class ExteriorTile extends BlockEntity {
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         tag.putInt("TransparencyInt", this.transparencyInt);
+
+        Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level).ifPresent(cap -> {
+            if (cap.GetExteriorTile() == this) {
+                this.ModelIndex = cap.GetExteriorModel().GetModelName();
+                this.Variant = cap.GetExteriorVariant();
+            }
+        });
         tag.putString("modelPath", this.getModelIndex().getPath());
         tag.putString("modelNamespace", this.getModelIndex().getNamespace());
         tag.putFloat("Transparency", this.transparency);
@@ -376,17 +383,16 @@ public class ExteriorTile extends BlockEntity {
         if (this.level instanceof ServerLevel serverLevel) {
             ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
             if (level1 != null) {
-                level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> {
-                            this.ModelIndex = cap.GetExteriorModel().GetModelName();
-                            this.Variant = cap.GetExteriorVariant();
-                            cap.UpdateClient();
+                level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                    this.ModelIndex = cap.GetExteriorModel().GetModelName();
+                    this.Variant = cap.GetExteriorVariant();
+                    cap.UpdateClient();
 
-                            // Networking.sendPacketToDimension(this.level.dimension(), new
-                            // SyncExteriorVariantPacketS2C(this.ModelIndex,
-                            // ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(),
-                            // worldPosition.getY(), worldPosition.getZ()));
-                        });
+                    // Networking.sendPacketToDimension(this.level.dimension(), new
+                    // SyncExteriorVariantPacketS2C(this.ModelIndex,
+                    // ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(),
+                    // worldPosition.getY(), worldPosition.getZ()));
+                });
             }
         }
     }

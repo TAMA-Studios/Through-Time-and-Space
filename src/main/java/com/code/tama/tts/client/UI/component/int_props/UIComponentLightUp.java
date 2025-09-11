@@ -16,10 +16,8 @@ public class UIComponentLightUp extends UIComponent {
     @Override
     public void onInteract(Player player, AbstractMonitorTile monitor) {
         super.onInteract(player, monitor);
-        monitor.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> {
-                    if (cap.GetLightLevel() < 1.5f) cap.SetLightLevel(cap.GetLightLevel() + 0.1f);
-                });
+        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            if (cap.GetLightLevel() < 1.5f) cap.SetLightLevel(cap.GetLightLevel() + 0.1f);
+        });
     }
 }

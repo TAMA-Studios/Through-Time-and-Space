@@ -31,15 +31,16 @@ public class IncrementControl extends AbstractControl {
         itardisLevel.SetIncrement(itardisLevel.GetPreviousIncrement());
         if (entity instanceof Player player)
             player.displayClientMessage(
-                    Component.literal("Coordinate Increment = " + Integer.toString(itardisLevel.GetIncrement())), true);
+                    Component.literal("Coordinate Increment = " + itardisLevel.GetIncrement()), true);
+        this.SetAnimationState((float) itardisLevel.GetIncrement() / 100000);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         itardisLevel.SetIncrement(itardisLevel.GetNextIncrement());
-        player.displayClientMessage(
-                Component.literal("Coordinate Increment = " + Integer.toString(itardisLevel.GetIncrement())), true);
+        player.displayClientMessage(Component.literal("Coordinate Increment = " + itardisLevel.GetIncrement()), true);
+        this.SetAnimationState((float) itardisLevel.GetIncrement() / 10000);
         return InteractionResult.SUCCESS;
     }
 }

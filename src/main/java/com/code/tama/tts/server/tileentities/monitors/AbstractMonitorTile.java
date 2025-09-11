@@ -60,9 +60,7 @@ public abstract class AbstractMonitorTile extends BlockEntity {
 
     @Override
     public void onLoad() {
-        this.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(ITARDISLevel::UpdateClient);
+        this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::UpdateClient);
         super.onLoad();
     }
 

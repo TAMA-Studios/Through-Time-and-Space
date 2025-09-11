@@ -16,12 +16,9 @@ public class UIComponentZCoord extends UIComponent {
     @Override
     public void onInteract(Player player, AbstractMonitorTile monitor) {
         super.onInteract(player, monitor);
-        monitor.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> {
-                    if (player.isCrouching())
-                        cap.SetDestination(cap.GetDestination().AddZ(-cap.GetIncrement()));
-                    else cap.SetDestination(cap.GetDestination().AddZ(cap.GetIncrement()));
-                });
+        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            if (player.isCrouching()) cap.SetDestination(cap.GetDestination().AddZ(-cap.GetIncrement()));
+            else cap.SetDestination(cap.GetDestination().AddZ(cap.GetIncrement()));
+        });
     }
 }

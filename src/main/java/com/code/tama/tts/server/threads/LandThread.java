@@ -41,8 +41,9 @@ public class LandThread extends Thread {
                     this.itardisLevel.GetLevel(),
                     this.itardisLevel.GetDestination().GetBlockPos());
 
-            this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().OnLand(this.itardisLevel, pos, CurrentLevel);
-            pos = this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
+            //            this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().OnLand(this.itardisLevel, pos,
+            // CurrentLevel);
+            //            pos = this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
 
             pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
 

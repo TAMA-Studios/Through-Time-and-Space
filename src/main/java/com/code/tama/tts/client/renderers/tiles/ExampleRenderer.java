@@ -30,13 +30,11 @@ public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
         if (example.getLevel() == null) return;
 
         // If the TARDIS level cap is present
-        example.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> {
-                    // Do all of this ("cap" is the TARDIS level capability)
-                    poseStack.pushPose();
+        example.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            // Do all of this ("cap" is the TARDIS level capability)
+            poseStack.pushPose();
 
-                    poseStack.popPose();
-                });
+            poseStack.popPose();
+        });
     }
 }

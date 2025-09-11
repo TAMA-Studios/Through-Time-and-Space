@@ -143,6 +143,11 @@ repositories {
 }
 
 dependencies {
+	// Mixin Extras
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
+	implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
+		jarJar.ranged(it, "[0.5.0,)")
+	}
 
 	// Minecraft
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -162,6 +167,9 @@ dependencies {
 
 	// JEI (includes in runtime)
 	runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+
+	// Mekanism
+	implementation fg.deobf("curse.maven:mekanism-268560:6552911")
 
 	implementation 'org.openjdk.nashorn:nashorn-core:15.4'
 

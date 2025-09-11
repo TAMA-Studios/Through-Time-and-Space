@@ -298,7 +298,26 @@ public class TARDISLevelCapability implements ITARDISLevel {
                                 .getServer()
                                 .getLevel(this.ExteriorDimensionKey)
                                 .getBlockEntity(this.Location.GetBlockPos());
-                    else return null;
+                    else {
+                        this.level
+                                .getServer()
+                                .getLevel(this.ExteriorDimensionKey)
+                                .setChunkForced(
+                                        (int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), true);
+
+                        this.exteriorTile = (ExteriorTile) this.level
+                                .getServer()
+                                .getLevel(this.ExteriorDimensionKey)
+                                .getBlockEntity(this.Location.GetBlockPos());
+
+                        this.level
+                                .getServer()
+                                .getLevel(this.ExteriorDimensionKey)
+                                .setChunkForced(
+                                        (int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), false);
+
+                        return this.exteriorTile;
+                    }
                 }
             } else return this.exteriorTile;
         }
@@ -523,11 +542,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public int GetPreviousIncrement() {
         return switch (this.Increment) {
-            case 10 -> 1;
-            case 100 -> 10;
-            case 1000 -> 100;
-            case 10000 -> 1000;
             case 100000 -> 10000;
+            case 10000 -> 1000;
+            case 1000 -> 100;
+            case 100 -> 10;
+            case 10 -> 1;
             default -> 100000;
         };
     }
@@ -590,6 +609,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void SetExteriorVariant(Exterior exteriorVariant) {
         this.ExteriorVariant = exteriorVariant;
+        if (this.GetExteriorTile() != null) {
+            this.GetExteriorTile().Variant = exteriorVariant;
+            this.GetExteriorTile().setModelIndex(exteriorVariant.GetModelName());
+            this.GetExteriorTile().NeedsClientUpdate();
+            this.GetExteriorTile().setChanged();
+        }
     }
 
     @Override

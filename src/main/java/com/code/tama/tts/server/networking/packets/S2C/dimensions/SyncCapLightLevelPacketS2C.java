@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
-
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;

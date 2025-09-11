@@ -3,10 +3,7 @@ package com.code.tama.tts.server.registries;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
-import com.code.tama.tts.server.misc.sonic.SonicBuilderMode;
-import com.code.tama.tts.server.misc.sonic.SonicEntityMode;
-import com.code.tama.tts.server.misc.sonic.SonicMode;
+import com.code.tama.tts.server.misc.sonic.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +23,9 @@ public class SonicModeRegistry {
 
     public static final RegistryObject<SonicBlockMode> BLOCKS = SONIC_MODE.register("blocks", SonicBlockMode::new);
     public static final RegistryObject<SonicEntityMode> ENTITY = SONIC_MODE.register("entity", SonicEntityMode::new);
+    public static final RegistryObject<RedstoneSonicMode> REDSTONE =
+            SONIC_MODE.register("redstone", RedstoneSonicMode::new);
+
     public static final RegistryObject<SonicBuilderMode> BUILDER =
             SONIC_MODE.register("builder", SonicBuilderMode::new);
 

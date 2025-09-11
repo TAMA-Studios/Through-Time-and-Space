@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import java.util.function.Supplier;
@@ -124,7 +125,9 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
         if (getter.getBlockEntity(pos) == null) return SHAPE_OPEN.GetShapeFromRotation(state.getValue(FACING));
         return ((ExteriorTile) getter.getBlockEntity(pos)).DoorsOpen() > 0
                 ? SHAPE_OPEN.GetShapeFromRotation(state.getValue(FACING))
-                : SHAPE_CLOSED.GetShapeFromRotation(state.getValue(FACING));
+                        .move(0, BlockUtils.getReverseHeightModifier(getter.getBlockState(pos.below())), 0)
+                : SHAPE_CLOSED.GetShapeFromRotation(state.getValue(FACING))
+                        .move(0, BlockUtils.getReverseHeightModifier(getter.getBlockState(pos.below())), 0);
     }
 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(

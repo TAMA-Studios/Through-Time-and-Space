@@ -101,8 +101,7 @@ public class DoorBlock extends Block implements EntityBlock {
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
         if (Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
             MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(
-                    Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                            .orElse(null),
+                    Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null),
                     TardisEvent.State.START,
                     EntityToTeleport));
         if (EntityToTeleport.level().isClientSide) return;

@@ -44,49 +44,46 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
             int combinedOverlay) {
         if (monitor.getLevel() == null) return;
         int light = 0xf00f0;
-        monitor.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> {
-                    poseStack.pushPose();
+        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            poseStack.pushPose();
 
-                    this.ApplyDefaultTransforms(poseStack, monitor);
+            this.ApplyDefaultTransforms(poseStack, monitor);
 
-                    if (this.category == null
-                            || (this.category != null && this.category.getID() != monitor.categoryID)) {
-                        UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
-                            if (reg.get().getID() == monitor.getCategoryID()) {
-                                this.category = reg.get();
-                            }
-                        });
+            if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+                UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
+                    if (reg.get().getID() == monitor.getCategoryID()) {
+                        this.category = reg.get();
                     }
-                    if (monitor.isPowered()) this.category.Render(monitor, poseStack, bufferSource, combinedLight);
-
-                    poseStack.popPose();
-                    poseStack.pushPose();
-
-                    this.ApplyDefaultTransforms(poseStack, monitor);
-
-                    renderUIComponents(monitor, poseStack, bufferSource, light);
-
-                    poseStack.popPose();
-                    poseStack.pushPose();
-
-                    this.ApplyDefaultTransforms(poseStack, monitor);
-
-                    renderRotatingImage(monitor, poseStack, bufferSource, light);
-
-                    poseStack.popPose();
-
-                    poseStack.pushPose();
-
-                    this.ApplyDefaultTransforms(poseStack, monitor);
-
-                    renderBackground(monitor, poseStack, bufferSource, light);
-
-                    poseStack.popPose();
-
-                    RenderSystem.enableDepthTest();
                 });
+            }
+            if (monitor.isPowered()) this.category.Render(monitor, poseStack, bufferSource, combinedLight);
+
+            poseStack.popPose();
+            poseStack.pushPose();
+
+            this.ApplyDefaultTransforms(poseStack, monitor);
+
+            renderUIComponents(monitor, poseStack, bufferSource, light);
+
+            poseStack.popPose();
+            poseStack.pushPose();
+
+            this.ApplyDefaultTransforms(poseStack, monitor);
+
+            renderRotatingImage(monitor, poseStack, bufferSource, light);
+
+            poseStack.popPose();
+
+            poseStack.pushPose();
+
+            this.ApplyDefaultTransforms(poseStack, monitor);
+
+            renderBackground(monitor, poseStack, bufferSource, light);
+
+            poseStack.popPose();
+
+            RenderSystem.enableDepthTest();
+        });
     }
 
     private void renderRotatingImage(

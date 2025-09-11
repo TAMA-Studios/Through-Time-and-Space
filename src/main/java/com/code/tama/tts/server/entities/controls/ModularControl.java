@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.enums.Controls;
 import com.code.tama.tts.server.networking.Networking;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -47,11 +49,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
         super(modularControlEntityType, level);
     }
 
-    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record, boolean IsOnSlab) {
+    public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
         super(TTSEntities.MODULAR_CONTROL.get(), level);
-        this.Position = new Vec3(record.minX(), record.minY() - (IsOnSlab ? 0.5 : 0), record.minZ());
-        double Y = record.maxY() - (IsOnSlab ? 0.5 : 0);
-        this.size = new AABB(0, 0 - (IsOnSlab ? 0.5 : 0), 0, record.maxX(), Y, record.maxZ());
+        assert consoleTile.getLevel() != null;
+        float offs;
+        if (level.getBlockState(consoleTile.getBlockPos().below()).getBlock() instanceof SnowLayerBlock) offs = -1;
+        else
+            offs = BlockUtils.getReverseHeightModifier(consoleTile
+                    .getLevel()
+                    .getBlockState(consoleTile.getBlockPos().below()));
+        this.Position = new Vec3(record.minX(), record.minY() - offs, record.minZ());
+        double Y = record.maxY() - offs;
+        this.size = new AABB(0, 0 - offs, 0, record.maxX(), Y, record.maxZ());
         this.SetDimensions(EntityDimensions.scalable(record.maxX(), (float) Y));
         this.consoleTile = consoleTile;
         this.SetIdentifier(record.ID());

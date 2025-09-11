@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.tts.client.renderers.BOTIRenderer;
@@ -31,6 +32,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             @NotNull MultiBufferSource bufferSource,
             int combinedLight,
             int combinedOverlay) {
+
         this.DoorsOpen = exteriorTile.DoorsOpen();
 
         float transparency = exteriorTile.getTransparency();
@@ -53,7 +55,14 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         }
 
         poseStack.pushPose();
-        poseStack.translate(0.5, 1, 0.5);
+        float offs;
+        if (exteriorTile.getLevel() != null)
+            offs = -BlockUtils.getReverseHeightModifier(exteriorTile
+                    .getLevel()
+                    .getBlockState(exteriorTile.getBlockPos().below()));
+        else offs = 0;
+        poseStack.translate(0.5, offs + 1.5, 0.5);
+
         if (exteriorTile.getLevel() != null) {
             poseStack.mulPose(exteriorTile
                     .getLevel()
@@ -62,6 +71,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                     .getOpposite()
                     .getRotation());
             poseStack.mulPose(Axis.XN.rotationDegrees(90));
+            poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         }
 
         BOTIRenderer.render(
@@ -73,8 +83,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                 combinedLight,
                 combinedOverlay);
 
-        AbstractJSONRenderer ext =
-                new AbstractJSONRenderer(exteriorTile.GetVariant().GetModelName());
+        AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 

@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
@@ -8,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -48,20 +49,22 @@ public class ConsoleBlock extends Block implements EntityBlock {
             @NotNull Block wasBlock,
             @NotNull BlockPos updatedPos,
             boolean p_60514_) {
-        boolean WasFullNowSlab = !(wasBlock instanceof SlabBlock)
-                && (level.getBlockState(updatedPos).getBlock() instanceof SlabBlock);
-        boolean WasSlabNowFull = (wasBlock instanceof SlabBlock)
-                && (!(level.getBlockState(updatedPos).getBlock() instanceof SlabBlock)
-                        && level.getBlockState(updatedPos).getBlock() instanceof Block);
-        float ModifyValue = WasFullNowSlab ? -0.5f : (WasSlabNowFull ? 0.5f : 0f);
-        if (ModifyValue != 0f) {
-            Vec3 from = blockPos.offset(-1, -1, -1).getCenter();
-            Vec3 to = blockPos.offset(1, 1, 1).getCenter();
-            System.out.printf("%s, %s%n", to, from);
-            AABB box = new AABB(from, to);
-            level.getEntitiesOfClass(ModularControl.class, box)
-                    .forEach(ent -> ent.setPos(ent.position().x, ent.position().y + ModifyValue, ent.position().z));
-        }
+
+        BlockState wasState = wasBlock.defaultBlockState();
+        float offs;
+
+        if (level.getBlockState(updatedPos).getBlock() instanceof SnowLayerBlock)
+            offs = (wasBlock instanceof SnowLayerBlock) ? 0 : -1;
+        else if (wasBlock instanceof SnowLayerBlock) offs = 1;
+        else offs = BlockUtils.getDifferenceInHeight(wasState, level.getBlockState(updatedPos));
+
+        Vec3 from = blockPos.getCenter().subtract(1, 1, 1);
+        Vec3 to = blockPos.getCenter().add(1, 1, 1);
+        System.out.printf(String.valueOf(offs));
+        AABB box = new AABB(from, to);
+        level.getEntitiesOfClass(ModularControl.class, box)
+                .forEach(ent -> ent.setPos(ent.position().x, ent.position().y + offs, ent.position().z));
+
         super.neighborChanged(state, level, blockPos, wasBlock, updatedPos, p_60514_);
     }
 }

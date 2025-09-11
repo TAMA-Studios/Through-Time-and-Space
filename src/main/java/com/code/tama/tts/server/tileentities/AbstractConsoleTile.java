@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
@@ -14,7 +15,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -160,10 +161,15 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         BlockPos blockPos = this.getBlockPos();
         Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
         this.GetControlList().getPositionSizeMap().forEach((record) -> {
-            boolean isOnSlab = level.getBlockState(this.worldPosition.below()).getBlock() instanceof SlabBlock;
-            Vec3 summonPos =
-                    centerPos.add(new Vec3(record.minX(), record.minY() - (isOnSlab ? 0.5 : 0), record.minZ()));
-            ModularControl entity = new ModularControl(level, this, record, isOnSlab);
+            assert this.getLevel() != null;
+            float offs;
+            if (this.getLevel().getBlockState(this.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
+                offs = 1;
+            else
+                offs = BlockUtils.getReverseHeightModifier(
+                        this.getLevel().getBlockState(this.getBlockPos().below()));
+            Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY() - offs, record.minZ()));
+            ModularControl entity = new ModularControl(level, this, record);
             entity.setPos(summonPos);
             level.addFreshEntity(entity);
             this.ControlSize++;

@@ -3,6 +3,7 @@ package com.code.tama.tts.client.renderers.tiles;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.ConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,7 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
@@ -45,13 +46,20 @@ public class ConsoleRenderer<T extends ConsoleTile, C extends HierarchicalModel<
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.translate(-0.5, 0, 0.5);
-        if (ConsoleTile.getLevel() != null)
+        assert ConsoleTile.getLevel() != null;
+        if (ConsoleTile.getLevel() != null) {
+            float offs;
             if (ConsoleTile.getLevel()
                             .getBlockState(ConsoleTile.getBlockPos().below())
                             .getBlock()
-                    instanceof SlabBlock) poseStack.translate(0, 0.5, 0);
-
+                    instanceof SnowLayerBlock) offs = 1;
+            else
+                offs = BlockUtils.getReverseHeightModifier(ConsoleTile.getLevel()
+                        .getBlockState(ConsoleTile.getBlockPos().below()));
+            poseStack.translate(0, offs, 0);
+        }
         poseStack.scale(1f, 1f, 1f);
+        assert Minecraft.getInstance().level != null;
         float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
         this.MODEL.SetupAnimations(ConsoleTile, ticks);
         this.MODEL.renderToBuffer(

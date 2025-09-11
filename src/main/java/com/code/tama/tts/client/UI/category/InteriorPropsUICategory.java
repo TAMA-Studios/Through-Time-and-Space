@@ -15,65 +15,63 @@ public class InteriorPropsUICategory extends UICategory {
     @Override
     public void Render(
             AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
-        monitor.getLevel()
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> {
-                    Font fontRenderer = Minecraft.getInstance().font;
+        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            Font fontRenderer = Minecraft.getInstance().font;
 
-                    int light = (int) (cap.GetLightLevel() * 10);
-                    light -= 1;
-                    StringBuilder line1 = new StringBuilder();
-                    for (int i = 1; i < 15; i++) {
-                        if (i <= light) {
-                            line1.append("▀");
-                        } else line1.append("☐");
-                    }
+            int light = (int) (cap.GetLightLevel() * 10);
+            light -= 1;
+            StringBuilder line1 = new StringBuilder();
+            for (int i = 1; i < 15; i++) {
+                if (i <= light) {
+                    line1.append("▀");
+                } else line1.append("☐");
+            }
 
-                    int white = 0xFFFFFF;
+            int white = 0xFFFFFF;
 
-                    RenderSystem.disableDepthTest();
+            RenderSystem.disableDepthTest();
 
-                    poseStack.pushPose();
+            poseStack.pushPose();
 
-                    fontRenderer.drawInBatch(
-                            "TARDISOS - 1.0",
-                            -40,
-                            5,
-                            white,
-                            false,
-                            poseStack.last().pose(),
-                            bufferSource,
-                            Font.DisplayMode.NORMAL,
-                            0,
-                            combinedLight);
+            fontRenderer.drawInBatch(
+                    "TARDISOS - 1.0",
+                    -40,
+                    5,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
 
-                    fontRenderer.drawInBatch(
-                            "Light",
-                            -12.5f,
-                            15,
-                            white,
-                            false,
-                            poseStack.last().pose(),
-                            bufferSource,
-                            Font.DisplayMode.NORMAL,
-                            0,
-                            combinedLight);
+            fontRenderer.drawInBatch(
+                    "Light",
+                    -12.5f,
+                    15,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
 
-                    poseStack.scale(1f, 0.5f, 0.5f);
-                    poseStack.mulPose(ZN.rotationDegrees(90));
-                    fontRenderer.drawInBatch(
-                            line1.toString(),
-                            -150,
-                            -30,
-                            white,
-                            false,
-                            poseStack.last().pose(),
-                            bufferSource,
-                            Font.DisplayMode.NORMAL,
-                            0,
-                            combinedLight);
+            poseStack.scale(1f, 0.5f, 0.5f);
+            poseStack.mulPose(ZN.rotationDegrees(90));
+            fontRenderer.drawInBatch(
+                    line1.toString(),
+                    -150,
+                    -30,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
 
-                    poseStack.popPose();
-                });
+            poseStack.popPose();
+        });
     }
 }
