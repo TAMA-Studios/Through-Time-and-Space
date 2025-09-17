@@ -8,6 +8,7 @@ import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_EN
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
+import com.code.tama.tts.client.models.NESSConsoleModel;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
@@ -46,6 +47,7 @@ public class ClientRegistry {
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.NESS_CONSOLE_BLOCK.get(), RenderType.translucent());
 
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_BLOCK.get(), RenderType.cutout());
@@ -68,6 +70,7 @@ public class ClientRegistry {
         event.registerLayerDefinition(
                 ColinRichmondInteriorDoors.LAYER_LOCATION, ColinRichmondInteriorDoors::createBodyLayer);
         event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
+        event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -81,8 +84,14 @@ public class ClientRegistry {
         event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(), ModernPoliceBoxInteriorDoorsRenderer::new);
         event.registerBlockEntityRenderer(
                 TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
-                context -> new ConsoleRenderer<>(
+                context -> new HudolinConsoleRenderer<>(
                         context, new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION))));
+
+        event.registerBlockEntityRenderer(
+                TTSTileEntities.NESS_CONSOLE_TILE.get(),
+                context -> new NESSConsoleRenderer<>(
+                        context, new NESSConsoleModel<>(context.bakeLayer(NESSConsoleModel.LAYER_LOCATION))));
+
         event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
         event.registerBlockEntityRenderer(
                 HARTNELL_ROTOR.get(),
@@ -94,7 +103,8 @@ public class ClientRegistry {
         event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
         // Register your renderer here, first value here \/ is the Tile RegistryObject
         // \/ is the renderer
-        event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), TTSModern::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), ExampleRenderer::new);
+        event.registerBlockEntityRenderer(TTSTileEntities.SONIC_CONFIGURATOR.get(), SonicConfiguratorRenderer::new);
     }
 
     // @SubscribeEvent

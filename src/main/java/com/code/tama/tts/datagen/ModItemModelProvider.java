@@ -58,6 +58,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         // saplingItem(MBlocks.PINE_SAPLING);
         withExistingParent(TTSBlocks.EXTERIOR_BLOCK.getId().getPath(), mcLoc("block/air"));
         withExistingParent(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
+        withExistingParent(TTSBlocks.NESS_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
         saplingItem(TTSBlocks.GALLIFREYAN_SAPLING);
         //        simplestBlockItem(TTSBlocks.BLUE_ROTOR);
         //        simplestBlockItem(TTSBlocks.COPPER_ROTOR);

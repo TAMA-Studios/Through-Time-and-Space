@@ -1,0 +1,54 @@
+{
+  "overrides" : [ {
+    "model" : "tts:item/sonic/copper/default/default",
+    "predicate" : {
+      "custom_model_data" : 1
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/default/codiak",
+    "predicate" : {
+      "custom_model_data" : 2
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/default/mk2",
+    "predicate" : {
+      "custom_model_data" : 3
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/default/mk3",
+    "predicate" : {
+      "custom_model_data" : 4
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/default/mk4",
+    "predicate" : {
+      "custom_model_data" : 5
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/extended/default",
+    "predicate" : {
+      "custom_model_data" : 100
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/extended/codiak",
+    "predicate" : {
+      "custom_model_data" : 200
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/extended/mk2",
+    "predicate" : {
+      "custom_model_data" : 300
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/extended/mk3",
+    "predicate" : {
+      "custom_model_data" : 400
+    }
+  }, {
+    "model" : "tts:item/sonic/copper/extended/mk4",
+    "predicate" : {
+      "custom_model_data" : 500
+    }
+  } ],
+  "parent" : "tts:item/sonic/copper/default/default"
+}

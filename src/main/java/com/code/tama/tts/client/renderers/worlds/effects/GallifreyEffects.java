@@ -26,9 +26,6 @@ public class GallifreyEffects extends DimensionSpecialEffects {
     private static VertexBuffer StarsVBO = null;
     private static VertexBuffer SunsVBO = null;
 
-    // Private field to store the light value
-    private float lightValue = 1.0f; // Default light value is 1.0 (full brightness)
-
     private final ResourceKey<DimensionType> targetType;
 
     public GallifreyEffects(ResourceKey<DimensionType> targetType) {

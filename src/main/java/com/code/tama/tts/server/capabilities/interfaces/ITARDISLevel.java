@@ -131,6 +131,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
     /** Gets whether the TARDIS is powered on or not **/
     boolean IsPoweredOn();
 
+    boolean IsDiscoMode();
+
     /** Finishes up the landing sequence **/
     void Land();
 
@@ -181,6 +183,9 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
     void SetTicksTillReachedDestination(int ticks);
 
     boolean ShouldPlayRotorAnimation();
+
+    long getTicks();
+
     /** Does what it says on the tin **/
     void Tick();
 

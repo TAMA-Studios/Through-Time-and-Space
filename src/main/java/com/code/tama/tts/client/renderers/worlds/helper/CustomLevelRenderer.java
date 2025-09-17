@@ -45,16 +45,35 @@ public class CustomLevelRenderer {
 
     public static void applyFogEffect(float ambientLight) {
         float fogDensity = Math.max(0.1f, 1.0f - ambientLight); // Inverse relationship with ambient light
+        // Random RGB values for disco mode
+        assert Minecraft.getInstance().level != null;
         RenderSystem.setShaderFogColor(fogDensity, fogDensity, fogDensity);
     }
 
-    public static void applyLighting(float ambientLight) {
+    public static void applyLighting(float ambientLight, boolean Disco) {
         ambientLight = Math.max(0.0f, Math.min(ambientLight, 1.5f));
 
         // Apply a non-linear scaling to preserve light sources
         float adjustedLight = (float) Math.pow(ambientLight, 1.05f);
 
-        RenderSystem.setShaderColor(adjustedLight, adjustedLight, adjustedLight, 1.0f);
+        float rgb[] = getCyclingRGB(
+                Minecraft.getInstance().level.getGameTime()
+                        + Minecraft.getInstance().getPartialTick(),
+                0.01f);
+
+        //        RenderSystem.setShaderFogColor(r, g, b);
+        if (Disco) RenderSystem.setShaderColor(rgb[0] + 0.5f, rgb[1] + 0.5f, rgb[2] + 0.5f, 1.0f);
+        else RenderSystem.setShaderColor(adjustedLight, adjustedLight, adjustedLight, 1.0f);
+    }
+
+    // Returns an array: [r, g, b], each in 0..1
+    public static float[] getCyclingRGB(float time, float speed) {
+        float hue = (time * speed) % 1.0f; // cycles from 0 to 1
+        int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);
+        float r = ((rgb >> 16) & 0xFF) / 255.0f;
+        float g = ((rgb >> 8) & 0xFF) / 255.0f;
+        float b = (rgb & 0xFF) / 255.0f;
+        return new float[] {r, g, b};
     }
 
     // This method will handle the rendering event
@@ -84,10 +103,16 @@ public class CustomLevelRenderer {
                 .level
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .map(ITARDISLevel::GetLightLevel)
-                .orElse(1.0f); // Default value
+                .orElse(1.0f);
+
+        boolean Disco = Minecraft.getInstance()
+                .level
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                .map(ITARDISLevel::IsDiscoMode)
+                .orElse(false); // Default value
 
         // Apply the calculated lighting
-        CustomLevelRenderer.applyLighting(ambientLight);
+        CustomLevelRenderer.applyLighting(ambientLight, Disco);
         CustomLevelRenderer.applyFogEffect(ambientLight);
     }
 

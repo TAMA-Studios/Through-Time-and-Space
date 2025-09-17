@@ -9,4 +9,8 @@ public class ControlLists {
     public static AbstractControlList GetTokamak() {
         return new TokamakControlList();
     }
+
+    public static AbstractControlList GetNESS() {
+        return new NESSControlList();
+    }
 }

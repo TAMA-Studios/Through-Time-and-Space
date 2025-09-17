@@ -17,7 +17,9 @@ import net.minecraftforge.registries.RegistryObject;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {
-    public static final RegistryObject<Item> CONSOLE_TILE;
+    public static final RegistryObject<Item> HUDOLIN_CONSOLE_TILE;
+
+    public static final RegistryObject<Item> NESS_CONSOLE_TILE;
 
     public static final DeferredRegister<Item> DIMENSIONAL_ITEMS = DeferredRegister.create(Registries.ITEM, MODID);
 
@@ -33,7 +35,9 @@ public class TTSItems {
 
     public static final RegistryObject<Item> ADVANCED_CONTROL_CIRCUIT;
 
-    public static final RegistryObject<SonicItem> SONIC_SCREWDRIVER;
+    public static final RegistryObject<SonicItem> CORAL_SONIC;
+
+    public static final RegistryObject<SonicItem> COPPER_SONIC;
 
     public static final RegistryObject<NozzleItem> BASIC_NOZZLE;
 
@@ -55,10 +59,21 @@ public class TTSItems {
                                 .effect(new MobEffectInstance(MobEffects.CONFUSION, 1, 1), 1f)
                                 .build())));
 
-        CONSOLE_TILE = ITEMS.register(
-                "console_block", () -> new ConsoleItem(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), new Item.Properties()));
+        HUDOLIN_CONSOLE_TILE = ITEMS.register(
+                "hudolin_console_block",
+                () -> new ConsoleItem<>(
+                        TTSTileEntities.HUDOLIN_CONSOLE_TILE,
+                        TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(),
+                        new Item.Properties()));
 
-        SONIC_SCREWDRIVER = ITEMS.register("sonic_screwdriver", () -> new SonicItem(new Item.Properties()));
+        NESS_CONSOLE_TILE = ITEMS.register(
+                "ness_console_block",
+                () -> new ConsoleItem<>(
+                        TTSTileEntities.NESS_CONSOLE_TILE, TTSBlocks.NESS_CONSOLE_BLOCK.get(), new Item.Properties()));
+
+        CORAL_SONIC = ITEMS.register("sonic/coral", () -> new SonicItem(new Item.Properties(), 5));
+
+        COPPER_SONIC = ITEMS.register("sonic/copper", () -> new SonicItem(new Item.Properties(), 5));
 
         BASIC_NOZZLE = ITEMS.register("basic_nozzle", NozzleItem::new);
 

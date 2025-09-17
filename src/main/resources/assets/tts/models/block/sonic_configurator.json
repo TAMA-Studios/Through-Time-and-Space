@@ -1,0 +1,194 @@
+{
+  "credit" : "Made with Blockbench",
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#0",
+        "uv" : [ 8, 5, 0, 0 ]
+      },
+      "east" : {
+        "texture" : "#0",
+        "uv" : [ 6, 10, 11, 11 ]
+      },
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 8, 0, 16, 1 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 8, 1, 16, 2 ]
+      },
+      "up" : {
+        "texture" : "#0",
+        "uv" : [ 8, 5, 0, 0 ]
+      },
+      "west" : {
+        "texture" : "#0",
+        "uv" : [ 11, 2, 16, 3 ]
+      }
+    },
+    "from" : [ 0, 0, 3 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 0, 0, 3 ]
+    },
+    "to" : [ 16, 2, 13 ]
+  }, {
+    "faces" : {
+      "down" : {
+        "texture" : "#0",
+        "uv" : [ 2, 13, 1, 15 ]
+      },
+      "east" : {
+        "texture" : "#0",
+        "uv" : [ 11, 7, 13, 9 ]
+      },
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 13, 3, 14, 5 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 13, 3, 14, 5 ]
+      },
+      "up" : {
+        "texture" : "#0",
+        "uv" : [ 1, 15, 0, 13 ]
+      },
+      "west" : {
+        "texture" : "#0",
+        "uv" : [ 11, 7, 13, 9 ]
+      }
+    },
+    "from" : [ 11, 2, 6 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 4, 2, 3 ]
+    },
+    "to" : [ 13, 6, 10 ]
+  }, {
+    "faces" : {
+      "down" : {
+        "texture" : "#0",
+        "uv" : [ 7, 13, 6, 15 ]
+      },
+      "east" : {
+        "texture" : "#0",
+        "uv" : [ 11, 7, 13, 9 ]
+      },
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 13, 3, 14, 5 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 13, 3, 14, 5 ]
+      },
+      "up" : {
+        "texture" : "#0",
+        "uv" : [ 14, 7, 13, 5 ]
+      },
+      "west" : {
+        "texture" : "#0",
+        "uv" : [ 11, 7, 13, 9 ]
+      }
+    },
+    "from" : [ 3, 2, 6 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ -4, 2, 3 ]
+    },
+    "to" : [ 5, 6, 10 ]
+  }, {
+    "faces" : {
+      "down" : {
+        "texture" : "#0",
+        "uv" : [ 10, 13, 9, 14 ]
+      },
+      "east" : {
+        "texture" : "#0",
+        "uv" : [ 5, 12, 6, 14 ]
+      },
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 5, 12, 6, 14 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 5, 12, 6, 14 ]
+      },
+      "up" : {
+        "texture" : "#0",
+        "uv" : [ 9, 14, 8, 13 ]
+      },
+      "west" : {
+        "texture" : "#0",
+        "uv" : [ 5, 12, 6, 14 ]
+      }
+    },
+    "from" : [ 7, 2, 7 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 5, 2, 6 ]
+    },
+    "to" : [ 9, 6, 9 ]
+  }, {
+    "faces" : {
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 13, 12, 16, 14 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 13, 14, 16, 16 ]
+      }
+    },
+    "from" : [ 5, 2, 6 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 5, 2, 6 ]
+    },
+    "to" : [ 11, 6, 10 ]
+  }, {
+    "faces" : {
+      "north" : {
+        "texture" : "#0",
+        "uv" : [ 8, 14, 11, 16 ]
+      },
+      "south" : {
+        "texture" : "#0",
+        "uv" : [ 3, 14, 6, 16 ]
+      }
+    },
+    "from" : [ 5, 2, 7 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 5, 2, 6 ]
+    },
+    "to" : [ 11, 6, 9 ]
+  } ],
+  "format_version" : "1.21.6",
+  "groups" : [ {
+    "children" : [ 0, 1, 2, 3, {
+      "children" : [ 4, 5 ],
+      "color" : 0,
+      "name" : "wires",
+      "origin" : [ 8, 8, 8 ]
+    } ],
+    "color" : 0,
+    "name" : "base",
+    "origin" : [ 8, 8, 8 ]
+  } ],
+  "render_type" : "tts:emmisive",
+  "texture_size" : [ 32, 32 ],
+  "textures" : {
+    "0" : "tts:block/sonic_configurator",
+    "particle" : "tts:block/sonic_configurator"
+  }
+}

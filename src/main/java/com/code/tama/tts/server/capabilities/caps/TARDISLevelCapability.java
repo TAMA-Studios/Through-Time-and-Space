@@ -41,7 +41,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
     UUID OwnerUUID;
     Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);
-    boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation;
+    boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation, IsDiscoMode;
     DoorData InteriorDoorData;
     int TicksInFlight, TicksTillDestination, Increment = 1;
     Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
@@ -55,6 +55,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     AbstractSoundScheme FlightSoundScheme;
     SubsystemsData SubsystemsData = new SubsystemsData();
     ControlParameters ControlData = new ControlParameters();
+    private long ticks = 0;
 
     public TARDISLevelCapability(Level level) {
         this.level = level;
@@ -523,6 +524,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     @Override
+    public boolean IsDiscoMode() {
+        return this.IsDiscoMode;
+    }
+
+    @Override
     public int GetIncrement() {
         return this.Increment;
     }
@@ -587,8 +593,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void Tick() {
+        this.ticks++;
         if (this.IsInFlight && this.TicksInFlight > 0) {
-            this.TicksInFlight--;
+            this.TicksInFlight -= this.GetControlData().GetArtronPacketOutput();
         }
     }
 
@@ -655,6 +662,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public ControlParameters GetControlData() {
         return this.ControlData;
+    }
+
+    @Override
+    public long getTicks() {
+        return this.ticks;
     }
 
     @Nullable

@@ -14,6 +14,10 @@ public class DataExteriorList {
 
     public static void setExteriorList(List<DataExterior> list) {
         exteriorList = list;
+        for (DataExterior ext : list) {
+            list.removeIf(r -> r != ext && r.toString().equals(ext.toString()));
+        }
+
         for (DataExterior exterior : exteriorList) {
             Exterior toAdd = new Exterior(exterior.name(), exterior.ModelName());
             AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();

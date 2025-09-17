@@ -5,6 +5,8 @@ import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
+import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -23,13 +25,13 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractConsoleTile extends BlockEntity {
+public class AbstractConsoleTile extends BlockEntity {
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
-        if (blockEntity instanceof ConsoleTile consoleTile) {
+        if (blockEntity instanceof HudolinConsoleTile hudolinConsoleTile) {
             level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 if (level.isClientSide)
-                    consoleTile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int)
+                    hudolinConsoleTile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int)
                             level.getGameTime());
                 if (cap.IsInFlight()) {
                     cap.GetFlightScheme().GetFlightLoop().PlayIfUnfinished(level, pos);
@@ -155,7 +157,14 @@ public abstract class AbstractConsoleTile extends BlockEntity {
         super.saveAdditional(tag);
     }
 
-    abstract AbstractControlList GetControlList();
+    public AbstractControlList GetControlList() {
+        return new AbstractControlList() {
+            @Override
+            public ArrayList<ControlEntityRecord> getPositionSizeMap() {
+                return super.getPositionSizeMap();
+            }
+        };
+    }
 
     private void summonButtons(Level level) {
         BlockPos blockPos = this.getBlockPos();

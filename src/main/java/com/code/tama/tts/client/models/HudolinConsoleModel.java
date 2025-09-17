@@ -6,7 +6,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.2
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.animations.consoles.HudolinConsoleAnimation;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.server.tileentities.ConsoleTile;
+import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalModel<Entity>
+public class HudolinConsoleModel<T extends HudolinConsoleTile> extends HierarchicalModel<Entity>
         implements IAnimateableModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
@@ -2134,7 +2134,7 @@ public class HudolinConsoleModel<T extends ConsoleTile> extends HierarchicalMode
     }
 
     @Override
-    public void SetupAnimations(ConsoleTile tile, float ageInTicks) {
+    public void SetupAnimations(HudolinConsoleTile tile, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         if (!tile.ControlAnimationMap.isEmpty()) {
             if (tile.ControlAnimationMap.get(71) != null)

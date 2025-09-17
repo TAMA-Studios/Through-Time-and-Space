@@ -14,6 +14,8 @@ import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBl
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.Roundel;
+import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
+import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
@@ -39,6 +41,9 @@ public class TTSBlocks {
     //                        \/ this too
     public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK =
             RegisterWithItemSpecial("example_tile_block", () -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
+
+    public static RegistryObject<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = RegisterWithItemSpecial(
+            "sonic_configurator", () -> new SonicConfiguratorBlock(BlockBehaviour.Properties.of()));
 
     public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
 
@@ -67,9 +72,14 @@ public class TTSBlocks {
             "exterior_block",
             () -> new ExteriorBlock(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.EXTERIOR_TILE));
 
-    public static RegistryObject<ConsoleBlock> HUDOLIN_CONSOLE_BLOCK = BLOCKS.register(
+    public static RegistryObject<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = BLOCKS.register(
             "hudolin_console_block",
-            () -> new ConsoleBlock(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.HUDOLIN_CONSOLE_TILE));
+            () -> new ConsoleBlock<>(
+                    BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.HUDOLIN_CONSOLE_TILE));
+
+    public static RegistryObject<ConsoleBlock<NESSConsoleTile>> NESS_CONSOLE_BLOCK = BLOCKS.register(
+            "ness_console_block",
+            () -> new ConsoleBlock<>(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.NESS_CONSOLE_TILE));
 
     public static RegistryObject<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = RegisterWithItemSpecial(
             "chameleon_circuit_panel",

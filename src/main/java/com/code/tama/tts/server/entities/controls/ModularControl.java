@@ -73,7 +73,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     @Override
     public void OnControlClicked(ITARDISLevel capability, Player player) {
         if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
-        if (player.getMainHandItem().getItem().equals(TTSItems.SONIC_SCREWDRIVER.get())) {
+        if (player.getMainHandItem().getItem().equals(TTSItems.CORAL_SONIC.get())) {
             if (player.isCrouching()) {
                 this.CycleControlBackward();
                 player.sendSystemMessage(Component.literal(

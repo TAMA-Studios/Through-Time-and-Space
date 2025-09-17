@@ -1,0 +1,54 @@
+{
+  "overrides" : [ {
+    "model" : "tts:item/sonic/coral/default/default",
+    "predicate" : {
+      "custom_model_data" : 1
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/default/one",
+    "predicate" : {
+      "custom_model_data" : 2
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/default/two",
+    "predicate" : {
+      "custom_model_data" : 3
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/default/three",
+    "predicate" : {
+      "custom_model_data" : 4
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/default/four",
+    "predicate" : {
+      "custom_model_data" : 5
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/extended/default",
+    "predicate" : {
+      "custom_model_data" : 100
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/extended/one",
+    "predicate" : {
+      "custom_model_data" : 200
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/extended/two",
+    "predicate" : {
+      "custom_model_data" : 300
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/extended/three",
+    "predicate" : {
+      "custom_model_data" : 400
+    }
+  }, {
+    "model" : "tts:item/sonic/coral/extended/four",
+    "predicate" : {
+      "custom_model_data" : 500
+    }
+  } ],
+  "parent" : "tts:item/sonic/coral/default/one"
+}

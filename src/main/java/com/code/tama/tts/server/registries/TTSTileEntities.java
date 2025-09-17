@@ -22,12 +22,14 @@ public class TTSTileEntities {
     public static final RegistryObject<BlockEntityType<DoorTile>> DOOR_TILE;
     // \/ Change this to be the Tile Entity Class
     public static final RegistryObject<BlockEntityType<ExampleTileEntity>> EXAMPLE_TILE;
+    public static final RegistryObject<BlockEntityType<SonicConfiguratorTileEntity>> SONIC_CONFIGURATOR;
     // Define this RegistryObject in the static block down below
     public static final RegistryObject<BlockEntityType<ExteriorTile>> EXTERIOR_TILE;
     public static final RegistryObject<BlockEntityType<HartnellRotorTile>> HARTNELL_ROTOR;
     public static final RegistryObject<BlockEntityType<HartnellDoorTile>> HARTNELL_DOOR;
     public static final RegistryObject<BlockEntityType<HartnellDoorTilePlaceholder>> HARTNELL_DOOR_PLACEHOLDER;
-    public static final RegistryObject<BlockEntityType<ConsoleTile>> HUDOLIN_CONSOLE_TILE;
+    public static final RegistryObject<BlockEntityType<HudolinConsoleTile>> HUDOLIN_CONSOLE_TILE;
+    public static final RegistryObject<BlockEntityType<NESSConsoleTile>> NESS_CONSOLE_TILE;
     public static final RegistryObject<BlockEntityType<MonitorPanelTile>> MONITOR_PANEL_TILE;
     public static final RegistryObject<BlockEntityType<MonitorTile>> MONITOR_TILE;
     public static final RegistryObject<BlockEntityType<CRTMonitorTile>> CRT_MONITOR_TILE;
@@ -48,6 +50,12 @@ public class TTSTileEntities {
                         ExampleTileEntity::new, // Tile entity class
                         TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
 
+        SONIC_CONFIGURATOR = TILE_ENTITIES.register(
+                "sonic_configurator",
+                () -> create(
+                        SonicConfiguratorTileEntity::new, // Tile entity class
+                        TTSBlocks.SONIC_CONFIGURATOR_BLOCK.get())); // The RegistryObject of the block
+
         SKY_TILE = TILE_ENTITIES.register("sky_block", () -> create(SkyTile::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
 
         FRAGMENT_LINKS_TILE = TILE_ENTITIES.register(
@@ -63,7 +71,10 @@ public class TTSTileEntities {
                 "hartnell_rotor", () -> create(HartnellRotorTile::new, TTSBlocks.HARTNELL_ROTOR.get()));
 
         HUDOLIN_CONSOLE_TILE = TILE_ENTITIES.register(
-                "hudolin_console_tile", () -> create(ConsoleTile::new, TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get()));
+                "hudolin_console_tile", () -> create(HudolinConsoleTile::new, TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get()));
+
+        NESS_CONSOLE_TILE = TILE_ENTITIES.register(
+                "ness_console_tile", () -> create(NESSConsoleTile::new, TTSBlocks.NESS_CONSOLE_BLOCK.get()));
 
         MONITOR_TILE =
                 TILE_ENTITIES.register("monitor_tile", () -> create(MonitorTile::new, TTSBlocks.MONITOR_BLOCK.get()));

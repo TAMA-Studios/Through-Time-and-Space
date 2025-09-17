@@ -7,9 +7,11 @@ import com.code.tama.tts.server.misc.sonic.SonicBlockMode;
 import com.code.tama.tts.server.misc.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.misc.sonic.SonicMode;
 import com.code.tama.tts.server.registries.SonicModeRegistry;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;
@@ -20,11 +22,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BrushableBlock;
@@ -42,8 +44,11 @@ public class SonicItem extends IAmAttunable {
     @Setter
     public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
-    public SonicItem(Properties properties) {
-        super(properties);
+    private final int Variants;
+
+    public SonicItem(Properties properties, int variants) {
+        super(properties.durability(1000));
+        this.Variants = variants;
     }
 
     public boolean canAttackBlock(
@@ -66,14 +71,18 @@ public class SonicItem extends IAmAttunable {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
-        if (interactionHand == InteractionHand.OFF_HAND) return super.use(level, player, interactionHand);
+        if (interactionHand == InteractionHand.OFF_HAND) {
+            if (player.isCrouching()) CycleVariant(player.getOffhandItem());
+            else ToggleExtend(player.getOffhandItem());
+            return InteractionResultHolder.success(player.getOffhandItem());
+        }
         if (player.isCrouching()) {
             for (int i = 0; i < SonicModeRegistry.SONIC_MODE.getEntries().size(); i++) {
                 SonicMode mode = SonicModeRegistry.SONIC_MODE.getEntries().stream()
                         .toList()
                         .get(i)
                         .get();
-                if (mode.getClass().equals(this.InteractionType.getClass())) {
+                if (mode.getName().equals(this.InteractionType.getName())) {
                     RegistryObject<SonicMode> nextMode = SonicModeRegistry.SONIC_MODE.getEntries().stream()
                             .toList()
                             .get((i + 1
@@ -84,14 +93,19 @@ public class SonicItem extends IAmAttunable {
                                             : 0)
                                     % SonicModeRegistry.SONIC_MODE.getEntries().size());
                     this.InteractionType = nextMode.get();
-                    assert nextMode.getId() != null;
                     if (!player.level().isClientSide)
                         player.sendSystemMessage(Component.literal(GrammarNazi.CapitalizeFirstLetters(
                                 GrammarNazi.ScoreToSpace(nextMode.get().getName()))));
                     break;
                 }
             }
-        } else
+        } else {
+            if (player.getMainHandItem().getDamageValue()
+                    >= player.getMainHandItem().getMaxDamage() - 1) {
+                player.releaseUsingItem();
+                return InteractionResultHolder.fail(player.getMainHandItem());
+            }
+
             this.useOn(new UseOnContext(
                     player,
                     interactionHand,
@@ -101,11 +115,26 @@ public class SonicItem extends IAmAttunable {
                             BlockPos.containing(player.getEyePosition()
                                     .add(player.getViewVector(1.0F).scale(5.0D))),
                             false)));
+        }
         return super.use(level, player, interactionHand);
     }
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext useOnContext) {
+        if (useOnContext.getHand() == InteractionHand.OFF_HAND) {
+            if (useOnContext.getPlayer().isCrouching()) CycleVariant(useOnContext.getItemInHand());
+            else ToggleExtend(useOnContext.getItemInHand());
+            return InteractionResultHolder.success(useOnContext.getPlayer().getOffhandItem())
+                    .getResult();
+        }
+
+        assert useOnContext.getPlayer() != null;
+        useOnContext.getItemInHand().setDamageValue(useOnContext.getItemInHand().getDamageValue() + 10);
+        //        useOnContext.getItemInHand().hurtAndBreak(
+        //                1, useOnContext.getPlayer(), livingEntityx ->
+        // livingEntityx.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+        //        useOnContext.getPlayer().getCooldowns().addCooldown(this, 20);
+
         this.InteractionType.onUse(useOnContext);
         return InteractionResult.SUCCESS;
     }
@@ -121,6 +150,12 @@ public class SonicItem extends IAmAttunable {
     public void onUseTick(
             @NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int i) {
         //        if (this.InteractionType != SonicInteractionType.SCANNER) return;
+        // if Item durability is 0, stop using
+        if (itemStack.getDamageValue() >= itemStack.getMaxDamage() - 1) {
+            livingEntity.releaseUsingItem();
+            return;
+        }
+
         if (i >= 0 && livingEntity instanceof Player player) {
             HitResult hitResult = this.calculateHitResult(livingEntity);
             if (hitResult instanceof BlockHitResult blockHitResult && hitResult.getType() == HitResult.Type.BLOCK) {
@@ -129,9 +164,6 @@ public class SonicItem extends IAmAttunable {
                 if (bl) {
                     BlockPos blockPos = blockHitResult.getBlockPos();
                     BlockState blockState = level.getBlockState(blockPos);
-                    HumanoidArm humanoidArm = livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND
-                            ? player.getMainArm()
-                            : player.getMainArm().getOpposite();
                     SoundEvent soundEvent;
                     if (blockState.getBlock() instanceof BrushableBlock brushableBlock) {
                         soundEvent = brushableBlock.getBrushSound();
@@ -172,5 +204,60 @@ public class SonicItem extends IAmAttunable {
                 SoundSource.BLOCKS,
                 1.0F,
                 level.getRandom().nextFloat() * 0.1F + 0.9F);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.literal("Sonic Screwdriver! Doesn't work on wood and allat"));
+        tooltip.add(Component.literal("Power - " + stack.getDamageValue()));
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    }
+
+    public int GetPower(ItemStack stack) {
+        return stack.getMaxDamage() - stack.getDamageValue();
+    }
+
+    public void ToggleExtend(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        // Invert CustomModelData sign
+        int Variant = 100;
+        if (tag.contains("CustomModelData")) {
+            Variant = tag.getInt("CustomModelData");
+            if (Variant >= 100) Variant /= 100;
+            else Variant *= 100;
+        }
+        tag.putInt("CustomModelData", Variant);
+        stack.setTag(tag);
+    }
+
+    public void SetVariant(ItemStack stack, int Variant) {
+        Variant = Math.max(Math.min(Variant, this.Variants), 1);
+        CompoundTag tag = stack.getOrCreateTag();
+        if (IsExtended(stack)) Variant *= 100;
+        tag.putInt("CustomModelData", Variant);
+        stack.setTag(tag);
+    }
+
+    public int GetVariant(ItemStack stack) {
+        if (stack.getOrCreateTag().contains("CustomModelData"))
+            return IsExtended(stack)
+                    ? stack.getOrCreateTag().getInt("CustomModelData") / 100
+                    : stack.getOrCreateTag().getInt("CustomModelData");
+        return 1;
+    }
+
+    public boolean IsExtended(ItemStack stack) {
+        if (stack.getOrCreateTag().contains("CustomModelData"))
+            return stack.getOrCreateTag().getInt("CustomModelData") >= 100;
+        return false;
+    }
+
+    public void CycleVariant(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        int Variant = GetVariant(stack);
+        if (Variant < this.Variants) Variant++;
+        else Variant = 1;
+        tag.putInt("CustomModelData", Variant);
+        stack.setTag(tag);
     }
 }

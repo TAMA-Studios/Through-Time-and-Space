@@ -82,6 +82,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropOther(TTSBlocks.EXTERIOR_BLOCK.get(), Blocks.AIR);
 
         this.dropSelf(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get());
+        this.dropSelf(TTSBlocks.NESS_CONSOLE_BLOCK.get());
 
         this.dropSelf(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK.get());
         this.dropSelf(TTSBlocks.COORDINATE_PANEL.get());
@@ -102,6 +103,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(TTSBlocks.COPPER_ROTOR.get());
 
         this.dropSelf(TTSBlocks.EXAMPLE_TILE_BLOCK.get());
+        this.dropSelf(TTSBlocks.SONIC_CONFIGURATOR_BLOCK.get());
 
         this.dropSelf(TTSBlocks.MONITOR_PANEL.get());
 

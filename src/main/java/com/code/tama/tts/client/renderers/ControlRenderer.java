@@ -34,7 +34,7 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
         super.render(Entity, EntityYaw, PartialTick, PoseStack, Buffer, PackedLight);
         if (Minecraft.getInstance().hitResult instanceof EntityHitResult result && result.getEntity() == Entity) {
             assert Minecraft.getInstance().player != null;
-            if (Minecraft.getInstance().player.isHolding(TTSItems.SONIC_SCREWDRIVER.get()))
+            if (Minecraft.getInstance().player.isHolding(TTSItems.CORAL_SONIC.get()))
                 this.renderNameTag(Entity, Entity.TranslationKey(), PoseStack, Buffer, PackedLight);
         }
     }

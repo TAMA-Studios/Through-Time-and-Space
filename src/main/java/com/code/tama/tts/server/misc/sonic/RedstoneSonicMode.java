@@ -9,10 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.RedstoneLampBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -43,6 +40,23 @@ public class RedstoneSonicMode extends SonicMode {
             level.setBlock(pos, state.setValue(SONICD, !currentlyPowered), 3);
             if (state.getBlock() instanceof PistonBaseBlock)
                 state.getBlock().neighborChanged(state, level, pos, block, pos, false);
+            return;
+        }
+
+        if (block instanceof PressurePlateBlock) {
+            level.setBlock(pos, state.cycle(PressurePlateBlock.POWERED), 3);
+
+            // Schedule turning it off again (pulse)
+            //                if (level instanceof ServerLevel serverLevel) {
+            //                    serverLevel.scheduleTick(pos, block, 20); // 20 ticks = 1 second
+            //                }
+            return;
+        }
+
+        if (block == Blocks.TNT) {
+            // Ignite TNT
+            TntBlock.explode(level, pos);
+            level.removeBlock(pos, false);
             return;
         }
 

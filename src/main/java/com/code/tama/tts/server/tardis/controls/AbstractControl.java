@@ -6,13 +6,18 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 public abstract class AbstractControl {
     private float AnimationState = 0.0f;
     private boolean NeedsUpdate;
+
+    public AnimationState usedState = new AnimationState();
+    public long animationStartTime = Long.MAX_VALUE;
 
     public float GetAnimationState() {
         return this.AnimationState;
@@ -47,4 +52,25 @@ public abstract class AbstractControl {
     }
 
     abstract String GetName();
+
+    public AnimationState getUseAnimationState() {
+        return this.usedState;
+    }
+
+    public void playAnimation(int time, boolean force) {
+        if (time > this.animationStartTime + 20 || force) {
+            this.usedState.start(time);
+            this.animationStartTime = time;
+        }
+    }
+
+    public void playAnimation(int time) {
+        this.playAnimation(time, false);
+    }
+
+    public float getAnimationPercent(float time, int animationLength) {
+        this.usedState.updateTime(time, 1.0F);
+        float secondsElapsed = this.usedState.getAccumulatedTime() / 1000.0F;
+        return Mth.clamp(secondsElapsed / (animationLength / 20.0F), 0, 1);
+    }
 }

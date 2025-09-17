@@ -19,13 +19,10 @@ public class SonicModeRegistry {
     public static final DeferredRegister<SonicMode> SONIC_MODE =
             DeferredRegister.create(SONIC_MODE_REGISTRY_KEY, MODID);
 
-    private static int ID = 0;
-
     public static final RegistryObject<SonicBlockMode> BLOCKS = SONIC_MODE.register("blocks", SonicBlockMode::new);
     public static final RegistryObject<SonicEntityMode> ENTITY = SONIC_MODE.register("entity", SonicEntityMode::new);
     public static final RegistryObject<RedstoneSonicMode> REDSTONE =
             SONIC_MODE.register("redstone", RedstoneSonicMode::new);
-
     public static final RegistryObject<SonicBuilderMode> BUILDER =
             SONIC_MODE.register("builder", SonicBuilderMode::new);
 

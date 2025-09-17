@@ -1,0 +1,6 @@
+{
+  "parent" : "tts:item/sonic/coral/default",
+  "textures" : {
+    "layer0" : "tts:item/sonic/coral/three"
+  }
+}
