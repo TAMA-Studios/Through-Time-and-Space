@@ -13,6 +13,7 @@ import com.code.tama.tts.server.blocks.monitor.MonitorPanel;
 import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
+import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.items.tabs.Roundel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
@@ -42,17 +43,27 @@ public class TTSBlocks {
     public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK =
             RegisterWithItemSpecial("example_tile_block", () -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
 
+    @MainTab
     public static RegistryObject<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = RegisterWithItemSpecial(
             "sonic_configurator", () -> new SonicConfiguratorBlock(BlockBehaviour.Properties.of()));
 
+    @MainTab
     public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
 
+    @MainTab
     public static final RegistryObject<Block> VOID_BLOCK =
             RegisterWithItemSpecial("void_block", SkyBlock.VoidBlock::new);
 
     @Roundel
     public static final RegistryObject<Block> QUARTZ_ROUNDEL = SetupRoundel("quartz_block");
 
+    @Roundel
+    public static final RegistryObject<Block> POLISHED_BLACKSTONE_ROUNDEL = SetupRoundel("polished_blackstone");
+
+    @Roundel
+    public static final RegistryObject<Block> CHROMIUM_ROUNDEL = SetupRoundel("chromium_block");
+
+    @MainTab
     public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem(
             "chromium_block",
             () -> new Block(BlockBehaviour.Properties.of()
@@ -60,18 +71,66 @@ public class TTSBlocks {
                     .strength(5.0F, 6.0F)
                     .sound(SoundType.METAL)));
 
+    @MainTab
+    public static final RegistryObject<Block> BRUSHED_STEEL = RegisterWithItem(
+            "brushed_steel",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> BRUSHED_STEEL_GRATE_SLAB = RegisterWithItem(
+            "brushed_steel_grate_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> BRUSHED_STEEL_SLAB = RegisterWithItem(
+            "brushed_steel_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> BRUSHED_STEEL_TRAPDOOR = RegisterWithItem(
+            "brushed_steel_trapdoor",
+            () -> new TrapDoorBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .strength(5.0F, 6.0F)
+                            .sound(SoundType.METAL),
+                    BlockSetType.POLISHED_BLACKSTONE));
+
+    @MainTab
+    public static final RegistryObject<Block> BRUSHED_STEEL_GRATE_TRAPDOOR = RegisterWithItem(
+            "brushed_steel_grate_trapdoor",
+            () -> new TrapDoorBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .strength(5.0F, 6.0F)
+                            .sound(SoundType.METAL),
+                    BlockSetType.POLISHED_BLACKSTONE));
+
+    @MainTab
     public static RegistryObject<HartnellRotor> HARTNELL_ROTOR = RegisterWithItemSpecial(
             "hartnell_rotor", () -> new HartnellRotor(BlockBehaviour.Properties.copy(Blocks.GLASS)));
 
+    @MainTab
     public static RegistryObject<Block> HARD_LIGHT = RegisterWithItem(
             "hard_light",
             () -> new HardLightBlock(
                     BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(BlockState -> 8)));
 
+    @MainTab
     public static RegistryObject<ExteriorBlock> EXTERIOR_BLOCK = BLOCKS.register(
             "exterior_block",
             () -> new ExteriorBlock(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.EXTERIOR_TILE));
 
+    @MainTab
     public static RegistryObject<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = BLOCKS.register(
             "hudolin_console_block",
             () -> new ConsoleBlock<>(
@@ -159,8 +218,8 @@ public class TTSBlocks {
     public static final RegistryObject<HartnellDoor> HARTNELL_DOOR =
             RegisterWithItemSpecial("hartnell_door", () -> new HartnellDoor(TTSTileEntities.HARTNELL_DOOR));
 
-    public static final RegistryObject<WorkbenchBlock> WORKBENCH =
-            RegisterWithItemSpecial("workbench", WorkbenchBlock::new);
+    public static final RegistryObject<WorkbenchBlock> TEMPORAL_FABRICATOR =
+            RegisterWithItemSpecial("temporal_fabricator", WorkbenchBlock::new);
 
     public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem(
             "fragment_links", () -> new FragmentLinksBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_WIRE)));

@@ -102,7 +102,7 @@ public class TTSTileEntities {
                 () -> create(HartnellDoorTilePlaceholder::new, TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get()));
 
         WORKBENCH_TILE = TILE_ENTITIES.register(
-                "celestial_workbench", () -> create(WorkbenchTile::new, TTSBlocks.WORKBENCH.get()));
+                "celestial_workbench", () -> create(WorkbenchTile::new, TTSBlocks.TEMPORAL_FABRICATOR.get()));
     }
 
     public static <T extends BlockEntity> BlockEntityType<T> create(
