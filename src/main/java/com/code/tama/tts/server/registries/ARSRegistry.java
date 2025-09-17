@@ -9,8 +9,8 @@ import net.minecraft.network.chat.Component;
 public class ARSRegistry {
     public static ArrayList<ARSStructure> STRUCTURES = new ArrayList<>();
 
-    public static ARSStructure CLEAN_INTERIOR =
-            AddStructure(new ARSStructure(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean")));
+    public static ARSStructure CLEAN_INTERIOR = AddStructure(
+            new ARSStructure(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean"), 0));
 
     public static ARSStructure GetStructure(int ID) {
         return STRUCTURES.get(ID);

@@ -62,13 +62,13 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
                             String name = valuesObject.get("name").getAsString();
                             String location = valuesObject.get("location").getAsString();
                             ResourceLocation structureLocation = new ResourceLocation(location);
-
+                            int heightOffs;
+                            if (!valuesObject.asMap().containsKey("yOffs")) heightOffs = 0;
+                            else heightOffs = valuesObject.get("yOffs").getAsInt();
                             // Create Data ars rooms and add it to the list
-                            ARSStructure Structure = new ARSStructure(structureLocation, Component.translatable(name));
+                            ARSStructure Structure =
+                                    new ARSStructure(structureLocation, Component.translatable(name), heightOffs);
                             if (!dataRoom.contains(Structure)) dataRoom.add(Structure);
-
-                            //                            LOGGER.info("Loaded ARS Structure from {}: {}", location,
-                            // Structure);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", rl);
                         }

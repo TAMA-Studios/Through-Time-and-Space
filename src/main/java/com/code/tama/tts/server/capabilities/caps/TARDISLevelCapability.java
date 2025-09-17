@@ -14,6 +14,7 @@ import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCap
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.tts.server.tardis.data.ControlParameters;
+import com.code.tama.tts.server.tardis.data.ProtocolData;
 import com.code.tama.tts.server.tardis.data.SubsystemsData;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tardis.flightsoundschemes.FlightSoundHandler;
@@ -55,6 +56,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     AbstractSoundScheme FlightSoundScheme;
     SubsystemsData SubsystemsData = new SubsystemsData();
     ControlParameters ControlData = new ControlParameters();
+    ProtocolData ProtocolData = new ProtocolData();
     private long ticks = 0;
 
     public TARDISLevelCapability(Level level) {
@@ -67,6 +69,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (this.OwnerUUID != null) Tag.putUUID("ownerID", this.OwnerUUID);
         Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
         Tag.put("controlData", this.GetControlData().serializeNBT());
+        Tag.put("protocolData", this.GetProtocolData().serializeNBT());
         Tag.putString("exterior_model_id", this.ExteriorModelID.GetModelName().toString());
         Tag.putInt("flight_sound_scheme", FlightSoundHandler.GetID(this.FlightSoundScheme));
         Tag.putInt("increment", this.Increment);
@@ -112,6 +115,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (nbt.contains("ownerID")) this.OwnerUUID = nbt.getUUID("ownerID");
         if (nbt.contains("subsystems")) this.SubsystemsData = new SubsystemsData(nbt.getCompound("subsystems"));
         if (nbt.contains("controlData")) this.ControlData = new ControlParameters(nbt.getCompound("controlData"));
+        if (nbt.contains("protocolData")) this.ProtocolData = new ProtocolData(nbt.getCompound("protocolData"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
         this.IsInFlight = nbt.getBoolean("isInFlight");
@@ -657,6 +661,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public SubsystemsData GetSubsystemsData() {
         return this.SubsystemsData;
+    }
+
+    @Override
+    public ProtocolData GetProtocolData() {
+        return this.ProtocolData;
     }
 
     @Override

@@ -12,13 +12,16 @@ import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.RecipeDataLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -101,6 +104,20 @@ public class CommonEvents {
     public static void EntityLeaveTARDIS(TardisEvent.EntityExitTARDIS event) {
         if (event.entity instanceof Player player) {
             if (player.level().isClientSide) CameraShakeHandler.endShake();
+        }
+    }
+
+    @SubscribeEvent
+    public static void EntityDie(LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
+            minecraftServer.getAllLevels().forEach(level -> {
+                Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, level)
+                        .ifPresent(
+                                iTardisLevel -> iTardisLevel.GetProtocolData().EP1(player, iTardisLevel));
+            });
+            //            player.level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+            //                    .ifPresent(iTardisLevel -> iTardisLevel.HandlePlayerDeath(player));
         }
     }
 }

@@ -179,7 +179,9 @@ public class ARSPanel extends HorizontalDirectionalBlock {
         if (button == null) return InteractionResult.FAIL;
 
         BlockPos posToPlace = new BlockPos(
-                MathUtils.RoundTo48(pos.getX()), MathUtils.RoundTo48(pos.getY()), MathUtils.RoundTo48(pos.getZ()));
+                MathUtils.RoundTo48(pos.getX()),
+                MathUtils.RoundTo48(pos.getY()) + this.StoredStruct.HeightOffs(),
+                MathUtils.RoundTo48(pos.getZ()));
 
         world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
