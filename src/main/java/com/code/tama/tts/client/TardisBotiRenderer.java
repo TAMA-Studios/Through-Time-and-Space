@@ -139,7 +139,7 @@ public class TardisBotiRenderer {
 
     /**
      * TODO: Replace this with interior renderer. Right now it draws an opaque magenta quad
-     * filling the FBO so I can visually confirm the FBO is being composited correctly.
+     * filling the FBO so I can visually confirm the FBO is being composited correctly. (It doesn't)
      */
     private static void renderInteriorToFbo(PoseStack pose) {
         // Use an identity pose for full-screen coverage in FBO coordinates.
