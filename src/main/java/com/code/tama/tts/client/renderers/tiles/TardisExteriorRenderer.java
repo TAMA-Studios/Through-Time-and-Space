@@ -4,7 +4,7 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.tts.client.renderers.BOTIRenderer;
+import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -74,7 +74,16 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         }
 
-        BOTIRenderer.render(
+        //        TardisBotiRenderer.render(
+        //                exteriorTile.getLevel(),
+        //                exteriorTile,
+        //                poseStack,
+        //                bufferSource,
+        //                partialTicks,
+        //                combinedLight,
+        //                combinedOverlay);
+
+        HalfBOTIRenderer.render(
                 exteriorTile.getLevel(),
                 exteriorTile,
                 poseStack,

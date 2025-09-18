@@ -1,0 +1,37 @@
+{
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#all",
+        "uv" : [ 16, 0, 0, 16 ]
+      },
+      "east" : {
+        "texture" : "#all",
+        "uv" : [ 16, 9, 0, 16 ]
+      },
+      "north" : {
+        "texture" : "#all",
+        "uv" : [ 16, 9, 0, 16 ]
+      },
+      "south" : {
+        "texture" : "#all",
+        "uv" : [ 16, 9, 0, 16 ]
+      },
+      "up" : {
+        "texture" : "#all",
+        "uv" : [ 16, 16, 0, 0 ]
+      },
+      "west" : {
+        "texture" : "#all",
+        "uv" : [ 16, 9, 0, 16 ]
+      }
+    },
+    "from" : [ 0, 8, 0 ],
+    "to" : [ 16, 16, 16 ]
+  } ],
+  "format_version" : "1.21.6",
+  "render_type" : "minecraft:cutout",
+  "textures" : {
+    "all" : "tts:block/carbon_steel_grate"
+  }
+}

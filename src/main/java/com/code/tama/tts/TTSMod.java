@@ -24,10 +24,12 @@ import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.worlds.biomes.surface.MSurfaceRules;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,7 +50,6 @@ import terrablender.api.SurfaceRuleManager;
 @Mod(TTSMod.MODID)
 @SuppressWarnings("removal")
 public class TTSMod {
-
     public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
     public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
     // Define mod id in a common place for everything to reference
@@ -145,7 +146,10 @@ public class TTSMod {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MinecraftForge.EVENT_BUS.register(CameraShakeHandler.class);
-            event.enqueueWork(() -> {});
+            event.enqueueWork(() -> {
+                Window w = Minecraft.getInstance().getWindow();
+                //                TardisBotiRenderer.initFbo(w.getGuiScaledWidth(), w.getGuiScaledHeight());
+            });
         }
     }
 }

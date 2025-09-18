@@ -1,0 +1,13 @@
+{
+  "variants" : {
+    "type=bottom" : {
+      "model" : "tts:block/carbon_steel_grate_slab"
+    },
+    "type=double" : {
+      "model" : "tts:block/carbon_steel_grate"
+    },
+    "type=top" : {
+      "model" : "tts:block/carbon_steel_grate_slab_up"
+    }
+  }
+}

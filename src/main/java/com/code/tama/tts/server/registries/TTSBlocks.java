@@ -80,36 +80,56 @@ public class TTSBlocks {
                     .sound(SoundType.METAL)));
 
     @MainTab
-    public static final RegistryObject<Block> BRUSHED_STEEL_GRATE_SLAB = RegisterWithItem(
-            "brushed_steel_grate_slab",
-            () -> new SlabBlock(BlockBehaviour.Properties.of()
+    public static final RegistryObject<Block> CARBON_STEEL_LADDER = RegisterWithItem(
+            "carbon_steel_ladder",
+            () -> new LadderBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .forceSolidOff()
+                    .noOcclusion()));
+
+    @MainTab
+    public static final RegistryObject<Block> CARBON_STEEL = RegisterWithItem(
+            "carbon_steel",
+            () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .strength(5.0F, 6.0F)
                     .sound(SoundType.METAL)));
 
     @MainTab
-    public static final RegistryObject<Block> BRUSHED_STEEL_SLAB = RegisterWithItem(
-            "brushed_steel_slab",
+    public static final RegistryObject<Block> CARBON_STEEL_GRATE_SLAB = RegisterWithItem(
+            "carbon_steel_grate_slab",
             () -> new SlabBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .strength(5.0F, 6.0F)
-                    .sound(SoundType.METAL)));
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
 
     @MainTab
-    public static final RegistryObject<Block> BRUSHED_STEEL_TRAPDOOR = RegisterWithItem(
-            "brushed_steel_trapdoor",
-            () -> new TrapDoorBlock(
-                    BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
-                            .strength(5.0F, 6.0F)
-                            .sound(SoundType.METAL),
-                    BlockSetType.POLISHED_BLACKSTONE));
+    public static final RegistryObject<Block> CARBON_STEEL_GRATE = RegisterWithItem(
+            "carbon_steel_grate",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
 
     @MainTab
-    public static final RegistryObject<Block> BRUSHED_STEEL_GRATE_TRAPDOOR = RegisterWithItem(
-            "brushed_steel_grate_trapdoor",
+    public static final RegistryObject<Block> CARBON_STEEL_SLAB = RegisterWithItem(
+            "carbon_steel_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()));
+
+    @MainTab
+    public static final RegistryObject<Block> CARBON_STEEL_TRAPDOOR = RegisterWithItem(
+            "carbon_steel_trapdoor",
             () -> new TrapDoorBlock(
                     BlockBehaviour.Properties.of()
+                            .noOcclusion()
                             .mapColor(MapColor.COLOR_LIGHT_GRAY)
                             .strength(5.0F, 6.0F)
                             .sound(SoundType.METAL),

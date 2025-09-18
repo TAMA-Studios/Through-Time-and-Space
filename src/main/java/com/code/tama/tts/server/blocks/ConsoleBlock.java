@@ -48,6 +48,7 @@ public class ConsoleBlock<T extends AbstractConsoleTile> extends Block implement
             @NotNull BlockPos updatedPos,
             boolean p_60514_) {
 
+        if (!updatedPos.equals(blockPos.below())) return;
         BlockState wasState = wasBlock.defaultBlockState();
         float offs;
 
@@ -58,10 +59,11 @@ public class ConsoleBlock<T extends AbstractConsoleTile> extends Block implement
 
         Vec3 from = blockPos.getCenter().subtract(1, 1, 1);
         Vec3 to = blockPos.getCenter().add(1, 1, 1);
-        System.out.printf(String.valueOf(offs));
         AABB box = new AABB(from, to);
-        level.getEntitiesOfClass(ModularControl.class, box)
-                .forEach(ent -> ent.setPos(ent.position().x, ent.position().y + offs, ent.position().z));
+        level.getEntitiesOfClass(ModularControl.class, box).forEach(ent -> {
+            ent.setPos(ent.position().x, ent.position().y + offs, ent.position().z);
+            ent.Position = new Vec3(ent.position().x, ent.position().y + offs, ent.position().z);
+        });
 
         super.neighborChanged(state, level, blockPos, wasBlock, updatedPos, p_60514_);
     }

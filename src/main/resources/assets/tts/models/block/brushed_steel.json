@@ -1,6 +1,6 @@
 {
   "parent" : "minecraft:block/cube_all",
   "textures" : {
-    "all" : "tts:block/chromium_block"
+    "all" : "tts:block/brushed_steel"
   }
 }

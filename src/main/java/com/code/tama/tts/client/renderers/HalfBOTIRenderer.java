@@ -13,7 +13,9 @@ import net.minecraft.world.level.Level;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-public class BOTIRenderer {
+/** Not actual BOTI but looks cool, for stuff like end portal, green screen (to be added), a texture, whatever
+ * already has a WORKING stencil buffer setup **/
+public class HalfBOTIRenderer {
     public static void render(
             Level tardis,
             ExteriorTile tile,
@@ -68,7 +70,7 @@ public class BOTIRenderer {
         GL11.glDisable(GL11.GL_STENCIL_TEST);
     }
 
-    private static void drawFrame(PoseStack poseStack, float width, float height) {
+    public static void drawFrame(PoseStack poseStack, float width, float height) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         BufferBuilder builder = Tesselator.getInstance().getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -83,7 +85,7 @@ public class BOTIRenderer {
         Tesselator.getInstance().end();
     }
 
-    public static boolean renderEndPortalQuad(ClientLevel level, int ticks, float partialTick, PoseStack poseStack) {
+    public static void renderEndPortalQuad(ClientLevel level, int ticks, float partialTick, PoseStack poseStack) {
         poseStack.pushPose();
 
         // Translate to desired render position
@@ -105,6 +107,5 @@ public class BOTIRenderer {
         source.endBatch(RenderType.endPortal());
 
         poseStack.popPose();
-        return true;
     }
 }

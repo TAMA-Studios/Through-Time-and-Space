@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "tts:block/carbon_steel_grate"
+    }
+  }
+}
