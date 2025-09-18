@@ -8,6 +8,7 @@ import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.dimensions.DimensionManager;
 import com.code.tama.tts.Exteriors;
+import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.enums.Structures;
@@ -46,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExteriorTile extends BlockEntity {
     public boolean ShouldMakeDimOnNextTick = false;
     public LivingEntity Placer;
+    public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
         if (blockEntity instanceof ExteriorTile exteriorTile) {
