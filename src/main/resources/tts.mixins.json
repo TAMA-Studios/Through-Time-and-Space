@@ -1,5 +1,5 @@
 {
-  "client" : [ "IHelpWithLevelRendererMixin" ],
+  "client" : [ "IHelpWithLevelRendererMixin", "client.ModelPartAccessor" ],
   "compatibilityLevel" : "JAVA_8",
   "injectors" : {
     "defaultRequire" : 1

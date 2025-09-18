@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
+import com.code.tama.tts.client.renderers.tiles.TardisExteriorRenderer;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,7 +11,6 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,7 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
         dummyBlockEntity.SetDoorsOpen(0);
         dummyBlockEntity.ShouldMakeDimOnNextTick = false;
 
-        BlockEntityRenderer<ExteriorTile> renderer =
+        TardisExteriorRenderer<ExteriorTile> renderer = (TardisExteriorRenderer<ExteriorTile>)
                 Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);
         poseStack.pushPose();
 
@@ -57,7 +57,13 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
 
         if (renderer != null) {
-            renderer.render(dummyBlockEntity, 0, poseStack, buffer, packedLight, packedOverlay);
+            renderer.render(
+                    dummyBlockEntity,
+                    Minecraft.getInstance().getPartialTick(),
+                    poseStack,
+                    buffer,
+                    packedLight,
+                    packedOverlay);
         }
         poseStack.popPose();
     }

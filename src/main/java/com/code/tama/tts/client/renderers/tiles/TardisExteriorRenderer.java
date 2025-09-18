@@ -6,10 +6,12 @@ import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.mixin.client.ModelPartAccessor;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -96,20 +98,57 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
-        parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(Math.max(FrameLeft * 13.333, 0)); // (float)
-        // Math.toRadians(0);
-        parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-Math.max(FrameRight * 13.333, 0));
+        ModelPart parsedPart = (parsed.getPart("RightDoor").modelPart);
 
-        parsed.renderToBuffer(
-                poseStack,
-                bufferSource.getBuffer(ext.getRenderType()),
-                combinedLight,
-                OverlayTexture.NO_OVERLAY,
-                1.0f,
-                1.0f,
-                1.0f,
-                transparency);
+        ((ModelPartAccessor) parsedPart).getChildren();
 
+        ModelPart rightDoor = new ModelPart(
+                ((ModelPartAccessor) parsedPart).getCubes(),
+                ((ModelPartAccessor) parsed.getPart("RightDoor").modelPart).getChildren());
+        try {
+
+            //            parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(Math.max(FrameLeft * 13.333, 0)); //
+            // (float)
+            // Math.toRadians(0);
+            //            parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-Math.max(FrameRight * 13.333, 0));
+
+            parsed.getPart("base")
+                    .render(
+                            poseStack,
+                            bufferSource.getBuffer(ext.getRenderType()),
+                            combinedLight,
+                            OverlayTexture.NO_OVERLAY,
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            transparency);
+
+            poseStack.pushPose();
+
+            poseStack.mulPose(Axis.YP.rotationDegrees((float) -Math.max(FrameRight * 13.333, 0)));
+            rightDoor.render(
+                    poseStack,
+                    bufferSource.getBuffer(ext.getRenderType()),
+                    combinedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    1.0f,
+                    1.0f,
+                    1.0f,
+                    transparency);
+
+            poseStack.popPose();
+            //            parsed.renderToBuffer(
+            //                    poseStack,
+            //                    bufferSource.getBuffer(ext.getRenderType()),
+            //                    combinedLight,
+            //                    OverlayTexture.NO_OVERLAY,
+            //                    1.0f,
+            //                    1.0f,
+            //                    1.0f,
+            //                    transparency);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         poseStack.popPose();
     }
 }
