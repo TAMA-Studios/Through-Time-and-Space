@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import com.code.tama.triggerapi.UtilityGL11Debug;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -130,6 +131,8 @@ public class TardisBotiRenderer {
 
         // Turn off stencil test
         GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+        UtilityGL11Debug.dumpAllIsEnabled();
     }
 
     // --- Helpers ---
