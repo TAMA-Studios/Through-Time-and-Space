@@ -189,7 +189,7 @@ public class JavaJSONModel extends Model {
                 renderLayer(
                         poseStack,
                         bufferSource.getBuffer(renderType),
-                        packedLight,
+                        0xf000f0, // Max light
                         packedOverlay,
                         red,
                         green,

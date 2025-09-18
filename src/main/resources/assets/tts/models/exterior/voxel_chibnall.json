@@ -1,80 +1,29 @@
 {
+  "credit" : "Made with Blockbench",
   "groups" : [ {
     "children" : [ {
-      "children" : [ {
-        "children" : [ ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ 9, -36, -9 ],
-          "size" : [ 1, 34, 18 ],
-          "uv" : [ 218, 82 ]
-        } ],
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, -180, 0 ]
-      } ],
       "cubes" : [ {
         "inflate" : 0,
         "mirror" : false,
-        "origin" : [ 9, -36, -9 ],
-        "size" : [ 1, 34, 18 ],
-        "uv" : [ 218, 82 ]
-      }, {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ -9, -36, 9 ],
-        "size" : [ 18, 34, 1 ],
-        "uv" : [ 217, 99 ]
+        "origin" : [ 0, -34, 0 ],
+        "size" : [ 9, 34, 1 ],
+        "uv" : [ 41, 99 ]
       } ],
-      "group_name" : "walls",
-      "pivot" : [ 0, 19, -9.5 ],
+      "group_name" : "RightDoor",
+      "pivot" : [ -9, 17, -19.5 ],
       "rotation" : [ 0, 0, 0 ]
     }, {
-      "children" : [ {
-        "children" : [ ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -2, -8, -1.5 ],
-          "size" : [ 0, 3, 3 ],
-          "uv" : [ 112, 8 ]
-        } ],
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 45, 0 ]
-      }, {
-        "children" : [ ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -2, -8, 0.5 ],
-          "size" : [ 0, 3, 3 ],
-          "uv" : [ 112, 8 ]
-        } ],
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 45, 0 ]
-      }, {
-        "children" : [ ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -2, -8, 0.5 ],
-          "size" : [ 0, 3, 3 ],
-          "uv" : [ 112, 8 ]
-        } ],
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, -45, 0 ]
-      }, {
-        "children" : [ ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -2, -8, -1.75 ],
-          "size" : [ 0, 3, 3 ],
-          "uv" : [ 112, 8 ]
-        } ],
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, -45, 0 ]
+      "cubes" : [ {
+        "inflate" : 0,
+        "mirror" : false,
+        "origin" : [ -9, -34, 0 ],
+        "size" : [ 9, 34, 1 ],
+        "uv" : [ 41, 99 ]
       } ],
+      "group_name" : "LeftDoor",
+      "pivot" : [ 9, 17, -19.5 ],
+      "rotation" : [ 0, 0, 0 ]
+    }, {
       "cubes" : [ {
         "inflate" : 0,
         "mirror" : false,
@@ -98,28 +47,6 @@
       "pivot" : [ 0, 19, -9.5 ],
       "rotation" : [ 0, 0, 0 ]
     }, {
-      "cubes" : [ {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ -0.5, -34, -9 ],
-        "size" : [ 1, 34, 9 ],
-        "uv" : [ 42, 91 ]
-      } ],
-      "group_name" : "LeftDoor",
-      "pivot" : [ 9, 17, -19 ],
-      "rotation" : [ 0, -90, 0 ]
-    }, {
-      "cubes" : [ {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ -1, -34, 0 ],
-        "size" : [ 1, 34, 9 ],
-        "uv" : [ 32, 91 ]
-      } ],
-      "group_name" : "RightDoor",
-      "pivot" : [ -9, 17, -19.5 ],
-      "rotation" : [ 0, -90, 0 ]
-    }, {
       "children" : [ {
         "children" : [ ],
         "cubes" : [ {
@@ -130,7 +57,7 @@
           "uv" : [ 18, 26 ]
         } ],
         "pivot" : [ 0, 38, 0 ],
-        "rotation" : [ 0, -180, 0 ]
+        "rotation" : [ -180, 0, 180 ]
       }, {
         "children" : [ ],
         "cubes" : [ {
@@ -188,6 +115,35 @@
       } ],
       "group_name" : "base",
       "pivot" : [ 0, -19, -9.5 ],
+      "rotation" : [ 0, 0, 0 ]
+    }, {
+      "children" : [ {
+        "children" : [ ],
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ 9, -36, -9 ],
+          "size" : [ 1, 34, 18 ],
+          "uv" : [ 218, 82 ]
+        } ],
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ -180, 0, 180 ]
+      } ],
+      "cubes" : [ {
+        "inflate" : 0,
+        "mirror" : false,
+        "origin" : [ 9, -36, -9 ],
+        "size" : [ 1, 34, 18 ],
+        "uv" : [ 218, 82 ]
+      }, {
+        "inflate" : 0,
+        "mirror" : false,
+        "origin" : [ -9, -36, 9 ],
+        "size" : [ 18, 34, 1 ],
+        "uv" : [ 217, 99 ]
+      } ],
+      "group_name" : "walls",
+      "pivot" : [ 0, 19, -9.5 ],
       "rotation" : [ 0, 0, 0 ]
     } ],
     "group_name" : "root",

@@ -196,15 +196,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
+        Tag.putDouble("aabb_min_x", this.size.minX);
+        Tag.putDouble("aabb_min_y", this.size.minY);
+        Tag.putDouble("aabb_min_z", this.size.minZ);
+        Tag.putDouble("aabb_max_x", this.size.maxX);
+        Tag.putDouble("aabb_max_y", this.size.maxY);
+        Tag.putDouble("aabb_max_z", this.size.maxZ);
+
         Tag.putDouble("pos_x", this.Position.x);
         Tag.putDouble("pos_y", this.Position.y);
         Tag.putDouble("pos_z", this.Position.z);
 
         Tag.putString("control", this.GetControl().name());
-
-        Tag.putDouble("maxX", this.size.maxX);
-        Tag.putDouble("maxY", this.size.maxY);
-        Tag.putDouble("maxZ", this.size.maxZ);
 
         if (this.consoleTile != null) {
             Tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
@@ -227,9 +230,16 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
         this.SetControl(Controls.valueOf(Tag.getString("control")));
 
+        double minX = Tag.getDouble("aabb_min_x");
+        double minY = Tag.getDouble("aabb_min_y");
+        double minZ = Tag.getDouble("aabb_min_z");
+        double maxX = Tag.getDouble("aabb_max_x");
+        double maxY = Tag.getDouble("aabb_max_y");
+        double maxZ = Tag.getDouble("aabb_max_z");
+        this.size = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+
         this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
 
-        this.size = new AABB(0, 0, 0, Tag.getDouble("maxX"), Tag.getDouble("maxY"), Tag.getDouble("maxZ"));
         if (this.level().getServer() != null) {
             if (this.level()
                             .getServer()

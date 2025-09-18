@@ -55,7 +55,7 @@ public class JavaJSONRenderer {
     }
 
     protected static RenderType lightMapRenderType(ResourceLocation tex) {
-        return RenderType.entityTranslucentEmissive(tex);
+        return RenderType.entityTranslucent(tex);
     }
 
     protected static RenderType transparentRenderType(ResourceLocation tex) {

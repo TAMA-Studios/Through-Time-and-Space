@@ -28,9 +28,10 @@ public class AbstractJSONRenderer implements IUseJavaJSON, BlockEntityRenderer<E
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(XP.rotationDegrees(180));
 
-        if (getModel() != null)
+        if (getModel() != null) {
             getModel()
                     .renderToBuffer(poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
+        }
         poseStack.popPose();
     }
 }
