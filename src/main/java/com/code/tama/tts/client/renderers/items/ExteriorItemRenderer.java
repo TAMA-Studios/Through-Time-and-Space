@@ -33,19 +33,27 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
             int packedOverlay) {
         BlockState dummyState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
         ExteriorTile dummyBlockEntity = new ExteriorTile(BlockPos.ZERO, dummyState);
+        dummyBlockEntity.SetDoorsOpen(0);
+        dummyBlockEntity.ShouldMakeDimOnNextTick = false;
 
         BlockEntityRenderer<ExteriorTile> renderer =
                 Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);
         poseStack.pushPose();
+
+        poseStack.scale(0.35f, 0.35f, 0.35f);
+        poseStack.translate(1.5, -0.25f, 0);
+
         if (context.equals(ItemDisplayContext.GUI)) {
-            poseStack.scale(0.35f, 0.35f, 0.35f);
-            poseStack.translate(2f, 0.3f, 0.5f);
             poseStack.mulPose(Axis.XP.rotationDegrees(20f));
-            poseStack.mulPose(Axis.YP.rotationDegrees(225f));
+            if (Minecraft.getInstance().level == null) poseStack.mulPose(Axis.YP.rotationDegrees(220f));
+            else
+                poseStack.mulPose(Axis.YP.rotationDegrees(
+                        (float) Minecraft.getInstance().level.getGameTime() % 360));
+
+            poseStack.translate(-0.5, 0, -0.5);
 
         } else {
             poseStack.scale(0.3f, 0.3f, 0.3f);
-            poseStack.translate(1f, 1f, 1f);
         }
 
         if (renderer != null) {

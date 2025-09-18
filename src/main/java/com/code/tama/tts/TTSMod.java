@@ -148,7 +148,7 @@ public class TTSMod {
             MinecraftForge.EVENT_BUS.register(CameraShakeHandler.class);
             event.enqueueWork(() -> {
                 Window w = Minecraft.getInstance().getWindow();
-                //                TardisBotiRenderer.initFbo(w.getGuiScaledWidth(), w.getGuiScaledHeight());
+                //                                TardisBotiRenderer.init();
             });
         }
     }
