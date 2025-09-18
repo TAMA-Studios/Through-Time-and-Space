@@ -98,14 +98,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
-        ModelPart parsedPart = (parsed.getPart("RightDoor").modelPart);
+        ModelPart rDoor = (parsed.getPart("RightDoor").modelPart);
 
-        ((ModelPartAccessor) parsedPart).getChildren();
-
-        ModelPart rightDoor = new ModelPart(
-                ((ModelPartAccessor) parsedPart).getCubes(),
-                ((ModelPartAccessor) parsed.getPart("RightDoor").modelPart).getChildren());
         try {
+            ModelPart rightDoor = new ModelPart(
+                    ((ModelPartAccessor) (Object) rDoor).getCubes(),
+                    ((ModelPartAccessor) (Object) rDoor).getChildren());
 
             //            parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(Math.max(FrameLeft * 13.333, 0)); //
             // (float)
