@@ -1,0 +1,10 @@
+# Made in Blockbench 4.12.6
+newmtl m_1414f785-afe6-b063-5416-80ce51d54da1
+map_Kd tts:block/doorsignout
+newmtl m_fcf9f9ca-6fd4-7c6e-4f45-4940800afdec
+map_Kd tts:block/windowsout
+newmtl m_067193db-6bb1-7f79-4269-d8d2c0625d01
+map_Kd tts:block/2005out
+newmtl m_0f6c425d-c4df-39bf-bdd9-0b36ddd6c04e
+map_Kd tts:block/policeboxsign
+newmtl none

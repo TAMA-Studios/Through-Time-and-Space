@@ -48,6 +48,10 @@ public class TTSBlocks {
             "sonic_configurator", () -> new SonicConfiguratorBlock(BlockBehaviour.Properties.of()));
 
     @MainTab
+    public static RegistryObject<Block> OBJ_TARDIS = RegisterWithItemSpecial(
+            "obj_tardis", () -> new Block(BlockBehaviour.Properties.of().noOcclusion()));
+
+    @MainTab
     public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
 
     @MainTab

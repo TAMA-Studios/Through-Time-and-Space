@@ -412,4 +412,17 @@ public class ExteriorTile extends BlockEntity {
 
         super.saveAdditional(tag);
     }
+
+    // TODO: Move Physical State Manager into the TARDIS Cap and finish this
+    //    @Override
+    //    public void onChunkUnloaded() {
+    //        if(!this.level.isClientSide){
+    //            Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
+    // ServerLifecycleHooks.getCurrentServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(tadis -> {
+    //            if(tadis.PhysicalStateManager().state == DEMAT){
+    //                this.UtterlyDestroy();
+    //            }
+    //        });
+    //        super.onChunkUnloaded();
+    //    }
 }
