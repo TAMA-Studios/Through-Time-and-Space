@@ -1,3 +1,4 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
 import lombok.AllArgsConstructor;
@@ -10,9 +11,13 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
 
-@Getter @Setter @AllArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 public class BotiChunkContainer implements INBTSerializable<CompoundTag> {
-    BlockState state; BlockPos pos; int light;
+    BlockState state;
+    BlockPos pos;
+    int light;
 
     public BotiChunkContainer(CompoundTag tag) {
         this.deserializeNBT(tag);
@@ -29,7 +34,7 @@ public class BotiChunkContainer implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if(nbt == null) return;
+        if (nbt == null) return;
         this.state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
         this.pos = NbtUtils.readBlockPos(nbt.getCompound("pos"));
         this.light = nbt.getInt("light");

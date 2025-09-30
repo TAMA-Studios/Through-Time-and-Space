@@ -74,5 +74,4 @@ public class CompressedMultiblockBlock extends Block implements EntityBlock {
 
         return super.use(state, level, pos, player, interactionHand, blockHitResult);
     }
-
 }

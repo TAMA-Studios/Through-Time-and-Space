@@ -2,8 +2,10 @@
 package com.code.tama.triggerapi;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
@@ -68,4 +70,16 @@ public class BlockUtils {
         return new BlockPos(worldX, worldY, worldZ);
     }
 
+    public static int getPackedLight(Level level, BlockPos pos) {
+        int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
+        int skyLight = level.getBrightness(LightLayer.SKY, pos);
+
+        // Clamp to 0–15 (should already be, but just in case)
+        blockLight = Mth.clamp(blockLight, 0, 15);
+        skyLight = Mth.clamp(skyLight, 0, 15);
+
+        // Pack into the same format LevelRenderer.getLightColor uses:
+        // block << 4 into low bits, sky << 20 into high bits
+        return (blockLight << 4) | (skyLight << 20);
+    }
 }

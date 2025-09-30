@@ -8,6 +8,10 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
@@ -39,19 +43,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class PortalTileEntity extends TickingTile {
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
     public Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
     public Map<BakedModel, Integer> chunkModels = new HashMap<>();
+
     @OnlyIn(Dist.CLIENT)
     public List<BotiChunkContainer> containers = new ArrayList<>();
+
     public long lastRequestTime = 0;
     public long lastUpdateTime = 0;
 
@@ -63,7 +64,7 @@ public class PortalTileEntity extends TickingTile {
 
     public PortalTileEntity(BlockPos pos, BlockState state) {
         super(TTSTileEntities.PORTAL_TILE_ENTITY.get(), pos, state);
-//        this.setTargetLevel(Level.OVERWORLD, new BlockPos(0, 70, 0), true);
+        //        this.setTargetLevel(Level.OVERWORLD, new BlockPos(0, 70, 0), true);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class PortalTileEntity extends TickingTile {
 
     @Override
     public void tick() {
-//        assert this.level != null;
+        //        assert this.level != null;
         if (this.targetLevel == null || this.targetPos == null)
             this.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 if (this.getTargetLevel() != cap.GetCurrentLevel()
@@ -133,7 +134,7 @@ public class PortalTileEntity extends TickingTile {
 
         this.containers.clear();
         CompoundTag containers = chunkData.getCompound("containers");
-        for(int i = 0; i < containers.getInt("size"); i++) {
+        for (int i = 0; i < containers.getInt("size"); i++) {
             BotiChunkContainer container = new BotiChunkContainer(containers.getCompound(Integer.toString(i)));
             this.containers.add(container);
         }
@@ -144,7 +145,7 @@ public class PortalTileEntity extends TickingTile {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + x, baseY + y, chunkPos.getMinBlockZ() + z);
-//                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
+                    //                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
                     String key = x + "_" + y + "_" + z;
                     if (chunkData.contains("block_entities")
                             && chunkData.getCompound("block_entities").contains(key)) {
@@ -162,8 +163,7 @@ public class PortalTileEntity extends TickingTile {
         this.stateMap.clear();
         this.stateMap = sectionStatesToLocalMap(sectionStates);
 
-
-        if(true) return; // Rest is disabled till I can get a VBO in
+        if (true) return; // Rest is disabled till I can get a VBO in
 
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
@@ -180,16 +180,17 @@ public class PortalTileEntity extends TickingTile {
             float g = ((color >> 8) & 0xFF) / 255.0f;
             float b = (color & 0xFF) / 255.0f;
 
-            VertexConsumer vc = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.translucent());
+            VertexConsumer vc =
+                    Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.translucent());
 
             List<BakedQuad> blockQuads = new java.util.ArrayList<>(List.of());
             // render only non-occluded faces
             for (Direction dir : directions) {
                 BlockPos neighbourPos = pos.relative(dir);
                 BlockState neighbourState = stateMap.get(neighbourPos);
-                boolean occluded = neighbourState != null &&
-                        neighbourState.isSolidRender(Minecraft.getInstance().level, neighbourPos);
-                if(neighbourState != null && !neighbourState.canOcclude() && !state.canOcclude()) occluded = true;
+                boolean occluded = neighbourState != null
+                        && neighbourState.isSolidRender(Minecraft.getInstance().level, neighbourPos);
+                if (neighbourState != null && !neighbourState.canOcclude() && !state.canOcclude()) occluded = true;
 
                 if (!occluded) {
                     List<BakedQuad> raw = model.getQuads(state, dir, rand);
@@ -198,11 +199,11 @@ public class PortalTileEntity extends TickingTile {
                 }
             }
 
-            this.chunkModels.put(new BlockBakedModel(blockQuads), Minecraft.getInstance().getBlockColors().getColor(state, level, pos));
+            this.chunkModels.put(
+                    new BlockBakedModel(blockQuads),
+                    Minecraft.getInstance().getBlockColors().getColor(state, level, pos));
         });
-
     }
-
 
     private BlockState getBlockStateFromChunkNBT(CompoundTag chunkData, BlockPos pos) {
         if (chunkData.contains("block_states")) {
@@ -332,14 +333,6 @@ public class PortalTileEntity extends TickingTile {
         }
 
         // Create new quad with tintIndex -1 (forces vertex color usage)
-        return new BakedQuad(
-                newData,
-                -1,
-                original.getDirection(),
-                original.getSprite(),
-                original.isShade()
-        );
+        return new BakedQuad(newData, -1, original.getDirection(), original.getSprite(), original.isShade());
     }
-
-
 }

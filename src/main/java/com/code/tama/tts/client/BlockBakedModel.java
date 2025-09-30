@@ -1,5 +1,7 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -13,10 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class BlockBakedModel implements BakedModel {
     public final List<BakedQuad> quads;
+
     public BlockBakedModel(List<BakedQuad> quads) {
         this.quads = quads;
     }
@@ -29,7 +30,8 @@ public class BlockBakedModel implements BakedModel {
     @SuppressWarnings("deprecation")
     @Override
     public @NotNull TextureAtlasSprite getParticleIcon() {
-        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+        return Minecraft.getInstance()
+                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                 .apply(new ResourceLocation("minecraft", "stone"));
     }
 

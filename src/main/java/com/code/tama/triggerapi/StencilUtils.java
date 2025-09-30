@@ -3,11 +3,10 @@ package com.code.tama.triggerapi;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.lwjgl.opengl.GL11;
-
-import java.util.function.Consumer;
 
 public class StencilUtils {
     public static void DrawStencil(PoseStack pose, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawScene) {
