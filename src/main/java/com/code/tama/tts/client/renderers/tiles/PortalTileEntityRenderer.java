@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
+import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -27,7 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
@@ -125,7 +129,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                 ChunkPos chunkPos = new ChunkPos(tileEntity.getTargetPos());
                 LevelChunk chunk = targetLevel.getChunk(chunkPos.x, chunkPos.z);
                 tileEntity.updateChunkModelFromServer(
-                        new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), chunk, tileEntity.getTargetPos())
+                        new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), targetLevel, tileEntity.getTargetPos())
                                 .containersL);
             } else {
                 Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
@@ -139,11 +143,12 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         Minecraft mc = Minecraft.getInstance();
 
         BufferBuilder buffer = new BufferBuilder((int) Math.pow(16, 3));
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
 
         // Dump all quads into the buffer
         PoseStack stack = new PoseStack();
-        entity.containers.forEach(container -> {
+        Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(entity.containers);
+        chunkMap.forEach((pos, container) -> {
             BlockColors colors = mc.getBlockColors();
             int color = colors.getColor(container.getState(), Minecraft.getInstance().level, container.getPos(), 0);
 
@@ -152,15 +157,12 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             float g = ((color >> 8) & 0xFF) / 255.0f;
             float b = (color & 0xFF) / 255.0f;
 
-//            poseStack.pushPose();
-
             stack.pushPose();
-            stack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
-            RandomSource rand = RandomSource.create(container.getPos().asLong());
+            stack.translate(pos.getX(), pos.getY(), pos.getZ());
+            RandomSource rand = RandomSource.create(pos.asLong());
 
-            for (BakedQuad quad : getModelFromBlock(container.getState(), entity, rand)) {
-                buffer.putBulkData(stack.last()
-                        , quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, false);
+            for (BakedQuad quad : getModelFromBlock(container.getState(), pos, entity, rand, chunkMap)) {
+                buffer.putBulkData(stack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, true);
             }
 
             stack.popPose();
@@ -175,7 +177,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
         return vbo;
     }
-    public List<BakedQuad> getModelFromBlock(BlockState state, PortalTileEntity tileEntity, RandomSource rand) {
+    public List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, PortalTileEntity tileEntity, RandomSource rand, Map<BlockPos, BotiChunkContainer> map) {
 
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
@@ -192,18 +194,29 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         // render only non-occluded faces
 
         for (Direction dir : directions) {
-//            BlockPos neighbourPos = pos.relative(dir);
-//            BlockState neighbourState = tileEntity.stateMap.get(neighbourPos);
-//            boolean occluded = neighbourState != null &&
-//                    neighbourState.isSolidRender(Minecraft.getInstance().level, neighbourPos);
+            BlockPos neighbourPos = pos.relative(dir);
+            BotiChunkContainer neighbourState = map.get(neighbourPos);
+            boolean occluded = neighbourState != null &&
+                    neighbourState.getState().isSolidRender(Minecraft.getInstance().level, neighbourPos);
 
-            if (true) { // !occluded
+            if(neighbourState != null && (!neighbourState.getState().canOcclude() && !state.canOcclude())) occluded = true;
+            if (!occluded) {
                 // pull just this side’s quads and render them
                 quads.addAll(model.getQuads(state, dir, rand));
             }
         }
         return quads;
-    };
+    }
+
+    public Map<BlockPos, BotiChunkContainer> getMapFromContainerList(List<BotiChunkContainer> list) {
+        Map<BlockPos, BotiChunkContainer> map = new HashMap<>(list.size());
+        for (BotiChunkContainer container : list) {
+            map.put(container.getPos(), container);
+        }
+        return map;
+    }
+
+
 
 
 }

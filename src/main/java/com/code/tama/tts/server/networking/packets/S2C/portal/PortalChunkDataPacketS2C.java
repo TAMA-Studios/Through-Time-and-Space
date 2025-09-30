@@ -60,28 +60,34 @@ public class PortalChunkDataPacketS2C {
         ctx.get().setPacketHandled(true);
     }
 
-    public PortalChunkDataPacketS2C(BlockPos portalPos, LevelChunk chunk, BlockPos targetPos) {
+    public PortalChunkDataPacketS2C(BlockPos portalPos, Level level, BlockPos targetPos) {
         this.portalPos = portalPos;
-        Level level = chunk.getLevel();
-        LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
-        ChunkPos chunkPos = new ChunkPos(targetPos);
-
         try {
             List<BotiChunkContainer> containers = new ArrayList<>();
 
-            for (int y = 0; y < 16; y++) {
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        BlockState state = section.getBlockState(x, y, z);
-                        if (!state.isAir()) {
-                            BlockPos pos = new BlockPos(x, y, z);
-                            containers.add(new BotiChunkContainer(
-                                    state,
-                                    pos,
-                                    BlockUtils.getPackedLight(
-                                            level,
-                                            BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                                                    .atY(targetPos.getY()))));
+            int chunksToRender = 8;
+            for(int u = -chunksToRender / 2; u < chunksToRender / 2; u++) { // turn either the u or the v to = 0 based on the direction you're viewing from
+                for (int v = -chunksToRender / 2; v < chunksToRender / 2; v++) {
+                    ChunkPos chunkPos = new ChunkPos(new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
+                    level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
+                    LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
+                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
+
+                    for (int y = 0; y < 16; y++) {
+                        for (int x = 0; x < 16; x++) {
+                            for (int z = 0; z < 16; z++) {
+                                BlockState state = section.getBlockState(x, y, z);
+                                if (!state.isAir()) {
+                                    BlockPos pos = new BlockPos(x + (u * 16), y, z + (v * 16));
+                                    containers.add(new BotiChunkContainer(
+                                            state,
+                                            pos,
+                                            BlockUtils.getPackedLight(
+                                                    level,
+                                                    BlockUtils.fromChunkAndLocal(chunkPos, pos)
+                                                            .atY(targetPos.getY()))));
+                                }
+                            }
                         }
                     }
                 }
