@@ -107,37 +107,6 @@ public class PortalChunkDataPacketS2C {
                 }
             }
 
-//            // Build palette NBT
-//            ListTag palette = new ListTag();
-//            for (BlockState state : paletteList) {
-//                CompoundTag stateTag = (CompoundTag) BlockState.CODEC
-//                        .encodeStart(NbtOps.INSTANCE, state)
-//                        .result()
-//                        .orElseThrow(() -> new IllegalStateException("Failed to encode state " + state));
-//                palette.add(stateTag);
-//            }
-//
-//            int paletteSize = palette.size();
-//            int bitsPerEntry = Math.max(1, (int) Math.ceil(Math.log(paletteSize) / Math.log(2))); // Allow 1 bit for
-//            // small palettes
-//            int entriesPerLong = 64 / bitsPerEntry;
-//            int dataLength = (int) Math.ceil(4096.0 / entriesPerLong); // 16x16x16 = 4096 entries
-//
-//            // Build data array
-//            long[] data = new long[dataLength];
-//            for (int y = 0; y < 16; y++) {
-//                for (int z = 0; z < 16; z++) {
-//                    for (int x = 0; x < 16; x++) {
-//                        int index = y * 256 + z * 16 + x;
-//                        int longIndex = index / entriesPerLong;
-//                        int offset = (index % entriesPerLong) * bitsPerEntry;
-//                        BlockState state = sectionStates[x][y][z];
-//                        int paletteIndex = stateToIndex.getOrDefault(state, 0); // Default to air
-//                        data[longIndex] |= ((long) paletteIndex & ((1L << bitsPerEntry) - 1)) << offset;
-//                    }
-//                }
-//            }
-
             // Collect block entity data
             for (int y = 0; y < 16; y++) {
                 for (int x = 0; x < 16; x++) {
@@ -153,10 +122,6 @@ public class PortalChunkDataPacketS2C {
                     }
                 }
             }
-
-//            blockStates.put("palette", palette);
-//            blockStates.putLongArray("data", data);
-//            blockStates.putInt("bitsPerEntry", bitsPerEntry);
 
             CompoundTag containersTag = new CompoundTag();
             for(int i = 0; i < containers.size(); i++) {
