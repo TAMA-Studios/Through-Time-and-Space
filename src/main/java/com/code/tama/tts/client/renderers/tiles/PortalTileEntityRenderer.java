@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.triggerapi.StencilUtils;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
@@ -12,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,7 +18,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -53,7 +50,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
     public void render(
             @NotNull PortalTileEntity tileEntity,
             float partialTick,
-            @NotNull PoseStack poseStack,
+            @NotNull PoseStack pose,
             @NotNull MultiBufferSource buffer,
             int packedLight,
             int packedOverlay) {
@@ -62,7 +59,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             return;
         }
 
-        StencilUtils.DrawStencil(poseStack, (pose) -> StencilUtils.drawFrame(pose, 1, 3), (pose) -> {
+//        StencilUtils.DrawStencil(poseStack, (pose) -> StencilUtils.drawFrame(pose, 1, 3), (pose) -> {
             long currentTime = mc.level.getGameTime();
             if (mc.getPartialTick() == lastRenderTick) {
                 return; // Throttle to once per tick
@@ -76,13 +73,14 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                 tileEntity.lastUpdateTime = currentTime;
             }
 
-//            MODEL_VBO = buildModelVBO(poseStack, tileEntity);
+            if(mc.level.getGameTime() % 40 == 0)
+                MODEL_VBO = buildModelVBO(pose, tileEntity);
 
             if (MODEL_VBO == null) {
-                MODEL_VBO = buildModelVBO(poseStack, tileEntity);
+                MODEL_VBO = buildModelVBO(pose, tileEntity);
             } else {
-                poseStack.pushPose();
-                poseStack.translate(0.5, 0.5, 0.5);
+                pose.pushPose();
+                pose.translate(0.5, 0.5, 0.5);
 
                 RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
                 RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
@@ -92,61 +90,21 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
                 MODEL_VBO.bind();
                 MODEL_VBO.drawWithShader(
-                        poseStack.last().pose(),
+                        pose.last().pose(),
                         RenderSystem.getProjectionMatrix(),
                         RenderSystem.getShader()
                 );
                 VertexBuffer.unbind();
 
-                poseStack.popPose();
-
+                pose.popPose();
             }
+
+            pose.popPose();
 //            mc.getBlockRenderer().getModelRenderer().renderModel(pose.last(), buffer.getBuffer(RenderType.translucent()), null, GetChunkModel(tileEntity, poseStack), 1, 1, 1, 0xf000f0, packedOverlay);
 
 
             //            pose.translate(-6, -10, -8);
-
-            if (false) {
-                tileEntity.containers.forEach((container) -> {
-                    BlockPos pos = container.getPos();
-                    BlockState state = container.getState();
-                    int Light = container.getLight();
-
-                    pose.pushPose();
-                    pose.translate(pos.getX(), pos.getY(), pos.getZ());
-
-                    BakedModel model =
-                            Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-
-                    // Get the BlockColors instance
-                    BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-
-                    // Get the block color (for grass and shit) for the block state at the given position
-                    int color = blockColors.getColor(state, Minecraft.getInstance().level, pos, 0);
-
-                    // Extract RGB components (normalize to 0-1 range)
-                    float r = ((color >> 16) & 0xFF) / 255.0f;
-                    float g = ((color >> 8) & 0xFF) / 255.0f;
-                    float b = (color & 0xFF) / 255.0f;
-                    Minecraft.getInstance()
-                            .getBlockRenderer()
-                            .getModelRenderer()
-                            .renderModel(
-                                    pose.last(),
-                                    buffer.getBuffer(RenderType.translucent()),
-                                    state,
-                                    model,
-                                    r,
-                                    g,
-                                    b,
-                                    Light,
-                                    packedOverlay);
-
-                    pose.popPose();
-                });
-            }
-            pose.popPose();
-        });
+//        });
     }
 
     @Override
@@ -178,8 +136,6 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
     private VertexBuffer buildModelVBO(PoseStack poseStack, PortalTileEntity entity) {
         Minecraft mc = Minecraft.getInstance();
 
-        RandomSource rand = RandomSource.create(42L);
-
         BufferBuilder buffer = new BufferBuilder((int) Math.pow(16, 3));
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
 
@@ -195,7 +151,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
             poseStack.pushPose();
 
-//            poseStack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
+            poseStack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
             for (BakedQuad quad : getModelFromBlock(container.getState(), entity)) {
                 buffer.putBulkData(
                         poseStack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, false);
@@ -221,7 +177,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
-        RandomSource rand = tileEntity.getLevel().random;
+        RandomSource rand = RandomSource.create(42L);
 
         Direction[] directions = Direction.values();
 
@@ -242,34 +198,6 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                 quads.addAll(model.getQuads(state, dir, rand));
             }
         }
-
-
-//        BakedModel model1 = new BlockBakedModel(quads);
-//
-//
-//        modelRenderer.renderModel(
-//
-//
-//                poseStack.last(),
-//
-//
-//                vc,
-//
-//
-//                null,
-//
-//
-//                model1,
-//
-//
-//                r, g, b,
-//
-//
-//                0xf000f0,
-//
-//
-//                OverlayTexture.NO_OVERLAY);
-
         return quads;
     };
 
