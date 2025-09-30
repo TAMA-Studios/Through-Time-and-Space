@@ -4,7 +4,7 @@ package com.code.tama.tts.server.blocks.Panels;
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.tts.client.TTSSounds;
-import com.code.tama.tts.server.blocks.VoxelRotatedShape;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.ARSStructure;
 import com.code.tama.tts.server.registries.ARSRegistry;

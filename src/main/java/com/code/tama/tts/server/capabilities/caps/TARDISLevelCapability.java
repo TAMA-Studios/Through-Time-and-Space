@@ -1,18 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.Exteriors;
+import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.tts.server.events.TardisEvent;
-import com.code.tama.tts.server.misc.Exterior;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.registries.LandingTypeRegistry;
+import com.code.tama.tts.server.registries.TTSBlocks;
 import com.code.tama.tts.server.tardis.data.ControlParameters;
 import com.code.tama.tts.server.tardis.data.ProtocolData;
 import com.code.tama.tts.server.tardis.data.SubsystemsData;
@@ -23,6 +28,8 @@ import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,15 +38,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
+    Map<UUID, PlayerPosition> ViewingPlayerPositions = new HashMap<>();
     UUID OwnerUUID;
     Exterior ExteriorVariant, ExteriorModelID = Exteriors.EXTERIORS.get(0);
     boolean IsInFlight, IsPowered, ShouldPlayRotorAnimation, IsDiscoMode;
@@ -65,8 +75,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public CompoundTag serializeNBT() {
+        LOGGER.debug("Saving: Location={} Destination={}", this.Location, this.Destination);
+
         CompoundTag Tag = new CompoundTag();
         if (this.OwnerUUID != null) Tag.putUUID("ownerID", this.OwnerUUID);
+        NBTUtils.putPlayerPosMap("viewer_player_map_", this.ViewingPlayerPositions, Tag);
+
         Tag.put("subsystems", this.GetSubsystemsData().serializeNBT());
         Tag.put("controlData", this.GetControlData().serializeNBT());
         Tag.put("protocolData", this.GetProtocolData().serializeNBT());
@@ -79,8 +93,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         Tag.putBoolean("isInFlight", this.IsInFlight);
         Tag.putString("facing", this.Facing.getName());
         Tag.putString("destination_facing", this.DestinationFacing.getName());
-        Tag.put("destination", this.Destination.serializeNBT());
-        Tag.put("location", this.Location.serializeNBT());
+        Tag.put("destination", this.GetDestination().serializeNBT());
+        Tag.put("location", this.GetExteriorLocation().serializeNBT());
         Tag.put("door", this.doorBlock.serializeNBT());
         if (this.ExteriorVariant != null) Tag.put("exterior_variant", this.ExteriorVariant.serializeNBT());
         Tag.putBoolean("is_powered_on", this.IsPowered);
@@ -118,6 +132,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (nbt.contains("protocolData")) this.ProtocolData = new ProtocolData(nbt.getCompound("protocolData"));
         if (nbt.contains("exterior_model_id"))
             this.ExteriorModelID = Exteriors.GetByName(ResourceLocation.parse(nbt.getString("exterior_model_id")));
+
+        this.ViewingPlayerPositions = NBTUtils.getPlayerPosMap("viewer_player_map_", nbt);
+
         this.IsInFlight = nbt.getBoolean("isInFlight");
         this.ShouldPlayRotorAnimation = nbt.getBoolean("play_rotor_animation");
         this.FlightSoundScheme = FlightSoundHandler.GetByID(nbt.getInt("flight_sound_scheme"));
@@ -139,8 +156,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.DestinationFacing = Direction.byName(nbt.getString("destination_facing"));
         this.Facing = Direction.byName(nbt.getString("facing"));
 
-        this.Location = SpaceTimeCoordinate.of(nbt.getCompound("location"));
-        this.Destination = SpaceTimeCoordinate.of(nbt.getCompound("destination"));
+        this.SetExteriorLocation(SpaceTimeCoordinate.of(nbt.getCompound("location")));
+        this.SetDestination(SpaceTimeCoordinate.of(nbt.getCompound("destination")));
         this.doorBlock = SpaceTimeCoordinate.of(nbt.getCompound("door"));
 
         if (nbt.contains("exterior_dimension_key_path"))
@@ -169,26 +186,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
                     ServerLifecycleHooks.getCurrentServer().overworld().dimension();
 
         if (!this.IsInFlight) {
-            if (ServerLifecycleHooks.getCurrentServer().getLevel(this.ExteriorDimensionKey) != null) {
-                ServerLifecycleHooks.getCurrentServer()
-                        .getLevel(this.ExteriorDimensionKey)
-                        .setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetY() / 16), true);
-
-                ServerLifecycleHooks.getCurrentServer().execute(new TickTask(1, () -> {
-                    this.exteriorTile = (ExteriorTile) ServerLifecycleHooks.getCurrentServer()
-                            .getLevel(this.ExteriorDimensionKey)
-                            .getLevel()
-                            .getBlockEntity(this.Location.GetBlockPos());
-
-                    if (this.exteriorTile != null)
-                        this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
-                    else if (!this.level.isClientSide) this.Land();
-                    ServerLifecycleHooks.getCurrentServer()
-                            .getLevel(this.ExteriorDimensionKey)
-                            .setChunkForced(
-                                    (int) (this.Location.GetX() / 16), (int) (this.Location.GetY() / 16), false);
-                }));
-            }
+            if (this.GetExteriorTile() != null)
+                this.GetExteriorTile().SetInteriorAndSyncWithBlock(this.level.dimension());
+            else if (!this.level.isClientSide) this.Land();
         }
 
         this.flightTerminationProtocol =
@@ -207,12 +207,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public SpaceTimeCoordinate GetDestination() {
-        return this.Destination;
+        if (this.Destination.getLevel() == null) this.Destination.setLevel(this.DestinationDimensionKey);
+        return this.Destination.copy();
     }
 
     @Override
     public void SetDestination(SpaceTimeCoordinate Destination) {
-        this.Destination = Destination;
+        this.Destination = Destination.copy();
     }
 
     @Override
@@ -261,8 +262,23 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     @Override
+    public Map<UUID, PlayerPosition> GetViewingMap() {
+        return this.ViewingPlayerPositions;
+    }
+
+    @Override
+    public boolean IsViewingTARDIS(UUID player) {
+        return this.ViewingPlayerPositions.containsKey(player);
+    }
+
+    @Override
+    public void SetViewing(UUID player, PlayerPosition position) {
+        this.ViewingPlayerPositions.put(player, position);
+    }
+
+    @Override
     public boolean CanFly() {
-        return this.GetSubsystemsData().getDematerializationCircuit().isActivated(this.level);
+        return this.GetSubsystemsData().getDematerializationCircuit().isActivated(this.level) && this.IsPowered;
     }
 
     @Override
@@ -272,6 +288,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public ResourceKey<Level> GetCurrentLevel() {
+        if (this.Location.getLevelKey() != null) return this.Location.getLevelKey();
         if (this.level.isClientSide && this.ExteriorDimensionKey == null) this.UpdateClient();
         if (this.ExteriorDimensionKey == null) {
             if (this.GetExteriorTile() != null) {
@@ -285,6 +302,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public void SetCurrentLevel(ResourceKey<Level> exteriorLevel) {
+        this.Location.setLevel(exteriorLevel);
         this.ExteriorDimensionKey = exteriorLevel;
     }
 
@@ -293,35 +311,32 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public ExteriorTile GetExteriorTile() {
         if (!this.IsInFlight) {
             if (this.exteriorTile == null) {
-                if (!this.level.isClientSide) {
-                    if (this.level
-                                    .getServer()
-                                    .getLevel(this.ExteriorDimensionKey)
-                                    .getBlockEntity(this.Location.GetBlockPos())
-                            != null)
-                        this.exteriorTile = (ExteriorTile) this.level
-                                .getServer()
-                                .getLevel(this.ExteriorDimensionKey)
-                                .getBlockEntity(this.Location.GetBlockPos());
-                    else {
-                        this.level
-                                .getServer()
-                                .getLevel(this.ExteriorDimensionKey)
-                                .setChunkForced(
-                                        (int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), true);
+                if (!this.level.isClientSide && this.level.getServer() == null) {
+                    if (this.level.getServer().getLevel(this.ExteriorDimensionKey) != null) {
+                        ServerLevel tardisLevel = this.level.getServer().getLevel(this.ExteriorDimensionKey);
 
-                        this.exteriorTile = (ExteriorTile) this.level
-                                .getServer()
-                                .getLevel(this.ExteriorDimensionKey)
-                                .getBlockEntity(this.Location.GetBlockPos());
+                        assert tardisLevel != null;
+                        if (tardisLevel.getBlockEntity(
+                                        this.GetExteriorLocation().GetBlockPos())
+                                != null)
+                            this.exteriorTile = (ExteriorTile) tardisLevel.getBlockEntity(
+                                    this.GetExteriorLocation().GetBlockPos());
+                        else {
+                            tardisLevel.setChunkForced(
+                                    (int) (this.GetExteriorLocation().GetX() / 16),
+                                    (int) (this.GetExteriorLocation().GetZ() / 16),
+                                    true);
 
-                        this.level
-                                .getServer()
-                                .getLevel(this.ExteriorDimensionKey)
-                                .setChunkForced(
-                                        (int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), false);
+                            this.exteriorTile = (ExteriorTile) tardisLevel.getBlockEntity(
+                                    this.GetExteriorLocation().GetBlockPos());
 
-                        return this.exteriorTile;
+                            tardisLevel.setChunkForced(
+                                    (int) (this.GetExteriorLocation().GetX() / 16),
+                                    (int) (this.GetExteriorLocation().GetZ() / 16),
+                                    false);
+
+                            return this.exteriorTile;
+                        }
                     }
                 }
             } else return this.exteriorTile;
@@ -332,18 +347,25 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void SetExteriorTile(ExteriorTile exteriorTile) {
         this.exteriorTile = exteriorTile;
+        this.Location = new SpaceTimeCoordinate(
+                exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension());
         assert exteriorTile.getLevel() != null;
         this.ExteriorDimensionKey = exteriorTile.getLevel().dimension();
     }
 
     @Override
-    public void SetExteriorLocation(SpaceTimeCoordinate blockPos) {
-        this.Location = blockPos;
+    public void SetExteriorLocation(SpaceTimeCoordinate loc) {
+        this.Location = loc.copy();
     }
 
     @Override
     public SpaceTimeCoordinate GetExteriorLocation() {
-        return this.Location;
+        if (!this.level.isClientSide && this.GetExteriorTile() != null && this.Location == null) {
+            return new SpaceTimeCoordinate(
+                    this.GetExteriorTile().getBlockPos(),
+                    this.GetExteriorTile().getLevel().dimension());
+        }
+        return this.Location.copy();
     }
 
     @Override
@@ -386,7 +408,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
     @Override
     public boolean IsInFlight() {
-        return this.IsPowered && this.IsInFlight;
+        return this.IsInFlight;
+    }
+
+    @Override
+    public boolean IsTakingOff() {
+        return this.ShouldPlayRotorAnimation && !this.IsInFlight;
     }
 
     @Override
@@ -425,14 +452,20 @@ public class TARDISLevelCapability implements ITARDISLevel {
         exteriorLevel
                 .getServer()
                 .getLevel(exteriorLevel.dimension())
-                .setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), true);
+                .setChunkForced(
+                        (int) (this.GetExteriorLocation().GetX() / 16),
+                        (int) (this.GetExteriorLocation().GetZ() / 16),
+                        true);
 
         ext.UtterlyDestroy();
 
         exteriorLevel
                 .getServer()
                 .getLevel(exteriorLevel.dimension())
-                .setChunkForced((int) (this.Location.GetX() / 16), (int) (this.Location.GetZ() / 16), false);
+                .setChunkForced(
+                        (int) (this.GetExteriorLocation().GetX() / 16),
+                        (int) (this.GetExteriorLocation().GetZ() / 16),
+                        false);
         this.UpdateClient();
         MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
     }
@@ -441,7 +474,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public void Dematerialize() {
         if (!this.CanFly()) return;
 
-        if (this.IsInFlight()) return;
+        if (this.IsInFlight() && !this.IsTakingOff()) return;
 
         MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.START));
 
@@ -450,7 +483,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
             this.SetInFlight(true);
             this.GetFlightScheme().GetTakeoff().SetFinished(true);
             // Lands the TARDIS, creating an exterior
-            this.Land();
+            this.UpdateClient();
+            this.Rematerialize();
         } else {
             // Start a new Takeoff thread
             this.SetPlayRotorAnimation(true);
@@ -465,13 +499,61 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
         MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.START));
         // TODO: This
-        this.Land();
+        new LandThread(this).start();
     }
 
     @Override
     public void Land() {
         this.IsInFlight = false;
-        new LandThread(this).start();
+        if (!this.GetLevel().isClientSide) {
+
+            ServerLevel CurrentLevel = this.GetLevel().getServer().getLevel(this.GetCurrentLevel());
+            assert CurrentLevel != null;
+            CurrentLevel.setChunkForced(
+                    (int) (this.GetDestination().GetX() / 16),
+                    (int) (this.GetDestination().GetZ() / 16),
+                    true);
+
+            BlockPos pos = BlockHelper.snapToGround(
+                    this.GetLevel(), this.GetDestination().GetBlockPos());
+
+            //            this.GetFlightTerminationPolicy().GetProtocol().OnLand(this, pos,
+            // CurrentLevel);
+            //            pos = this.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
+
+            pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
+
+            SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos, CurrentLevel.dimension());
+
+            this.SetExteriorLocation(coords.copy());
+            this.SetDestination(coords.copy());
+            this.SetFacing(this.GetDestinationFacing());
+
+            BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
+
+            CurrentLevel.setBlock(
+                    this.GetDestination().GetBlockPos(), exteriorBlockState.setValue(FACING, this.GetFacing()), 3);
+
+            ((ExteriorBlock) exteriorBlockState.getBlock())
+                    .SetInteriorKey(this.GetLevel().dimension());
+
+            this.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), exteriorBlockState);
+            if (CurrentLevel.getBlockEntity(pos) != null) {
+                BlockPos finalPos = pos; // pos used in lambda must be final or effectively final
+                CurrentLevel.getServer().execute(new TickTask(1, () -> {
+                    this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(finalPos)));
+                }));
+            }
+            CurrentLevel.setChunkForced(
+                    (int) (this.GetDestination().GetX() / 16),
+                    (int) (this.GetDestination().GetZ() / 16),
+                    false);
+            this.SetPlayRotorAnimation(false);
+            this.UpdateClient();
+        }
+
+        MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
+        this.SetExteriorLocation(this.GetDestination());
         this.NullExteriorChecksAndFixes();
     }
 
@@ -582,10 +664,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
                             this.IsPowered,
                             this.IsInFlight,
                             this.ShouldPlayRotorAnimation,
-                            this.Destination.GetBlockPos(),
-                            this.Location.GetBlockPos(),
+                            this.GetDestination().GetBlockPos(),
+                            this.GetExteriorLocation().GetBlockPos(),
                             this.GetCurrentLevel(),
                             this.GetExteriorModel().GetModelName()));
+
             if (this.GetExteriorTile() != null) {
                 this.GetExteriorTile().Variant = this.GetExteriorVariant();
                 this.GetExteriorTile().setModelIndex(this.GetExteriorModel().GetModelName());
@@ -683,5 +766,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (this.level.isClientSide) return null;
         //        return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
         return this.level.getServer().getPlayerList().getPlayer(this.OwnerUUID);
+    }
+
+    public void ForceLoadExteriorChunk(boolean ForceLoad) {
+        this.GetDestination()
+                .getLevel()
+                .getServer()
+                .getLevel(this.DestinationDimensionKey)
+                .setChunkForced(
+                        (int) (this.GetExteriorLocation().GetX() / 16),
+                        (int) (this.GetExteriorLocation().GetZ() / 16),
+                        false);
     }
 }

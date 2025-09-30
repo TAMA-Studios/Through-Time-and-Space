@@ -4,10 +4,10 @@ package com.code.tama.tts.server.entities.controls;
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.enums.Controls;
+import com.code.tama.tts.server.items.SonicItem;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.registries.TTSEntities;
-import com.code.tama.tts.server.registries.TTSItems;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
     @Override
     public void OnControlClicked(ITARDISLevel capability, Player player) {
         if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
-        if (player.getMainHandItem().getItem().equals(TTSItems.CORAL_SONIC.get())) {
+        if (player.getMainHandItem().getItem() instanceof SonicItem) {
             if (player.isCrouching()) {
                 this.CycleControlBackward();
                 player.sendSystemMessage(Component.literal(

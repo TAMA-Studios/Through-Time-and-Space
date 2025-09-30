@@ -5,6 +5,7 @@ import com.code.tama.tts.server.tardis.controls.*;
 
 public enum Controls {
     EMPTY(new EmptyControl()),
+    ENVIRONMENT_SCANNER(new EnvironmentScannerControl()),
     FACING_CONTROL(new FacingControl()),
     INCREMENT_CONTROL(new IncrementControl()),
     POWER_CONTROL(new PowerControl()),

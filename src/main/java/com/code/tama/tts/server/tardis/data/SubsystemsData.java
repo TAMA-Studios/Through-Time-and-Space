@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.tardis.data;
 
 import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
+import com.code.tama.tts.server.tardis.subsystems.EnginesSubsystem;
 import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class SubsystemsData implements INBTSerializable<CompoundTag> {
     public DematerializationCircuit DematerializationCircuit = new DematerializationCircuit();
     public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = new NetherReactorCoreSubsystem();
+    public EnginesSubsystem EnginesSubsystem = new EnginesSubsystem();
 
     public SubsystemsData(CompoundTag compoundTag) {
         this.deserializeNBT(compoundTag);
@@ -27,6 +29,8 @@ public class SubsystemsData implements INBTSerializable<CompoundTag> {
 
         if (nbt.contains("NetherReactorCoreSubsystem"))
             this.NetherReactorCoreSubsystem.deserializeNBT(nbt.getCompound("NetherReactorCoreSubsystem"));
+
+        if (nbt.contains("Engines")) this.EnginesSubsystem.deserializeNBT(nbt.getCompound("Engines"));
     }
 
     @Override
@@ -37,6 +41,8 @@ public class SubsystemsData implements INBTSerializable<CompoundTag> {
 
         if (this.NetherReactorCoreSubsystem != null)
             compoundTag.put("NetherReactorCoreSubsystem", this.NetherReactorCoreSubsystem.serializeNBT());
+
+        if (this.EnginesSubsystem != null) compoundTag.put("Engines", this.EnginesSubsystem.serializeNBT());
         return compoundTag;
     }
 }

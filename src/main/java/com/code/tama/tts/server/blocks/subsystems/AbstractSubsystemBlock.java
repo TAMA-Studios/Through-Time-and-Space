@@ -16,9 +16,13 @@ public abstract class AbstractSubsystemBlock extends Block {
         this.subsystem = subsystem;
     }
 
-    public abstract void OnActivate(Level level, BlockPos blockPos);
+    public void OnActivate(Level level, BlockPos blockPos) {
+        this.getSubsystem().OnActivate(level, blockPos);
+    }
 
-    public abstract void OnDeActivate(Level level, BlockPos blockPos);
+    public void OnDeActivate(Level level, BlockPos blockPos) {
+        this.getSubsystem().OnDeActivate(level, blockPos);
+    }
 
     /**
      * Called when the subsystem is tied into the engine block via fragment links
@@ -29,6 +33,6 @@ public abstract class AbstractSubsystemBlock extends Block {
      **/
     public void OnIntegration(Level level, BlockPos blockPos) {
         this.subsystem.setBlockPos(blockPos);
-        if (this.subsystem.IsValid(level, blockPos)) this.subsystem.OnActivate(level, blockPos);
+        if (this.subsystem.IsValid(level, blockPos)) this.OnActivate(level, blockPos);
     }
 }

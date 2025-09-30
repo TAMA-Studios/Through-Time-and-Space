@@ -1,20 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.portal;
 
+import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,6 +21,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class PortalChunkDataPacketS2C {
     @OnlyIn(Dist.CLIENT)
@@ -84,50 +87,56 @@ public class PortalChunkDataPacketS2C {
             Map<BlockState, Integer> stateToIndex = new HashMap<>();
             paletteList.add(Blocks.AIR.defaultBlockState()); // Index 0 = air
             stateToIndex.put(Blocks.AIR.defaultBlockState(), 0);
+            List<BotiChunkContainer> containers = new ArrayList<>();
+
             BlockState[][][] sectionStates = new BlockState[16][16][16];
             for (int y = 0; y < 16; y++) {
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {
                         BlockState state = section.getBlockState(x, y, z);
                         sectionStates[x][y][z] = state;
-                        if (state != null && !state.isAir() && !stateToIndex.containsKey(state)) {
-                            stateToIndex.put(state, paletteList.size());
-                            paletteList.add(state);
+                        if (!state.isAir() && !stateToIndex.containsKey(state)) {
+//                            stateToIndex.put(state, paletteList.size());
+//                            paletteList.add(state);
+
+                            BlockPos pos = new BlockPos(x, y, z);
+                            containers.add(new BotiChunkContainer(state, pos, getPackedLight(level, BlockUtils.fromChunkAndLocal(chunkPos, pos))));
+
                         }
                     }
                 }
             }
 
-            // Build palette NBT
-            ListTag palette = new ListTag();
-            for (BlockState state : paletteList) {
-                CompoundTag stateTag = (CompoundTag) BlockState.CODEC
-                        .encodeStart(NbtOps.INSTANCE, state)
-                        .result()
-                        .orElseThrow(() -> new IllegalStateException("Failed to encode state " + state));
-                palette.add(stateTag);
-            }
-
-            int paletteSize = palette.size();
-            int bitsPerEntry = Math.max(1, (int) Math.ceil(Math.log(paletteSize) / Math.log(2))); // Allow 1 bit for
-            // small palettes
-            int entriesPerLong = 64 / bitsPerEntry;
-            int dataLength = (int) Math.ceil(4096.0 / entriesPerLong); // 16x16x16 = 4096 entries
-
-            // Build data array
-            long[] data = new long[dataLength];
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    for (int x = 0; x < 16; x++) {
-                        int index = y * 256 + z * 16 + x;
-                        int longIndex = index / entriesPerLong;
-                        int offset = (index % entriesPerLong) * bitsPerEntry;
-                        BlockState state = sectionStates[x][y][z];
-                        int paletteIndex = stateToIndex.getOrDefault(state, 0); // Default to air
-                        data[longIndex] |= ((long) paletteIndex & ((1L << bitsPerEntry) - 1)) << offset;
-                    }
-                }
-            }
+//            // Build palette NBT
+//            ListTag palette = new ListTag();
+//            for (BlockState state : paletteList) {
+//                CompoundTag stateTag = (CompoundTag) BlockState.CODEC
+//                        .encodeStart(NbtOps.INSTANCE, state)
+//                        .result()
+//                        .orElseThrow(() -> new IllegalStateException("Failed to encode state " + state));
+//                palette.add(stateTag);
+//            }
+//
+//            int paletteSize = palette.size();
+//            int bitsPerEntry = Math.max(1, (int) Math.ceil(Math.log(paletteSize) / Math.log(2))); // Allow 1 bit for
+//            // small palettes
+//            int entriesPerLong = 64 / bitsPerEntry;
+//            int dataLength = (int) Math.ceil(4096.0 / entriesPerLong); // 16x16x16 = 4096 entries
+//
+//            // Build data array
+//            long[] data = new long[dataLength];
+//            for (int y = 0; y < 16; y++) {
+//                for (int z = 0; z < 16; z++) {
+//                    for (int x = 0; x < 16; x++) {
+//                        int index = y * 256 + z * 16 + x;
+//                        int longIndex = index / entriesPerLong;
+//                        int offset = (index % entriesPerLong) * bitsPerEntry;
+//                        BlockState state = sectionStates[x][y][z];
+//                        int paletteIndex = stateToIndex.getOrDefault(state, 0); // Default to air
+//                        data[longIndex] |= ((long) paletteIndex & ((1L << bitsPerEntry) - 1)) << offset;
+//                    }
+//                }
+//            }
 
             // Collect block entity data
             for (int y = 0; y < 16; y++) {
@@ -145,27 +154,41 @@ public class PortalChunkDataPacketS2C {
                 }
             }
 
-            blockStates.put("palette", palette);
-            blockStates.putLongArray("data", data);
-            blockStates.putInt("bitsPerEntry", bitsPerEntry);
-            this.chunkData.put("block_states", blockStates);
+//            blockStates.put("palette", palette);
+//            blockStates.putLongArray("data", data);
+//            blockStates.putInt("bitsPerEntry", bitsPerEntry);
+
+            CompoundTag containersTag = new CompoundTag();
+            for(int i = 0; i < containers.size(); i++) {
+                BotiChunkContainer container = containers.get(i);
+                containersTag.put(Integer.toString(i), container.serializeNBT());
+            }
+
+            containersTag.putInt("size", containers.size());
+
+            this.chunkData.put("containers", containersTag);
+//            this.chunkData.put("block_states", blockStates);
             if (!blockEntities.isEmpty()) {
                 this.chunkData.put("block_entities", blockEntities);
             }
         } catch (Exception e) {
             System.out.println("Exception in packet construction: " + e.getMessage());
             e.printStackTrace();
-            ListTag palette = new ListTag();
-            palette.add(BlockState.CODEC
-                    .encodeStart(NbtOps.INSTANCE, Blocks.STONE.defaultBlockState())
-                    .result()
-                    .orElseThrow(() -> new IllegalStateException("Failed to encode stone state")));
-            long[] fullData = new long[256];
-            java.util.Arrays.fill(fullData, 0);
-            blockStates.put("palette", palette);
-            blockStates.putLongArray("data", fullData);
-            System.out.println("Using fallback stone data due to serialization failure");
-            this.chunkData.put("block_states", blockStates);
         }
+
+
+    }
+
+    public static int getPackedLight(Level level, BlockPos pos) {
+        int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
+        int skyLight   = level.getBrightness(LightLayer.SKY, pos);
+
+        // Clamp to 0–15 (should already be, but just in case)
+        blockLight = Mth.clamp(blockLight, 0, 15);
+        skyLight   = Mth.clamp(skyLight, 0, 15);
+
+        // Pack into the same format LevelRenderer.getLightColor uses:
+        // block << 4 into low bits, sky << 20 into high bits
+        return (blockLight << 4) | (skyLight << 20);
     }
 }

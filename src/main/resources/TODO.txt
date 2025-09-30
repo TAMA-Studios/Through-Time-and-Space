@@ -1,10 +1,12 @@
 TODO:
 ~~Valkyrian Skies compat!!~~ (DONE!)
 TODO: Figure out all these damn disconnected errors
+TODO: FIX FLIGHT/LAND MECHANIC
+Compressed Multiblocks
 
-IMPLEMENT ENGINES! (Not just the interface)
+IMPLEMENT DYNAMOS!
 Fault Locator
-Subsystem/Control durability
+~~Subsystem/~~Control durability
 Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome temperature, etc.
 Add more subsystems
 Flight Speed

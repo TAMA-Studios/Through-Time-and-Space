@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.blocks;
+package com.code.tama.tts.server.blocks.core;
 
 import com.code.tama.tts.server.registries.TTSBlocks;
 import net.minecraft.core.BlockPos;

@@ -5,7 +5,7 @@ import com.code.tama.tts.compat.CompatClass;
 
 public class MTerrablender extends CompatClass {
     public void runCompat() {
-        // Regions.register(new GallifreyRegion(new ResourceLocation(MODID,
-        // "gallifrey"), 5));
+        //         Regions.register(new GallifreyRegion(new ResourceLocation(MODID,
+        //         "gallifrey"), 5));
     }
 }

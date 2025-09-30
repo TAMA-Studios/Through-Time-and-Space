@@ -2,6 +2,7 @@
 package com.code.tama.triggerapi;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
@@ -52,4 +53,19 @@ public class BlockUtils {
     public static float getDifferenceInHeight(BlockState from, BlockState to) {
         return getHeightModifier(to) - getHeightModifier(from);
     }
+
+    public static BlockPos getRelativeBlockPos(BlockPos basePos, BlockPos offsetPos) {
+        return new BlockPos(
+                basePos.getX() + offsetPos.getX(),
+                basePos.getY() + offsetPos.getY(),
+                basePos.getZ() + offsetPos.getZ());
+    }
+
+    public static BlockPos fromChunkAndLocal(ChunkPos chunkPos, BlockPos localPos) {
+        int worldX = (chunkPos.x << 4) + localPos.getX();
+        int worldY = localPos.getY();
+        int worldZ = (chunkPos.z << 4) + localPos.getZ();
+        return new BlockPos(worldX, worldY, worldZ);
+    }
+
 }

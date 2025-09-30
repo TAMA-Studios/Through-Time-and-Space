@@ -18,7 +18,7 @@
         "mirror" : false,
         "origin" : [ -9, -34, 0 ],
         "size" : [ 9, 34, 1 ],
-        "uv" : [ 41, 99 ]
+        "uv" : [ 71, 99 ]
       } ],
       "group_name" : "LeftDoor",
       "pivot" : [ 9, 17, -19.5 ],
@@ -150,7 +150,7 @@
     "pivot" : [ 0, 5, 9.5 ],
     "rotation" : [ 0, 0, 0 ]
   } ],
-  "lightmap" : "tts:exteriors/voxel/lightmap",
+  "lightmap" : "tts:exteriors/voxel/_lightmap",
   "scale" : 1,
   "texture" : "tts:exteriors/voxel/moffat",
   "texture_height" : 256,

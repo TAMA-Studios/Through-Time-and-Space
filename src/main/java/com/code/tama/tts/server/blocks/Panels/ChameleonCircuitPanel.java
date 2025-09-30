@@ -4,7 +4,7 @@ package com.code.tama.tts.server.blocks.Panels;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
-import com.code.tama.tts.server.blocks.VoxelRotatedShape;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -219,11 +219,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                                 new SyncCapVariantPacketS2C(
                                         Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
 
-                        serverLevel
-                                .getBlockEntity(tardisLevelCapability
-                                        .GetExteriorLocation()
-                                        .GetBlockPos())
-                                .setChanged();
+                        tardisLevelCapability.GetExteriorTile().setChanged();
                     }
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);

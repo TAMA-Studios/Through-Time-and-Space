@@ -3,14 +3,19 @@ package com.code.tama.tts.server.tardis.data;
 
 import com.code.tama.tts.server.misc.FlightTerminationProtocol;
 import com.code.tama.tts.server.registries.FlightTerminationProtocolRegistry;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 @NoArgsConstructor
+@Getter
+@Setter
 public class ControlParameters implements INBTSerializable<CompoundTag> {
-    boolean APCState, Brakes;
-    int ArtronPacketOutput;
+    public float HelmicRegulator;
+    public boolean APCState, Brakes, SimpleMode;
+    public int ArtronPacketOutput;
     FlightTerminationProtocol flightTerminationProtocolEnum = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 
     public ControlParameters(CompoundTag compoundTag) {
@@ -43,36 +48,14 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
         return this.ArtronPacketOutput;
     }
 
-    public boolean GetBrakes() {
-        return this.Brakes;
-    }
-
-    public void SetBrakes(boolean brakes) {
-        this.Brakes = brakes;
-    }
-
-    public FlightTerminationProtocol GetTerminationProtocol() {
-        return this.flightTerminationProtocolEnum;
-    }
-
-    public void SetAPC(boolean APCState) {
-        this.APCState = APCState;
-    }
-
-    public void SetArtronPacketOutput(int ArtronPacketOutput) {
-        this.ArtronPacketOutput = ArtronPacketOutput;
-    }
-
-    public void SetTerminationProtocol(FlightTerminationProtocol terminationProtocol) {
-        this.flightTerminationProtocolEnum = terminationProtocol;
-    }
-
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.flightTerminationProtocolEnum =
                 FlightTerminationProtocolRegistry.FLIGHT_TERMINATION_PROTOCOLS.get(nbt.getInt("termination_protocol"));
         this.APCState = nbt.getBoolean("APC");
         this.ArtronPacketOutput = nbt.getInt("ArtronPacketOutput");
+        this.SimpleMode = nbt.getBoolean("SimpleMode");
+        this.HelmicRegulator = nbt.getFloat("HelmicRegulators");
     }
 
     @Override
@@ -84,6 +67,8 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
                         this.flightTerminationProtocolEnum));
         compoundTag.putBoolean("APC", this.APCState);
         compoundTag.putInt("ArtronPacketOutput", this.ArtronPacketOutput);
+        compoundTag.putBoolean("SimpleMode", this.SimpleMode);
+        compoundTag.putFloat("HelmicRegulators", this.HelmicRegulator);
         return compoundTag;
     }
 }

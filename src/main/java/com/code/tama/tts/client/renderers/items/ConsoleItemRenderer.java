@@ -27,7 +27,7 @@ public class ConsoleItemRenderer extends BlockEntityWithoutLevelRenderer {
             BlockEntityType<?> type,
             BlockState state) {
         super(dispatcher, modelSet);
-        this.ConsoleToRender = new AbstractConsoleTile(type, BlockPos.ZERO, state);
+        this.ConsoleToRender = (AbstractConsoleTile) type.create(BlockPos.ZERO, state);
     }
 
     @Override

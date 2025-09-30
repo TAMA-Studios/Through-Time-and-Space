@@ -40,7 +40,13 @@ public class ProtocolData implements INBTSerializable<CompoundTag> {
                 }
             });
 
-            tardis.SetDestination(new SpaceTimeCoordinate(0, 0, 0, 0));
+            if (tardis.GetExteriorTile() != null) {
+                tardis.GetControlData().setHelmicRegulator(0.6f);
+                tardis.GetControlData().setSimpleMode(true);
+                tardis.SetDestination(new SpaceTimeCoordinate(
+                        tardis.GetExteriorTile().getLevel().getSharedSpawnPos()));
+            }
+
             tardis.Dematerialize();
         }
     }

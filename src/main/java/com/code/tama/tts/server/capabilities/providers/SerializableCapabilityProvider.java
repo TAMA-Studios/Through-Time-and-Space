@@ -10,14 +10,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SerializableLevelCapabilityProvider<T extends INBTSerializable<C>, C extends Tag, I extends T>
+public class SerializableCapabilityProvider<T extends INBTSerializable<C>, C extends Tag, I extends T>
         implements ICapabilitySerializable<C> {
 
     private final T CapabilityInterface;
     private final Capability<I> INSTANCE;
     private final LazyOptional<T> lazyOptional;
 
-    public SerializableLevelCapabilityProvider(Capability<I> instance, T CapInterface) {
+    public SerializableCapabilityProvider(Capability<I> instance, T CapInterface) {
         this.INSTANCE = instance;
         this.CapabilityInterface = CapInterface;
         this.lazyOptional = LazyOptional.of(() -> this.CapabilityInterface);

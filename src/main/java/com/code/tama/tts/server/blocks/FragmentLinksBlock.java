@@ -67,29 +67,22 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
     }
 
     private BooleanProperty getPropertyForDirection(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return NORTH;
-            case EAST:
-                return EAST;
-            case SOUTH:
-                return SOUTH;
-            case WEST:
-                return WEST;
-            case UP:
-                return UP;
-            case DOWN:
-                return DOWN;
-            default:
-                throw new IllegalArgumentException("Invalid direction: " + direction);
-        }
+        return switch (direction) {
+            case NORTH -> NORTH;
+            case EAST -> EAST;
+            case SOUTH -> SOUTH;
+            case WEST -> WEST;
+            case UP -> UP;
+            case DOWN -> DOWN;
+            default -> throw new IllegalArgumentException("Invalid direction: " + direction);
+        };
     }
 
     private boolean canConnectTo(LevelAccessor level, BlockPos neighborPos, Direction direction) {
         BlockState neighborState = level.getBlockState(neighborPos);
         return neighborState.getBlock() instanceof FragmentLinksBlock
                 || neighborState.getBlock() instanceof AbstractSubsystemBlock
-                || neighborState.getBlock() instanceof EngineBlock;
+                || neighborState.getBlock() instanceof EngineInterfaceBlock;
     }
 
     private static void makeParticle(LevelAccessor levelAccessor, BlockPos blockPos) {
@@ -151,7 +144,7 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 
     public boolean TestForEngine(Level level, BlockPos pos) {
         for (Direction direction : Direction.values()) {
-            if (level.getBlockState(pos.relative(direction)).getBlock() instanceof EngineBlock) {
+            if (level.getBlockState(pos.relative(direction)).getBlock() instanceof EngineInterfaceBlock) {
                 return true;
             }
         }

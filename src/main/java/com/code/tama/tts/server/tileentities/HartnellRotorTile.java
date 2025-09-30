@@ -25,7 +25,7 @@ public class HartnellRotorTile extends TickingTile {
             if (level.isClientSide)
                 this.getRotorAnimationState().animateWhen(cap.ShouldPlayRotorAnimation(), (int) level.getGameTime());
             if (cap.ShouldPlayRotorAnimation()) {
-                cap.GetFlightScheme().GetFlightLoop().PlayIfUnfinished(level, this.worldPosition);
+                cap.GetFlightScheme().GetFlightLoop().PlayIfFinished(level, this.worldPosition);
             } else cap.GetFlightScheme().GetFlightLoop().SetFinished(true);
         });
     }

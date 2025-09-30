@@ -7,6 +7,10 @@ import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
 
 import com.code.tama.tts.server.blocks.*;
 import com.code.tama.tts.server.blocks.Panels.*;
+import com.code.tama.tts.server.blocks.core.ConsoleBlock;
+import com.code.tama.tts.server.blocks.core.ModFlammableRotatedPillarBlock;
+import com.code.tama.tts.server.blocks.core.RotorBlock;
+import com.code.tama.tts.server.blocks.core.WeatheringSteel;
 import com.code.tama.tts.server.blocks.monitor.CRTMonitorBlock;
 import com.code.tama.tts.server.blocks.monitor.MonitorBlock;
 import com.code.tama.tts.server.blocks.monitor.MonitorPanel;
@@ -43,6 +47,10 @@ public class TTSBlocks {
     public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK =
             RegisterWithItemSpecial("example_tile_block", () -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
 
+    // This uses a custom BlockItem so we just do BLOCKS.register()
+    public static RegistryObject<CompressedMultiblockBlock> COMPRESSED_MULTIBLOCK = BLOCKS.register(
+            "compressed_multiblock_block", () -> new CompressedMultiblockBlock(BlockBehaviour.Properties.of()));
+
     @MainTab
     public static RegistryObject<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = RegisterWithItemSpecial(
             "sonic_configurator", () -> new SonicConfiguratorBlock(BlockBehaviour.Properties.of()));
@@ -74,6 +82,36 @@ public class TTSBlocks {
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .strength(5.0F, 6.0F)
                     .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> STRUCTURAL_STEEL = RegisterWithItem(
+            "structural_steel",
+            () -> new StructuralSteelBlock(
+                    WeatheringSteel.WeatherState.UNAFFECTED,
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .strength(5.0F, 6.0F)
+                            .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> STRUCTURAL_STEEL_WEATHERED = RegisterWithItem(
+            "structural_steel_weathered",
+            () -> new StructuralSteelBlock(
+                    WeatheringSteel.WeatherState.WEATHERED,
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .strength(5.0F, 6.0F)
+                            .sound(SoundType.METAL)));
+
+    @MainTab
+    public static final RegistryObject<Block> STRUCTURAL_STEEL_RUSTED = RegisterWithItem(
+            "structural_steel_rusted",
+            () -> new StructuralSteelBlock(
+                    WeatheringSteel.WeatherState.RUSTED,
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .strength(5.0F, 6.0F)
+                            .sound(SoundType.METAL)));
 
     @MainTab
     public static final RegistryObject<Block> BRUSHED_STEEL = RegisterWithItem(
@@ -256,9 +294,14 @@ public class TTSBlocks {
             () -> new NetherReactorCoreBlock(
                     BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
 
-    public static final RegistryObject<Block> TARDIS_ENGINE = RegisterWithItem(
-            "tardis_engine",
-            () -> new EngineBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+    public static final RegistryObject<Block> TARDIS_ENGINE_INTERFACE = RegisterWithItem(
+            "tardis_engine_interface",
+            () -> new EngineInterfaceBlock(
+                    BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+
+    public static final RegistryObject<Block> TARDIS_ENGINES = RegisterWithItem(
+            "tardis_engines",
+            () -> new EnginesBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register(
             "portal_block",

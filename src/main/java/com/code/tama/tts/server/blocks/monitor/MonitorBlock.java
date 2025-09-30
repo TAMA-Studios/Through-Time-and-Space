@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.monitor;
 
-import com.code.tama.tts.server.blocks.VoxelRotatedShape;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;

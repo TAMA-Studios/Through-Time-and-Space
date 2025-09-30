@@ -10,6 +10,7 @@ import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCap
 import com.code.tama.tts.server.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlHitPacketC2S;
+import com.code.tama.tts.server.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
@@ -17,6 +18,8 @@ import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariant
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
+import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
@@ -147,6 +150,24 @@ public class Networking {
                 TriggerSyncCapPacketC2S::encode,
                 TriggerSyncCapPacketC2S::decode,
                 TriggerSyncCapPacketC2S::handle);
+
+        register(
+                SyncViewedTARDISS2C.class,
+                SyncViewedTARDISS2C::encode,
+                SyncViewedTARDISS2C::decode,
+                SyncViewedTARDISS2C::handle);
+
+        register(
+                StopViewingExteriorC2S.class,
+                StopViewingExteriorC2S::encode,
+                StopViewingExteriorC2S::decode,
+                StopViewingExteriorC2S::handle);
+
+        register(
+                ExteriorStatePacket.class,
+                ExteriorStatePacket::encode,
+                ExteriorStatePacket::decode,
+                ExteriorStatePacket::handle);
         // BOTI
 
         // register(PortalSyncPacket.class, PortalSyncPacket::encode,
@@ -193,6 +214,10 @@ public class Networking {
 
     public static void sendPacketToDimension(ResourceKey<Level> level, Object mes) {
         INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), mes);
+    }
+
+    public static void sendPacketToDimension(Object msg, Level level) {
+        INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), msg);
     }
 
     public static void sendTo(ServerPlayer player, Object mes) {

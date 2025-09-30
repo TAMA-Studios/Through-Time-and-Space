@@ -20,6 +20,7 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -38,92 +39,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ExteriorTile extends BlockEntity {
-    public boolean ShouldMakeDimOnNextTick = false;
+public class ExteriorTile extends TickingTile {
+    public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
     public LivingEntity Placer;
     public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
-
-    public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
-        if (blockEntity instanceof ExteriorTile exteriorTile) {
-
-            // if (blockEntity.getLevel() != null && !blockEntity.getLevel().isClientSide) {
-            // if (blockEntity.getLevel().getServer().getLevel(exteriorTile.GetInterior())
-            // != null) {
-            // blockEntity.getLevel().getServer().getLevel(exteriorTile.GetInterior()).getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap
-            // -> {
-            // float newAlpha = (float) Math.abs(Math.sin(level.getGameTime() * 0.05)); //
-            // Oscillating transparency
-            // int newAlpha2 = (int) Math.abs(Math.sin(level.getGameTime())); // Oscillating
-            // transparency
-            // exteriorTile.setTransparency(newAlpha);
-            // exteriorTile.setTransparencyInt(newAlpha2);
-            // });
-            // }
-            // }
-            // }
-            // tts.exteriorTileTickThread.Init(level, pos, state, exteriorTile);
-            // tts.exteriorTileTickThread.run();
-
-            // if (level.getBlockState(pos).getBlock() instanceof ExteriorBlock
-            // exteriorBlock)
-            // if (exteriorBlock.GetInteriorKey() == null)
-            // if (exteriorTile.GetInterior() != null)
-            // exteriorTile.SetInteriorAndSyncWithBlock(exteriorTile.GetInterior());
-
-            if (exteriorTile.ShouldMakeDimOnNextTick) {
-                if (level.isClientSide || level.getServer() == null) return;
-                level.getServer().execute(() -> {
-                    ResourceKey<Level> resourceKey = ResourceKey.create(
-                            Registries.DIMENSION, new ResourceLocation(MODID, "tardis_" + UUID.randomUUID()));
-                    ServerLevel tardisLevel = DimensionAPI.get()
-                            .getOrCreateLevel(
-                                    level.getServer(),
-                                    resourceKey,
-                                    () -> DimensionManager.CreateTARDISLevelStem(level.getServer()));
-
-                    ((ExteriorBlock) state.getBlock()).SetInteriorKey(tardisLevel.dimension());
-
-                    tardisLevel
-                            .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                            .ifPresent((cap) -> {
-                                cap.SetExteriorTile(exteriorTile);
-                                assert exteriorTile.getLevel() != null;
-                                cap.SetCurrentLevel(exteriorTile.getLevel().dimension());
-                                cap.SetDestination(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
-                                cap.SetExteriorLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos()));
-                                assert exteriorTile.Placer != null;
-                                cap.SetOwner(exteriorTile.Placer.getUUID());
-                            });
-
-                    exteriorTile.Init(tardisLevel.dimension());
-                });
-                exteriorTile.ShouldMakeDimOnNextTick = false;
-            }
-
-            if (exteriorTile.GetInterior() == null) return;
-
-            if (level != null
-                    && !level.isClientSide
-                    && level.getServer().getLevel(exteriorTile.GetInterior()) != null) {
-                level.getServer()
-                        .getLevel(exteriorTile.GetInterior())
-                        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> {
-                            if ((!exteriorTile
-                                            .getBlockPos()
-                                            .equals(cap.GetExteriorLocation().GetBlockPos())
-                                    || cap.IsInFlight())) exteriorTile.UtterlyDestroy();
-                        });
-            } else {
-            }
-        }
-    }
 
     public boolean ThreadWorking = false;
     public Exterior Variant;
@@ -161,14 +85,16 @@ public class ExteriorTile extends BlockEntity {
 
     @Nullable
     public ExteriorBlock GetBlock() {
-        assert this.level != null;
-        Block block = this.level
-                .getServer()
-                .getLevel(this.level.dimension())
-                .getBlockState(this.getBlockPos())
-                .getBlock();
-        if (block instanceof ExteriorBlock exteriorBlock) return exteriorBlock;
-        else return null;
+        if (this.level.getServer() != null) {
+            assert this.level != null;
+            Block block = this.level
+                    .getServer()
+                    .getLevel(this.level.dimension())
+                    .getBlockState(this.getBlockPos())
+                    .getBlock();
+            if (block instanceof ExteriorBlock exteriorBlock) return exteriorBlock;
+        }
+        return null;
     }
 
     public ResourceKey<Level> GetInterior() {
@@ -178,15 +104,6 @@ public class ExteriorTile extends BlockEntity {
     public Exterior GetVariant() {
         this.UpdateVariant();
         return this.Variant == null ? Exteriors.Get(0) : this.Variant;
-    }
-
-    /**
-     * NEVER RUN THIS! THIS SHOULD ONLY BE USED ONCE, AND THAT IS WHEN IT'S FIRST
-     * INITIALIZED WHEN THE DIMENSION IS CREATED
-     **/
-    public void Init(ResourceKey<Level> LevelKey) {
-        this.INTERIOR_DIMENSION = LevelKey;
-        this.PlaceInterior(Structures.CleanInterior);
     }
 
     public void NeedsClientUpdate() {
@@ -210,6 +127,7 @@ public class ExteriorTile extends BlockEntity {
 
     public void SetInteriorAndSyncWithBlock(ResourceKey<Level> INTERIOR_DIMENSION) {
         this.INTERIOR_DIMENSION = INTERIOR_DIMENSION;
+        this.IsEmptyShell = false;
         assert this.level != null;
         if (this.level.getBlockState(this.getBlockPos()).getBlock() instanceof ExteriorBlock exteriorBlock) {
             exteriorBlock.SetInteriorKey(this.INTERIOR_DIMENSION);
@@ -220,21 +138,33 @@ public class ExteriorTile extends BlockEntity {
     public void TeleportToInterior(Entity EntityToTeleport) {
         if (this.getLevel() == null || this.getLevel().isClientSide) return;
         if (this.INTERIOR_DIMENSION == null) return;
+
+        // Don't teleport if the entity in question is viewing the exterior via Environment Scanner
+        if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent()
+                && !Objects.equals(
+                        EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY)
+                                .orElse(null)
+                                .GetViewingTARDIS(),
+                        "")) return;
+
         ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
         assert Interior != null;
         Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             MinecraftForge.EVENT_BUS.post(
-                    new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
+                    new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
             float X, Y, Z;
             BlockPos pos = cap.GetDoorBlock().GetBlockPos().north();
             X = pos.getX() + 0.5f;
             Y = pos.getY() == 0 ? 128 : pos.getY();
             Z = pos.getZ() + 0.5f;
             float yRot = cap.GetDoorData().getYRot() + EntityToTeleport.getYRot();
-            System.out.println(yRot);
+            if (EntityToTeleport instanceof ServerPlayer player) {
+                player.getAbilities().flying = false;
+                player.onUpdateAbilities();
+            }
             EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
             MinecraftForge.EVENT_BUS.post(
-                    new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
+                    new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
         });
     }
 
@@ -249,18 +179,8 @@ public class ExteriorTile extends BlockEntity {
      **/
     public void UtterlyDestroy() {
         assert this.level != null;
-        // this.level.getServer().execute(new TickTask(5, () -> {
-        //        if (this.GetBlock() != null) {
-        //            this.GetBlock().MarkForRemoval();
-        //            this.level
-        //                    .getServer()
-        //                    .getLevel(this.level.dimension())
-        //                    .scheduleTick(this.getBlockPos(), this.GetBlock(), 1);
-        //        }
-        this.level.getServer().getLevel(this.level.dimension()).removeBlock(this.getBlockPos(), false);
-        this.level.getServer().getLevel(this.level.dimension()).removeBlockEntity(this.getBlockPos());
-        // }));
-        // this.setRemoved();
+        if (this.GetBlock() != null) this.GetBlock().MarkForRemoval();
+        this.setRemoved();
     }
 
     @Override
@@ -272,6 +192,7 @@ public class ExteriorTile extends BlockEntity {
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         tag.putInt("TransparencyInt", this.transparencyInt);
+        tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 
         Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level).ifPresent(cap -> {
             if (cap.GetExteriorTile() == this) {
@@ -308,6 +229,9 @@ public class ExteriorTile extends BlockEntity {
         if (tag.contains("doors")) {
             this.DoorState = tag.getInt("doors");
         }
+        if (tag.contains("IsEmptyShell")) {
+            this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
+        }
         super.handleUpdateTag(tag);
     }
 
@@ -328,6 +252,10 @@ public class ExteriorTile extends BlockEntity {
         }
         if (tag.contains("variant")) {
             this.Variant = new Exterior(tag.getCompound("variant"));
+        }
+
+        if (tag.contains("IsEmptyShell")) {
+            this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
         }
         this.setVariant(Exteriors.GetOrdinal(new Exterior(tag.getCompound("variant"))));
         super.load(tag);
@@ -409,6 +337,7 @@ public class ExteriorTile extends BlockEntity {
             this.setVariant(Exteriors.GetOrdinal(Exteriors.EXTERIORS.get(0)));
             tag.put("variant", Exteriors.EXTERIORS.get(0).serializeNBT());
         } else tag.put("variant", this.GetVariant().serializeNBT());
+        tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 
         super.saveAdditional(tag);
     }
@@ -425,4 +354,53 @@ public class ExteriorTile extends BlockEntity {
     //        });
     //        super.onChunkUnloaded();
     //    }
+
+    @Override
+    public void tick() {
+        if (this.INTERIOR_DIMENSION == null) {
+            if (!this.IsEmptyShell) this.UtterlyDestroy();
+        } else this.IsEmptyShell = false;
+
+        if (this.ShouldMakeDimOnNextTick) {
+            if (level.isClientSide || level.getServer() == null) return;
+            level.getServer().execute(() -> {
+                ResourceKey<Level> resourceKey = ResourceKey.create(
+                        Registries.DIMENSION, new ResourceLocation(MODID, "tardis_" + UUID.randomUUID()));
+                ServerLevel tardisLevel = DimensionAPI.get()
+                        .getOrCreateLevel(
+                                level.getServer(),
+                                resourceKey,
+                                () -> DimensionManager.CreateTARDISLevelStem(level.getServer()));
+
+                ((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
+
+                tardisLevel.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+                    cap.SetExteriorTile(this);
+                    assert this.getLevel() != null;
+                    cap.SetCurrentLevel(this.getLevel().dimension());
+                    cap.SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+                    assert this.Placer != null;
+                    cap.SetOwner(this.Placer.getUUID());
+                });
+
+                this.INTERIOR_DIMENSION = tardisLevel.dimension();
+                this.PlaceInterior(Structures.CleanInterior);
+            });
+            this.ShouldMakeDimOnNextTick = false;
+            this.IsEmptyShell = false;
+        }
+
+        if (this.GetInterior() == null) return;
+
+        if (level != null && !level.isClientSide && level.getServer().getLevel(this.GetInterior()) != null) {
+            level.getServer()
+                    .getLevel(this.GetInterior())
+                    .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                    .ifPresent(cap -> {
+                        if ((!this.getBlockPos()
+                                        .equals(cap.GetExteriorLocation().GetBlockPos())
+                                || cap.IsInFlight())) this.UtterlyDestroy();
+                    });
+        }
+    }
 }

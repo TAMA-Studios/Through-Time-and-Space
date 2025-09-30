@@ -4,8 +4,8 @@ package com.code.tama.tts.server.threads;
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
 public class FlightSoundThread extends Thread {
@@ -31,12 +31,14 @@ public class FlightSoundThread extends Thread {
             //            this.stop();
             return;
         }
-        if (!this.level.isClientSide) return;
         int ticks = 0;
         while (!this.sound.IsFinished()) {
-            if (ticks == 0) Minecraft.getInstance().player.playSound(this.sound.GetSound());
+            if (ticks == 0) level.playSound(null, blockPos, this.sound.GetSound(), SoundSource.BLOCKS);
             if (this.level.getGameTime() != OTicks) {
-                if (ticks == this.sound.GetLength()) this.sound.SetFinished(true);
+                if (ticks >= this.sound.GetLength()) {
+                    this.sound.SetFinished(true);
+                    break;
+                }
                 ticks++;
                 OTicks = (int) this.level.getGameTime();
             }

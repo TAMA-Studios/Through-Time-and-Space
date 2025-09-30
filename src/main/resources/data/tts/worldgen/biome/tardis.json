@@ -1,7 +1,5 @@
 {
-  "carvers" : {
-    "air" : [ "minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon" ]
-  },
+  "carvers" : { },
   "category" : "none",
   "creature_spawn_probability" : 0,
   "downfall" : 0,

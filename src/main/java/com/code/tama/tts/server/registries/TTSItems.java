@@ -3,6 +3,7 @@ package com.code.tama.tts.server.registries;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.server.items.CompressedMultiblockItem;
 import com.code.tama.tts.server.items.ConsoleItem;
 import com.code.tama.tts.server.items.ExteriorItem;
 import com.code.tama.tts.server.items.SonicItem;
@@ -18,6 +19,8 @@ import net.minecraftforge.registries.RegistryObject;
 @SuppressWarnings("deprecation")
 public class TTSItems {
     public static final RegistryObject<Item> HUDOLIN_CONSOLE_TILE;
+
+    public static final RegistryObject<Item> COMPRESSED_MULTIBLOCK_ITEM;
 
     public static final RegistryObject<Item> NESS_CONSOLE_TILE;
 
@@ -46,6 +49,9 @@ public class TTSItems {
     static {
         EXTERIOR = ITEMS.register(
                 "exterior", () -> new ExteriorItem(TTSBlocks.EXTERIOR_BLOCK.get(), new Item.Properties()));
+
+        COMPRESSED_MULTIBLOCK_ITEM =
+                ITEMS.register("compressed_multiblock_item", () -> new CompressedMultiblockItem(new Item.Properties()));
 
         ZEITON = ITEMS.register("purified_zeiton_7", () -> new Item(new Item.Properties()));
 

@@ -27,11 +27,12 @@ public abstract class AbstractFlightSound {
 
     public void Play(Level level, BlockPos blockPos) {
         this.Started = true;
+        this.flightSoundThread = null;
 
         Thread(level, blockPos);
     }
 
-    public void PlayIfUnfinished(Level level, BlockPos blockPos) {
+    public void PlayIfFinished(Level level, BlockPos blockPos) {
         //        if(this.Finished) {
         //            this.Started = false;
         //            this.Finished = false;
@@ -39,17 +40,19 @@ public abstract class AbstractFlightSound {
         //        if (this.Started) return;
         //        this.Started = true;
         //        Thread(level, blockPos);
-        if (!level.isClientSide) return;
 
         if (this.startedTime == 0) {
             assert Minecraft.getInstance().level != null;
-            this.startedTime = Minecraft.getInstance().level.getGameTime();
+            this.startedTime = level.getGameTime();
         }
-        assert Minecraft.getInstance().level != null;
-        if (Minecraft.getInstance().level.getGameTime() - this.startedTime >= this.GetLength()) {
+        assert level != null;
+        if (level.getGameTime() - this.startedTime >= this.GetLength()) {
+            this.Finished = false;
             this.startedTime = 0;
-            assert Minecraft.getInstance().player != null;
-            Minecraft.getInstance().player.playSound(this.GetSound());
+            //            level.playSound(null, blockPos, this.GetSound(), SoundSource.BLOCKS);
+            this.flightSoundThread = null;
+            Thread(level, blockPos);
+            //            Minecraft.getInstance().player.playSound(this.GetSound());
         }
     }
 
@@ -60,7 +63,7 @@ public abstract class AbstractFlightSound {
 
     public void Thread(Level level, BlockPos pos) {
         if (this.flightSoundThread == null) this.flightSoundThread = new FlightSoundThread(level, pos, this);
-        if (!this.flightSoundThread.isAlive()) this.flightSoundThread.start();
-        else this.flightSoundThread.run();
+        if (this.flightSoundThread.isAlive()) this.flightSoundThread.run();
+        else this.flightSoundThread.start();
     }
 }

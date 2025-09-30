@@ -49,6 +49,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -101,7 +102,7 @@ public final class DimensionManager implements DimensionAPI {
         return new LevelStem(typeHolder, newChunkGenerator);
     }
 
-    @SuppressWarnings("deprecation") // markWorldsDirty is deprecated, see below
+    @SuppressWarnings("deprecation")
     private static ServerLevel createAndRegisterLevel(
             final MinecraftServer server,
             final Map<ResourceKey<Level>, ServerLevel> map,
@@ -463,6 +464,22 @@ public final class DimensionManager implements DimensionAPI {
 
     @EventBusSubscriber(modid = MODID)
     private static class ForgeEventHandler {
+        @SubscribeEvent
+        public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+            MinecraftServer server = event.getServer();
+            if (server.overworld() == null) return;
+            // Look through the dimension registry for TTS dimensions
+            Registry<LevelStem> reg = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+            for (var entry : reg.entrySet()) {
+                ResourceKey<LevelStem> dimKey = entry.getKey();
+                if (dimKey.location().getNamespace().equals(MODID)) {
+                    ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, dimKey.location());
+                    // Create ServerLevel instance if missing
+                    DimensionManager.INSTANCE.getOrCreateLevel(server, levelKey, () -> reg.get(dimKey));
+                }
+            }
+        }
+
         @SubscribeEvent
         public static void onServerStopped(final ServerStoppedEvent event) {
             // clear state on server exit (important for singleplayer worlds)

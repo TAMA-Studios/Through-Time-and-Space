@@ -38,6 +38,7 @@ public class TTSTileEntities {
     public static final RegistryObject<BlockEntityType<WorkbenchTile>> WORKBENCH_TILE;
     public static final RegistryObject<BlockEntityType<ChromiumBlockEntity>> CHROMIUM_BLOCK_ENTITY;
     public static final RegistryObject<BlockEntityType<SkyTile>> SKY_TILE;
+    public static final RegistryObject<BlockEntityType<CompressedMultiblockTile>> COMPRESSED_MULTIBLOCK_TILE;
     public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES;
 
     static {
@@ -49,6 +50,12 @@ public class TTSTileEntities {
                 () -> create(
                         ExampleTileEntity::new, // Tile entity class
                         TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
+
+        COMPRESSED_MULTIBLOCK_TILE = TILE_ENTITIES.register(
+                "compressed_multiblock_tile",
+                () -> create(
+                        CompressedMultiblockTile::new, // Tile entity class
+                        COMPRESSED_MULTIBLOCK.get())); // The RegistryObject of the block
 
         SONIC_CONFIGURATOR = TILE_ENTITIES.register(
                 "sonic_configurator",

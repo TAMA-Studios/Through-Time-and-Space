@@ -4,12 +4,14 @@ package com.code.tama.tts.server.capabilities.interfaces;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
 import com.code.tama.tts.server.misc.Exterior;
+import com.code.tama.tts.server.misc.PlayerPosition;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.data.ControlParameters;
 import com.code.tama.tts.server.tardis.data.ProtocolData;
 import com.code.tama.tts.server.tardis.data.SubsystemsData;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,12 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
     UUID GetOwnerID();
     /** Sets the Owner of the TARDIS **/
     void SetOwner(UUID owner);
+
+    Map<UUID, PlayerPosition> GetViewingMap();
+
+    boolean IsViewingTARDIS(UUID player);
+
+    void SetViewing(UUID player, PlayerPosition position);
 
     /** Returns whether the TARDIS is capable of flight in its current state **/
     boolean CanFly();
@@ -131,6 +139,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
     /** Whether the TARDIS is in flight **/
     boolean IsInFlight();
+
+    boolean IsTakingOff();
     /** Gets whether the TARDIS is powered on or not **/
     boolean IsPoweredOn();
 

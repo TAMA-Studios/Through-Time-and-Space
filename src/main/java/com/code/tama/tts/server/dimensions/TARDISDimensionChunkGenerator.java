@@ -3,6 +3,7 @@ package com.code.tama.tts.server.dimensions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -74,27 +76,41 @@ public class TARDISDimensionChunkGenerator extends ChunkGenerator {
     @Override
     public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(
             Executor executor,
-            Blender p_223210_,
-            RandomState p_223211_,
-            StructureManager p_223212_,
-            ChunkAccess access) {
-        return CompletableFuture.completedFuture(access);
+            Blender blender,
+            RandomState randomState,
+            StructureManager structureManager,
+            ChunkAccess chunk) {
+
+        BlockState stone = Blocks.STONE.defaultBlockState();
+        int minY = this.getMinY();
+        int maxY = minY + this.getGenDepth();
+
+        for (int y = minY; y < maxY; y++) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    chunk.setBlockState(new BlockPos(x, y, z), stone, false);
+                }
+            }
+        }
+
+        return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
     public @NotNull NoiseColumn getBaseColumn(
-            int p_223028_, int p_223029_, @NotNull LevelHeightAccessor level, @NotNull RandomState p_223031_) {
-        return new NoiseColumn(0, new BlockState[0]);
+            int x, int z, @NotNull LevelHeightAccessor level, @NotNull RandomState state) {
+        int height = level.getHeight(); // Usually 384
+        BlockState[] blocks = new BlockState[height];
+        BlockState stone = Blocks.STONE.defaultBlockState();
+
+        Arrays.fill(blocks, stone);
+
+        return new NoiseColumn(getMinY(), blocks);
     }
 
     @Override
-    public int getBaseHeight(
-            int p_223032_,
-            int p_223033_,
-            Heightmap.Types p_223034_,
-            LevelHeightAccessor p_223035_,
-            RandomState p_223036_) {
-        return 0;
+    public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState state) {
+        return getMinY() + getGenDepth(); // top of the filled area
     }
 
     @Override

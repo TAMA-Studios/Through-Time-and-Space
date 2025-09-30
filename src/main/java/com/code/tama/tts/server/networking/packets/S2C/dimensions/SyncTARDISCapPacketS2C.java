@@ -50,8 +50,8 @@ public class SyncTARDISCapPacketS2C {
                         .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                         .ifPresent(cap -> {
                             cap.SetLightLevel(packet.LightLevel);
-                            cap.SetExteriorLocation(new SpaceTimeCoordinate(packet.Location));
                             cap.SetDestination(new SpaceTimeCoordinate(packet.Destination));
+                            cap.SetExteriorLocation(new SpaceTimeCoordinate(packet.Location));
                             cap.SetPowered(packet.IsPoweredOn);
                             cap.SetInFlight(packet.IsInFlight);
                             cap.SetPlayRotorAnimation(packet.ShouldPlayRotorAnimation);

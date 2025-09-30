@@ -12,6 +12,7 @@ import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.RecipeDataLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -77,7 +78,7 @@ public class CommonEvents {
     public static void TARDISRemat(TardisEvent.Land event) {
         switch (event.state) {
             case START: {
-                if (event.level.GetControlData().GetBrakes())
+                if (event.level.GetControlData().isBrakes())
                     CameraShakeHandler.startShake(
                             event.level.GetFlightTerminationPolicy().GetTakeoffShakeAmount(), 9000);
                 System.out.printf("Landing at: %s", event.level.GetExteriorLocation());
@@ -85,8 +86,26 @@ public class CommonEvents {
             }
             case END: {
                 CameraShakeHandler.endShake();
-                if (event.level.GetControlData().GetBrakes())
-                    CameraShakeHandler.startShake(1, 1); // Thud, TODO: Thud noise
+                if (event.level.GetControlData().isBrakes()) {
+                    CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
+                    event.level.GetExteriorTile()
+                            .getLevel()
+                            .playSound(
+                                    null,
+                                    event.level.GetExteriorTile().getBlockPos(),
+                                    TTSSounds.THUD.get(),
+                                    SoundSource.BLOCKS,
+                                    1,
+                                    1); // Play at exterior
+                    event.level.GetLevel()
+                            .playSound(
+                                    null,
+                                    new BlockPos(0, 128, 0),
+                                    TTSSounds.THUD.get(),
+                                    SoundSource.BLOCKS,
+                                    1,
+                                    1); // Play at interior
+                }
                 if (event.level.GetLevel() != null)
                     event.level.GetLevel()
                             .playSound(

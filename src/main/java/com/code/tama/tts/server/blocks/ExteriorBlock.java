@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import java.util.function.Supplier;

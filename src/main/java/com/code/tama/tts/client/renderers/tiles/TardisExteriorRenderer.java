@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
@@ -29,6 +30,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             @NotNull MultiBufferSource bufferSource,
             int combinedLight,
             int combinedOverlay) {
+        if (exteriorTile.getLevel() != null
+                && exteriorTile
+                        .getLevel()
+                        .getBlockState(exteriorTile.getBlockPos())
+                        .getBlock()
+                        .equals(Blocks.AIR)) return;
 
         float transparency = exteriorTile.getTransparency();
         ExteriorAnimationData data = exteriorTile.exteriorAnimationData;

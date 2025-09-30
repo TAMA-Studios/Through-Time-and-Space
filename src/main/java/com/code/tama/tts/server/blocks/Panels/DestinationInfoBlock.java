@@ -3,7 +3,7 @@ package com.code.tama.tts.server.blocks.Panels;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
-import com.code.tama.tts.server.blocks.VoxelRotatedShape;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.enums.Controls;
 import com.code.tama.tts.server.misc.GrammarNazi;

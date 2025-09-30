@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers;
 
 import com.code.tama.tts.server.entities.controls.ModularControl;
-import com.code.tama.tts.server.registries.TTSItems;
+import com.code.tama.tts.server.items.SonicItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -34,7 +34,8 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
         super.render(Entity, EntityYaw, PartialTick, PoseStack, Buffer, PackedLight);
         if (Minecraft.getInstance().hitResult instanceof EntityHitResult result && result.getEntity() == Entity) {
             assert Minecraft.getInstance().player != null;
-            if (Minecraft.getInstance().player.isHolding(TTSItems.CORAL_SONIC.get()))
+            if (Minecraft.getInstance().player.getMainHandItem().getItem() instanceof SonicItem
+                    || Minecraft.getInstance().player.getOffhandItem().getItem() instanceof SonicItem)
                 this.renderNameTag(Entity, Entity.TranslationKey(), PoseStack, Buffer, PackedLight);
         }
     }

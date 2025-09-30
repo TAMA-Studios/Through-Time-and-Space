@@ -9,17 +9,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 
-/**
- * API for creating and removing dimensions/levels during game runtime.<br>
- * Static (single/individual) dimensions like the nether should be declared in
- * json instead of using InfiniverseAPI to create them.<br>
- */
 public interface DimensionAPI {
     /**
      * @return The API. For best results, avoid caching this, and only use while the
      *         server is running.
      */
-    public static DimensionAPI get() {
+    static DimensionAPI get() {
         return DimensionManager.INSTANCE;
     }
 
@@ -28,7 +23,7 @@ public interface DimensionAPI {
      *         end of the current server tick. (returns an empty set if called while
      *         no server is running)
      */
-    public abstract Set<ResourceKey<Level>> getLevelsPendingUnregistration();
+    Set<ResourceKey<Level>> getLevelsPendingUnregistration();
 
     /**
      * Gets a level, dynamically creating and registering one if it doesn't
@@ -54,7 +49,7 @@ public interface DimensionAPI {
      * @return Returns a ServerLevel, creating and registering a world and dimension
      *         for it if the world does not already exist
      */
-    public abstract ServerLevel getOrCreateLevel(
+    ServerLevel getOrCreateLevel(
             final MinecraftServer server,
             final ResourceKey<Level> levelKey,
             final Supplier<LevelStem> dimensionFactory);
@@ -89,6 +84,5 @@ public interface DimensionAPI {
      * @param levelToRemove
      *            The resource key for the level to be unregistered
      */
-    public abstract void markDimensionForUnregistration(
-            final MinecraftServer server, final ResourceKey<Level> levelToRemove);
+    void markDimensionForUnregistration(final MinecraftServer server, final ResourceKey<Level> levelToRemove);
 }

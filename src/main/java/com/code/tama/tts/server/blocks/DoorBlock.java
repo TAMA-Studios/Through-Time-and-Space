@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.blocks;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -13,6 +14,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -100,6 +102,7 @@ public class DoorBlock extends Block implements EntityBlock {
 
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
         if (Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
+            // TODO: Move this to onLevelLeave (or whatever it's called) event
             MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(
                     Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null),
                     TardisEvent.State.START,
@@ -124,6 +127,9 @@ public class DoorBlock extends Block implements EntityBlock {
                         Set.of(),
                         yRot,
                         0);
+
+                ((ServerPlayer) EntityToTeleport).getAbilities().flying = false;
+                ((ServerPlayer) EntityToTeleport).onUpdateAbilities();
                 MinecraftForge.EVENT_BUS.post(
                         new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
             });

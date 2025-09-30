@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
+import com.code.tama.tts.server.blocks.FragmentLinksBlock;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -25,7 +27,7 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
     }
 
     /**
-     * the Map uses a relative BlockPos, and the Default Blockstate that make up
+     * the Map uses a relative BlockPos, and the Default BlockState that make up
      * this subsystem
      **/
     public abstract Map<BlockPos, BlockState> BlockMap();
@@ -36,10 +38,10 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
             if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN)) continue;
             this.BlockMap().forEach((pos, state) -> {
                 if (!IsValid.get()) return;
-                if (!level.getBlockState(pos.offset(blockPos))
-                        .getBlock()
-                        .defaultBlockState()
-                        .equals(state)) {
+                BlockState state1 = level.getBlockState(pos.offset(blockPos));
+                if (!state1.getBlock().defaultBlockState().equals(state)
+                        && !(state1.getBlock() instanceof FragmentLinksBlock
+                                && state.getBlock().equals(Blocks.AIR))) {
                     IsValid.set(false);
                     return;
                 }

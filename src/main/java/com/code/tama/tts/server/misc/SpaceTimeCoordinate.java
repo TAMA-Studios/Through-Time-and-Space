@@ -1,15 +1,29 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * Holds four doubles, X, Y, Z, and Time Can be NBT serialized/deserialized
  * (unlike {@link net.minecraft.core.BlockPos}) Can be created using a
  * {@link net.minecraft.core.BlockPos}
  **/
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     public static SpaceTimeCoordinate of(CompoundTag tag) {
         SpaceTimeCoordinate SpaceTimeCoordinates = new SpaceTimeCoordinate();
@@ -18,8 +32,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     }
 
     double Time, X, Y, Z;
-
-    public SpaceTimeCoordinate() {}
+    ResourceKey<Level> level = Level.OVERWORLD;
 
     public SpaceTimeCoordinate(BlockPos pos) {
         this.X = pos.getX();
@@ -27,11 +40,11 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         this.Z = pos.getZ();
     }
 
-    public SpaceTimeCoordinate(double X, double Y, double Z, double Time) {
-        this.X = X;
-        this.Y = Y;
-        this.Z = Z;
-        this.Time = Time;
+    public SpaceTimeCoordinate(BlockPos pos, ResourceKey<Level> level) {
+        this.X = pos.getX();
+        this.Y = pos.getY();
+        this.Z = pos.getZ();
+        this.level = level;
     }
 
     public SpaceTimeCoordinate AddX(double x) {
@@ -51,6 +64,14 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 
     public BlockPos GetBlockPos() {
         return new BlockPos((int) this.X, (int) this.Y, (int) this.Z);
+    }
+
+    public ServerLevel getLevel() {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(this.level);
+    }
+
+    public ResourceKey<Level> getLevelKey() {
+        return this.level;
     }
 
     public double GetTime() {
@@ -75,7 +96,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 
     public String ReadableStringShort() {
         return Integer.toString((int) this.X) + " | " + Integer.toString((int) this.Y) + " | "
-                + Integer.toString((int) this.Z);
+                + Integer.toString((int) this.Z) + " | " + this.level.location();
     }
 
     @Override
@@ -84,6 +105,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         this.X = nbt.getDouble("x");
         this.Y = nbt.getDouble("y");
         this.Z = nbt.getDouble("z");
+        this.level = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("levelLoc")));
     }
 
     @Override
@@ -93,11 +115,19 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         tag.putDouble("x", this.X);
         tag.putDouble("y", this.Y);
         tag.putDouble("z", this.Z);
+        tag.putString(
+                "levelLoc",
+                this.level.location().getNamespace() + ":"
+                        + this.level.location().getPath());
         return tag;
     }
 
     @Override
     public String toString() {
         return this.ReadableString();
+    }
+
+    public SpaceTimeCoordinate copy() {
+        return new SpaceTimeCoordinate(Time, X, Y, Z, level);
     }
 }

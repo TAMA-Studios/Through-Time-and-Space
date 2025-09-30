@@ -4,13 +4,17 @@ package com.code.tama.tts.server.capabilities;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.renderers.tiles.FragmentLinksTile;
+import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
+import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.capabilities.providers.SerializableLevelCapabilityProvider;
+import com.code.tama.tts.server.capabilities.providers.SerializableCapabilityProvider;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.*;
@@ -26,8 +30,11 @@ public class Capabilities {
 
     public static final ResourceLocation TARDIS_LEVEL_KEY = new ResourceLocation(MODID, "tardis");
     public static final ResourceLocation FRAGMENT_LINKS = new ResourceLocation(MODID, "fragment_links");
+    public static final ResourceLocation PLAYER = new ResourceLocation(MODID, "player");
+
     public static final Capability<ITARDISLevel> TARDIS_LEVEL_CAPABILITY =
             CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IPlayerCap> PLAYER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
         return object == null ? LazyOptional.empty() : object.getCapability(cap);
@@ -36,6 +43,7 @@ public class Capabilities {
     @SubscribeEvent
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(ITARDISLevel.class);
+        event.register(IPlayerCap.class);
     }
 
     @Mod.EventBusSubscriber(modid = MODID)
@@ -55,7 +63,7 @@ public class Capabilities {
 
             event.addCapability(
                     Capabilities.TARDIS_LEVEL_KEY,
-                    new SerializableLevelCapabilityProvider<>(
+                    new SerializableCapabilityProvider<>(
                             TARDIS_LEVEL_CAPABILITY, new TARDISLevelCapability(event.getObject())));
         }
 
@@ -75,8 +83,18 @@ public class Capabilities {
                     }
                 });
 
-                // Optional: make sure it cleans up when the tile is removed
+                // make sure it cleans up when the tile is removed
                 event.addListener(energyCap::invalidate);
+            }
+        }
+
+        @SubscribeEvent
+        public static void attachPlayerCapability(AttachCapabilitiesEvent<Entity> event) {
+            if (event.getObject() instanceof Player) {
+                event.addCapability(
+                        Capabilities.PLAYER,
+                        new SerializableCapabilityProvider<>(
+                                PLAYER_CAPABILITY, new PlayerCapability(event.getObject())));
             }
         }
     }

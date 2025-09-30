@@ -1,165 +1,104 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
-import static java.lang.Math.sin;
-
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.text.DecimalFormat;
 
 public class PhysicalStateManager {
-    public static void Land(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
-        new PhysicalStateManager(itardisLevel, exteriorTile).Land();
-    }
 
-    public static void Takeoff(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
-        new PhysicalStateManager(itardisLevel, exteriorTile).TakeOff();
-    }
-
-    float Alpha, AlphaModifierPositive, AlphaModifierNegative;
-    boolean IsFading;
-    double SineModifier = 0.05;
-    int Stage, Cycles;
-    long TicksOld, Ticks, Difference, DifferenceOld;
-
-    ExteriorTile exteriorTile;
-
-    ITARDISLevel itardisLevel;
+    private final ExteriorTile exteriorTile;
+    private final ITARDISLevel itardisLevel;
 
     public PhysicalStateManager(ITARDISLevel itardisLevel, ExteriorTile exteriorTile) {
         this.itardisLevel = itardisLevel;
         this.exteriorTile = exteriorTile;
     }
 
-    public void Land() {
-        this.IsFading = false;
-        this.Alpha = 0;
-        this.Ticks = exteriorTile.getLevel().getGameTime();
-        this.TicksOld = this.Ticks;
-        while (!itardisLevel.IsInFlight()) {
+    /* ==================== SERVER METHODS ==================== */
 
-            this.Difference = this.Ticks = this.TicksOld;
-            this.Ticks = exteriorTile.getLevel().getGameTime();
-            if (this.Alpha == 20) this.IsFading = true;
-            if (this.Alpha == 0) this.IsFading = false;
+    public void serverTakeOff() {
+        long tick = exteriorTile.getLevel().getGameTime();
+        // send packet to everyone in the dimension
+        this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel
+                .GetFlightScheme()
+                .GetTakeoff()
+                .PlayIfFinished(player.level(), player.blockPosition()));
+        Networking.sendPacketToDimension(
+                new ExteriorStatePacket(exteriorTile.getBlockPos(), ExteriorStatePacket.State.TAKEOFF, tick),
+                exteriorTile.getLevel());
+        // run the animation server-side with authority
+        takeOffAnimation(tick, true);
+    }
 
-            if (this.IsFading) this.Alpha--;
-            else this.Alpha++;
+    public void serverLand() {
+        itardisLevel.Land();
+        long tick = this.itardisLevel.GetLevel().getGameTime();
+        this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel
+                .GetFlightScheme()
+                .GetLanding()
+                .PlayIfFinished(player.level(), player.blockPosition()));
+        Networking.sendPacketToDimension(
+                new ExteriorStatePacket(
+                        this.itardisLevel.GetDestination().GetBlockPos(), ExteriorStatePacket.State.LAND, tick),
+                this.itardisLevel.GetLevel());
+        landAnimation(tick, true);
+    }
 
-            this.exteriorTile.setTransparency(this.Alpha / 20);
+    /* ==================== CLIENT ENTRY POINTS ==================== */
 
-            if (this.Difference >= 360 && this.Alpha == 20) {
-                this.itardisLevel.Land();
-                break;
+    public void clientTakeOff(long startTick) {
+        takeOffAnimation(startTick, false);
+    }
+
+    public void clientLand(long startTick) {
+        landAnimation(startTick, false);
+    }
+
+    /* ==================== ANIMATION CORE ==================== */
+
+    private void takeOffAnimation(long startTick, boolean server) {
+        float base = 0.0f;
+        float initialAmp = 1.0f;
+        float decay = 0.05f;
+        float freq = 0.3f;
+
+        while (!server || !itardisLevel.IsInFlight()) {
+            long tick = exteriorTile.getLevel().getGameTime() - startTick;
+            float amp = (float) (initialAmp * Math.exp(-decay * tick));
+            float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
+            exteriorTile.setTransparency(alpha);
+
+            if (amp < 0.05f && alpha < 0.05f) {
+                if (server) {
+                    while (!itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {}
+                    itardisLevel.Fly();
+                    break;
+                }
             }
         }
     }
 
-    public void Phase() {
-        this.Ticks = exteriorTile.getLevel().getGameTime();
-        this.IsFading = true;
-        this.Alpha = 20;
-        this.TicksOld = this.Ticks;
-        while (!itardisLevel.IsInFlight()) {
+    private void landAnimation(long startTick, boolean server) {
+        float base = 1.0f;
+        float initialAmp = 1.0f;
+        float decay = 0.05f;
+        float freq = 0.3f;
 
-            this.Difference = this.Ticks = this.TicksOld;
-            this.Ticks = exteriorTile.getLevel().getGameTime();
-            if (this.Alpha == 20) this.IsFading = true;
-            if (this.Alpha == 0) this.IsFading = false;
+        while (server && this.itardisLevel.IsInFlight() || !server) {
+            long tick = this.itardisLevel.GetLevel().getGameTime() - startTick;
+            float amp = (float) (initialAmp * Math.exp(-decay * tick));
+            float alpha = base - (amp * (float) Math.abs(Math.sin(freq * tick)));
+            exteriorTile.setTransparency(alpha);
 
-            if (this.IsFading) this.Alpha--;
-            else this.Alpha++;
-
-            this.exteriorTile.setTransparency(this.Alpha / 20);
-
-            if (this.Difference >= 40 && this.Alpha == 20) {
+            if (amp < 0.05f && alpha > 0.95f) {
+                if (server) {
+                    while (!itardisLevel.GetFlightScheme().GetLanding().IsFinished()) {}
+                    // TODO: Signal to the Exterior that it's fully landed
+                }
                 break;
             }
-        }
-    }
-
-    public void TakeOff() {
-        this.IsFading = true;
-        this.Alpha = 1.0f;
-        this.Ticks = exteriorTile.getLevel().getGameTime();
-        this.TicksOld = this.Ticks;
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        while (!itardisLevel.IsInFlight()) {
-            // The difference between Ticks and TicksOld
-            this.Difference = this.Ticks - this.TicksOld;
-
-            // Only execute ON the tick, not like 5 billion times each tick
-            if (this.Difference != this.DifferenceOld) {
-
-                this.Alpha = Float.parseFloat(decimalFormat.format(this.AlphaModifierNegative
-                        + Math.abs((this.AlphaModifierPositive
-                                * sin(this.SineModifier * (this.Difference + (1 * Math.PI)))))));
-                if (this.Alpha <= this.AlphaModifierNegative) this.Cycles++;
-                // Math.min(this.AlphaModifierPositive, (float)
-                // Math.abs(Math.sin(this.Difference * this.SineModifier)));
-                exteriorTile.setTransparency(this.Alpha);
-
-                switch (this.Cycles) {
-                    case 0:
-                        this.AlphaModifierPositive = 0.2f;
-                        this.AlphaModifierNegative = 0.8f;
-                        break;
-                    case 1:
-                        this.AlphaModifierPositive = 0.4f;
-                        this.AlphaModifierNegative = 0.4f;
-                        break;
-                    case 2:
-                        this.AlphaModifierPositive = 0.4f;
-                        this.AlphaModifierNegative = 0.2f;
-                        break;
-                    case 3:
-                        this.AlphaModifierPositive = 0.2f;
-                        this.AlphaModifierNegative = 0.2f;
-                        break;
-                    case 4:
-                        this.AlphaModifierPositive = 0.2f;
-                        this.AlphaModifierNegative = 0.0f;
-                        break;
-                    default:
-                        this.AlphaModifierPositive = 0.0f;
-                }
-
-                if (this.AlphaModifierPositive == 0.0f && this.Alpha <= 0.1f) {
-                    if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
-                        this.itardisLevel.Fly();
-                        break;
-                    }
-                }
-                this.DifferenceOld = this.Difference;
-            }
-
-            // Make sure the exterior is solid before changing timings
-            if (this.Alpha >= 0.99f) {
-                // this.Stage = this.Difference > 130 ? this.Difference >= 360 ? 2 : 1 : 0;
-                // this.SineModifier = this.Difference > 130 ? 0.06 : 0.04;
-                this.SineModifier = 0.08f;
-            }
-
-            // Make sure it doesn't go on for too long
-            if (this.Cycles > 10) {
-                if (this.Cycles > 30) {
-                    this.itardisLevel.Fly();
-                    break;
-                }
-
-                if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
-                    this.itardisLevel.Fly();
-                    break;
-                }
-            }
-
-            if (this.Stage >= 2 && this.Alpha <= 0.1f) {
-                if (this.itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {
-                    this.itardisLevel.Fly();
-                    break;
-                }
-            }
-            this.Ticks = exteriorTile.getLevel().getGameTime();
         }
     }
 }

@@ -159,7 +159,14 @@ public class JavaJSONModel extends Model {
                                 ? model.getModelInfo().getAlphaMap()
                                 : model.getModelInfo().getTexture());
                 renderLayer(
-                        poseStack, bufferSource.getBuffer(renderType), packedLight, packedOverlay, red, green, blue, 1);
+                        poseStack,
+                        bufferSource.getBuffer(renderType),
+                        packedLight,
+                        packedOverlay,
+                        red,
+                        green,
+                        blue,
+                        alpha);
 
                 if (alphaMapExists) {
                     renderType = JavaJSONRenderer.transparentRenderType(

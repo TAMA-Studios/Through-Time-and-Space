@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvent;
 
 public class SmithFlightLoopSound extends AbstractFlightSound {
     public int GetLength() {
-        return 67;
+        return 71;
     }
 
     public SoundEvent GetSound() {

@@ -1,20 +1,20 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
+import com.code.tama.tts.client.BlockBakedModel;
+import com.code.tama.tts.client.BotiChunkContainer;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,14 +37,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PortalTileEntity extends TickingTile {
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
+    public Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    public BakedModel chunkModel = null;
-
+    public Map<BakedModel, Integer> chunkModels = new HashMap<>();
+    @OnlyIn(Dist.CLIENT)
+    public List<BotiChunkContainer> containers = new ArrayList<>();
     public long lastRequestTime = 0;
     public long lastUpdateTime = 0;
 
@@ -56,7 +63,7 @@ public class PortalTileEntity extends TickingTile {
 
     public PortalTileEntity(BlockPos pos, BlockState state) {
         super(TTSTileEntities.PORTAL_TILE_ENTITY.get(), pos, state);
-        this.setTargetLevel(Level.OVERWORLD, new BlockPos(0, 70, 0), true);
+//        this.setTargetLevel(Level.OVERWORLD, new BlockPos(0, 70, 0), true);
     }
 
     @Override
@@ -65,12 +72,12 @@ public class PortalTileEntity extends TickingTile {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag() {
         return saveWithFullMetadata();
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(@NotNull CompoundTag tag) {
         super.load(tag);
         if (tag.contains("TargetLevel")) {
             targetLevel = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("TargetLevel")));
@@ -79,7 +86,7 @@ public class PortalTileEntity extends TickingTile {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
         if (targetLevel != null) {
             tag.putString("TargetLevel", targetLevel.location().toString());
@@ -93,7 +100,7 @@ public class PortalTileEntity extends TickingTile {
         if (this.level == null) return;
         this.targetLevel = levelKey;
         this.targetPos = targetPos;
-        if (this.level.isClientSide) this.chunkModel = null;
+        if (this.level.isClientSide) this.chunkModels = null;
         if (this.blockEntities != null) this.blockEntities.clear();
         if (markDirty && !level.isClientSide()) {
             setChanged();
@@ -105,15 +112,17 @@ public class PortalTileEntity extends TickingTile {
 
     @Override
     public void tick() {
-        // this.level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY).ifPresent(cap
-        // -> {
-        // if(this.getTargetLevel() != cap.GetCurrentLevel() || this.getTargetPos() !=
-        // cap.GetExteriorLocation().GetBlockPos())
-        // this.setTargetLevel(cap.GetCurrentLevel(),
-        // cap.GetExteriorLocation().GetBlockPos(), true);
-        // });
+//        assert this.level != null;
+        if (this.targetLevel == null || this.targetPos == null)
+            this.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                if (this.getTargetLevel() != cap.GetCurrentLevel()
+                        || this.getTargetPos() != cap.GetExteriorLocation().GetBlockPos())
+                    this.setTargetLevel(
+                            cap.GetCurrentLevel(), cap.GetExteriorLocation().GetBlockPos(), true);
+            });
     }
 
+    @SuppressWarnings("deprecation")
     @OnlyIn(Dist.CLIENT)
     public void updateChunkModelFromServer(CompoundTag chunkData) {
         Minecraft mc = Minecraft.getInstance();
@@ -122,13 +131,20 @@ public class PortalTileEntity extends TickingTile {
         ChunkPos chunkPos = new ChunkPos(targetPos);
         int baseY = targetPos.getY() & ~15;
 
+        this.containers.clear();
+        CompoundTag containers = chunkData.getCompound("containers");
+        for(int i = 0; i < containers.getInt("size"); i++) {
+            BotiChunkContainer container = new BotiChunkContainer(containers.getCompound(Integer.toString(i)));
+            this.containers.add(container);
+        }
+
         BlockState[][][] sectionStates = new BlockState[16][16][16];
         this.blockEntities.clear();
         for (int y = 0; y < 16; y++) {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + x, baseY + y, chunkPos.getMinBlockZ() + z);
-                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
+//                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
                     String key = x + "_" + y + "_" + z;
                     if (chunkData.contains("block_entities")
                             && chunkData.getCompound("block_entities").contains(key)) {
@@ -143,87 +159,50 @@ public class PortalTileEntity extends TickingTile {
             }
         }
 
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    BlockState state = sectionStates[x][y][z];
-                    if (state != null && !state.isAir() && !state.hasBlockEntity()) { // Skip block entities here
-                        BakedModel model = dispatcher.getBlockModel(state);
-                        BlockPos pos =
-                                new BlockPos(chunkPos.getMinBlockX() + x, baseY + y, chunkPos.getMinBlockZ() + z);
-                        List<BakedQuad> blockQuads = new ArrayList<>();
+        this.stateMap.clear();
+        this.stateMap = sectionStatesToLocalMap(sectionStates);
 
-                        for (Direction side : Direction.values()) {
-                            int adjX = x + side.getStepX();
-                            int adjY = y + side.getStepY();
-                            int adjZ = z + side.getStepZ();
-                            boolean occluded = false;
 
-                            if (adjX >= 0 && adjX < 16 && adjY >= 0 && adjY < 16 && adjZ >= 0 && adjZ < 16) {
-                                BlockState adjState = sectionStates[adjX][adjY][adjZ];
-                                occluded = adjState != null
-                                        && adjState.isSolidRender(mc.level, pos.offset(side.getNormal()));
-                            }
+        if(true) return; // Rest is disabled till I can get a VBO in
 
-                            if (!occluded) {
-                                List<BakedQuad> sideQuads = model.getQuads(state, side, RandomSource.create());
-                                blockQuads.addAll(sideQuads);
-                            }
-                        }
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
+        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
-                        List<BakedQuad> translatedQuads = translateQuads(blockQuads, x, y, z);
-                        if (!translatedQuads.isEmpty()) {
-                            quads.addAll(translatedQuads);
-                        }
-                    }
+        RandomSource rand = getLevel().random;
+        Direction[] directions = Direction.values();
+
+        stateMap.forEach((pos, state) -> {
+            BakedModel model = blockRenderer.getBlockModel(state);
+
+            int color = blockColors.getColor(state, Minecraft.getInstance().level, pos, 0);
+            float r = ((color >> 16) & 0xFF) / 255.0f;
+            float g = ((color >> 8) & 0xFF) / 255.0f;
+            float b = (color & 0xFF) / 255.0f;
+
+            VertexConsumer vc = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.translucent());
+
+            List<BakedQuad> blockQuads = new java.util.ArrayList<>(List.of());
+            // render only non-occluded faces
+            for (Direction dir : directions) {
+                BlockPos neighbourPos = pos.relative(dir);
+                BlockState neighbourState = stateMap.get(neighbourPos);
+                boolean occluded = neighbourState != null &&
+                        neighbourState.isSolidRender(Minecraft.getInstance().level, neighbourPos);
+                if(neighbourState != null && !neighbourState.canOcclude() && !state.canOcclude()) occluded = true;
+
+                if (!occluded) {
+                    List<BakedQuad> raw = model.getQuads(state, dir, rand);
+                    List<BakedQuad> translatedQuads = translateQuads(raw, pos.getX(), pos.getY(), pos.getZ());
+                    blockQuads.addAll(translatedQuads);
                 }
             }
-        }
 
-        if (quads.isEmpty() && blockEntities.isEmpty()) {
-            System.out.println(
-                    "No quads or block entities generated for chunk at " + targetPos + " from data: " + chunkData);
-        } else {
-            this.chunkModel = new BakedModel() {
-                @Override
-                public ItemOverrides getOverrides() {
-                    return ItemOverrides.EMPTY;
-                }
+            this.chunkModels.put(new BlockBakedModel(blockQuads), Minecraft.getInstance().getBlockColors().getColor(state, level, pos));
+        });
 
-                @Override
-                public TextureAtlasSprite getParticleIcon() {
-                    return mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                            .apply(new ResourceLocation("minecraft", "stone"));
-                }
-
-                @Override
-                public List<BakedQuad> getQuads(
-                        @Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-                    return quads;
-                }
-
-                @Override
-                public boolean isCustomRenderer() {
-                    return false;
-                }
-
-                @Override
-                public boolean isGui3d() {
-                    return true;
-                }
-
-                @Override
-                public boolean useAmbientOcclusion() {
-                    return true;
-                }
-
-                @Override
-                public boolean usesBlockLight() {
-                    return true;
-                }
-            };
-        }
     }
+
 
     private BlockState getBlockStateFromChunkNBT(CompoundTag chunkData, BlockPos pos) {
         if (chunkData.contains("block_states")) {
@@ -292,4 +271,75 @@ public class PortalTileEntity extends TickingTile {
         }
         return translated;
     }
+
+    public static Map<BlockPos, BlockState> sectionStatesToLocalMap(BlockState[][][] sectionStates) {
+        Map<BlockPos, BlockState> map = new HashMap<>();
+
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    BlockState state = sectionStates[x][y][z];
+                    if (state != null && state.getBlock() != Blocks.AIR) {
+                        // local coordinates (0–15)
+                        BlockPos pos = new BlockPos(x, y, z);
+                        map.put(pos, state);
+                    }
+                }
+            }
+        }
+
+        return map;
+    }
+
+    public static List<BakedQuad> tintQuads(List<BakedQuad> original, float r, float g, float b) {
+        List<BakedQuad> tinted = new ArrayList<>();
+        for (BakedQuad quad : original) {
+            tinted.add(recolorQuad(quad, r, g, b));
+        }
+        return tinted;
+    }
+
+    public static BakedQuad recolorQuad(BakedQuad original, float r, float g, float b) {
+        int[] oldData = original.getVertices();
+        int[] newData = new int[oldData.length];
+        int stride = oldData.length / 4;
+
+        for (int v = 0; v < 4; v++) {
+            int base = v * stride;
+
+            // Copy position (0,1,2)
+            newData[base] = oldData[base];
+            newData[base + 1] = oldData[base + 1];
+            newData[base + 2] = oldData[base + 2];
+
+            // Recolor
+            int oldColor = oldData[base + 3];
+            int a = (oldColor >> 24) & 0xFF;
+            int nr = Math.min(255, (int) (((oldColor >> 16) & 0xFF) * r));
+            int ng = Math.min(255, (int) (((oldColor >> 8) & 0xFF) * g));
+            int nb = Math.min(255, (int) ((oldColor & 0xFF) * b));
+            newData[base + 3] = (a << 24) | (nr << 16) | (ng << 8) | nb;
+
+            // Copy UVs (4,5)
+            newData[base + 4] = oldData[base + 4];
+            newData[base + 5] = oldData[base + 5];
+
+            // Copy lightmap (6)
+            newData[base + 6] = oldData[base + 6];
+
+            // Copy normal/extra (7)
+            newData[base + 7] = oldData[base + 7];
+        }
+
+        // Create new quad with tintIndex -1 (forces vertex color usage)
+        return new BakedQuad(
+                newData,
+                -1,
+                original.getDirection(),
+                original.getSprite(),
+                original.isShade()
+        );
+    }
+
+
 }

@@ -28,13 +28,16 @@ import org.jetbrains.annotations.Nullable;
 public class AbstractConsoleTile extends BlockEntity {
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
-        if (blockEntity instanceof HudolinConsoleTile hudolinConsoleTile) {
+        if (blockEntity instanceof AbstractConsoleTile tile) {
             level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 if (level.isClientSide)
-                    hudolinConsoleTile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int)
-                            level.getGameTime());
-                if (cap.IsInFlight()) {
-                    cap.GetFlightScheme().GetFlightLoop().PlayIfUnfinished(level, pos);
+                    tile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int) level.getGameTime());
+                //                if(cap.IsTakingOff()) {
+                //                    if(!cap.GetFlightScheme().GetTakeoff().IsFinished())
+                //                        cap.GetFlightScheme().GetTakeoff().PlayIfFinished(level, pos);
+                //                }
+                else if (cap.IsInFlight()) {
+                    cap.GetFlightScheme().GetFlightLoop().PlayIfFinished(level, pos);
                 } else cap.GetFlightScheme().GetFlightLoop().SetFinished(true);
             });
         }

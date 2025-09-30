@@ -3,7 +3,7 @@ package com.code.tama.tts.server.blocks.Panels;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
-import com.code.tama.tts.server.blocks.VoxelRotatedShape;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -284,7 +284,7 @@ public abstract class IHelpWithLevelRendererMixin
     }
 
     @Override
-    public void BOS$renderSnowAndRain(
+    public void TTS$renderSnowAndRain(
             LightTexture lightTexture, float delta, double cameraX, double cameraY, double cameraZ) {
         renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
     }

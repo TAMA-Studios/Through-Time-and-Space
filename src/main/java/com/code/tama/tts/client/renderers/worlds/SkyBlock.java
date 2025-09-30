@@ -152,7 +152,7 @@ public class SkyBlock {
         }
 
         RenderSystem.depthMask(false);
-        IHelpWithLevelRenderer.BOS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
+        IHelpWithLevelRenderer.TTS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
