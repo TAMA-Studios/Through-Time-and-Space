@@ -2,7 +2,6 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.triggerapi.StencilUtils;
-import com.code.tama.tts.client.BlockBakedModel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
@@ -214,26 +213,6 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
         return vbo;
     }
-
-    public BakedModel GetChunkModel(PortalTileEntity entity, PoseStack stack) {
-        List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
-        entity.containers.forEach(container -> {
-            BakedModel model = mc.getBlockRenderer().getBlockModel(container.getState());
-
-            RandomSource rand = RandomSource.create(42L); // stable seed
-//            for (Direction direction : Direction.values()) {
-//                List<BakedQuad> q = model.getQuads(
-//                        container.getState(),
-//                        null,                            // null = all faces
-//                        rand            // important!
-//                );
-//            }
-            quads.addAll(getModelFromBlock(container.getState(), entity));
-        });
-
-        return new BlockBakedModel(quads);
-    }
-
     public List<BakedQuad> getModelFromBlock(BlockState state, PortalTileEntity tileEntity) {
 
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
