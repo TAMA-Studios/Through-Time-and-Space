@@ -5,9 +5,6 @@ import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,14 +19,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 public class PortalChunkDataPacketS2C {
-    public CompoundTag chunkData;
+    public List<BotiChunkContainer> containersL = new ArrayList<>();
 
     private final BlockPos portalPos;
 
-    public PortalChunkDataPacketS2C(BlockPos portalPos, CompoundTag chunkData) {
+    public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiChunkContainer> containers) {
         this.portalPos = portalPos;
-        this.chunkData = chunkData;
+        this.containersL = containers;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -39,20 +40,20 @@ public class PortalChunkDataPacketS2C {
             if (level == null) return;
 
             if (level.getBlockEntity(msg.portalPos) instanceof PortalTileEntity portal)
-                portal.updateChunkModelFromServer(msg.chunkData);
+                portal.updateChunkModelFromServer(msg.containersL);
             else TTSMod.LOGGER.warn("No PortalTileEntity at {}", msg.portalPos);
         };
     }
 
     public static PortalChunkDataPacketS2C decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
-        CompoundTag data = buf.readNbt();
+        List<BotiChunkContainer> data = BotiChunkContainer.decodeList(buf);
         return new PortalChunkDataPacketS2C(pos, data);
     }
 
     public static void encode(PortalChunkDataPacketS2C msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.portalPos);
-        buf.writeNbt(msg.chunkData);
+        BotiChunkContainer.encodeList(msg.containersL, buf);
     }
 
     public static void handle(PortalChunkDataPacketS2C msg, Supplier<NetworkEvent.Context> ctx) {
@@ -94,11 +95,9 @@ public class PortalChunkDataPacketS2C {
 
             containersTag.putInt("size", containers.size());
 
-            this.chunkData = containersTag;
         } catch (Exception e) {
             TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
             e.printStackTrace();
-            this.chunkData = new CompoundTag();
         }
     }
 }

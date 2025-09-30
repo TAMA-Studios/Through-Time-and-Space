@@ -125,7 +125,7 @@ public class PortalTileEntity extends TickingTile {
 
     @SuppressWarnings("deprecation")
     @OnlyIn(Dist.CLIENT)
-    public void updateChunkModelFromServer(CompoundTag chunkData) {
+    public void updateChunkModelFromServer(List<BotiChunkContainer> chunkData) {
         Minecraft mc = Minecraft.getInstance();
         BlockRenderDispatcher dispatcher = mc.getBlockRenderer();
         List<BakedQuad> quads = new ArrayList<>();
@@ -133,38 +133,41 @@ public class PortalTileEntity extends TickingTile {
         int baseY = targetPos.getY() & ~15;
 
         this.containers.clear();
-        CompoundTag containers = chunkData.getCompound("containers");
-        for (int i = 0; i < containers.getInt("size"); i++) {
-            BotiChunkContainer container = new BotiChunkContainer(containers.getCompound(Integer.toString(i)));
-            this.containers.add(container);
-        }
-
-        BlockState[][][] sectionStates = new BlockState[16][16][16];
-        this.blockEntities.clear();
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + x, baseY + y, chunkPos.getMinBlockZ() + z);
-                    //                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
-                    String key = x + "_" + y + "_" + z;
-                    if (chunkData.contains("block_entities")
-                            && chunkData.getCompound("block_entities").contains(key)) {
-                        CompoundTag beTag =
-                                chunkData.getCompound("block_entities").getCompound(key);
-                        BlockEntity be = BlockEntity.loadStatic(pos, sectionStates[x][y][z], beTag);
-                        if (be != null) {
-                            blockEntities.put(pos.subtract(chunkPos.getWorldPosition()), be);
-                        }
-                    }
-                }
-            }
-        }
-
-        this.stateMap.clear();
-        this.stateMap = sectionStatesToLocalMap(sectionStates);
+        this.containers.addAll(chunkData);
+        //        CompoundTag containers = chunkData.getCompound("containers");
+        //        for (int i = 0; i < containers.getInt("size"); i++) {
+        //            BotiChunkContainer container = new
+        // BotiChunkContainer(containers.getCompound(Integer.toString(i)));
+        //            this.containers.add(container);
+        //        }
 
         if (true) return; // Rest is disabled till I can get a VBO in
 
+        //        BlockState[][][] sectionStates = new BlockState[16][16][16];
+        //        this.blockEntities.clear();
+        //        for (int y = 0; y < 16; y++) {
+        //            for (int x = 0; x < 16; x++) {
+        //                for (int z = 0; z < 16; z++) {
+        //                    BlockPos pos = new BlockPos(chunkPos.getMinBlockX() + x, baseY + y,
+        // chunkPos.getMinBlockZ() + z);
+        //                    //                    sectionStates[x][y][z] = getBlockStateFromChunkNBT(chunkData, pos);
+        //                    String key = x + "_" + y + "_" + z;
+        //                    if (chunkData.contains("block_entities")
+        //                            && chunkData.getCompound("block_entities").contains(key)) {
+        //                        CompoundTag beTag =
+        //                                chunkData.getCompound("block_entities").getCompound(key);
+        //                        BlockEntity be = BlockEntity.loadStatic(pos, sectionStates[x][y][z], beTag);
+        //                        if (be != null) {
+        //                            blockEntities.put(pos.subtract(chunkPos.getWorldPosition()), be);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //
+        //        this.stateMap.clear();
+        //        this.stateMap = sectionStatesToLocalMap(sectionStates);
+        //
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
