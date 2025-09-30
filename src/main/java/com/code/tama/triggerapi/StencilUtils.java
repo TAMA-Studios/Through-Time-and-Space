@@ -3,10 +3,11 @@ package com.code.tama.triggerapi;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.lwjgl.opengl.GL11;
+
+import java.util.function.Consumer;
 
 public class StencilUtils {
     public static void DrawStencil(PoseStack pose, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawScene) {
@@ -23,9 +24,6 @@ public class StencilUtils {
 
         pose.pushPose();
 
-        pose.translate(0, 0.3, -0.5);
-        pose.scale(1, 0.8f, 1);
-
         // Disable writing to color and depth buffers so only stencil will update
         RenderSystem.colorMask(false, false, false, false);
         RenderSystem.depthMask(false);
@@ -38,8 +36,6 @@ public class StencilUtils {
 
         pose.popPose();
 
-        //        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-
         GL11.glStencilMask(0x00);
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
 
@@ -47,7 +43,6 @@ public class StencilUtils {
         pose.translate(0, 0, 0);
 
         assert mc.level != null;
-        pose.scale(4, 4, 0);
         drawScene.accept(pose);
 
         pose.popPose();

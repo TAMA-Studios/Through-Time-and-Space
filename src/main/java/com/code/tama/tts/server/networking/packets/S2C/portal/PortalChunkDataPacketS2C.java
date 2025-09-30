@@ -100,7 +100,7 @@ public class PortalChunkDataPacketS2C {
 //                            paletteList.add(state);
 
                             BlockPos pos = new BlockPos(x, y, z);
-                            containers.add(new BotiChunkContainer(state, pos, getPackedLight(level, BlockUtils.fromChunkAndLocal(chunkPos, pos))));
+                            containers.add(new BotiChunkContainer(state, pos, getPackedLight(level, BlockUtils.fromChunkAndLocal(chunkPos, pos).atY(targetY))));
 
                         }
                     }
