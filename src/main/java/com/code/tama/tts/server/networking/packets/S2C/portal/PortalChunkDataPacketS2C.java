@@ -7,7 +7,6 @@ import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -87,13 +86,15 @@ public class PortalChunkDataPacketS2C {
                     }
                 }
             }
-            CompoundTag containersTag = new CompoundTag();
-            for (int i = 0; i < containers.size(); i++) {
-                BotiChunkContainer container = containers.get(i);
-                containersTag.put(Integer.toString(i), container.serializeNBT());
-            }
 
-            containersTag.putInt("size", containers.size());
+            this.containersL = containers;
+//            CompoundTag containersTag = new CompoundTag();
+//            for (int i = 0; i < containers.size(); i++) {
+//                BotiChunkContainer container = containers.get(i);
+//                containersTag.put(Integer.toString(i), container.serializeNBT());
+//            }
+//
+//            containersTag.putInt("size", containers.size());
 
         } catch (Exception e) {
             TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());

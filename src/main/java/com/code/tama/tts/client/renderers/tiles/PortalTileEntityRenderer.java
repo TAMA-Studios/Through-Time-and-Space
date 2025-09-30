@@ -9,24 +9,29 @@ import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPac
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
@@ -72,21 +77,33 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                 tileEntity.lastUpdateTime = currentTime;
             }
 
+//            MODEL_VBO = buildModelVBO(poseStack, tileEntity);
+
             if (MODEL_VBO == null) {
                 MODEL_VBO = buildModelVBO(poseStack, tileEntity);
             } else {
+                poseStack.pushPose();
+                poseStack.translate(0.5, 0.5, 0.5);
+
                 RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+                RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+
+                RenderSystem.enableDepthTest();
+                RenderSystem.disableCull();
 
                 MODEL_VBO.bind();
                 MODEL_VBO.drawWithShader(
-                        poseStack.last().pose(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
+                        poseStack.last().pose(),
+                        RenderSystem.getProjectionMatrix(),
+                        RenderSystem.getShader()
+                );
                 VertexBuffer.unbind();
 
-                MODEL_VBO.bind();
-                MODEL_VBO.drawWithShader(
-                        poseStack.last().pose(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
-                VertexBuffer.unbind();
+                poseStack.popPose();
+
             }
+//            mc.getBlockRenderer().getModelRenderer().renderModel(pose.last(), buffer.getBuffer(RenderType.translucent()), null, GetChunkModel(tileEntity, poseStack), 1, 1, 1, 0xf000f0, packedOverlay);
+
 
             //            pose.translate(-6, -10, -8);
 
@@ -162,7 +179,6 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
     private VertexBuffer buildModelVBO(PoseStack poseStack, PortalTileEntity entity) {
         Minecraft mc = Minecraft.getInstance();
 
-        BakedModel chunk = this.GetChunkModel(entity);
         RandomSource rand = RandomSource.create(42L);
 
         BufferBuilder buffer = new BufferBuilder((int) Math.pow(16, 3));
@@ -177,12 +193,16 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             float r = ((color >> 16) & 0xFF) / 255.0f;
             float g = ((color >> 8) & 0xFF) / 255.0f;
             float b = (color & 0xFF) / 255.0f;
-            for (BakedQuad quad : mc.getBlockRenderer()
-                    .getBlockModel(container.getState())
-                    .getQuads(container.getState(), null, rand)) {
+
+            poseStack.pushPose();
+
+//            poseStack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
+            for (BakedQuad quad : getModelFromBlock(container.getState(), entity)) {
                 buffer.putBulkData(
-                        poseStack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, true);
+                        poseStack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, false);
             }
+
+            poseStack.popPose();
         });
 
         BufferBuilder.RenderedBuffer rendered = buffer.end();
@@ -195,14 +215,84 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         return vbo;
     }
 
-    public BakedModel GetChunkModel(PortalTileEntity entity) {
+    public BakedModel GetChunkModel(PortalTileEntity entity, PoseStack stack) {
         List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
         entity.containers.forEach(container -> {
-            quads.addAll(mc.getBlockRenderer()
-                    .getBlockModel(container.getState())
-                    .getQuads(container.getState(), null, mc.level.random));
+            BakedModel model = mc.getBlockRenderer().getBlockModel(container.getState());
+
+            RandomSource rand = RandomSource.create(42L); // stable seed
+//            for (Direction direction : Direction.values()) {
+//                List<BakedQuad> q = model.getQuads(
+//                        container.getState(),
+//                        null,                            // null = all faces
+//                        rand            // important!
+//                );
+//            }
+            quads.addAll(getModelFromBlock(container.getState(), entity));
         });
 
         return new BlockBakedModel(quads);
     }
+
+    public List<BakedQuad> getModelFromBlock(BlockState state, PortalTileEntity tileEntity) {
+
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+
+        ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
+
+        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+
+        RandomSource rand = tileEntity.getLevel().random;
+
+        Direction[] directions = Direction.values();
+
+        BakedModel model = blockRenderer.getBlockModel(state);
+
+        List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
+
+        // render only non-occluded faces
+
+        for (Direction dir : directions) {
+//            BlockPos neighbourPos = pos.relative(dir);
+//            BlockState neighbourState = tileEntity.stateMap.get(neighbourPos);
+//            boolean occluded = neighbourState != null &&
+//                    neighbourState.isSolidRender(Minecraft.getInstance().level, neighbourPos);
+
+            if (true) { // !occluded
+                // pull just this side’s quads and render them
+                quads.addAll(model.getQuads(state, dir, rand));
+            }
+        }
+
+
+//        BakedModel model1 = new BlockBakedModel(quads);
+//
+//
+//        modelRenderer.renderModel(
+//
+//
+//                poseStack.last(),
+//
+//
+//                vc,
+//
+//
+//                null,
+//
+//
+//                model1,
+//
+//
+//                r, g, b,
+//
+//
+//                0xf000f0,
+//
+//
+//                OverlayTexture.NO_OVERLAY);
+
+        return quads;
+    };
+
+
 }
