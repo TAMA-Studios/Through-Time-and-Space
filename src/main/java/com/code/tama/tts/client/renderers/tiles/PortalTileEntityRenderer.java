@@ -68,6 +68,8 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
             pose.pushPose();
 
+        // Move to block center
+        pose.translate(0.5, 0.5, 0.5);
             if (currentTime - tileEntity.lastUpdateTime >= 10) {
                 updateChunkModel(tileEntity);
                 tileEntity.lastUpdateTime = currentTime;
@@ -140,6 +142,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
 
         // Dump all quads into the buffer
+        PoseStack stack = new PoseStack();
         entity.containers.forEach(container -> {
             BlockColors colors = mc.getBlockColors();
             int color = colors.getColor(container.getState(), Minecraft.getInstance().level, container.getPos(), 0);
@@ -149,15 +152,18 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             float g = ((color >> 8) & 0xFF) / 255.0f;
             float b = (color & 0xFF) / 255.0f;
 
-            poseStack.pushPose();
+//            poseStack.pushPose();
 
-            poseStack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
-            for (BakedQuad quad : getModelFromBlock(container.getState(), entity)) {
-                buffer.putBulkData(
-                        poseStack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, false);
+            stack.pushPose();
+            stack.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
+            RandomSource rand = RandomSource.create(container.getPos().asLong());
+
+            for (BakedQuad quad : getModelFromBlock(container.getState(), entity, rand)) {
+                buffer.putBulkData(stack.last()
+                        , quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, false);
             }
 
-            poseStack.popPose();
+            stack.popPose();
         });
 
         BufferBuilder.RenderedBuffer rendered = buffer.end();
@@ -169,15 +175,13 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
         return vbo;
     }
-    public List<BakedQuad> getModelFromBlock(BlockState state, PortalTileEntity tileEntity) {
+    public List<BakedQuad> getModelFromBlock(BlockState state, PortalTileEntity tileEntity, RandomSource rand) {
 
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
 
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-
-        RandomSource rand = RandomSource.create(42L);
 
         Direction[] directions = Direction.values();
 
