@@ -1,51 +1,35 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class BotiChunkContainer implements INBTSerializable<CompoundTag> {
-    BlockState state;
-    BlockPos pos;
-    int light;
+@AllArgsConstructor @RequiredArgsConstructor
+public class BotiChunkContainer {
+    final Level level;
+    final BlockState state;
+    final BlockPos pos;
+    final int light;
+    boolean IsTile;
+    CompoundTag entityTag;
 
-    public BotiChunkContainer(CompoundTag tag) {
-        this.deserializeNBT(tag);
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("pos", NbtUtils.writeBlockPos(pos));
-        nbt.put("state", NbtUtils.writeBlockState(state));
-        nbt.putInt("light", light);
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        if (nbt == null) return;
-        this.state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state"));
-        this.pos = NbtUtils.readBlockPos(nbt.getCompound("pos"));
-        this.light = nbt.getInt("light");
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        // Write BlockPos compactly (3 ints)
+    public void encode(@NotNull FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
 
         // Write BlockState as raw ID (includes properties!)
@@ -54,9 +38,15 @@ public class BotiChunkContainer implements INBTSerializable<CompoundTag> {
 
         // Write light as VarInt
         buf.writeVarInt(light);
+
+        if(IsTile) {
+            buf.writeNbt(level.getBlockEntity(pos).saveWithFullMetadata());
+        }
+        buf.writeBoolean(IsTile);
     }
 
-    public static BotiChunkContainer decode(FriendlyByteBuf buf) {
+    @Contract("_ -> new")
+    public static @NotNull BotiChunkContainer decode(@NotNull FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
 
         // Read BlockState
@@ -64,7 +54,11 @@ public class BotiChunkContainer implements INBTSerializable<CompoundTag> {
 
         int light = buf.readVarInt();
 
-        return new BotiChunkContainer(state, pos, light);
+        boolean IsTile = buf.readBoolean();
+        if(IsTile) {
+            return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
+        }
+        return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light);
     }
 
     public static void encodeList(List<BotiChunkContainer> list, FriendlyByteBuf buf) {

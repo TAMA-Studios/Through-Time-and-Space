@@ -35,8 +35,6 @@ public class PortalChunkRequestPacketC2S {
             if (player != null) {
                 ServerLevel level = player.server.getLevel(msg.targetLevel);
                 if (level != null) {
-                    // System.out.println("Server sending chunk data for " + chunkPos + " in " +
-                    // msg.targetLevel.location());
                     Networking.INSTANCE.send(
                             PacketDistributor.PLAYER.with(() -> player),
                             new PortalChunkDataPacketS2C(msg.portalPos, level, msg.targetPos)); // Pass targetPos

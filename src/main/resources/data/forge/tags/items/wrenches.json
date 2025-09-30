@@ -1,4 +1,4 @@
 {
   "replace" : false,
-  "values" : [ "tts:sonic/coral", "tts:sonic/copper" ]
+  "values" : [ "#tts:sonic_screwdrivers" ]
 }

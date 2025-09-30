@@ -39,7 +39,7 @@ public class PortalChunkDataPacketS2C {
             if (level == null) return;
 
             if (level.getBlockEntity(msg.portalPos) instanceof PortalTileEntity portal)
-                portal.updateChunkModelFromServer(msg.containersL);
+                portal.updateChunkDataFromServer(msg.containersL);
             else TTSMod.LOGGER.warn("No PortalTileEntity at {}", msg.portalPos);
         };
     }
@@ -79,7 +79,19 @@ public class PortalChunkDataPacketS2C {
                                 BlockState state = section.getBlockState(x, y, z);
                                 if (!state.isAir()) {
                                     BlockPos pos = new BlockPos(x + (u * 16), y, z + (v * 16));
-                                    containers.add(new BotiChunkContainer(
+//                                    if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+//                                            .atY(targetPos.getY())) != null) {
+//                                        BlockEntity entity = level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+//                                                .atY(targetPos.getY()));
+//                                        containers.add(new BotiChunkContainer(level,
+//                                                state,
+//                                                pos,
+//                                                BlockUtils.getPackedLight(
+//                                                        level,
+//                                                        BlockUtils.fromChunkAndLocal(chunkPos, pos)
+//                                                                .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
+//                                    }
+                                    containers.add(new BotiChunkContainer(level,
                                             state,
                                             pos,
                                             BlockUtils.getPackedLight(
@@ -94,13 +106,6 @@ public class PortalChunkDataPacketS2C {
             }
 
             this.containersL = containers;
-//            CompoundTag containersTag = new CompoundTag();
-//            for (int i = 0; i < containers.size(); i++) {
-//                BotiChunkContainer container = containers.get(i);
-//                containersTag.put(Integer.toString(i), container.serializeNBT());
-//            }
-//
-//            containersTag.putInt("size", containers.size());
 
         } catch (Exception e) {
             TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
