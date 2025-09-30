@@ -42,15 +42,15 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
         StencilUtils.DrawStencil(poseStack, (pose) -> StencilUtils.drawFrame(pose, 1, 2), (pose) -> {
             long currentTime = mc.level.getGameTime();
-            if (mc.getPartialTick() == lastRenderTick) {
-                return; // Throttle to once per tick
-            }
+//            if (mc.getPartialTick() == lastRenderTick) {
+//                return; // Throttle to once per tick
+//            }
             lastRenderTick = mc.getPartialTick();
 
             pose.pushPose();
 
             // Move to block center
-            pose.translate(0, -10, 0);
+            pose.translate(-6, -6, -6);
             if (currentTime - tileEntity.lastUpdateTime >= 10) {
                 BOTIUtils.updateChunkModel(tileEntity);
                 tileEntity.lastUpdateTime = currentTime;
@@ -64,7 +64,6 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                     tileEntity.MODEL_VBO = BOTIUtils.buildModelVBO(tileEntity);
                 } else {
                     pose.pushPose();
-                    pose.translate(0.5, 0.5, 0.5);
 
                     RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
                     RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);

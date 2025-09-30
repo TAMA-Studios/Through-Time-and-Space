@@ -62,10 +62,11 @@ public class PortalChunkDataPacketS2C {
 
     public PortalChunkDataPacketS2C(BlockPos portalPos, Level level, BlockPos targetPos) {
         this.portalPos = portalPos;
+        targetPos = targetPos;
         try {
             List<BotiChunkContainer> containers = new ArrayList<>();
 
-            int chunksToRender = 8;
+            int chunksToRender = 16;
             for(int u = -chunksToRender / 2; u < chunksToRender / 2; u++) { // turn either the u or the v to = 0 based on the direction you're viewing from
                 for (int v = -chunksToRender / 2; v < chunksToRender / 2; v++) {
                     ChunkPos chunkPos = new ChunkPos(new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
