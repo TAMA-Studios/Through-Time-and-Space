@@ -6,6 +6,7 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.mojang.blaze3d.vertex.VertexBuffer;
 import lombok.Getter;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -30,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 public class PortalTileEntity extends TickingTile {
+    @OnlyIn(Dist.CLIENT)
+    public VertexBuffer MODEL_VBO;
+
     @OnlyIn(Dist.CLIENT)
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
     @OnlyIn(Dist.CLIENT)

@@ -22,9 +22,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
     private float lastRenderTick = -1;
     private final Minecraft mc = Minecraft.getInstance();
 
-    public static VertexBuffer MODEL_VBO;
-
-    public boolean mode = false; // 0 - Fast but Innacurate (VBO) 1 - Slow but accurate (Native)
+    public boolean mode = true; // 0 - Fast but Innacurate (VBO) 1 - Slow but accurate (Native)
     public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
@@ -60,10 +58,10 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
             if(mode) {
                 if (mc.level.getGameTime() % 40 == 0)
-                    MODEL_VBO = BOTIUtils.buildModelVBO(tileEntity);
+                    tileEntity.MODEL_VBO = BOTIUtils.buildModelVBO(tileEntity);
 
-                if (MODEL_VBO == null) {
-                    MODEL_VBO = BOTIUtils.buildModelVBO(tileEntity);
+                if (tileEntity.MODEL_VBO == null) {
+                    tileEntity.MODEL_VBO = BOTIUtils.buildModelVBO(tileEntity);
                 } else {
                     pose.pushPose();
                     pose.translate(0.5, 0.5, 0.5);
@@ -74,8 +72,8 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                     RenderSystem.enableDepthTest();
                     RenderSystem.disableCull();
 
-                    MODEL_VBO.bind();
-                    MODEL_VBO.drawWithShader(
+                    tileEntity.MODEL_VBO.bind();
+                    tileEntity.MODEL_VBO.drawWithShader(
                             pose.last().pose(),
                             RenderSystem.getProjectionMatrix(),
                             RenderSystem.getShader()
