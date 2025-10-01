@@ -1,11 +1,13 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.botiutils;
 
 import com.code.tama.tts.client.BotiChunkContainer;
+import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.*;
+import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -15,15 +17,20 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BOTIUtils {
-    public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, PortalTileEntity tileEntity, RandomSource rand, Map<BlockPos, BotiChunkContainer> map) {
+    public static List<BakedQuad> getModelFromBlock(
+            BlockState state, BlockPos pos, RandomSource rand, Map<BlockPos, BotiChunkContainer> map) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         Direction[] directions = Direction.values();
         BakedModel model = blockRenderer.getBlockModel(state);
@@ -31,15 +38,13 @@ public class BOTIUtils {
         // render only non-occluded faces
         for (Direction dir : directions) {
             BlockPos neighbourPos = pos.relative(dir);
-            BotiChunkContainer neighbourState = map.get(neighbourPos);
-            boolean occluded = neighbourState != null &&
-                    neighbourState.getState().isSolidRender(Minecraft.getInstance().level, neighbourPos);
-
-            if(neighbourState != null && (!neighbourState.getState().canOcclude() && !state.canOcclude())) occluded = true;
-            if (!occluded) {
-                // pull just this side’s quads and render them
+            BotiChunkContainer neighborContainer = map.get(neighbourPos);
+            if (neighborContainer != null) {
+                if (BOTIUtils.shouldRenderFace(
+                        state, neighborContainer.getState(), Minecraft.getInstance().level, pos, dir, neighbourPos))
+                    quads.addAll(model.getQuads(state, dir, rand));
+            } else
                 quads.addAll(model.getQuads(state, dir, rand));
-            }
         }
         return quads;
     }
@@ -52,7 +57,7 @@ public class BOTIUtils {
         return map;
     }
 
-    public static VertexBuffer buildModelVBO(PortalTileEntity entity) {
+    public static VertexBuffer buildModelVBO(List<BotiChunkContainer> containers) {
         Minecraft mc = Minecraft.getInstance();
 
         BufferBuilder buffer = new BufferBuilder((int) Math.pow(16, 3));
@@ -60,7 +65,7 @@ public class BOTIUtils {
 
         // Dump all quads into the buffer
         PoseStack stack = new PoseStack();
-        Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(entity.containers);
+        Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(containers);
         chunkMap.forEach((pos, container) -> {
             BlockColors colors = mc.getBlockColors();
             int color = colors.getColor(container.getState(), Minecraft.getInstance().level, container.getPos(), 0);
@@ -74,13 +79,26 @@ public class BOTIUtils {
             stack.translate(pos.getX(), pos.getY(), pos.getZ());
             RandomSource rand = RandomSource.create(pos.asLong());
 
-            for (BakedQuad quad : getModelFromBlock(container.getState(), pos, entity, rand, chunkMap)) {
-                buffer.putBulkData(stack.last(), quad, r, g, b, 1.0F, container.getLight(), OverlayTexture.NO_OVERLAY, true);
-            }
+            for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
+                // Convert packed light into brightness factor (0.0–1.0)
+                float brightness = (float) container.getLight() / 0xf000f0;
+
+                // Apply brightness to base RGB values
+                float rLit = r * brightness;
+                float gLit = g * brightness;
+                float bLit = b * brightness;
+
+                buffer.putBulkData(
+                        stack.last(),
+                        quad,
+                        rLit, gLit, bLit, 1.0F,
+                        container.getLight(),
+                        OverlayTexture.NO_OVERLAY,
+                        true
+                );}
 
             stack.popPose();
         });
-
         BufferBuilder.RenderedBuffer rendered = buffer.end();
 
         VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
@@ -96,17 +114,44 @@ public class BOTIUtils {
         if (!Minecraft.getInstance().level.isClientSide()) return;
 
         long currentTime = Minecraft.getInstance().level.getGameTime();
-        if (tileEntity.lastRequestTime == 0 || currentTime - tileEntity.lastRequestTime >= 10) {
-            Level targetLevel = Minecraft.getInstance().level.dimension() == tileEntity.getTargetLevel() ? Minecraft.getInstance().level : null;
-            if (targetLevel != null) {
-                tileEntity.updateChunkDataFromServer(
-                        new PortalChunkDataPacketS2C(tileEntity.getBlockPos(), targetLevel, tileEntity.getTargetPos())
-                                .containersL);
+
+        Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
+                tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
+
+        tileEntity.lastRequestTime = currentTime;
+    }
+
+    public static boolean shouldRenderFace(
+            BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos, Direction dir, BlockPos secondPos) {
+        if (state.skipRendering(neighbor, dir)) {
+            return false;
+        } else if (state.supportsExternalFaceHiding()
+                && neighbor.hidesNeighborFace(level, secondPos, state, dir.getOpposite())) {
+            return false;
+        } else if (neighbor.canOcclude()) {
+            Block.BlockStatePairKey block$blockstatepairkey = new Block.BlockStatePairKey(state, neighbor, dir);
+            Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
+                    BlockAccessor.getOcclusionCache().get();
+            byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(block$blockstatepairkey);
+            if (b0 != 127) {
+                return b0 != 0;
             } else {
-                Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
-                        tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
+                VoxelShape voxelshape = state.getFaceOcclusionShape(level, pos, dir);
+                if (voxelshape.isEmpty()) {
+                    return true;
+                } else {
+                    VoxelShape voxelshape1 = neighbor.getFaceOcclusionShape(level, secondPos, dir.getOpposite());
+                    boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
+                    if (object2bytelinkedopenhashmap.size() == 2048) {
+                        object2bytelinkedopenhashmap.removeLastByte();
+                    }
+
+                    object2bytelinkedopenhashmap.putAndMoveToFirst(block$blockstatepairkey, (byte) (flag ? 1 : 0));
+                    return flag;
+                }
             }
-            tileEntity.lastRequestTime = currentTime;
+        } else {
+            return true;
         }
     }
 }

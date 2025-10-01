@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +17,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
-@AllArgsConstructor @RequiredArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class BotiChunkContainer {
     final Level level;
     final BlockState state;
@@ -39,7 +39,7 @@ public class BotiChunkContainer {
         // Write light as VarInt
         buf.writeVarInt(light);
 
-        if(IsTile) {
+        if (IsTile) {
             buf.writeNbt(level.getBlockEntity(pos).saveWithFullMetadata());
         }
         buf.writeBoolean(IsTile);
@@ -55,7 +55,7 @@ public class BotiChunkContainer {
         int light = buf.readVarInt();
 
         boolean IsTile = buf.readBoolean();
-        if(IsTile) {
+        if (IsTile) {
             return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
         }
         return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light);

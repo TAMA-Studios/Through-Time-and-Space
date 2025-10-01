@@ -71,15 +71,12 @@ public class BlockUtils {
     }
 
     public static int getPackedLight(Level level, BlockPos pos) {
-        int blockLight = level.getBrightness(LightLayer.BLOCK, pos);
-        int skyLight = level.getBrightness(LightLayer.SKY, pos);
+        int sky = level.getMaxLocalRawBrightness(pos);
+        int block = level.getBrightness(LightLayer.BLOCK, pos);
+        return (Mth.clamp(block, 0, 15) << 4) | (Mth.clamp(sky, 0, 15) << 20);
+    }
 
-        // Clamp to 0–15 (should already be, but just in case)
-        blockLight = Mth.clamp(blockLight, 0, 15);
-        skyLight = Mth.clamp(skyLight, 0, 15);
-
-        // Pack into the same format LevelRenderer.getLightColor uses:
-        // block << 4 into low bits, sky << 20 into high bits
-        return (blockLight << 4) | (skyLight << 20);
+    public static int getLight(Level level, BlockPos pos) {
+        return Mth.clamp(level.getBrightness(LightLayer.BLOCK, pos) + level.getMaxLocalRawBrightness(pos), 0, 15);
     }
 }

@@ -7,6 +7,10 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -25,17 +29,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class PortalTileEntity extends TickingTile {
     @OnlyIn(Dist.CLIENT)
     public VertexBuffer MODEL_VBO;
 
     @OnlyIn(Dist.CLIENT)
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
+
     @OnlyIn(Dist.CLIENT)
     public Map<BakedModel, Integer> chunkModels = new HashMap<>();
 
@@ -115,8 +115,9 @@ public class PortalTileEntity extends TickingTile {
         this.containers.clear();
         this.blockEntities.clear();
         chunkData.forEach(container -> {
-            if(container.isIsTile()) {
-                BlockEntity entity = BlockEntity.loadStatic(container.getPos(), container.getState(), container.getEntityTag());
+            if (container.isIsTile()) {
+                BlockEntity entity =
+                        BlockEntity.loadStatic(container.getPos(), container.getState(), container.getEntityTag());
                 this.blockEntities.put(container.getPos(), entity);
                 containers.remove(container);
             }

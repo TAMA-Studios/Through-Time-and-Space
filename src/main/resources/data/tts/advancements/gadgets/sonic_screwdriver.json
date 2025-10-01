@@ -1,36 +1,30 @@
 {
-  "criteria": {
-    "crafted_sonic": {
-      "conditions": {
-        "items": [
-          {
-            "tag": "tts:sonic_screwdrivers"
-          }
-        ]
+  "criteria" : {
+    "crafted_sonic" : {
+      "conditions" : {
+        "items" : [ {
+          "tag" : "tts:sonic_screwdrivers"
+        } ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger" : "minecraft:inventory_changed"
     }
   },
-  "display": {
-    "announce_to_chat": true,
-    "description": {
-      "text": "Go build a cabinet."
+  "display" : {
+    "announce_to_chat" : true,
+    "description" : {
+      "text" : "Go build a cabinet."
     },
-    "frame": "task",
-    "hidden": false,
-    "icon": {
-      "item": "tts:sonic/coral"
+    "frame" : "task",
+    "hidden" : false,
+    "icon" : {
+      "item" : "tts:sonic/coral"
     },
-    "show_toast": true,
-    "title": {
-      "text": "You have a screwdriver!"
+    "show_toast" : true,
+    "title" : {
+      "text" : "You have a screwdriver!"
     }
   },
-  "parent": "tts:tts",
-  "requirements": [
-    [
-      "crafted_sonic"
-    ]
-  ],
-  "sends_telemetry_event": true
+  "parent" : "tts:tts",
+  "requirements" : [ [ "crafted_sonic" ] ],
+  "sends_telemetry_event" : true
 }
