@@ -64,7 +64,7 @@ public class PhysicalStateManager {
         float decay = 0.05f;
         float freq = 0.3f;
 
-        while (!server || !itardisLevel.IsInFlight()) {
+        while (!itardisLevel.IsInFlight()) {
             long tick = exteriorTile.getLevel().getGameTime() - startTick;
             float amp = (float) (initialAmp * Math.exp(-decay * tick));
             float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
@@ -72,7 +72,7 @@ public class PhysicalStateManager {
 
             if (amp < 0.05f && alpha < 0.05f) {
                 if (server) {
-                    while (!itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {}
+                    while (!itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {} // Wait for the takeoff to be finished
                     itardisLevel.Fly();
                     break;
                 }

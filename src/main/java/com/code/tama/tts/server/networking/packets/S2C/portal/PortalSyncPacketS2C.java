@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.portal;
 
-import com.code.tama.tts.server.tileentities.PortalTileEntity;
-import java.util.function.Supplier;
+import com.code.tama.tts.server.tileentities.AbstractPortalTile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,13 +14,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.function.Supplier;
+
 public class PortalSyncPacketS2C {
     @OnlyIn(Dist.CLIENT)
     public static void SyncPortal(PortalSyncPacketS2C msg) {
-        Level level = net.minecraft.client.Minecraft.getInstance().level;
+        Level level = Minecraft.getInstance().level;
         if (level != null) {
             BlockEntity be = level.getBlockEntity(msg.pos);
-            if (be instanceof PortalTileEntity portal) {
+            if (be instanceof AbstractPortalTile portal) {
                 portal.setTargetLevel(msg.targetLevel, msg.targetPos, false);
             }
         }

@@ -1,10 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.portal;
 
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
-import com.code.tama.tts.server.tileentities.PortalTileEntity;
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,7 +11,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+
+import java.util.function.Supplier;
 
 public class PortalChunkRequestPacketC2S {
     public static PortalChunkRequestPacketC2S decode(FriendlyByteBuf buf) {
@@ -35,12 +34,14 @@ public class PortalChunkRequestPacketC2S {
             if (player != null) {
                 ServerLevel level = player.server.getLevel(msg.targetLevel);
                 if (level != null) {
-                    Networking.INSTANCE.send(
-                            PacketDistributor.PLAYER.with(() -> player),
-                            new PortalChunkDataPacketS2C(
-                                    (PortalTileEntity)
-                                            ctx.get().getSender().level().getBlockEntity(msg.portalPos),
-                                    level));
+//                    Networking.INSTANCE.send(
+//                            PacketDistributor.PLAYER.with(() -> player),
+//                            new PortalChunkDataPacketS2C(
+//                                    (AbstractPortalTile)
+//                                            ctx.get().getSender().level().getBlockEntity(msg.portalPos),
+//                                    level));
+                    BOTIUtils.PortalChunkDataPacketS2C(player, (AbstractPortalTile)
+                                            ctx.get().getSender().level().getBlockEntity(msg.portalPos), level);
                 } else {
                     System.out.println("Target level not loaded: " + msg.targetLevel.location());
                 }
