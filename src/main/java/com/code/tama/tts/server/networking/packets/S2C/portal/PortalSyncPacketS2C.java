@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.networking.packets.S2C.portal;
 
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -13,8 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class PortalSyncPacketS2C {
     @OnlyIn(Dist.CLIENT)

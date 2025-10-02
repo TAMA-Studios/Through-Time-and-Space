@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -25,6 +28,9 @@ import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -40,13 +46,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     float LightLevel;
@@ -507,7 +506,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.IsInFlight = false;
         if (!this.GetLevel().isClientSide) {
 
-            ServerLevel CurrentLevel = this.GetLevel().getServer().getLevel(this.GetDestination().getLevelKey());
+            ServerLevel CurrentLevel =
+                    this.GetLevel().getServer().getLevel(this.GetDestination().getLevelKey());
             assert CurrentLevel != null;
             CurrentLevel.setChunkForced(
                     (int) (this.GetDestination().GetX() / 16),

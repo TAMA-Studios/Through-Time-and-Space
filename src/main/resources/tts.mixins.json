@@ -5,12 +5,7 @@
     "defaultRequire" : 1
   },
   "minVersion" : "0.8",
-  "mixins" : [
-    "BlockAccessor",
-    "PistonBlockMixin",
-    "PlayerMixin",
-    "RedstoneWireMixin"
-  ],
+  "mixins" : [ "BlockAccessor", "PistonBlockMixin", "PlayerMixin", "RedstoneWireMixin" ],
   "package" : "com.code.tama.tts.mixin",
   "refmap" : "tts.refmap.json",
   "required" : true

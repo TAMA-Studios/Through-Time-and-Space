@@ -1,11 +1,11 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidQuadCollector implements VertexConsumer {
 
@@ -18,6 +18,7 @@ public class FluidQuadCollector implements VertexConsumer {
 
     @Getter
     private final List<FluidVertex> vertices = new ArrayList<>();
+
     private FluidVertex current;
 
     // ---- VertexConsumer methods ---- //
@@ -90,6 +91,7 @@ public class FluidQuadCollector implements VertexConsumer {
 
     @Override
     public void defaultColor(int r, int g, int b, int a) {}
+
     @Override
     public void unsetDefaultColor() {}
 }

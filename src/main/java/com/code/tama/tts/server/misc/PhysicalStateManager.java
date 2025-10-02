@@ -72,7 +72,10 @@ public class PhysicalStateManager {
 
             if (amp < 0.05f && alpha < 0.05f) {
                 if (server) {
-                    while (!itardisLevel.GetFlightScheme().GetTakeoff().IsFinished()) {} // Wait for the takeoff to be finished
+                    while (!itardisLevel
+                            .GetFlightScheme()
+                            .GetTakeoff()
+                            .IsFinished()) {} // Wait for the takeoff to be finished
                     itardisLevel.Fly();
                     break;
                 }

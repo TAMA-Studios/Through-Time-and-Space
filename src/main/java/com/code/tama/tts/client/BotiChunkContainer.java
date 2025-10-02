@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +18,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -43,7 +42,8 @@ public class BotiChunkContainer {
         this.level = level;
     }
 
-    public BotiChunkContainer(Level level, BlockState state, BlockPos pos, int light, boolean IsTile, CompoundTag tileTag) {
+    public BotiChunkContainer(
+            Level level, BlockState state, BlockPos pos, int light, boolean IsTile, CompoundTag tileTag) {
         this.state = state;
         this.IsTile = IsTile;
         this.entityTag = tileTag;
@@ -62,7 +62,7 @@ public class BotiChunkContainer {
         buf.writeBoolean(IsFluid);
         buf.writeBoolean(IsTile);
 
-        if(IsFluid) {
+        if (IsFluid) {
             int fluidStateId = Fluid.FLUID_STATE_REGISTRY.getId(fluidState);
             buf.writeVarInt(fluidStateId);
         }
@@ -82,7 +82,7 @@ public class BotiChunkContainer {
         int light = buf.readVarInt();
         boolean IsFluid = buf.readBoolean();
         boolean IsTile = buf.readBoolean();
-        if(IsFluid) {
+        if (IsFluid) {
             int id = buf.readVarInt();
             FluidState fluid = Fluid.FLUID_STATE_REGISTRY.byId(id);
             return new BotiChunkContainer(Minecraft.getInstance().level, state, fluid, pos, light);

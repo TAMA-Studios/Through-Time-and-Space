@@ -24,7 +24,8 @@ public class PortalChunkDataPacketS2C {
     int index;
     int totalPackets;
 
-    public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiChunkContainer> containers, int index, int totalPackets) {
+    public PortalChunkDataPacketS2C(
+            BlockPos portalPos, List<BotiChunkContainer> containers, int index, int totalPackets) {
         this.portalPos = portalPos;
         this.containersL = containers;
         this.totalPackets = totalPackets;
