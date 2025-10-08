@@ -3,7 +3,7 @@ package com.code.tama.triggerapi.botiutils;
 
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.rendering.BOTIInit;
-import com.code.tama.triggerapi.rendering.RenderTargetHelper;
+import com.code.tama.triggerapi.rendering.FBOHelper;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -219,7 +218,7 @@ public class BOTIUtils {
         Minecraft mc = Minecraft.getInstance();
 
         assert mc.level != null;
-        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> RenderTargetHelper.Render(portal, pose, 0xf000f0, buffer));
+        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> FBOHelper.Render(portal, pose, 0xf000f0));
 //        mc.updateMaxMipLevel();
 //
 //        StencilUtils.setupStencil((matrix) -> StencilUtils.drawFrame(pose, 2, 4), pose);
@@ -260,7 +259,7 @@ public class BOTIUtils {
 //        pose.popPose();
     }
 
-    public static void RenderStuff(PoseStack pose, AbstractPortalTile portal, MultiBufferSource source) {
+    public static void RenderStuff(PoseStack pose, AbstractPortalTile portal) {
         Minecraft minecraft = Minecraft.getInstance();
 
         assert minecraft.level != null;
@@ -270,15 +269,6 @@ public class BOTIUtils {
             BOTIUtils.updateChunkModel(portal);
             portal.lastUpdateTime = currentTime;
         }
-
-        portal.containers.forEach(container -> {
-            pose.pushPose();
-            pose.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
-
-            minecraft.getBlockRenderer().getModelRenderer().renderModel(pose.last(), source.getBuffer(RenderType.translucent()), container.getState(), minecraft.getBlockRenderer().getBlockModel(container.getState()), 1f, 1f, 1f, container.getLight(), OverlayTexture.NO_OVERLAY);
-
-            pose.popPose();
-        });
 
         if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
             portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal);
