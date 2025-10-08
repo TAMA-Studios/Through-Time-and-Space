@@ -32,9 +32,8 @@ import org.lwjgl.opengl.GL11;
 
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
+// Big thanks to Jeryn for helping with this
 public class FBOHelper {
-
-    private static final FBOHelper RENDER_TARGET_HELPER = new FBOHelper();
     public static StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
     public RenderTarget renderTarget;
 
