@@ -272,7 +272,7 @@ public class BOTIUtils {
 
         if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
             portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal);
-        } else if(false) {
+        } else {
 
             pose.pushPose();
 
