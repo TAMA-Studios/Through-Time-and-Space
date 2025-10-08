@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -180,6 +181,8 @@ public class BOTIUtils {
 
     public static boolean shouldRenderFace(
             BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos, Direction dir, BlockPos secondPos) {
+        if(true) return true;
+
         if (state.skipRendering(neighbor, dir)) {
             return false;
         } else if (state.supportsExternalFaceHiding()
@@ -216,7 +219,7 @@ public class BOTIUtils {
         Minecraft mc = Minecraft.getInstance();
 
         assert mc.level != null;
-        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> RenderTargetHelper.Render(portal, pose, 0xf000f0));
+        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> RenderTargetHelper.Render(portal, pose, 0xf000f0, buffer));
 //        mc.updateMaxMipLevel();
 //
 //        StencilUtils.setupStencil((matrix) -> StencilUtils.drawFrame(pose, 2, 4), pose);
@@ -257,7 +260,7 @@ public class BOTIUtils {
 //        pose.popPose();
     }
 
-    public static void RenderStuff(PoseStack pose, AbstractPortalTile portal) {
+    public static void RenderStuff(PoseStack pose, AbstractPortalTile portal, MultiBufferSource source) {
         Minecraft minecraft = Minecraft.getInstance();
 
         assert minecraft.level != null;
@@ -268,9 +271,18 @@ public class BOTIUtils {
             portal.lastUpdateTime = currentTime;
         }
 
+        portal.containers.forEach(container -> {
+            pose.pushPose();
+            pose.translate(container.getPos().getX(), container.getPos().getY(), container.getPos().getZ());
+
+            minecraft.getBlockRenderer().getModelRenderer().renderModel(pose.last(), source.getBuffer(RenderType.translucent()), container.getState(), minecraft.getBlockRenderer().getBlockModel(container.getState()), 1f, 1f, 1f, container.getLight(), OverlayTexture.NO_OVERLAY);
+
+            pose.popPose();
+        });
+
         if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
             portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal);
-        } else {
+        } else if(false) {
 
             pose.pushPose();
 

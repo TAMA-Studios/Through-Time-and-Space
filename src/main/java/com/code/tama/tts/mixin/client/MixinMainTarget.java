@@ -33,7 +33,7 @@ public abstract class MixinMainTarget extends RenderTarget {
         )
     )
     private void modifyTexImage2D(int pTarget, int pLevel, int pInternalFormat, int pWidth, int pHeight, int pBorder, int pFormat, int pType, IntBuffer pPixels, Operation<Void> original) {
-        boolean isStencilBufferEnabled = ((IHelpWithFBOs) this).getIsStencilBufferEnabled();
+        boolean isStencilBufferEnabled = ((IHelpWithFBOs) this).tts$IsStencilBufferEnabled();
 
         if (isStencilBufferEnabled) {
             pInternalFormat = IPCGlobal.useSeparatedStencilFormat ? GL_DEPTH32F_STENCIL8 : GL_DEPTH24_STENCIL8;
@@ -53,7 +53,7 @@ public abstract class MixinMainTarget extends RenderTarget {
         )
     )
     private void modifyFrameBufferTexture2d(int pTarget, int pAttachment, int pTexTarget, int pTexture, int pLevel, Operation<Void> original) {
-        boolean isStencilBufferEnabled = ((IHelpWithFBOs) this).getIsStencilBufferEnabled();
+        boolean isStencilBufferEnabled = ((IHelpWithFBOs) this).tts$IsStencilBufferEnabled();
         
         if (isStencilBufferEnabled) {
             if (pAttachment == GL30.GL_DEPTH_ATTACHMENT) {

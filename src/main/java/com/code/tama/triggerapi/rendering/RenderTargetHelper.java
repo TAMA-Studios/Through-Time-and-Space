@@ -51,15 +51,15 @@ public class RenderTargetHelper {
 
     }
 
-    public static void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight) {
+    public static void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight, MultiBufferSource source) {
         if (ModList.get().isLoaded("immersive_portals")) {
             return; // Don't even risk it
         }
 
 
-        if(!((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).getIsStencilBufferEnabled()) {
+        if(!((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).tts$IsStencilBufferEnabled()) {
             RenderTarget renderTarget1 = Minecraft.getInstance().getMainRenderTarget();
-            ((IHelpWithFBOs) renderTarget1).setIsStencilBufferEnabledAndReload(true);
+            ((IHelpWithFBOs) renderTarget1).tts$SetStencilBufferEnabled(true);
         }
 
         stack.pushPose();
@@ -97,7 +97,7 @@ public class RenderTargetHelper {
         stack.pushPose();
         stack.scale(10, 10, 10);
 
-        BOTIUtils.RenderStuff(stack, blockEntity);
+        BOTIUtils.RenderStuff(stack, blockEntity, source);
 
         stack.popPose();
 
@@ -128,8 +128,8 @@ public class RenderTargetHelper {
         renderTarget.bindWrite(false);
         renderTarget.checkStatus();
 
-        if (!((IHelpWithFBOs) renderTarget).getIsStencilBufferEnabled()) {
-            ((IHelpWithFBOs) renderTarget).setIsStencilBufferEnabledAndReload(true);
+        if (!((IHelpWithFBOs) renderTarget).tts$IsStencilBufferEnabled()) {
+            ((IHelpWithFBOs) renderTarget).tts$SetStencilBufferEnabled(true);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.code.tama.triggerapi.botiutils;
 
 public interface IHelpWithFBOs {
-    boolean getIsStencilBufferEnabled();
+    boolean tts$IsStencilBufferEnabled();
     
-    void setIsStencilBufferEnabledAndReload(boolean cond);
+    void tts$SetStencilBufferEnabled(boolean cond);
 }

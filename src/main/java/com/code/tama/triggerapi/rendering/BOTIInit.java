@@ -26,8 +26,8 @@ public class BOTIInit {
         }
 
         if(!fbo.isStencilEnabled()) fbo.enableStencil();
-        if(!((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).getIsStencilBufferEnabled())
-            ((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).setIsStencilBufferEnabledAndReload(true);
+        if(!((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).tts$IsStencilBufferEnabled())
+            ((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).tts$SetStencilBufferEnabled(true);
 
         fbo.bindWrite(false);
         fbo.checkStatus();
