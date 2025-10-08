@@ -32,36 +32,53 @@ public class CrashThread extends Thread {
                 this.itardisLevel.GetLevel().getServer().getLevel(this.itardisLevel.GetCurrentLevel());
         assert CurrentLevel != null;
         CurrentLevel.setChunkForced(
-                (int) (this.itardisLevel.GetDestination().GetX() / 16),
-                (int) (this.itardisLevel.GetDestination().GetZ() / 16),
+                (int) (this.itardisLevel.GetNavigationalData().getDestination().GetX() / 16),
+                (int) (this.itardisLevel.GetNavigationalData().getDestination().GetZ() / 16),
                 true);
         BlockPos pos = BlockHelper.snapToGround(
-                this.itardisLevel.GetLevel(), this.itardisLevel.GetDestination().GetBlockPos());
+                this.itardisLevel.GetLevel(),
+                this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos());
 
-        this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().OnLand(this.itardisLevel, pos, CurrentLevel);
-        pos = this.itardisLevel.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
+        this.itardisLevel
+                .GetFlightData()
+                .getFlightTerminationProtocol()
+                .getTerminationProtocolHandler()
+                .OnLand(this.itardisLevel, pos, CurrentLevel);
+        pos = this.itardisLevel
+                .GetFlightData()
+                .getFlightTerminationProtocol()
+                .getTerminationProtocolHandler()
+                .GetLandPos();
 
         pos = BlockHelper.snapToGround(this.itardisLevel.GetLevel(), pos);
 
         SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos);
-        this.itardisLevel.SetExteriorLocation(coords);
-        this.itardisLevel.SetDestination(coords);
-        this.itardisLevel.SetFacing(this.itardisLevel.GetDestinationFacing());
+        this.itardisLevel.GetNavigationalData().SetExteriorLocation(coords);
+        this.itardisLevel.GetNavigationalData().setDestination(coords);
+        this.itardisLevel
+                .GetNavigationalData()
+                .setFacing(this.itardisLevel.GetNavigationalData().getDestinationFacing());
 
-        BlockState exteriorBlockState =
-                TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState().setValue(FACING, this.itardisLevel.GetFacing());
+        BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK
+                .get()
+                .defaultBlockState()
+                .setValue(FACING, this.itardisLevel.GetNavigationalData().getFacing());
 
         ExteriorBlock exteriorBlock = (ExteriorBlock) exteriorBlockState.getBlock();
-        exteriorBlockState.setValue(FACING, this.itardisLevel.GetFacing());
+        exteriorBlockState.setValue(
+                FACING, this.itardisLevel.GetNavigationalData().getFacing());
         exteriorBlock.SetInteriorKey(this.itardisLevel.GetLevel().dimension());
 
         CurrentLevel.setBlock(
-                this.itardisLevel.GetDestination().GetBlockPos(),
+                this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
                 TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState(),
                 3);
         BlockState blockState = this.itardisLevel
                 .GetLevel()
-                .getBlockState(this.itardisLevel.GetExteriorLocation().GetBlockPos());
+                .getBlockState(this.itardisLevel
+                        .GetNavigationalData()
+                        .GetExteriorLocation()
+                        .GetBlockPos());
         this.itardisLevel.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), blockState);
 
         // The pos needs to be final or effectively final
@@ -72,8 +89,8 @@ public class CrashThread extends Thread {
                         () -> this.itardisLevel.SetExteriorTile(
                                 ((ExteriorTile) CurrentLevel.getBlockEntity(finalPos)))));
         CurrentLevel.setChunkForced(
-                (int) (this.itardisLevel.GetDestination().GetX() / 16),
-                (int) (this.itardisLevel.GetDestination().GetZ() / 16),
+                (int) (this.itardisLevel.GetNavigationalData().getDestination().GetX() / 16),
+                (int) (this.itardisLevel.GetNavigationalData().getDestination().GetZ() / 16),
                 false);
         this.itardisLevel.UpdateClient();
         MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this.itardisLevel, TardisEvent.State.END));

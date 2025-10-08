@@ -19,11 +19,11 @@ public class DataExteriorList {
         }
 
         for (DataExterior exterior : exteriorList) {
-            Exterior toAdd = new Exterior(exterior.name(), exterior.ModelName());
+            Exterior toAdd = new Exterior(exterior.ModelName(), exterior.name());
             AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
             ExistsOrNot.set(false);
             for (Exterior existing : Exteriors.EXTERIORS) {
-                if (existing.GetModelName().equals(toAdd.GetModelName())) ExistsOrNot.set(true);
+                if (existing.getModel().equals(toAdd.getModel())) ExistsOrNot.set(true);
             }
 
             if (!ExistsOrNot.get()) Exteriors.EXTERIORS.add(toAdd);

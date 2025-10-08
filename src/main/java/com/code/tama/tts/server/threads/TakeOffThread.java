@@ -14,7 +14,7 @@ public class TakeOffThread extends Thread {
 
     @Override
     public void run() {
-        this.itardisLevel.SetPlayRotorAnimation(true);
+        this.itardisLevel.GetFlightData().setPlayRotorAnimation(true);
         this.itardisLevel.UpdateClient();
         new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverTakeOff();
 

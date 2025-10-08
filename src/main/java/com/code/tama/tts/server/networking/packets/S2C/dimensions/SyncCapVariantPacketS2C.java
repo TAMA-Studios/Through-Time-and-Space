@@ -27,7 +27,7 @@ public class SyncCapVariantPacketS2C {
                 Minecraft.getInstance()
                         .level
                         .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> cap.SetExteriorVariant(Exteriors.Get(packet.variant)));
+                        .ifPresent(cap -> cap.GetData().SetExteriorVariant(Exteriors.Get(packet.variant)));
             }
         });
         context.setPacketHandled(true);

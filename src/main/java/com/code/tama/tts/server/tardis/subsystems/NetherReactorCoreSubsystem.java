@@ -4,12 +4,17 @@ package com.code.tama.tts.server.tardis.subsystems;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import java.util.Map;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+@NoArgsConstructor
 public class NetherReactorCoreSubsystem extends AbstractSubsystem {
+    public NetherReactorCoreSubsystem(BlockPos blockPos, boolean Activated) {
+        super(blockPos, Activated);
+    }
     /**
      * the Map uses a relative BlockPos, and the Default Blockstate that make up
      * this subsystem
@@ -55,13 +60,13 @@ public class NetherReactorCoreSubsystem extends AbstractSubsystem {
     public void OnActivate(Level level, BlockPos blockPos) {
         this.Activated = true;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setNetherReactorCoreSubsystem(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setNetherReactorCoreSubsystem(this));
     }
 
     @Override
     public void OnDeActivate(Level level, BlockPos blockPos) {
         this.Activated = false;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setNetherReactorCoreSubsystem(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setNetherReactorCoreSubsystem(this));
     }
 }

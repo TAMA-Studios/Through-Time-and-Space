@@ -26,7 +26,7 @@ public class SyncCapLightLevelPacketS2C {
                 Minecraft.getInstance()
                         .level
                         .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> cap.SetLightLevel(packet.level));
+                        .ifPresent(cap -> cap.GetData().SetLightLevel(packet.level));
             }
         });
         context.setPacketHandled(true);

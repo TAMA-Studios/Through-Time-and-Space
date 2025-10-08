@@ -8,4 +8,8 @@ public interface IPlayerCap extends INBTSerializable<CompoundTag> {
     String GetViewingTARDIS();
 
     void SetViewingTARDIS(String tardis);
+
+    void AddOwnedTARDIS();
+
+    int GetOwnedTARDISes();
 }

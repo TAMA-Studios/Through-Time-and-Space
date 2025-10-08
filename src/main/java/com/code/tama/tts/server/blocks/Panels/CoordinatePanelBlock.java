@@ -169,12 +169,14 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
             if (button == null) return InteractionResult.FAIL;
             else
                 world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
-                    SpaceTimeCoordinate destination = tardisLevelCapability.GetDestination();
-                    int DestOffset = tardisLevelCapability.GetIncrement();
+                    SpaceTimeCoordinate destination =
+                            tardisLevelCapability.GetNavigationalData().getDestination();
+                    int DestOffset = tardisLevelCapability.GetNavigationalData().getIncrement();
                     switch (button) {
                         case X:
-                            tardisLevelCapability.SetDestination(
-                                    destination.AddX(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability
+                                    .GetNavigationalData()
+                                    .setDestination(destination.AddX(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);
@@ -183,8 +185,9 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Y:
-                            tardisLevelCapability.SetDestination(
-                                    destination.AddY(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability
+                                    .GetNavigationalData()
+                                    .setDestination(destination.AddY(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);
@@ -194,8 +197,9 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                             break;
                         case Z:
-                            tardisLevelCapability.SetDestination(
-                                    destination.AddZ(Crouching ? -DestOffset : DestOffset));
+                            tardisLevelCapability
+                                    .GetNavigationalData()
+                                    .setDestination(destination.AddZ(Crouching ? -DestOffset : DestOffset));
                             tardisLevelCapability.UpdateClient();
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);

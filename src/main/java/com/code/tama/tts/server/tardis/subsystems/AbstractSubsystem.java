@@ -2,9 +2,9 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.blocks.FragmentLinksBlock;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,12 +15,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag> {
-    boolean Activated;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
-    @Getter
-    @Setter
-    BlockPos blockPos;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag> {
+    BlockPos blockPos = BlockPos.ZERO;
+    boolean Activated = false;
 
     public boolean isActivated(Level level) {
         return this.Activated && this.IsValid(level, blockPos);

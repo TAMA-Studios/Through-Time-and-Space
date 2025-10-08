@@ -3,10 +3,11 @@ package com.code.tama.triggerapi;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.lwjgl.opengl.GL11;
+
+import java.util.function.Consumer;
 
 public class StencilUtils {
     public static void DrawStencil(PoseStack pose, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawScene) {
@@ -63,4 +64,33 @@ public class StencilUtils {
 
         Tesselator.getInstance().end();
     }
+
+    public static void setupStencil(Consumer<PoseStack> drawPortal, PoseStack stack) {
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+
+        // Clear once per frame
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+
+        // Write 1s to stencil where portal is drawn
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+        GL11.glStencilMask(0xFF);
+
+        RenderSystem.depthMask(false);
+        drawPortal.accept(stack);
+        RenderSystem.depthMask(true);
+
+        // Only draw where stencil == 1 from now on
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+    }
+
+    public static void endStencil() {
+        // Just disable — don't clear or overdraw
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
+    }
+
+
 }

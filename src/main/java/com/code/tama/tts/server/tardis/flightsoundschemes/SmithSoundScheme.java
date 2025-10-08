@@ -28,4 +28,9 @@ public class SmithSoundScheme extends AbstractSoundScheme {
     public AbstractFlightSound GetTakeoff() {
         return this.takeoffSound;
     }
+
+    @Override
+    public String GetName() {
+        return "smith";
+    }
 }

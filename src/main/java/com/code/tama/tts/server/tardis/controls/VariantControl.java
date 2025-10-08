@@ -28,14 +28,18 @@ public class VariantControl extends AbstractControl {
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-        itardisLevel.SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetExteriorVariant()));
+        itardisLevel
+                .GetData()
+                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().GetExteriorVariant()));
         itardisLevel.UpdateClient();
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetExteriorVariant()));
+        itardisLevel
+                .GetData()
+                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().GetExteriorVariant()));
         itardisLevel.UpdateClient();
         return InteractionResult.SUCCESS;
     }

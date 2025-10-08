@@ -25,7 +25,7 @@ public class ThrottleControl extends AbstractControl {
     @Override
     public SoundEvent GetSuccessSound() {
         return this.itardisLevel != null
-                ? itardisLevel.IsInFlight() ? TTSSounds.THROTTLE_ON.get() : TTSSounds.THROTTLE_OFF.get()
+                ? itardisLevel.GetFlightData().isInFlight() ? TTSSounds.THROTTLE_ON.get() : TTSSounds.THROTTLE_OFF.get()
                 : TTSSounds.THROTTLE_OFF.get();
     }
 
@@ -34,8 +34,12 @@ public class ThrottleControl extends AbstractControl {
         this.itardisLevel = itardisLevel;
         this.SetNeedsUpdate(true);
         this.SetAnimationState(0.0f);
-        if (itardisLevel.IsInFlight()) {
-            itardisLevel.GetFlightScheme().GetLanding().Play(itardisLevel.GetLevel(), player.blockPosition());
+        if (itardisLevel.GetFlightData().isInFlight()) {
+            itardisLevel
+                    .GetFlightData()
+                    .getFlightSoundScheme()
+                    .GetLanding()
+                    .Play(itardisLevel.GetLevel(), player.blockPosition());
             itardisLevel.Rematerialize();
         }
 
@@ -47,10 +51,15 @@ public class ThrottleControl extends AbstractControl {
         this.itardisLevel = itardisLevel;
         this.SetAnimationState(1.0f);
 
-        if (!itardisLevel.IsInFlight() && !itardisLevel.ShouldPlayRotorAnimation()) {
-            itardisLevel.GetFlightScheme().GetTakeoff().SetFinished(true);
+        if (!itardisLevel.GetFlightData().isInFlight()
+                && !itardisLevel.GetFlightData().isPlayRotorAnimation()) {
+            itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().SetFinished(true);
             itardisLevel.Dematerialize();
-            itardisLevel.GetFlightScheme().GetTakeoff().Play(itardisLevel.GetLevel(), player.blockPosition());
+            itardisLevel
+                    .GetFlightData()
+                    .getFlightSoundScheme()
+                    .GetTakeoff()
+                    .Play(itardisLevel.GetLevel(), player.blockPosition());
             itardisLevel.UpdateClient();
         }
         this.SetNeedsUpdate(true);

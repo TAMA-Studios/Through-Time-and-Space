@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,17 +23,25 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  * {@link net.minecraft.core.BlockPos}
  **/
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
+    public static Codec<SpaceTimeCoordinate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    Codec.DOUBLE.fieldOf("x").forGetter(SpaceTimeCoordinate::GetX),
+                    Codec.DOUBLE.fieldOf("y").forGetter(SpaceTimeCoordinate::GetY),
+                    Codec.DOUBLE.fieldOf("z").forGetter(SpaceTimeCoordinate::GetZ),
+                    Codec.DOUBLE.fieldOf("time").forGetter(SpaceTimeCoordinate::GetTime),
+                    Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(SpaceTimeCoordinate::getLevelKey))
+            .apply(instance, SpaceTimeCoordinate::new));
+
     public static SpaceTimeCoordinate of(CompoundTag tag) {
         SpaceTimeCoordinate SpaceTimeCoordinates = new SpaceTimeCoordinate();
         SpaceTimeCoordinates.deserializeNBT(tag);
         return SpaceTimeCoordinates;
     }
 
-    double Time, X, Y, Z;
+    double Time = 0, X = 0, Y = 0, Z = 0;
     ResourceKey<Level> level = Level.OVERWORLD;
 
     public SpaceTimeCoordinate(BlockPos pos) {

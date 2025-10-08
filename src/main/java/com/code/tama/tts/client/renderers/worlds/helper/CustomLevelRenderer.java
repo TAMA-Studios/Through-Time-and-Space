@@ -108,7 +108,7 @@ public class CustomLevelRenderer {
         boolean Disco = Minecraft.getInstance()
                 .level
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .map(ITARDISLevel::IsDiscoMode)
+                .map(level -> level.GetData().isIsDiscoMode())
                 .orElse(false); // Default value
 
         // Apply the calculated lighting

@@ -1,48 +1,35 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.data;
 
+import com.code.tama.tts.server.tardis.data.codecs.SubsystemsCodecs;
 import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
-import com.code.tama.tts.server.tardis.subsystems.EnginesSubsystem;
+import com.code.tama.tts.server.tardis.subsystems.DynamorphicController;
 import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class SubsystemsData implements INBTSerializable<CompoundTag> {
+@AllArgsConstructor
+public class SubsystemsData {
+    public static Codec<SubsystemsData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    SubsystemsCodecs.DEMAT_CIRCUIT
+                            .fieldOf("demat_circuit")
+                            .forGetter(SubsystemsData::getDematerializationCircuit),
+                    SubsystemsCodecs.DIMENSIONAL_CORE
+                            .fieldOf("dimensional_core")
+                            .forGetter(SubsystemsData::getNetherReactorCoreSubsystem),
+                    SubsystemsCodecs.DYNAMORPHIC_CONTROLLER
+                            .fieldOf("dynamorphic_controller")
+                            .forGetter(SubsystemsData::getDynamorphicController))
+            .apply(instance, SubsystemsData::new));
+
     public DematerializationCircuit DematerializationCircuit = new DematerializationCircuit();
     public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = new NetherReactorCoreSubsystem();
-    public EnginesSubsystem EnginesSubsystem = new EnginesSubsystem();
-
-    public SubsystemsData(CompoundTag compoundTag) {
-        this.deserializeNBT(compoundTag);
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.contains("DematerializationCircuit"))
-            this.DematerializationCircuit.deserializeNBT(nbt.getCompound("DematerializationCircuit"));
-
-        if (nbt.contains("NetherReactorCoreSubsystem"))
-            this.NetherReactorCoreSubsystem.deserializeNBT(nbt.getCompound("NetherReactorCoreSubsystem"));
-
-        if (nbt.contains("Engines")) this.EnginesSubsystem.deserializeNBT(nbt.getCompound("Engines"));
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = new CompoundTag();
-        if (this.DematerializationCircuit != null)
-            compoundTag.put("DematerializationCircuit", this.DematerializationCircuit.serializeNBT());
-
-        if (this.NetherReactorCoreSubsystem != null)
-            compoundTag.put("NetherReactorCoreSubsystem", this.NetherReactorCoreSubsystem.serializeNBT());
-
-        if (this.EnginesSubsystem != null) compoundTag.put("Engines", this.EnginesSubsystem.serializeNBT());
-        return compoundTag;
-    }
+    public DynamorphicController DynamorphicController = new DynamorphicController();
 }

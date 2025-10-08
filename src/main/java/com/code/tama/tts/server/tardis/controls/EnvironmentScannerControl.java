@@ -29,9 +29,10 @@ public class EnvironmentScannerControl extends AbstractControl {
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
-        if (entity.level().isClientSide) return InteractionResult.PASS;
+        if (itardisLevel.GetLevel().isClientSide) return InteractionResult.PASS;
         if (entity instanceof ServerPlayer player)
-            EnvironmentViewerUtils.startSpectateExt(player, itardisLevel, itardisLevel.GetExteriorLocation());
+            EnvironmentViewerUtils.startSpectateExt(
+                    player, itardisLevel, itardisLevel.GetNavigationalData().GetExteriorLocation());
 
         return InteractionResult.SUCCESS;
     }
@@ -40,7 +41,10 @@ public class EnvironmentScannerControl extends AbstractControl {
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         if (player.level().isClientSide) return InteractionResult.PASS;
         if (player instanceof ServerPlayer serverPlayer)
-            EnvironmentViewerUtils.startSpectateExt(serverPlayer, itardisLevel, itardisLevel.GetExteriorLocation());
+            EnvironmentViewerUtils.startSpectateExt(
+                    serverPlayer,
+                    itardisLevel,
+                    itardisLevel.GetNavigationalData().GetExteriorLocation());
 
         return InteractionResult.SUCCESS;
     }

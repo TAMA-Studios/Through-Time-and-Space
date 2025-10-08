@@ -3,12 +3,19 @@ package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
 import java.util.Map;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+@NoArgsConstructor
 public class DematerializationCircuit extends AbstractSubsystem {
+
+    public DematerializationCircuit(BlockPos blockPos, boolean Activated) {
+        super(blockPos, Activated);
+    }
+
     @Override
     public Map<BlockPos, BlockState> BlockMap() {
         Map<BlockPos, BlockState> map = new java.util.HashMap<>(Map.of());
@@ -47,13 +54,13 @@ public class DematerializationCircuit extends AbstractSubsystem {
     public void OnActivate(Level level, BlockPos blockPos) {
         this.Activated = true;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setDematerializationCircuit(this));
     }
 
     @Override
     public void OnDeActivate(Level level, BlockPos blockPos) {
         this.Activated = false;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setDematerializationCircuit(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setDematerializationCircuit(this));
     }
 }

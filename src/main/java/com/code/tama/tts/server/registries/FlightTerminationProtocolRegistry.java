@@ -6,9 +6,13 @@ import com.code.tama.tts.server.tardis.terminationprotocol.EmergencyStopProtocol
 import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocolHandler;
 import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocolHandler;
 import com.code.tama.tts.server.tardis.terminationprotocol.UrgentStopProtocolHandler;
+import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 
 public class FlightTerminationProtocolRegistry {
+    public static final Codec<FlightTerminationProtocol> CODEC =
+            Codec.STRING.xmap(FlightTerminationProtocolRegistry::GetByName, FlightTerminationProtocol::getName);
+
     public static ArrayList<FlightTerminationProtocol> FLIGHT_TERMINATION_PROTOCOLS = new ArrayList<>();
 
     public static final FlightTerminationProtocol POLITE_TERMINUS = AddProtocol(FlightTerminationProtocol.builder()
@@ -17,7 +21,7 @@ public class FlightTerminationProtocolRegistry {
             .TakeoffShakeAmount(0.1f)
             .Accuracy(0.8f)
             .Speed(0.5f)
-            .IsSelectable(true)
+            .Selectable(true)
             .terminationProtocolHandler(new PoliteTerminusProtocolHandler())
             .build());
 
@@ -34,7 +38,7 @@ public class FlightTerminationProtocolRegistry {
             .TakeoffShakeAmount(0.7f)
             .Accuracy(0.7f)
             .Speed(0.7f)
-            .IsSelectable(true)
+            .Selectable(true)
             .terminationProtocolHandler(new QuickStopProtocolHandler())
             .build());
 
@@ -44,7 +48,7 @@ public class FlightTerminationProtocolRegistry {
             .TakeoffShakeAmount(1.0f)
             .Accuracy(1.0f)
             .Speed(0.9f)
-            .IsSelectable(true)
+            .Selectable(true)
             .terminationProtocolHandler(new UrgentStopProtocolHandler())
             .build());
 

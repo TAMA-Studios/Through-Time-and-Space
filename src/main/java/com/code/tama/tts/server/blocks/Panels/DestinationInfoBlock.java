@@ -183,10 +183,16 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
             world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
                 switch (button) {
                     case INCREMENT:
-                        tardisLevelCapability.SetIncrement(tardisLevelCapability.GetNextIncrement());
+                        tardisLevelCapability
+                                .GetNavigationalData()
+                                .setIncrement(tardisLevelCapability
+                                        .GetNavigationalData()
+                                        .GetNextIncrement());
                         player.displayClientMessage(
                                 Component.literal("Coordinate Increment = "
-                                        + Integer.toString(tardisLevelCapability.GetIncrement())),
+                                        + Integer.toString(tardisLevelCapability
+                                                .GetNavigationalData()
+                                                .getIncrement())),
                                 true);
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
                         world.scheduleTick(pos, this, 10);
@@ -194,11 +200,16 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
                         world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                         break;
                     case FACING:
-                        tardisLevelCapability.SetDestinationFacing(tardisLevelCapability.NextDestinationFacing());
+                        tardisLevelCapability
+                                .GetNavigationalData()
+                                .setDestinationFacing(tardisLevelCapability
+                                        .GetNavigationalData()
+                                        .NextDestinationFacing());
                         player.displayClientMessage(
                                 Component.literal("Exterior Facing = "
                                         + GrammarNazi.CapitalizeFirstLettersAndRemoveScores(tardisLevelCapability
-                                                .GetDestinationFacing()
+                                                .GetNavigationalData()
+                                                .getDestinationFacing()
                                                 .getName())),
                                 true);
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
@@ -208,11 +219,17 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
                         break;
                     case INFO:
                         player.sendSystemMessage(Component.literal("Location: "
-                                + tardisLevelCapability.GetExteriorLocation().ReadableString()));
+                                + tardisLevelCapability
+                                        .GetNavigationalData()
+                                        .getLocation()
+                                        .ReadableString()));
                         player.sendSystemMessage(Component.literal("Dimension: "
                                 + tardisLevelCapability.GetCurrentLevel().location()));
                         player.sendSystemMessage(Component.literal("Destination: "
-                                + tardisLevelCapability.GetDestination().ReadableString()));
+                                + tardisLevelCapability
+                                        .GetNavigationalData()
+                                        .getDestination()
+                                        .ReadableString()));
                         world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
                         world.scheduleTick(pos, this, 10);
                         TTSMod.LOGGER.info("INFO!");

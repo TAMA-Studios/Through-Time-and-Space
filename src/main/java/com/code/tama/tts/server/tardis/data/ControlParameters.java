@@ -3,24 +3,33 @@ package com.code.tama.tts.server.tardis.data;
 
 import com.code.tama.tts.server.misc.FlightTerminationProtocol;
 import com.code.tama.tts.server.registries.FlightTerminationProtocolRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class ControlParameters implements INBTSerializable<CompoundTag> {
+public class ControlParameters {
+    public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    Codec.FLOAT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
+                    Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
+                    Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isBrakes),
+                    Codec.BOOL.fieldOf("simple_mode").forGetter(ControlParameters::isSimpleMode),
+                    Codec.INT.fieldOf("artron_packet_output").forGetter(ControlParameters::GetArtronPacketOutput),
+                    FlightTerminationProtocolRegistry.CODEC
+                            .fieldOf("flight_termination_protocol")
+                            .forGetter(ControlParameters::getFlightTerminationProtocol))
+            .apply(instance, ControlParameters::new));
+
     public float HelmicRegulator;
     public boolean APCState, Brakes, SimpleMode;
     public int ArtronPacketOutput;
-    FlightTerminationProtocol flightTerminationProtocolEnum = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
-
-    public ControlParameters(CompoundTag compoundTag) {
-        this.deserializeNBT(compoundTag);
-    }
+    FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 
     // TODO: Implement Automatic Power Cue
     /**
@@ -46,29 +55,5 @@ public class ControlParameters implements INBTSerializable<CompoundTag> {
      **/
     public int GetArtronPacketOutput() {
         return this.ArtronPacketOutput;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.flightTerminationProtocolEnum =
-                FlightTerminationProtocolRegistry.FLIGHT_TERMINATION_PROTOCOLS.get(nbt.getInt("termination_protocol"));
-        this.APCState = nbt.getBoolean("APC");
-        this.ArtronPacketOutput = nbt.getInt("ArtronPacketOutput");
-        this.SimpleMode = nbt.getBoolean("SimpleMode");
-        this.HelmicRegulator = nbt.getFloat("HelmicRegulators");
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putInt(
-                "termination_protocol",
-                FlightTerminationProtocolRegistry.FLIGHT_TERMINATION_PROTOCOLS.indexOf(
-                        this.flightTerminationProtocolEnum));
-        compoundTag.putBoolean("APC", this.APCState);
-        compoundTag.putInt("ArtronPacketOutput", this.ArtronPacketOutput);
-        compoundTag.putBoolean("SimpleMode", this.SimpleMode);
-        compoundTag.putFloat("HelmicRegulators", this.HelmicRegulator);
-        return compoundTag;
     }
 }

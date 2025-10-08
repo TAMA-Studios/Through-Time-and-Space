@@ -1,19 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
-import com.code.tama.tts.server.data.tardis.DoorData;
-import com.code.tama.tts.server.enums.tardis.FlightTerminationProtocolEnum;
-import com.code.tama.tts.server.misc.Exterior;
-import com.code.tama.tts.server.misc.PlayerPosition;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
-import com.code.tama.tts.server.tardis.data.ControlParameters;
-import com.code.tama.tts.server.tardis.data.ProtocolData;
-import com.code.tama.tts.server.tardis.data.SubsystemsData;
-import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
+import com.code.tama.tts.server.tardis.data.TARDISData;
+import com.code.tama.tts.server.tardis.data.TARDISFlightData;
+import com.code.tama.tts.server.tardis.data.TARDISNavigationalData;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.Map;
-import java.util.UUID;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -21,28 +12,27 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
-    /** Get the Owner of the TARDIS (basically who made it) **/
-    UUID GetOwnerID();
-    /** Sets the Owner of the TARDIS **/
-    void SetOwner(UUID owner);
+    TARDISFlightData GetFlightData();
 
-    Map<UUID, PlayerPosition> GetViewingMap();
+    TARDISNavigationalData GetNavigationalData();
 
-    boolean IsViewingTARDIS(UUID player);
+    TARDISData GetData();
 
-    void SetViewing(UUID player, PlayerPosition position);
+    void setData(TARDISData data);
+
+    void setNavigationalData(TARDISNavigationalData data);
+
+    void setFlightData(TARDISFlightData data);
 
     /** Returns whether the TARDIS is capable of flight in its current state **/
     boolean CanFly();
 
-    public Direction NextDestinationFacing();
     /**
      * Crash's the TARDIS, basically explosion at the exterior, particles, maybe
      * some fire
      **/
     void Crash();
 
-    void CycleVariant();
     /**
      * Initiates the TARDIS takeoff sequence, the sequence goes as follows:
      * <ol>
@@ -91,111 +81,18 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
     ResourceKey<Level> GetCurrentLevel();
 
-    SpaceTimeCoordinate GetDestination();
-
-    Direction GetDestinationFacing();
-
-    /** The position of the door block **/
-    SpaceTimeCoordinate GetDoorBlock();
-    /** The position of the door block **/
-    DoorData GetDoorData();
-
-    SpaceTimeCoordinate GetExteriorLocation();
-
-    Exterior GetExteriorModel();
-
     ExteriorTile GetExteriorTile();
 
-    Exterior GetExteriorVariant();
-
-    Direction GetFacing();
-
-    AbstractSoundScheme GetFlightScheme();
-
-    FlightTerminationProtocolEnum GetFlightTerminationPolicy();
-
-    int GetIncrement();
+    void SetExteriorTile(ExteriorTile tile);
 
     Level GetLevel();
 
     float GetLightLevel();
-
-    int GetNextIncrement();
-
-    int GetPreviousIncrement();
-
-    SubsystemsData GetSubsystemsData();
-
-    ProtocolData GetProtocolData();
-
-    ControlParameters GetControlData();
-    /**
-     * Gets the amount of ticks the TARDIS has been flying for (Not currently
-     * implemented TODO: Implement this)
-     **/
-    int GetTicksInFlight();
-    /** Gets the amount of ticks before the TARDIS reaches its destination **/
-    int GetTicksTillReachedDestination();
-
-    /** Whether the TARDIS is in flight **/
-    boolean IsInFlight();
-
-    boolean IsTakingOff();
-    /** Gets whether the TARDIS is powered on or not **/
-    boolean IsPoweredOn();
-
-    boolean IsDiscoMode();
-
     /** Finishes up the landing sequence **/
     void Land();
 
     /** Initiates the TARDIS Landing sequence **/
     void Rematerialize();
-
-    void SetCurrentLevel(ResourceKey<Level> exteriorLevel);
-
-    void SetDestination(SpaceTimeCoordinate Destination);
-
-    void SetDestinationFacing(Direction Facing);
-
-    /** The position of the door block **/
-    void SetDoorBlock(SpaceTimeCoordinate doorBlock);
-    /** The position of the door block **/
-    void SetDoorData(DoorData doorBlock);
-
-    void SetExteriorLocation(SpaceTimeCoordinate blockPos);
-
-    void SetExteriorModel(Exterior Exterior);
-
-    void SetExteriorTile(ExteriorTile exteriorTile);
-
-    void SetExteriorVariant(Exterior exteriorVariant);
-
-    void SetFacing(Direction Facing);
-
-    void SetFlightTerminationPolicy(FlightTerminationProtocolEnum policy);
-
-    void SetInFlight(boolean IsInFlight);
-
-    void SetIncrement(int IncrementValue);
-
-    void SetLightLevel(float LightLevel);
-
-    void SetPlayRotorAnimation(boolean PlayAnimation);
-
-    /** Sets whether the TARDIS is powered on or not **/
-    void SetPowered(boolean IsPoweredOn);
-
-    void SetSoundScheme(AbstractSoundScheme SoundScheme);
-    /**
-     * Sets the amount of ticks the TARDIS has been flying for (Not currently
-     * implemented TODO: Implement this)
-     **/
-    void SetTicksInFlight(int ticks);
-    /** Sets the amount of ticks before the TARDIS reaches its destination **/
-    void SetTicksTillReachedDestination(int ticks);
-
-    boolean ShouldPlayRotorAnimation();
 
     long getTicks();
 

@@ -31,14 +31,16 @@ public class AbstractConsoleTile extends BlockEntity {
         if (blockEntity instanceof AbstractConsoleTile tile) {
             level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 if (level.isClientSide)
-                    tile.GetRotorAnimation().animateWhen(cap.ShouldPlayRotorAnimation(), (int) level.getGameTime());
+                    tile.GetRotorAnimation()
+                            .animateWhen(cap.GetFlightData().isPlayRotorAnimation(), (int) level.getGameTime());
                 //                if(cap.IsTakingOff()) {
                 //                    if(!cap.GetFlightScheme().GetTakeoff().IsFinished())
                 //                        cap.GetFlightScheme().GetTakeoff().PlayIfFinished(level, pos);
                 //                }
-                else if (cap.IsInFlight()) {
-                    cap.GetFlightScheme().GetFlightLoop().PlayIfFinished(level, pos);
-                } else cap.GetFlightScheme().GetFlightLoop().SetFinished(true);
+                else if (cap.GetFlightData().isInFlight()) {
+                    cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayIfFinished(level, pos);
+                } else
+                    cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);
             });
         }
     }

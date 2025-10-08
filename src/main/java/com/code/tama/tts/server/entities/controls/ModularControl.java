@@ -72,7 +72,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void OnControlClicked(ITARDISLevel capability, Player player) {
-        if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
+        if (player.getUsedItemHand() == InteractionHand.OFF_HAND || player.level().isClientSide) return;
         if (player.getMainHandItem().getItem() instanceof SonicItem) {
             if (player.isCrouching()) {
                 this.CycleControlBackward();
@@ -106,7 +106,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void OnControlHit(ITARDISLevel capability, Entity entity) {
-        if (entity instanceof Player player) if (player.getUsedItemHand() == InteractionHand.OFF_HAND) return;
+        if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND || entity.level().isClientSide) return;
         InteractionResult interactionResult = this.GetControl().GetControl().OnLeftClick(capability, entity);
 
         this.level()

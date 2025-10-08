@@ -42,15 +42,16 @@ public class EnvironmentViewerUtils {
     public static void startSpectateExt(ServerPlayer player, ITARDISLevel tardis, SpaceTimeCoordinate target) {
         if (target != null) {
 
-            if (!tardis.IsViewingTARDIS(player.getUUID())) {
-                tardis.SetViewing(
-                        player.getUUID(),
-                        PlayerPosition.builder()
-                                .pos(player.position())
-                                .YRot(player.getYHeadRot())
-                                .Xrot(player.getXRot())
-                                .levelKey(tardis.GetLevel().dimension())
-                                .build());
+            if (!tardis.GetData().IsViewingTARDIS(player.getUUID())) {
+                tardis.GetData()
+                        .SetViewing(
+                                player.getUUID(),
+                                PlayerPosition.builder()
+                                        .pos(player.position())
+                                        .YRot(player.getYHeadRot())
+                                        .Xrot(player.getXRot())
+                                        .levelKey(tardis.GetLevel().dimension())
+                                        .build());
             }
 
             Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, player)
@@ -97,19 +98,22 @@ public class EnvironmentViewerUtils {
             Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, tardisLevel)
                     .ifPresent(tardis -> {
                         if (playerCap.GetViewingTARDIS().isEmpty()) return; // Not viewing a TARDIS
-                        PlayerPosition targetPosition = tardis.GetViewingMap().get(serverPlayer.getUUID());
+                        PlayerPosition targetPosition =
+                                tardis.GetData().getViewingPlayerMap().get(serverPlayer.getUUID());
 
                         if (targetPosition
                                 == null) { // If target position is for SOME REASON null, tp the player to the TARDIS
                             // interior door
                             targetPosition = PlayerPosition.builder()
                                     .levelKey(tardis.GetLevel().dimension())
-                                    .pos(tardis.GetDoorData()
+                                    .pos(tardis.GetData()
+                                            .getDoorData()
                                             .getLocation()
                                             .GetBlockPos()
                                             .relative(
-                                                    Direction.fromYRot(
-                                                            tardis.GetDoorData().getYRot()),
+                                                    Direction.fromYRot(tardis.GetData()
+                                                            .getDoorData()
+                                                            .getYRot()),
                                                     1)
                                             .getCenter())
                                     .build();
@@ -126,7 +130,7 @@ public class EnvironmentViewerUtils {
                         updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
                         serverPlayer.onUpdateAbilities();
 
-                        tardis.GetViewingMap().remove(serverPlayer.getUUID());
+                        tardis.GetData().getViewingPlayerMap().remove(serverPlayer.getUUID());
                         serverPlayer.setInvisible(false);
                         Networking.sendToPlayer(serverPlayer, new SyncViewedTARDISS2C(""));
                         playerCap.SetViewingTARDIS(""); // Isn't viewing a TARDIS anymore

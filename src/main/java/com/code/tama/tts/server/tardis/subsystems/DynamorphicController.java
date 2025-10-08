@@ -5,14 +5,20 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSBlocks;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class EnginesSubsystem extends AbstractSubsystem {
+@NoArgsConstructor
+public class DynamorphicController extends AbstractSubsystem {
 
     private static Map<BlockPos, BlockState> Map = null;
+
+    public DynamorphicController(BlockPos blockPos, boolean Activated) {
+        super(blockPos, Activated);
+    }
 
     @Override
     public Map<BlockPos, BlockState> BlockMap() {
@@ -55,13 +61,13 @@ public class EnginesSubsystem extends AbstractSubsystem {
     public void OnActivate(Level level, BlockPos blockPos) {
         this.Activated = true;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setEnginesSubsystem(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setDynamorphicController(this));
     }
 
     @Override
     public void OnDeActivate(Level level, BlockPos blockPos) {
         this.Activated = false;
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> cap.GetSubsystemsData().setEnginesSubsystem(this));
+                .ifPresent(cap -> cap.GetData().getSubSystemsData().setDynamorphicController(this));
     }
 }

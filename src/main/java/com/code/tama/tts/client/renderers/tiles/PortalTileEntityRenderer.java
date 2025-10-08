@@ -2,8 +2,10 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -35,16 +37,65 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
             return;
         }
 
-        // Uncomment these lines to re-enable the stencil buf
-        //        StencilUtils.DrawStencil(poseStack, (pose) -> {
-        //            pose.pushPose();
-        //            pose.translate(0.5, 1, 0);
-        //            StencilUtils.drawFrame(pose, 1, 2);
-        //            pose.popPose();
-        //        }, (pose) -> {
+//        StencilUtils.DrawStencil(poseStack, (pose) -> {
+//            pose.pushPose();
 
-        BOTIUtils.Render(pose, buffer, portal);
-        //        });
+//            pose.translate(0, 0, 1);
+//            StencilUtils.drawFrame(pose, 4, 8);
+//            pose.translate(0.005, 0.005, 0.005);
+//            pose.scale(2f, 2f, 2f);
+//
+//            pose.pushPose();
+//            pose.translate(0.5, 1, 0.5);
+//            pose.mulPose(Axis.XP.rotationDegrees(90));
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//            pose.popPose();
+//
+//            pose.pushPose();
+//            pose.translate(0.5, 0.5, 0);
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//            pose.popPose();
+//
+//            pose.pushPose();
+//            pose.mulPose(Axis.YP.rotationDegrees(90));
+//            pose.translate(-0.5, 0.5, 0);
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//            pose.popPose();
+//
+//            pose.pushPose();
+//            pose.mulPose(Axis.YP.rotationDegrees(180));
+//            pose.translate(-0.5, 0.5, -1);
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//            pose.popPose();
+//
+//            pose.pushPose();
+//            pose.mulPose(Axis.YP.rotationDegrees(270));
+//            pose.translate(0.5, 0.5, -1);
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//            pose.popPose();
+
+//            pose.popPose();
+//        }, (pose) -> {
+
+            pose.pushPose();
+
+            pose.translate(0.5, 0.5, 0.5);
+            portal.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+            });
+//            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
+
+//            pose.scale(0.05f, 0.05f, 0.05f);
+
+            BOTIUtils.Render(pose, buffer, portal);
+
+            pose.popPose();
+//        });
     }
 
     @Override

@@ -5,10 +5,13 @@ import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.FlightTerminationProtocol;
 import java.util.Random;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
+@Getter
 public abstract class TerminationProtocolHandler {
+
     FlightTerminationProtocol protocol;
     public BlockPos landPos;
 

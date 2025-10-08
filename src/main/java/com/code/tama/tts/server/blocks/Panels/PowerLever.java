@@ -123,7 +123,7 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
             return InteractionResult.SUCCESS;
         } else {
             level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                    .ifPresent(cap -> cap.SetPowered(!state.getValue(POWERED)));
+                    .ifPresent(cap -> cap.GetData().SetPowered(!state.getValue(POWERED)));
 
             blockstate1 = this.pull(state, level, blockPos);
             level.playSound(null, blockPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS);

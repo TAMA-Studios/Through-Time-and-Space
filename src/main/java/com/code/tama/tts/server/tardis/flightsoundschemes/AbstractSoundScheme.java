@@ -9,4 +9,6 @@ public abstract class AbstractSoundScheme {
     public abstract AbstractFlightSound GetLanding();
 
     public abstract AbstractFlightSound GetTakeoff();
+
+    public abstract String GetName();
 }

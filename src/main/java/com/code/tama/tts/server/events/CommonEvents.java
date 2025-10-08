@@ -7,7 +7,6 @@ import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.ARSDataLoader;
 import com.code.tama.tts.server.data.json.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.RecipeDataLoader;
@@ -54,16 +53,25 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        event.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Tick);
+        event.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(level -> {
+            if (level.GetFlightData().isInFlight()
+                    || !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
+            level.Tick();
+        });
     }
 
     @SubscribeEvent
     public static void TARDISDemat(TardisEvent.TakeOff event) {
         switch (event.state) {
             case START: {
-                System.out.printf("Taking off with destination: %s", event.level.GetDestination());
+                System.out.printf(
+                        "Taking off with destination: %s",
+                        event.level.GetNavigationalData().getDestination());
                 CameraShakeHandler.startShake(
-                        event.level.GetFlightTerminationPolicy().GetTakeoffShakeAmount(), 9000);
+                        event.level.GetFlightData()
+                                .getFlightTerminationProtocol()
+                                .getTakeoffShakeAmount(),
+                        999);
                 break;
             }
             case END: {
@@ -78,15 +86,19 @@ public class CommonEvents {
     public static void TARDISRemat(TardisEvent.Land event) {
         switch (event.state) {
             case START: {
-                if (event.level.GetControlData().isBrakes())
+                if (event.level.GetData().getControlData().isBrakes())
                     CameraShakeHandler.startShake(
-                            event.level.GetFlightTerminationPolicy().GetTakeoffShakeAmount(), 9000);
-                System.out.printf("Landing at: %s", event.level.GetExteriorLocation());
+                            event.level.GetFlightData()
+                                    .getFlightTerminationProtocol()
+                                    .getTakeoffShakeAmount(),
+                            9000);
+                System.out.printf(
+                        "Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
                 break;
             }
             case END: {
                 CameraShakeHandler.endShake();
-                if (event.level.GetControlData().isBrakes()) {
+                if (event.level.GetData().getControlData().isBrakes()) {
                     CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
                     event.level.GetExteriorTile()
                             .getLevel()
@@ -110,7 +122,9 @@ public class CommonEvents {
                     event.level.GetLevel()
                             .playSound(
                                     null,
-                                    event.level.GetExteriorLocation().GetBlockPos(),
+                                    event.level.GetNavigationalData()
+                                            .GetExteriorLocation()
+                                            .GetBlockPos(),
                                     TTSSounds.THUD.get(),
                                     SoundSource.BLOCKS);
                 System.out.println("Finished Landing");
@@ -132,8 +146,8 @@ public class CommonEvents {
             MinecraftServer minecraftServer = ServerLifecycleHooks.getCurrentServer();
             minecraftServer.getAllLevels().forEach(level -> {
                 Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, level)
-                        .ifPresent(
-                                iTardisLevel -> iTardisLevel.GetProtocolData().EP1(player, iTardisLevel));
+                        .ifPresent(iTardisLevel ->
+                                iTardisLevel.GetData().getProtocolsData().EP1(player, iTardisLevel));
             });
             //            player.level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
             //                    .ifPresent(iTardisLevel -> iTardisLevel.HandlePlayerDeath(player));

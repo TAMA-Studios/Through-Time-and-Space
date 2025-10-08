@@ -76,7 +76,7 @@ public class DoorBlock extends Block implements EntityBlock {
             @NotNull BlockState blockState,
             boolean p_60570_) {
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            cap.SetDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
+            cap.GetData().setDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
             Direction direction = state.getValue(FACING);
             // float yRot = switch (direction) {
             // case EAST -> 90;
@@ -84,8 +84,9 @@ public class DoorBlock extends Block implements EntityBlock {
             // case WEST -> 270;
             // default -> 0;
             // };
-            cap.SetDoorData(
-                    new DoorData(direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1))));
+            cap.GetData()
+                    .setInteriorDoorData(new DoorData(
+                            direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1))));
         });
 
         super.onPlace(state, level, blockPos, blockState, p_60570_);
@@ -110,10 +111,15 @@ public class DoorBlock extends Block implements EntityBlock {
         if (EntityToTeleport.level().isClientSide) return;
         try {
             Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
-                BlockPos pos = cap.GetExteriorLocation().GetBlockPos().north(1);
+                BlockPos pos = cap.GetNavigationalData()
+                        .GetExteriorLocation()
+                        .GetBlockPos()
+                        .north(1);
                 if (Interior.getServer()
                                 .getLevel(cap.GetCurrentLevel())
-                                .getBlockEntity(cap.GetExteriorLocation().GetBlockPos())
+                                .getBlockEntity(cap.GetNavigationalData()
+                                        .GetExteriorLocation()
+                                        .GetBlockPos())
                         instanceof ExteriorTile exteriorTile) {
                     exteriorTile.SetInteriorAndSyncWithBlock(Interior.dimension());
                 }

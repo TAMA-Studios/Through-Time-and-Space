@@ -25,7 +25,7 @@ public abstract class PlayerMixin extends LivingEntity {
         Capabilities.getCap(
                         Capabilities.TARDIS_LEVEL_CAPABILITY, TTS$GetPlayer().level())
                 .ifPresent(tardis -> {
-                    if (!tardis.IsViewingTARDIS(TTS$GetPlayer().getUUID())) return;
+                    if (!tardis.GetData().IsViewingTARDIS(TTS$GetPlayer().getUUID())) return;
                     TTS$GetPlayer().setTicksFrozen(1);
                     TTS$GetPlayer().setDeltaMovement(Vec3.ZERO);
                     TTS$GetPlayer().fallDistance = 0.0F;

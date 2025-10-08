@@ -17,8 +17,16 @@ public class UIComponentXCoord extends UIComponent {
     public void onInteract(Player player, AbstractMonitorTile monitor) {
         super.onInteract(player, monitor);
         monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            if (player.isCrouching()) cap.SetDestination(cap.GetDestination().AddX(-cap.GetIncrement()));
-            else cap.SetDestination(cap.GetDestination().AddX(cap.GetIncrement()));
+            if (player.isCrouching())
+                cap.GetNavigationalData()
+                        .setDestination(cap.GetNavigationalData()
+                                .getDestination()
+                                .AddX(-cap.GetNavigationalData().getIncrement()));
+            else
+                cap.GetNavigationalData()
+                        .setDestination(cap.GetNavigationalData()
+                                .getDestination()
+                                .AddX(cap.GetNavigationalData().getIncrement()));
         });
     }
 }

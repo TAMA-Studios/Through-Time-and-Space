@@ -28,19 +28,28 @@ public class IncrementControl extends AbstractControl {
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
-        itardisLevel.SetIncrement(itardisLevel.GetPreviousIncrement());
+        itardisLevel
+                .GetNavigationalData()
+                .setIncrement(itardisLevel.GetNavigationalData().GetPreviousIncrement());
         if (entity instanceof Player player)
             player.displayClientMessage(
-                    Component.literal("Coordinate Increment = " + itardisLevel.GetIncrement()), true);
-        this.SetAnimationState((float) itardisLevel.GetIncrement() / 100000);
+                    Component.literal("Coordinate Increment = "
+                            + itardisLevel.GetNavigationalData().getIncrement()),
+                    true);
+        this.SetAnimationState((float) itardisLevel.GetNavigationalData().getIncrement() / 10000);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetIncrement(itardisLevel.GetNextIncrement());
-        player.displayClientMessage(Component.literal("Coordinate Increment = " + itardisLevel.GetIncrement()), true);
-        this.SetAnimationState((float) itardisLevel.GetIncrement() / 10000);
+        itardisLevel
+                .GetNavigationalData()
+                .setIncrement(itardisLevel.GetNavigationalData().GetNextIncrement());
+        player.displayClientMessage(
+                Component.literal("Coordinate Increment = "
+                        + itardisLevel.GetNavigationalData().getIncrement()),
+                true);
+        this.SetAnimationState((float) itardisLevel.GetNavigationalData().getIncrement() / 10000);
         return InteractionResult.SUCCESS;
     }
 }

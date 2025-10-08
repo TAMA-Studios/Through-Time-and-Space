@@ -32,15 +32,7 @@ public class TriggerSyncCapPacketC2S {
                     .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                     .ifPresent(cap -> Networking.sendPacketToDimension(
                             packet.TARDISLevel,
-                            new SyncTARDISCapPacketS2C(
-                                    cap.GetLightLevel(),
-                                    cap.IsPoweredOn(),
-                                    cap.IsInFlight(),
-                                    cap.ShouldPlayRotorAnimation(),
-                                    cap.GetDestination().GetBlockPos(),
-                                    cap.GetExteriorLocation().GetBlockPos(),
-                                    cap.GetCurrentLevel(),
-                                    cap.GetExteriorModel().GetModelName())));
+                            new SyncTARDISCapPacketS2C(cap.GetData(), cap.GetNavigationalData(), cap.GetFlightData())));
         });
         context.setPacketHandled(true);
     }

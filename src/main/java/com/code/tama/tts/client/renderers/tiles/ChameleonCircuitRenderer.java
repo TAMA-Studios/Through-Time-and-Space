@@ -40,8 +40,6 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
                 .getLevel()
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> {
-                    cap.GetExteriorVariant().GetModelName();
-
                     poseStack.pushPose();
                     poseStack.translate(0.5, 0.52, 0.5);
                     poseStack.mulPose(Axis.YP.rotationDegrees(180));
@@ -64,11 +62,12 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 
                     if (this.json == null
                             || this.MODEL == null
-                            || !this.modelName.equals(cap.GetExteriorModel().GetExteriorName())) {
-                        this.json =
-                                new AbstractJSONRenderer(cap.GetExteriorModel().GetModelName());
+                            || !this.modelName.equals(
+                                    cap.GetData().GetExteriorVariant().getName())) {
+                        this.json = new AbstractJSONRenderer(
+                                cap.GetData().getExteriorModel().getModel());
                         this.MODEL = json.getModel();
-                        this.modelName = cap.GetExteriorModel().GetExteriorName();
+                        this.modelName = cap.GetData().getExteriorModel().getName();
                     }
 
                     poseStack.mulPose(Axis.YP.rotationDegrees(
@@ -96,7 +95,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
                     poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
 
                     Font fontRenderer = Minecraft.getInstance().font;
-                    String text = cap.GetExteriorVariant().GetExteriorName();
+                    String text = cap.GetData().getExteriorModel().getName();
 
                     fontRenderer.drawInBatch(
                             text,

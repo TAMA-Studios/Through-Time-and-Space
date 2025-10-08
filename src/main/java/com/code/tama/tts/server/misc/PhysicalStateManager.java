@@ -22,7 +22,8 @@ public class PhysicalStateManager {
         long tick = exteriorTile.getLevel().getGameTime();
         // send packet to everyone in the dimension
         this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel
-                .GetFlightScheme()
+                .GetFlightData()
+                .getFlightSoundScheme()
                 .GetTakeoff()
                 .PlayIfFinished(player.level(), player.blockPosition()));
         Networking.sendPacketToDimension(
@@ -36,12 +37,15 @@ public class PhysicalStateManager {
         itardisLevel.Land();
         long tick = this.itardisLevel.GetLevel().getGameTime();
         this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel
-                .GetFlightScheme()
+                .GetFlightData()
+                .getFlightSoundScheme()
                 .GetLanding()
                 .PlayIfFinished(player.level(), player.blockPosition()));
         Networking.sendPacketToDimension(
                 new ExteriorStatePacket(
-                        this.itardisLevel.GetDestination().GetBlockPos(), ExteriorStatePacket.State.LAND, tick),
+                        this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
+                        ExteriorStatePacket.State.LAND,
+                        tick),
                 this.itardisLevel.GetLevel());
         landAnimation(tick, true);
     }
@@ -64,7 +68,7 @@ public class PhysicalStateManager {
         float decay = 0.05f;
         float freq = 0.3f;
 
-        while (!itardisLevel.IsInFlight()) {
+        while (!itardisLevel.GetFlightData().isInFlight()) {
             long tick = exteriorTile.getLevel().getGameTime() - startTick;
             float amp = (float) (initialAmp * Math.exp(-decay * tick));
             float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
@@ -73,7 +77,8 @@ public class PhysicalStateManager {
             if (amp < 0.05f && alpha < 0.05f) {
                 if (server) {
                     while (!itardisLevel
-                            .GetFlightScheme()
+                            .GetFlightData()
+                            .getFlightSoundScheme()
                             .GetTakeoff()
                             .IsFinished()) {} // Wait for the takeoff to be finished
                     itardisLevel.Fly();
@@ -89,7 +94,7 @@ public class PhysicalStateManager {
         float decay = 0.05f;
         float freq = 0.3f;
 
-        while (server && this.itardisLevel.IsInFlight() || !server) {
+        while (server && this.itardisLevel.GetFlightData().isInFlight() || !server) {
             long tick = this.itardisLevel.GetLevel().getGameTime() - startTick;
             float amp = (float) (initialAmp * Math.exp(-decay * tick));
             float alpha = base - (amp * (float) Math.abs(Math.sin(freq * tick)));
@@ -97,7 +102,11 @@ public class PhysicalStateManager {
 
             if (amp < 0.05f && alpha > 0.95f) {
                 if (server) {
-                    while (!itardisLevel.GetFlightScheme().GetLanding().IsFinished()) {}
+                    while (!itardisLevel
+                            .GetFlightData()
+                            .getFlightSoundScheme()
+                            .GetLanding()
+                            .IsFinished()) {}
                     // TODO: Signal to the Exterior that it's fully landed
                 }
                 break;

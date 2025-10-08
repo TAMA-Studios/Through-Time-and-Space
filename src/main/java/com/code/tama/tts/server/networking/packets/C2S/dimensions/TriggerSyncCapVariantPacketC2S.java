@@ -33,7 +33,8 @@ public class TriggerSyncCapVariantPacketC2S {
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> Networking.sendPacketToDimension(
                         packet.TARDISLevel,
-                        new SyncCapVariantPacketS2C(Exteriors.GetOrdinal(cap.GetExteriorVariant())))));
+                        new SyncCapVariantPacketS2C(
+                                Exteriors.GetOrdinal(cap.GetData().GetExteriorVariant())))));
 
         context.setPacketHandled(true);
     }

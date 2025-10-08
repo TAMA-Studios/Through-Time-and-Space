@@ -31,7 +31,7 @@ public class DestinationUICategory extends UICategory {
                             .toUpperCase(Locale.ROOT)
                     + cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ");
 
-            String line3 = cap.GetDestination().ReadableStringShort();
+            String line3 = cap.GetNavigationalData().getDestination().ReadableStringShort();
 
             int white = 0xFFFFFF;
 

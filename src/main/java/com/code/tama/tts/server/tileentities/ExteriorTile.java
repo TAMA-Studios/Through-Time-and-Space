@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
@@ -20,14 +18,12 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -44,6 +40,13 @@ import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
 public class ExteriorTile extends TickingTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
     public LivingEntity Placer;
@@ -55,7 +58,7 @@ public class ExteriorTile extends TickingTile {
 
     @Getter
     @Setter
-    ResourceLocation ModelIndex = Exteriors.EXTERIORS.get(0).GetModelName();
+    ResourceLocation ModelIndex = Exteriors.EXTERIORS.get(0).getModel();
 
     private ResourceKey<Level> INTERIOR_DIMENSION;
 
@@ -153,11 +156,12 @@ public class ExteriorTile extends TickingTile {
             MinecraftForge.EVENT_BUS.post(
                     new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
             float X, Y, Z;
-            BlockPos pos = cap.GetDoorBlock().GetBlockPos().north();
+            BlockPos pos =
+                    cap.GetData().getDoorData().getLocation().GetBlockPos().north();
             X = pos.getX() + 0.5f;
             Y = pos.getY() == 0 ? 128 : pos.getY();
             Z = pos.getZ() + 0.5f;
-            float yRot = cap.GetDoorData().getYRot() + EntityToTeleport.getYRot();
+            float yRot = cap.GetData().getDoorData().getYRot() + EntityToTeleport.getYRot();
             if (EntityToTeleport instanceof ServerPlayer player) {
                 player.getAbilities().flying = false;
                 player.onUpdateAbilities();
@@ -173,9 +177,7 @@ public class ExteriorTile extends TickingTile {
     }
 
     /**
-     * Utterly Destroys the tile entity and the linked {@link ExteriorBlock} like, 4
-     * different ways, scheduling a tick that destroys it, removing it through
-     * servers level methods, etc
+     * Utterly Destroys the tile entity and the linked {@link ExteriorBlock}
      **/
     public void UtterlyDestroy() {
         assert this.level != null;
@@ -190,48 +192,13 @@ public class ExteriorTile extends TickingTile {
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        tag.putInt("TransparencyInt", this.transparencyInt);
-        tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
-
-        Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level).ifPresent(cap -> {
-            if (cap.GetExteriorTile() == this) {
-                this.ModelIndex = cap.GetExteriorModel().GetModelName();
-                this.Variant = cap.GetExteriorVariant();
-            }
-        });
-        tag.putString("modelPath", this.getModelIndex().getPath());
-        tag.putString("modelNamespace", this.getModelIndex().getNamespace());
-        tag.putFloat("Transparency", this.transparency);
-        tag.put("variant", this.GetVariant().serializeNBT());
-        tag.putInt("doors", this.DoorState);
-        return tag;
+        return this.saveWithoutMetadata();
         // this.serializeNBT
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
-        // this.deserializeNBT
-        if (tag.contains("Transparency")) {
-            this.transparency = tag.getFloat("Transparency");
-        }
-        if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
-            this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
-        } else {
-            this.ModelIndex = Exteriors.EXTERIORS.get(0).GetModelName();
-        }
-        if (tag.contains("variant")) {
-            this.Variant = new Exterior(tag.getCompound("variant"));
-        }
-        if (tag.contains("TransparencyInt")) {
-            this.transparencyInt = tag.getInt("TransparencyInt");
-        }
-        if (tag.contains("doors")) {
-            this.DoorState = tag.getInt("doors");
-        }
-        if (tag.contains("IsEmptyShell")) {
-            this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
-        }
+        this.load(tag);
         super.handleUpdateTag(tag);
     }
 
@@ -240,7 +207,7 @@ public class ExteriorTile extends TickingTile {
         if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
             this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
         } else {
-            this.ModelIndex = Exteriors.EXTERIORS.get(0).GetModelName();
+            this.ModelIndex = Exteriors.EXTERIORS.get(0).getModel();
         }
         if (tag.contains("interior_path")) {
             this.INTERIOR_DIMENSION = ResourceKey.create(
@@ -250,14 +217,16 @@ public class ExteriorTile extends TickingTile {
             // this.GetBlock().SetInteriorKey(this.INTERIOR_DIMENSION);
             // }
         }
-        if (tag.contains("variant")) {
-            this.Variant = new Exterior(tag.getCompound("variant"));
+        if (tag.contains("model")) {
+            this.Variant = Exterior.CODEC
+                    .parse(NbtOps.INSTANCE, tag.get("model"))
+                    .get()
+                    .orThrow();
         }
 
         if (tag.contains("IsEmptyShell")) {
             this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
         }
-        this.setVariant(Exteriors.GetOrdinal(new Exterior(tag.getCompound("variant"))));
         super.load(tag);
     }
 
@@ -314,8 +283,8 @@ public class ExteriorTile extends TickingTile {
             ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
             if (level1 != null) {
                 level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-                    this.ModelIndex = cap.GetExteriorModel().GetModelName();
-                    this.Variant = cap.GetExteriorVariant();
+                    this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+                    this.Variant = cap.GetData().getExteriorModel();
                     cap.UpdateClient();
 
                     // Networking.sendPacketToDimension(this.level.dimension(), new
@@ -329,15 +298,20 @@ public class ExteriorTile extends TickingTile {
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
-        tag.putString("modelPath", this.ModelIndex.getPath());
-        tag.putString("modelNamespace", this.ModelIndex.getNamespace());
-        if (this.INTERIOR_DIMENSION != null)
-            tag.putString("interior_path", this.INTERIOR_DIMENSION.location().getPath());
-        if (this.GetVariant() == null) {
-            this.setVariant(Exteriors.GetOrdinal(Exteriors.EXTERIORS.get(0)));
-            tag.put("variant", Exteriors.EXTERIORS.get(0).serializeNBT());
-        } else tag.put("variant", this.GetVariant().serializeNBT());
+        tag.putInt("TransparencyInt", this.transparencyInt);
         tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
+
+        Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level).ifPresent(cap -> {
+            if (cap.GetExteriorTile() == this) {
+                this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+                this.Variant = cap.GetData().getExteriorModel();
+            }
+        });
+        tag.putString("modelPath", this.getModelIndex().getPath());
+        tag.putString("modelNamespace", this.getModelIndex().getNamespace());
+        tag.putFloat("Transparency", this.transparency);
+        Exterior.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
+        tag.putInt("doors", this.DoorState);
 
         super.saveAdditional(tag);
     }
@@ -365,7 +339,11 @@ public class ExteriorTile extends TickingTile {
             if (level.isClientSide || level.getServer() == null) return;
             level.getServer().execute(() -> {
                 ResourceKey<Level> resourceKey = ResourceKey.create(
-                        Registries.DIMENSION, new ResourceLocation(MODID, "tardis_" + UUID.randomUUID()));
+                        Registries.DIMENSION,
+                        new ResourceLocation(
+                                MODID + "-tardis",
+                                "created-" + LocalDate.now() + "-by-"
+                                        + this.Placer.getName().getString().toLowerCase() + "-uuid-" + UUID.randomUUID()));
                 ServerLevel tardisLevel = DimensionAPI.get()
                         .getOrCreateLevel(
                                 level.getServer(),
@@ -377,10 +355,11 @@ public class ExteriorTile extends TickingTile {
                 tardisLevel.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
                     cap.SetExteriorTile(this);
                     assert this.getLevel() != null;
-                    cap.SetCurrentLevel(this.getLevel().dimension());
-                    cap.SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+                    cap.GetNavigationalData()
+                            .setExteriorDimensionKey(this.getLevel().dimension());
+                    cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
                     assert this.Placer != null;
-                    cap.SetOwner(this.Placer.getUUID());
+                    cap.GetData().setOwnerUUID(this.Placer.getUUID());
                 });
 
                 this.INTERIOR_DIMENSION = tardisLevel.dimension();
@@ -398,8 +377,10 @@ public class ExteriorTile extends TickingTile {
                     .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                     .ifPresent(cap -> {
                         if ((!this.getBlockPos()
-                                        .equals(cap.GetExteriorLocation().GetBlockPos())
-                                || cap.IsInFlight())) this.UtterlyDestroy();
+                                        .equals(cap.GetNavigationalData()
+                                                .GetExteriorLocation()
+                                                .GetBlockPos())
+                                || cap.GetFlightData().isInFlight())) this.UtterlyDestroy();
                     });
         }
     }

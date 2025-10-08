@@ -26,13 +26,13 @@ public class PowerControl extends AbstractControl {
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
+        itardisLevel.GetData().SetPowered(!itardisLevel.GetData().isPowered());
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetPowered(!itardisLevel.IsPoweredOn());
+        itardisLevel.GetData().SetPowered(!itardisLevel.GetData().isPowered());
         return InteractionResult.SUCCESS;
     }
 }

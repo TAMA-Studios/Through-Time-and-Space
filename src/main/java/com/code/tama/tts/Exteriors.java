@@ -34,7 +34,7 @@ public class Exteriors {
 
     public static Exterior GetByName(ResourceLocation Name) {
         return EXTERIORS.stream()
-                .filter(ext -> ext.GetModelName().equals(Name))
+                .filter(ext -> ext.getModel().equals(Name))
                 .toList()
                 .get(0);
     }

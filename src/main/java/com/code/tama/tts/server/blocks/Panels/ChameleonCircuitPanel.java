@@ -196,8 +196,10 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
         world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
             switch (button) {
                 case MINUS:
-                    tardisLevelCapability.SetExteriorModel(
-                            Exteriors.CycleDown(tardisLevelCapability.GetExteriorModel()));
+                    tardisLevelCapability
+                            .GetData()
+                            .setExteriorModel(Exteriors.CycleDown(
+                                    tardisLevelCapability.GetData().getExteriorModel()));
 
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
@@ -205,19 +207,17 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                     world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case VARIANT:
-                    int Variant = Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant());
-
-                    tardisLevelCapability.CycleVariant();
+                    tardisLevelCapability.GetData().CycleVariant();
 
                     ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
                     assert serverLevel != null;
                     if (tardisLevelCapability.GetExteriorTile() != null) {
-                        tardisLevelCapability.CycleVariant();
+                        tardisLevelCapability.GetData().CycleVariant();
 
                         Networking.sendPacketToDimension(
                                 world.dimension(),
-                                new SyncCapVariantPacketS2C(
-                                        Exteriors.GetOrdinal(tardisLevelCapability.GetExteriorVariant())));
+                                new SyncCapVariantPacketS2C(Exteriors.GetOrdinal(
+                                        tardisLevelCapability.GetData().GetExteriorVariant())));
 
                         tardisLevelCapability.GetExteriorTile().setChanged();
                     }
@@ -227,7 +227,10 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                     world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
                     break;
                 case POSITIVE:
-                    tardisLevelCapability.SetExteriorModel(Exteriors.Cycle(tardisLevelCapability.GetExteriorModel()));
+                    tardisLevelCapability
+                            .GetData()
+                            .setExteriorModel(Exteriors.Cycle(
+                                    tardisLevelCapability.GetData().getExteriorModel()));
 
                     tardisLevelCapability.UpdateClient();
                     world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);

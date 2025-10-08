@@ -28,25 +28,40 @@ public class X_Control extends AbstractControl {
 
     @Override
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
-        itardisLevel.SetDestination(itardisLevel
-                .GetDestination()
-                .AddX(entity.isCrouching() ? itardisLevel.GetIncrement() : -itardisLevel.GetIncrement()));
+        itardisLevel
+                .GetNavigationalData()
+                .setDestination(itardisLevel
+                        .GetNavigationalData()
+                        .getDestination()
+                        .AddX(
+                                entity.isCrouching()
+                                        ? itardisLevel.GetNavigationalData().getIncrement()
+                                        : -itardisLevel.GetNavigationalData().getIncrement()));
         if (entity instanceof Player player)
             player.displayClientMessage(
                     Component.literal("Current Destination = "
-                            + itardisLevel.GetDestination().ReadableString()),
+                            + itardisLevel
+                                    .GetNavigationalData()
+                                    .getDestination()
+                                    .ReadableString()),
                     true);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-        itardisLevel.SetDestination(itardisLevel
-                .GetDestination()
-                .AddX(player.isCrouching() ? -itardisLevel.GetIncrement() : itardisLevel.GetIncrement()));
+        itardisLevel
+                .GetNavigationalData()
+                .setDestination(itardisLevel
+                        .GetNavigationalData()
+                        .getDestination()
+                        .AddX(
+                                player.isCrouching()
+                                        ? -itardisLevel.GetNavigationalData().getIncrement()
+                                        : itardisLevel.GetNavigationalData().getIncrement()));
         player.displayClientMessage(
-                Component.literal(
-                        "Current Destination = " + itardisLevel.GetDestination().ReadableString()),
+                Component.literal("Current Destination = "
+                        + itardisLevel.GetNavigationalData().getDestination().ReadableString()),
                 true);
         return InteractionResult.SUCCESS;
     }

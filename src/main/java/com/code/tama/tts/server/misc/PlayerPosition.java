@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import com.code.tama.triggerapi.codec.Codecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Builder;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -10,7 +14,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 @Builder
+@Getter
 public class PlayerPosition {
+    public static Codec<PlayerPosition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    Codec.FLOAT.fieldOf("yrot").forGetter(PlayerPosition::getYRot),
+                    Codec.FLOAT.fieldOf("xrot").forGetter(PlayerPosition::getXrot),
+                    Codecs.VEC3.fieldOf("pos").forGetter(PlayerPosition::getPos),
+                    Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(PlayerPosition::getLevelKey))
+            .apply(instance, PlayerPosition::new));
+
     public final float YRot;
     public final float Xrot;
     public final Vec3 pos;
@@ -18,7 +30,7 @@ public class PlayerPosition {
     @Builder.Default
     public ResourceKey<Level> levelKey = Level.OVERWORLD;
 
-    public BlockPos GetPos() {
+    public BlockPos GetBlockPos() {
         return new BlockPos((int) pos.x, (int) pos.y, (int) pos.z);
     }
 

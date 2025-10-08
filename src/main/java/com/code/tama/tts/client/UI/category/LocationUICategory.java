@@ -48,7 +48,8 @@ public class LocationUICategory extends UICategory {
                                     .replace("_", " "))
                     .setStyle(STYLE);
 
-            Component line2 = Component.literal(cap.GetExteriorLocation().ReadableStringShort());
+            Component line2 = Component.literal(
+                    cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
 
             fontRenderer.drawInBatch(
                     OS_VER.copy().setStyle(STYLE),

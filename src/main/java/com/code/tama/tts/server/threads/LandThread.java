@@ -14,7 +14,7 @@ public class LandThread extends Thread {
 
     @Override
     public void run() {
-        this.itardisLevel.SetPlayRotorAnimation(false);
+        this.itardisLevel.GetFlightData().setPlayRotorAnimation(false);
         this.itardisLevel.UpdateClient();
         new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverLand();
         super.run();

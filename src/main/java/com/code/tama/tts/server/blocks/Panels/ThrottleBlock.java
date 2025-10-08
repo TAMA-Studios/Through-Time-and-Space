@@ -144,10 +144,10 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
 
         AtomicReference<SoundState> soundState = new AtomicReference<>(SoundState.FAIL);
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            if (!cap.IsInFlight()) {
+            if (!cap.GetFlightData().isInFlight()) {
                 cap.Dematerialize();
                 soundState.set(SoundState.ON);
-            } else if (cap.IsInFlight()) {
+            } else if (cap.GetFlightData().isInFlight()) {
                 cap.Rematerialize();
                 soundState.set(SoundState.OFF);
             } else {
