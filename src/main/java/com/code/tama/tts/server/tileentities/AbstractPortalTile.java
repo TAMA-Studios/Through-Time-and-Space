@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.triggerapi.rendering.FBOHelper;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -16,9 +17,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +42,9 @@ public abstract class AbstractPortalTile extends TickingTile {
     public VertexBuffer MODEL_VBO;
 
     @OnlyIn(Dist.CLIENT)
+    public FBOHelper FBOContainer;
+
+    @OnlyIn(Dist.CLIENT)
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
@@ -53,8 +60,16 @@ public abstract class AbstractPortalTile extends TickingTile {
     @Getter
     public ResourceKey<Level> targetLevel;
 
+    public DimensionType type;
+
+    public ResourceKey<DimensionType> dimensionTypeId;
+
+    public Vec3 SkyColor;
+
     @Getter
     public BlockPos targetPos;
+
+    public float targetY;
 
     private final List<Integer> recievedPackets = new ArrayList<>();
 
@@ -81,18 +96,23 @@ public abstract class AbstractPortalTile extends TickingTile {
         }
     }
 
-    public void setTargetLevel(ResourceKey<Level> levelKey, BlockPos targetPos, boolean markDirty) {
+    public void setTargetLevel(ResourceKey<Level> levelKey, BlockPos targetPos, float yRot, boolean markDirty) {
         if (this.level == null) return;
         this.targetLevel = levelKey;
         this.targetPos = targetPos;
+        this.type = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionType();
+        this.dimensionTypeId = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionTypeId();
+        this.targetY = yRot;
+
         chunkModels.clear();
         blockEntities.clear();
+
         if (markDirty && !level.isClientSide()) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             Networking.INSTANCE.send(
                     PacketDistributor.DIMENSION.with(() -> this.level.dimension()),
-                    new PortalSyncPacketS2C(worldPosition, targetLevel, targetPos));
+                    new PortalSyncPacketS2C(worldPosition, targetLevel, type, targetPos, dimensionTypeId, targetY));
         }
     }
 
@@ -105,6 +125,6 @@ public abstract class AbstractPortalTile extends TickingTile {
                 .ifPresent(cap -> this.setTargetLevel(
                         cap.GetCurrentLevel(),
                         cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(),
-                        true));
+                        targetY, true));
     }
 }

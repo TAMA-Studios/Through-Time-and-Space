@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL11;
 
 import java.util.function.Consumer;
@@ -63,6 +64,25 @@ public class StencilUtils {
         builder.vertex(matrix, width, 0, 0).endVertex();
 
         Tesselator.getInstance().end();
+    }
+
+    public static void drawColoredFrame(PoseStack poseStack, float width, float height, Vec3 color) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        poseStack.translate(-width / 2, -height / 2, 0);
+        var matrix = poseStack.last().pose();
+
+        RenderSystem.setShaderColor((float) color.x, (float) color.y, (float) color.z, 1);
+
+        builder.vertex(matrix, 0, 0, 0).color(1, 1, 1, 1).endVertex();
+        builder.vertex(matrix, 0, height, 0).color(1, 1, 1, 1).endVertex();
+        builder.vertex(matrix, width, height, 0).color(1, 1, 1, 1).endVertex();
+        builder.vertex(matrix, width, 0, 0).color(1, 1, 1, 1).endVertex();
+
+        Tesselator.getInstance().end();
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     public static void setupStencil(Consumer<PoseStack> drawPortal, PoseStack stack) {

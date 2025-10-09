@@ -2,10 +2,8 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.triggerapi.botiutils.BOTIUtils;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -82,19 +80,52 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 //            pose.popPose();
 //        }, (pose) -> {
 
-            pose.pushPose();
+//        StencilUtils.DrawStencil(pose, (stack) -> {
+//            stack.pushPose();
+//            pose.translate(0, 1, 0);
+//            StencilUtils.drawFrame(stack, 2, 2);
+//            stack.popPose();
+//        }, (stack) -> {
+//            stack.pushPose();
+//
+////            stack.translate(0, 0, 10);
+////            stack.scale(100, 100, 100);
+////            StencilUtils.drawBlackFrame(stack, 1, 1);
+//
+//            stack.popPose();
+//
+//            stack.pushPose();
+//                BOTIUtils.RenderStuff(p, portal);
+//            stack.popPose();
+//        });
 
-            pose.translate(0.5, 0.5, 0.5);
-            portal.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
-            });
+
+//        pose.pushPose();
+//        RenderSystem.disableDepthTest();
+//        pose.translate(0, 0, 100);
+//        pose.scale(100, 100, 100);
+//        StencilUtils.drawBlackFrame(pose, 1, 1);
+//        RenderSystem.enableDepthTest();
+//        pose.popPose();
+//
+//        pose.pushPose();
+//        pose.translate(0.5, 0.5, 0.5);
+//            BOTIUtils.RenderStuff(pose, portal);
+//        pose.popPose();
+
+        pose.pushPose();
+
+        pose.translate(0.5, 0.5, 0.5);
+//            portal.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+//                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+//            });
 //            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
 
 //            pose.scale(0.05f, 0.05f, 0.05f);
 
-            BOTIUtils.Render(pose, buffer, portal);
+        BOTIUtils.Render(pose, buffer, portal);
 
-            pose.popPose();
+        pose.popPose();
 //        });
     }
 

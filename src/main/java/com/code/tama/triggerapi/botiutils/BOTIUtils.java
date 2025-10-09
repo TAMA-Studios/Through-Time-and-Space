@@ -3,7 +3,6 @@ package com.code.tama.triggerapi.botiutils;
 
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.rendering.BOTIInit;
-import com.code.tama.triggerapi.rendering.FBOHelper;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -15,6 +14,7 @@ import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPac
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -80,14 +81,13 @@ public class BOTIUtils {
     public static VertexBuffer buildModelVBO(List<BotiChunkContainer> containers, AbstractPortalTile tile) {
         Minecraft mc = Minecraft.getInstance();
 
-        BufferBuilder buffer = new BufferBuilder((int) Math.pow(16, 3));
+        int ChunksToRender = 8;
+
+        BufferBuilder buffer = new BufferBuilder((int) (ChunksToRender * Math.pow(16, 3)));
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
 
         // Dump all quads into the buffer
         PoseStack stack = new PoseStack();
-
-        // TODO: POSITION VBO RELATIVE TO BLOCK
-//        stack.translate(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
 
         Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(containers);
 
@@ -132,13 +132,13 @@ public class BOTIUtils {
 
             for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
                 // Convert packed light into brightness factor (0.0–1.0)
-                float brightness = (float) container.getLight() / 0xf000f0;
+                float brightness = (float) (container.getLight() / 0xf000f0);
 
                 // Apply brightness to base RGB values
-                float rLit = r;// - 1 + brightness;
-                float gLit = g;// - 1 + brightness;
-                float bLit = b;// - 1 + brightness;
-
+                float rLit = r;// *= brightness;
+                float gLit = g;// *= brightness;
+                float bLit = b;// *= brightness;
+                
                 buffer.putBulkData(
                         stack.last(),
                         quad,
@@ -180,8 +180,6 @@ public class BOTIUtils {
 
     public static boolean shouldRenderFace(
             BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos, Direction dir, BlockPos secondPos) {
-        if(true) return true;
-
         if (state.skipRendering(neighbor, dir)) {
             return false;
         } else if (state.supportsExternalFaceHiding()
@@ -218,72 +216,41 @@ public class BOTIUtils {
         Minecraft mc = Minecraft.getInstance();
 
         assert mc.level != null;
-        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> FBOHelper.Render(portal, pose, 0xf000f0));
-//        mc.updateMaxMipLevel();
-//
-//        StencilUtils.setupStencil((matrix) -> StencilUtils.drawFrame(pose, 2, 4), pose);
-//
-//        mc.getMainRenderTarget().unbindWrite();
-//
-//        BOTI.setupFramebuffer();
-//        BOTI.fbo.bindWrite(false);
-//
-//        assert mc.level != null;
-//        Vec3 skyColor = mc.level.getSkyColor(mc.player.position(), mc.getPartialTick());
-//        BOTI.fbo.setClearColor((float)skyColor.x, (float)skyColor.y, (float)skyColor.z, 0);
-//
-//// Clear both depth and stencil properly
-//        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
-//
-//        pose.pushPose();
-//
-//        pose.scale(0.2f, 0.2f, 0.2f);
-//
-//        pose.pushPose();
-//
-//        pose.scale(0.2f, 0.2f, 0.2f);
-//
-//        RenderStuff(pose, portal);
-//
-//        pose.popPose();
-//
-//        mc.getMainRenderTarget().bindWrite(false);
-//
-//        BOTI.fbo.blitToScreen(mc.getWindow().getScreenWidth(), mc.getWindow().getScreenHeight(), true);
-//        StencilUtils.endStencil();
-//
-//        BOTI.endFBO();
-//
-//        mc.getMainRenderTarget().bindWrite(false);
-
-//        pose.popPose();
+        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            pose.pushPose();
+            portal.FBOContainer.Render(portal, pose, 0xf000f0);
+            pose.popPose();
+        });
     }
 
-    public static void RenderStuff(PoseStack pose, AbstractPortalTile portal) {
+    public static void RenderScene(PoseStack pose, AbstractPortalTile portal) {
+        RenderSystem.enableDepthTest();
         Minecraft minecraft = Minecraft.getInstance();
 
         assert minecraft.level != null;
         long currentTime = minecraft.level.getGameTime();
 
-        if (currentTime - portal.lastUpdateTime >= 40) { // 1200 for a min
+        if (currentTime - portal.lastUpdateTime >= 20) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
             BOTIUtils.updateChunkModel(portal);
             portal.lastUpdateTime = currentTime;
         }
 
         if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
-            portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal);
+            portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
+            BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
         } else {
-
             pose.pushPose();
+
+            minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                pose.translate(-0.5, 0.5, 0);
+                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+            });
 
             assert GameRenderer.getPositionColorTexLightmapShader() != null;
             RenderSystem.setupShaderLights(GameRenderer.getPositionColorTexLightmapShader());
 
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-
-            RenderSystem.enableDepthTest();
-            RenderSystem.disableCull();
 
             portal.MODEL_VBO.bind();
             portal.MODEL_VBO.drawWithShader(
@@ -301,20 +268,15 @@ public class BOTIUtils {
     public static void PortalChunkDataPacketS2C(ServerPlayer player, AbstractPortalTile portalTile, Level level) {
         BlockPos portalPos = portalTile.getBlockPos();
         BlockPos targetPos = portalTile.getTargetPos();
-        Direction exteriorAxis = Direction.NORTH;
-        if (Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, portalTile.getLevel())
-                .isPresent())
-            exteriorAxis = Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, portalTile.getLevel())
-                    .orElseGet(null)
-                    .GetNavigationalData()
-                    .getDestinationFacing();
+        Direction exteriorAxis = Direction.fromYRot(portalTile.targetY);
 
-        int maxBlocks = 70000;
+        int maxBlocks = 71267;
+
         try {
             ArrayList<BotiChunkContainer> containers = new ArrayList<>();
             List<List<BotiChunkContainer>> containerLists = new ArrayList<>();
             boolean isSquare = true;
-            int chunksToRender = 4;
+            int chunksToRender = 8;
             int uMax = (exteriorAxis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
             int uMin = (exteriorAxis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
             int vMax = (exteriorAxis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);
@@ -348,6 +310,10 @@ public class BOTIUtils {
                                             y - relTargetPos.getY(),
                                             z + (v * 16) - relTargetPos.getZ()
                                     );
+
+//                                    if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos, exteriorAxis)) continue;
+
+
                                     //
                                     // if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
                                     //                                            .atY(targetPos.getY())) != null) {
@@ -411,5 +377,21 @@ public class BOTIUtils {
         } catch (Exception e) {
             TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
         }
+    }
+
+    public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {
+        // Get center points for both blocks
+        Vec3 fromCenter = new Vec3(from.getX() + 0.5, from.getY() + 0.5, from.getZ() + 0.5);
+        Vec3 toCenter = new Vec3(to.getX() + 0.5, to.getY() + 0.5, to.getZ() + 0.5);
+
+        // Vector from target to source
+        Vec3 toFrom = fromCenter.subtract(toCenter).normalize();
+
+        // Direction vector of the face
+        Vec3 faceNormal = new Vec3(side.getStepX(), side.getStepY(), side.getStepZ());
+
+        // Dot product < 0 means the face is pointing toward the source
+        double dot = toFrom.dot(faceNormal);
+        return dot < 0;
     }
 }

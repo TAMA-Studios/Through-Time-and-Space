@@ -1,6 +1,7 @@
 {
   "client": [
     "IHelpWithLevelRendererMixin",
+    "client.IMinecraftAccessor",
     "client.MixinMainTarget",
     "client.MixinRenderTarget",
     "client.RenderStateShardAccessor"

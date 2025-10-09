@@ -4,6 +4,7 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.rendering.FBOHelper;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
@@ -26,7 +27,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
     public void render(
             @NotNull T exteriorTile,
             float partialTicks,
-            @NotNull PoseStack poseStack,
+            @NotNull PoseStack stack,
             @NotNull MultiBufferSource bufferSource,
             int combinedLight,
             int combinedOverlay) {
@@ -57,24 +58,24 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             }
         }
 
-        poseStack.pushPose();
+        stack.pushPose();
         float offs;
         if (exteriorTile.getLevel() != null)
             offs = -BlockUtils.getReverseHeightModifier(exteriorTile
                     .getLevel()
                     .getBlockState(exteriorTile.getBlockPos().below()));
         else offs = 0;
-        poseStack.translate(0.5, offs + 1.5, 0.5);
+        stack.translate(0.5, offs + 1.5, 0.5);
 
         if (exteriorTile.getLevel() != null) {
-            poseStack.mulPose(exteriorTile
+            stack.mulPose(exteriorTile
                     .getLevel()
                     .getBlockState(exteriorTile.getBlockPos())
                     .getValue(ExteriorBlock.FACING)
                     .getOpposite()
                     .getRotation());
-            poseStack.mulPose(Axis.XN.rotationDegrees(90));
-            poseStack.mulPose(Axis.ZN.rotationDegrees(180));
+            stack.mulPose(Axis.XN.rotationDegrees(90));
+            stack.mulPose(Axis.ZN.rotationDegrees(180));
         }
 
         //                TardisBotiRenderer.render(
@@ -86,14 +87,22 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         //                        combinedLight,
         //                        combinedOverlay);
 
-        HalfBOTIRenderer.render(
+        if(false)
+            HalfBOTIRenderer.render(
                 exteriorTile.getLevel(),
                 exteriorTile,
-                poseStack,
+                stack,
                 bufferSource,
                 partialTicks,
                 combinedLight,
                 combinedOverlay);
+        else {
+            stack.pushPose();
+            if(exteriorTile.FBOContainer == null) exteriorTile.FBOContainer = new FBOHelper();
+            exteriorTile.FBOContainer.Render(exteriorTile, stack, 0xf000f0);
+            stack.popPose();
+        }
+
 
         AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 
@@ -104,7 +113,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-Math.max(data.FrameRight * 13.333, 0));
 
         parsed.renderToBuffer(
-                poseStack,
+                stack,
                 bufferSource.getBuffer(ext.getRenderType()),
                 combinedLight,
                 OverlayTexture.NO_OVERLAY,
@@ -113,6 +122,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                 1.0f,
                 transparency);
 
-        poseStack.popPose();
+        stack.popPose();
     }
 }

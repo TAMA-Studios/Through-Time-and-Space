@@ -71,12 +71,12 @@ public class BlockUtils {
     }
 
     public static int getPackedLight(Level level, BlockPos pos) {
-        int sky = level.getMaxLocalRawBrightness(pos);
-        int block = level.getBrightness(LightLayer.BLOCK, pos);
-        return (Mth.clamp(block, 0, 15) << 4) | (Mth.clamp(sky, 0, 15) << 20);
+        int sky = level.getBrightness(LightLayer.SKY, pos.above());
+        int block = level.getBrightness(LightLayer.BLOCK, pos.above());
+        return (Mth.clamp(block, 1, 15) << 20) | (Mth.clamp(sky, 0, 15) << 4);
     }
 
     public static int getLight(Level level, BlockPos pos) {
-        return Mth.clamp(level.getBrightness(LightLayer.BLOCK, pos) + level.getMaxLocalRawBrightness(pos), 0, 15);
+        return Mth.clamp(level.getBrightness(LightLayer.BLOCK, pos), 0, 15);
     }
 }

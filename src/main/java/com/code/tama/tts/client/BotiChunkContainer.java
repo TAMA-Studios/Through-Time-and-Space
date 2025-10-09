@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -72,7 +73,7 @@ public class BotiChunkContainer {
         }
     }
 
-    @Contract("_ -> new")
+    @Contract("_ -> new") @SuppressWarnings("deprecation")
     public static @NotNull BotiChunkContainer decode(@NotNull FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
 

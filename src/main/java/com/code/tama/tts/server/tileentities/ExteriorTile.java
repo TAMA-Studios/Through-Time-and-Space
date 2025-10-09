@@ -47,7 +47,7 @@ import java.util.UUID;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-public class ExteriorTile extends TickingTile {
+public class ExteriorTile extends AbstractPortalTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
     public LivingEntity Placer;
     public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
@@ -381,6 +381,9 @@ public class ExteriorTile extends TickingTile {
                                                 .GetExteriorLocation()
                                                 .GetBlockPos())
                                 || cap.GetFlightData().isInFlight())) this.UtterlyDestroy();
+
+                        if(this.containers.isEmpty() || this.targetLevel == null)
+                            this.setTargetLevel(cap.GetLevel().dimension(), cap.GetData().getDoorData().getLocation().GetBlockPos(), cap.GetData().getDoorData().getYRot(), true);
                     });
         }
     }

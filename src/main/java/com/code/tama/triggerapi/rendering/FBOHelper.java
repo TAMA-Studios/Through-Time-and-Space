@@ -1,13 +1,14 @@
 package com.code.tama.triggerapi.rendering;
 
+import com.code.tama.triggerapi.StencilUtils;
 import com.code.tama.triggerapi.botiutils.BOTIUtils;
 import com.code.tama.triggerapi.botiutils.IHelpWithFBOs;
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.mixin.client.RenderStateShardAccessor;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -17,16 +18,19 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -34,36 +38,42 @@ import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
+
+    public FBOHelper() {
+        this.start();
+    }
+
     public static StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
     public RenderTarget renderTarget;
 
-
-    public static Logger LOGGER = LogManager.getLogger("TardisRefinbed/StencilRendering");
-
     private static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png"); // TODO: set RGB values when rendering this for sky color
 
-    public static void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight) {
+    public void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight) {
+        RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
+
         // TODO: implement StencilUtils
         if (ModList.get().isLoaded("immersive_portals")) {
             return; // Don't even risk it
         }
 
 
-        if(!((IHelpWithFBOs) Minecraft.getInstance().getMainRenderTarget()).tts$IsStencilBufferEnabled()) {
-            RenderTarget renderTarget1 = Minecraft.getInstance().getMainRenderTarget();
-            ((IHelpWithFBOs) renderTarget1).tts$SetStencilBufferEnabled(true);
-        }
+        if (!((IHelpWithFBOs) mainTarget).tts$IsStencilBufferEnabled())
+            ((IHelpWithFBOs) mainTarget).tts$SetStencilBufferEnabled(true);
 
         stack.pushPose();
 
         stack.translate(0, 0, -0.5);
 
-        RenderSystem.depthMask(true);
+        mainTarget.unbindWrite();
+
+        start();
+
+        BOTI.copyRenderTarget(mainTarget, renderTarget);
 
         MultiBufferSource.BufferSource botiBuffer = stencilBufferStorage.getConsumer();
         // TODO: Render Door Frame RIGHT HERE (implement datapack door frames, BOTI mask named "BOTI")
 
-        botiBuffer.endBatch();
+//        botiBuffer.endBatch();
 
         // Enable and configure stencil buffer
         GL11.glEnable(GL11.GL_STENCIL_TEST);
@@ -72,36 +82,104 @@ public class FBOHelper {
         GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
 
-        // Render mask
         RenderSystem.depthMask(true);
+
+        // Render mask
         stack.pushPose();
 
-        // TODO: datapack door frame mask here
-        BotiPortalModel.createBodyLayer().bakeRoot().render(stack, botiBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)), packedLight, OverlayTexture.NO_OVERLAY, 0, 0, 0, 1f);
+        // TODO: datapack door frame stencil here
+        // Render Stencil
+        GL11.glColorMask(false, false, false, false);
+        BotiPortalModel.createBodyLayer().bakeRoot().render(stack, botiBuffer.getBuffer(RenderType.solid()), packedLight, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
         botiBuffer.endBatch();
         stack.popPose();
-        RenderSystem.depthMask(false);
 
-        // Render BOTI using stencil buffer
+        // Backup depth by copying to BOTI FBO
+        BOTI.copyDepth(renderTarget, mainTarget);
+        renderTarget.bindWrite(false);
+        // Clear main buffer depth
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        // Enable stencil
         GL11.glStencilMask(0x00);
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-        GlStateManager._depthFunc(GL11.GL_ALWAYS);
+
 
         GL11.glColorMask(true, true, true, false);
-        stack.pushPose();
-        stack.scale(10, 10, 10);
 
-        BOTIUtils.RenderStuff(stack, blockEntity);
+        // Render Mask
+        stack.pushPose();
+        stack.translate(0, 0.5, 0);
+        RenderSystem.enableCull();
+
+        // TODO: SKY RENDERER!!!
+        // Sets the sky color every 30 seconds/skycolor being null
+        if (blockEntity.SkyColor == null || (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1) % 600 == 0) {
+            if (blockEntity.type != null) {
+                Minecraft mc = Minecraft.getInstance();
+
+                ClientLevel oldLevel = mc.level;
+//            LevelRenderer oldRenderer = mc.levelRenderer;
+
+                assert mc.level != null;
+                Holder<DimensionType> dimType = mc.level.registryAccess()
+                        .registryOrThrow(Registries.DIMENSION_TYPE)
+                        .getHolderOrThrow(blockEntity.dimensionTypeId);
+
+                LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(), mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
+                ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(), blockEntity.targetLevel, dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(), mc.level.getProfilerSupplier(), renderer, false, 0);
+                renderer.setLevel(level);
+
+                mc.level = level;
+//            ((IMinecraftAccessor) mc).setLevelRenderer(renderer);
+
+//            mc.levelRenderer.renderLevel(stack, 0f, 0, false, mc.gameRenderer.getMainCamera(), mc.gameRenderer, mc.gameRenderer.lightTexture(), stack.last().pose());
+
+                blockEntity.SkyColor = Minecraft.getInstance().level.getSkyColor(blockEntity.targetPos.getCenter(), ((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+
+//            mc.levelRenderer.renderSky(stack, stack.last().pose(), 0f, mc.gameRenderer.getMainCamera(), true, () -> {});
+//            mc.levelRenderer.renderClouds(stack, stack.last().pose(), 0f, 0, 0, 0);
+
+                mc.level = oldLevel;
+//            ((IMinecraftAccessor) mc).setLevelRenderer(oldRenderer);
+            } else
+                blockEntity.SkyColor = Minecraft.getInstance().level.getSkyColor(Minecraft.getInstance().player.position(), ((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+//            BOTI.setRenderTargetColor(FBO.renderTarget, (float) skyColor.x, (float) skyColor.y, (float) skyColor.z, 1);
+        }
+        StencilUtils.drawColoredFrame(stack, 1, 2, blockEntity.SkyColor);
+        botiBuffer.endBatch();
+        stack.popPose();
+
+        stack.pushPose();
+//        stack.scale(10, 10, 10);
+
+        // Render BOTI Scene
+        BOTIUtils.RenderScene(stack, blockEntity);
+        RenderSystem.disableCull();
+        botiBuffer.endBatch();
 
         stack.popPose();
 
-        GlStateManager._depthFunc(GL11.GL_LEQUAL);
         GL11.glColorMask(true, true, true, true);
 
+        // Set VBO back to main
+        mainTarget.bindWrite(false);
+
+        // Restore depth by copying from BOTI FBO back to Main
+        BOTI.copyColor(renderTarget, mainTarget);
+
+        // Disable Stencil
         GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glStencilMask(0xFF);
-        RenderSystem.depthMask(true);
 
+        // Set VBO to main and [insert something here] viewport
+        mainTarget.bindWrite(true);
+
+        // Copy the color from BOTI FBO to Main target
+        BOTI.copyColor(renderTarget, mainTarget);
+
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+        RenderSystem.depthMask(true);
 
         stack.popPose();
     }
