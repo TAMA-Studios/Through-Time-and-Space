@@ -5,7 +5,6 @@ import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import java.util.function.Supplier;
 
 public class TriggerSyncExteriorVariantPacketC2S {
     public static TriggerSyncExteriorVariantPacketC2S decode(FriendlyByteBuf buffer) {
@@ -41,9 +42,13 @@ public class TriggerSyncExteriorVariantPacketC2S {
                         new SyncExteriorVariantPacketS2C(
                                 exteriorTile.getModelIndex(),
                                 Exteriors.GetOrdinal(exteriorTile.GetVariant()),
+                                exteriorTile.targetLevel,
+                                exteriorTile.targetY,
+                                exteriorTile.targetPos,
                                 packet.blockX,
                                 packet.blockY,
-                                packet.blockZ));
+                                packet.blockZ
+                        ));
             }
         });
         context.setPacketHandled(true);

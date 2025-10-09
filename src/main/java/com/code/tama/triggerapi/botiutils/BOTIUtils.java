@@ -230,7 +230,7 @@ public class BOTIUtils {
         assert minecraft.level != null;
         long currentTime = minecraft.level.getGameTime();
 
-        if (currentTime - portal.lastUpdateTime >= 20) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
+        if (currentTime - portal.lastUpdateTime >= 80) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
             BOTIUtils.updateChunkModel(portal);
             portal.lastUpdateTime = currentTime;
         }

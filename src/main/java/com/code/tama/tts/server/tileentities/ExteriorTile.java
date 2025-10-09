@@ -301,7 +301,8 @@ public class ExteriorTile extends AbstractPortalTile {
         tag.putInt("TransparencyInt", this.transparencyInt);
         tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 
-        Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level).ifPresent(cap -> {
+        if(this.INTERIOR_DIMENSION != null)
+            Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
             if (cap.GetExteriorTile() == this) {
                 this.ModelIndex = cap.GetData().getExteriorModel().getModel();
                 this.Variant = cap.GetData().getExteriorModel();
