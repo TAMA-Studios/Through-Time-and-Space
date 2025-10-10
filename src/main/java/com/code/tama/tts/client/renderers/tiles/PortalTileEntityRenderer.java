@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.triggerapi.rendering.FBOHelper;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -123,8 +122,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 
 //            pose.scale(0.05f, 0.05f, 0.05f);
 
-        if(portal.FBOContainer == null) portal.FBOContainer = new FBOHelper();
-        else portal.FBOContainer.Render(portal, pose, 0xf000f0);
+        portal.getFBOContainer().Render(portal, pose, 0xf000f0);
 
         pose.popPose();
 //        });

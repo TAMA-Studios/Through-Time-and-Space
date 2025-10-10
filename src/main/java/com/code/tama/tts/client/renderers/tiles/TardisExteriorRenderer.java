@@ -4,7 +4,7 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.rendering.FBOHelper;
+import com.code.tama.triggerapi.botiutils.BOTIUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
@@ -12,6 +12,7 @@ import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -87,32 +88,20 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         //                        combinedLight,
         //                        combinedOverlay);
 
-        if(false)
-            HalfBOTIRenderer.render(
-                exteriorTile.getLevel(),
-                exteriorTile,
-                stack,
-                bufferSource,
-                partialTicks,
-                combinedLight,
-                combinedOverlay);
-        else {
-            stack.pushPose();
-            if(exteriorTile.FBOContainer == null) exteriorTile.FBOContainer = new FBOHelper();
-            exteriorTile.FBOContainer.Render(exteriorTile, stack, 0xf000f0);
-            stack.popPose();
-        }
-
 
         AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
-        parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(Math.max(data.FrameLeft * 13.333, 0)); // (float)
-        // Math.toRadians(0);
-        parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-Math.max(data.FrameRight * 13.333, 0));
+        ModelPart lDoor = parsed.getPart("LeftDoor").modelPart;
+        ModelPart rDoor = parsed.getPart("RightDoor").modelPart;
+        ModelPart base = parsed.getPart("Base").modelPart;
+        ModelPart boti = parsed.getPart("BOTI").modelPart;
+        ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
+        lDoor.yRot = (float) Math.toRadians(Math.max(data.FrameLeft * 13.333, 0));
+        rDoor.yRot = (float) Math.toRadians(-Math.max(data.FrameRight * 13.333, 0));
 
-        parsed.renderToBuffer(
+        base.render(
                 stack,
                 bufferSource.getBuffer(ext.getRenderType()),
                 combinedLight,
@@ -121,6 +110,43 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                 1.0f,
                 1.0f,
                 transparency);
+
+        if(false) // TODO: CONFIG FOR END PORTAL/GREEN SCREEN BOTI
+            HalfBOTIRenderer.render(
+                    exteriorTile.getLevel(),
+                    exteriorTile,
+                    stack,
+                    bufferSource,
+                    partialTicks,
+                    combinedLight,
+                    combinedOverlay);
+        else {
+            stack.pushPose();
+            exteriorTile.getFBOContainer().Render(stack, (pose) -> {
+                boti.render(
+                        pose,
+                        bufferSource.getBuffer(ext.getRenderType()),
+                        combinedLight,
+                        OverlayTexture.NO_OVERLAY,
+                        1.0f,
+                        1.0f,
+                        1.0f,
+                        transparency);
+                if(true) // TODO: CONFIG FOR PARTIAL BOTI!
+                    partialBOTI.render(
+                        pose,
+                        bufferSource.getBuffer(ext.getRenderType()),
+                        combinedLight,
+                        OverlayTexture.NO_OVERLAY,
+                        1.0f,
+                        1.0f,
+                        1.0f,
+                        transparency);
+            },
+                    (pose) -> BOTIUtils.RenderScene(pose, exteriorTile));
+//            exteriorTile.getFBOContainer().Render(exteriorTile, stack, 0xf000f0);
+            stack.popPose();
+        }
 
         stack.popPose();
     }

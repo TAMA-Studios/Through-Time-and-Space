@@ -2,7 +2,6 @@
 package com.code.tama.triggerapi.botiutils;
 
 import com.code.tama.triggerapi.BlockUtils;
-import com.code.tama.triggerapi.rendering.BOTIInit;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -50,7 +49,6 @@ import java.util.*;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
 public class BOTIUtils {
-    public static BOTIInit BOTI = new BOTIInit();
     public static List<BakedQuad> getModelFromBlock(
             BlockState state, BlockPos pos, RandomSource rand, Map<BlockPos, BotiChunkContainer> map) {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -218,7 +216,7 @@ public class BOTIUtils {
         assert mc.level != null;
         mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             pose.pushPose();
-            portal.FBOContainer.Render(portal, pose, 0xf000f0);
+            portal.getFBOContainer().Render(portal, pose, 0xf000f0);
             pose.popPose();
         });
     }
@@ -242,7 +240,8 @@ public class BOTIUtils {
             pose.pushPose();
 
             minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-                pose.translate(-0.5, 0.5, 0);
+                pose.translate(-0.5, 2, 0);
+                pose.scale(0.2f, 0.2f, 0.2f);
                 pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
             });
 

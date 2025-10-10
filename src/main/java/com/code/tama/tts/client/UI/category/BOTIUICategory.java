@@ -26,32 +26,59 @@ public class BOTIUICategory extends UICategory {
         poseStack.popPose();
 
 
-        StencilUtils.DrawStencil(poseStack, (pose) -> {
-            pose.pushPose();
+//        StencilUtils.DrawStencil(poseStack, (pose) -> {
+//            pose.pushPose();
+//
+//            pose.translate(0.005, 0.005, 0.005);
+//            pose.scale(0.99f, 0.99f, 0.99f);
+//
+//            pose.translate(0.5, 0.5, 1);
+//            pose.mulPose(Axis.YP.rotationDegrees(180));
+//
+//            StencilUtils.drawFrame(pose, 1, 1);
+//
+//            pose.popPose();
+//        }, (pose) -> {
+//
+//            pose.pushPose();
+//
+//            pose.translate(0.5, 0.5, 0.5);
+//
+//            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
+//
+//            pose.scale(0.05f, 0.05f, 0.05f);
+//
+//            BOTIUtils.Render(pose, bufferSource, monitor);
+//
+//            pose.popPose();
+//        });
 
-            pose.translate(0.005, 0.005, 0.005);
-            pose.scale(0.99f, 0.99f, 0.99f);
+        monitor.getFBOContainer().Render(poseStack,
+                (pose) -> {
+                    pose.pushPose();
 
-            pose.translate(0.5, 0.5, 1);
-            pose.mulPose(Axis.YP.rotationDegrees(180));
+                    pose.translate(0.005, 0.005, 0.005);
+                    pose.scale(0.99f, 0.99f, 0.99f);
 
-            StencilUtils.drawFrame(pose, 1, 1);
+                    pose.translate(0.5, 0.5, 1.4);
+                    pose.mulPose(Axis.YP.rotationDegrees(180));
 
-            pose.popPose();
-        }, (pose) -> {
+                    StencilUtils.drawFrame(pose, 1, 1);
 
-            pose.pushPose();
+                    pose.popPose();
+                },
+                (pose) -> {
+                    pose.pushPose();
+                    pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
 
-            pose.translate(0.5, 0.5, 0.5);
+                    pose.translate(0, -3, -5);
 
-            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
+                    BOTIUtils.RenderScene(pose, monitor);
 
-            pose.scale(0.05f, 0.05f, 0.05f);
+                    pose.popPose();
+                });
 
-            BOTIUtils.Render(pose, bufferSource, monitor);
-
-            pose.popPose();
-        });
+//        BotiPortalModel.createBodyLayer().bakeRoot().render(stack, botiBuffer.getBuffer(RenderType.solid()), packedLight, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 
         poseStack.pushPose();
     }

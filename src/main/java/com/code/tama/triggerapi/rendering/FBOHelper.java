@@ -9,6 +9,8 @@ import com.code.tama.tts.mixin.client.RenderStateShardAccessor;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -34,6 +36,8 @@ import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import java.util.function.Consumer;
+
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 // Big thanks to Jeryn for helping with this
@@ -47,6 +51,28 @@ public class FBOHelper {
     public RenderTarget renderTarget;
 
     private static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png"); // TODO: set RGB values when rendering this for sky color
+
+    public static void copyRenderTarget(RenderTarget src, RenderTarget dest) {
+        GlStateManager._glBindFramebuffer(GlConst.GL_READ_FRAMEBUFFER, src.frameBufferId);
+        GlStateManager._glBindFramebuffer(GlConst.GL_DRAW_FRAMEBUFFER, dest.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(0, 0, src.width, src.height, 0, 0, dest.width, dest.height, GlConst.GL_DEPTH_BUFFER_BIT | GlConst.GL_COLOR_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT, GlConst.GL_NEAREST);
+    }
+
+    public static void copyColor(RenderTarget src, RenderTarget dest) {
+        GlStateManager._glBindFramebuffer(GlConst.GL_READ_FRAMEBUFFER, src.frameBufferId);
+        GlStateManager._glBindFramebuffer(GlConst.GL_DRAW_FRAMEBUFFER, dest.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(0, 0, src.width, src.height, 0, 0, dest.width, dest.height, GlConst.GL_COLOR_BUFFER_BIT, GlConst.GL_NEAREST);
+    }
+
+    public static void copyDepth(RenderTarget src, RenderTarget dest) {
+        GlStateManager._glBindFramebuffer(GlConst.GL_READ_FRAMEBUFFER, src.frameBufferId);
+        GlStateManager._glBindFramebuffer(GlConst.GL_DRAW_FRAMEBUFFER, dest.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(0, 0, src.width, src.height, 0, 0, dest.width, dest.height, GlConst.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT, GlConst.GL_NEAREST);
+    }
+
+    public static void setRenderTargetColor(RenderTarget src, float r, float g, float b, float a) {
+        src.setClearColor(r, g, b, a);
+    }
 
     public void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight) {
         RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
@@ -68,7 +94,7 @@ public class FBOHelper {
 
         start();
 
-        BOTI.copyRenderTarget(mainTarget, renderTarget);
+        copyRenderTarget(mainTarget, renderTarget);
 
         MultiBufferSource.BufferSource botiBuffer = stencilBufferStorage.getConsumer();
         // TODO: Render Door Frame RIGHT HERE (implement datapack door frames, BOTI mask named "BOTI")
@@ -95,7 +121,7 @@ public class FBOHelper {
         stack.popPose();
 
         // Backup depth by copying to BOTI FBO
-        BOTI.copyDepth(renderTarget, mainTarget);
+        copyDepth(renderTarget, mainTarget);
         renderTarget.bindWrite(false);
         // Clear main buffer depth
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -165,7 +191,7 @@ public class FBOHelper {
         mainTarget.bindWrite(false);
 
         // Restore depth by copying from BOTI FBO back to Main
-        BOTI.copyColor(renderTarget, mainTarget);
+        copyColor(renderTarget, mainTarget);
 
         // Disable Stencil
         GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -175,7 +201,7 @@ public class FBOHelper {
         mainTarget.bindWrite(true);
 
         // Copy the color from BOTI FBO to Main target
-        BOTI.copyColor(renderTarget, mainTarget);
+        copyColor(renderTarget, mainTarget);
 
         GL11.glDisable(GL11.GL_STENCIL_TEST);
 
@@ -183,6 +209,104 @@ public class FBOHelper {
 
         stack.popPose();
     }
+
+
+
+    public void Render(PoseStack stack, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawMask, Consumer<PoseStack> drawScene) {
+        RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
+
+        // TODO: implement StencilUtils
+        if (ModList.get().isLoaded("immersive_portals")) {
+            return; // Don't even risk it
+        }
+
+
+        if (!((IHelpWithFBOs) mainTarget).tts$IsStencilBufferEnabled())
+            ((IHelpWithFBOs) mainTarget).tts$SetStencilBufferEnabled(true);
+
+        stack.pushPose();
+
+        stack.translate(0, 0, -0.5);
+
+        mainTarget.unbindWrite();
+
+        start();
+
+        copyRenderTarget(mainTarget, renderTarget);
+
+        MultiBufferSource.BufferSource botiBuffer = stencilBufferStorage.getConsumer();
+        // TODO: Render Door Frame RIGHT HERE (implement datapack door frames, BOTI mask named "BOTI")
+
+//        botiBuffer.endBatch();
+
+        // Enable and configure stencil buffer
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+
+        RenderSystem.depthMask(true);
+
+        // Render mask
+        stack.pushPose();
+
+        // TODO: datapack door frame stencil here
+        // Render Stencil
+        GL11.glColorMask(false, false, false, false);
+        drawFrame.accept(stack);
+        botiBuffer.endBatch();
+        stack.popPose();
+
+        // Backup depth by copying to BOTI FBO
+        copyDepth(renderTarget, mainTarget);
+        renderTarget.bindWrite(false);
+        // Clear main buffer depth
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        // Enable stencil
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+
+
+        GL11.glColorMask(true, true, true, false);
+
+        // Render Mask
+        stack.pushPose();
+        stack.translate(0, 0.5, 0);
+        RenderSystem.enableCull();
+        drawScene.accept(stack);
+        RenderSystem.disableCull();
+        botiBuffer.endBatch();
+
+        stack.popPose();
+
+        GL11.glColorMask(true, true, true, true);
+
+        // Set VBO back to main
+        mainTarget.bindWrite(false);
+
+        // Restore depth by copying from BOTI FBO back to Main
+        copyColor(renderTarget, mainTarget);
+
+        // Disable Stencil
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+
+        // Set VBO to main and [insert something here] viewport
+        mainTarget.bindWrite(true);
+
+        // Copy the color from BOTI FBO to Main target
+        copyColor(renderTarget, mainTarget);
+
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+        RenderSystem.depthMask(true);
+
+        stack.popPose();
+    }
+
+
+
 
     // TODO: move these back into the BOTIInit
 

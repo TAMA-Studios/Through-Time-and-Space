@@ -42,7 +42,11 @@ public abstract class AbstractPortalTile extends TickingTile {
     public VertexBuffer MODEL_VBO;
 
     @OnlyIn(Dist.CLIENT)
-    public FBOHelper FBOContainer;
+    private FBOHelper FBOContainer;
+
+    public FBOHelper getFBOContainer() {
+        return this.FBOContainer == null ? this.FBOContainer = new FBOHelper() : this.FBOContainer;
+    }
 
     @OnlyIn(Dist.CLIENT)
     public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
