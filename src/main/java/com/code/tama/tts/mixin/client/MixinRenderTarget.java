@@ -1,41 +1,29 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin.client;
 
-import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
-import static org.lwjgl.opengl.GL30.*;
-
 import com.code.tama.triggerapi.botiutils.IHelpWithFBOs;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlUtil;
-import java.nio.IntBuffer;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL30C;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.nio.IntBuffer;
+
+import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.opengl.GL30.*;
+
 @Mixin(RenderTarget.class)
 public abstract class MixinRenderTarget implements IHelpWithFBOs {
 
-    @Shadow
-    public int width;
-
-    @Shadow
-    public int height;
-
     @Unique
     private boolean tts$isStencilEnabled = false;
-
-    @Shadow
-    public abstract void clear(boolean getError);
-
-    @Shadow
-    public abstract void resize(int width, int height, boolean clearError);
 
     @Redirect(
             method = "createBuffers(IIZ)V",
@@ -87,7 +75,7 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
     public void tts$SetStencilBufferEnabled(boolean cond) {
         if (tts$isStencilEnabled != cond) {
             tts$isStencilEnabled = cond;
-            resize(width, height, Minecraft.ON_OSX);
+            ((RenderTarget) (Object) this).resize(((RenderTarget) (Object) this).width, ((RenderTarget) (Object) this).height, Minecraft.ON_OSX);
         }
     }
 
