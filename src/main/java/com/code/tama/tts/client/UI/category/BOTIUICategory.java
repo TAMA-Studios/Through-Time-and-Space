@@ -54,7 +54,7 @@ public class BOTIUICategory extends UICategory {
 //        });
 
         monitor.getFBOContainer().Render(poseStack,
-                (pose) -> {
+                (pose, botiSource) -> {
                     pose.pushPose();
 
                     pose.translate(0.005, 0.005, 0.005);
@@ -67,7 +67,8 @@ public class BOTIUICategory extends UICategory {
 
                     pose.popPose();
                 },
-                (pose) -> {
+                (pose, botiBuffer) -> {},
+                (pose, botiSource) -> {
                     pose.pushPose();
                     pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
 

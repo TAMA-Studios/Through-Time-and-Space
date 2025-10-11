@@ -17,9 +17,9 @@ import java.time.format.DateTimeFormatter;
 
 public class Logger {
     public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(TriggerAPI.getModId());
-    private static final DateTimeFormatter DATE_FORMAT_FILE = DateTimeFormatter.ofPattern("HH:mm");
-    private static final DateTimeFormatter DATE_FORMAT_FOLDER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final String LOG_DIR = "TriggerAPI/" + TriggerAPI.MOD_ID + "/logs/";
+    public static final DateTimeFormatter DATE_FORMAT_FILE = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter DATE_FORMAT_FOLDER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final String LOG_DIR = "TriggerAPI/" + TriggerAPI.MOD_ID + "/logs/";
 
     static {
         setupFileLogging();

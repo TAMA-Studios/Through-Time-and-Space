@@ -3,7 +3,7 @@ package com.code.tama.triggerapi;
 
 public class TriggerAPITest {
     public static void main(String[] args) {
-        TriggerAPI triggerAPI = new TriggerAPI();
+        TriggerAPI triggerAPI = new TriggerAPI("test");
 
         FileHelper.createStoredFile("test_file", "I Am a Test");
 

@@ -3,11 +3,9 @@ package com.code.tama.tts.server.blocks;
 
 import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -39,6 +37,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -190,8 +192,11 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
             @NotNull Player player,
             @NotNull InteractionHand interactionHand,
             @NotNull BlockHitResult blockHitResult) {
-        if (level.getBlockEntity(blockPos) != null) {
-            ((ExteriorTile) level.getBlockEntity(blockPos)).CycleDoors();
+        if (level.getBlockEntity(blockPos) != null && level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
+            if(!level.isClientSide && exteriorTile.GetInterior() != null)
+                level.getServer().getLevel(exteriorTile.GetInterior()).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+
+            exteriorTile.CycleDoors();
         }
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }

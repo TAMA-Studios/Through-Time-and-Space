@@ -73,4 +73,7 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
         if (this.blockPos != null) tag.put("pos", NbtUtils.writeBlockPos(this.blockPos));
         return tag;
     }
+
+
+    public abstract String name();
 }

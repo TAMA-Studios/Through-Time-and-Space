@@ -9,6 +9,7 @@ import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.Exterior;
@@ -21,6 +22,7 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -68,8 +70,8 @@ public class ExteriorTile extends AbstractPortalTile {
     @Getter
     private int transparencyInt; // Default fully visible
 
-    public ExteriorTile(BlockPos p_155229_, BlockState p_155230_) {
-        super(TTSTileEntities.EXTERIOR_TILE.get(), p_155229_, p_155230_);
+    public ExteriorTile(BlockPos pos, BlockState state) {
+        super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);
     }
 
     public int CycleDoors() {
@@ -83,7 +85,8 @@ public class ExteriorTile extends AbstractPortalTile {
     }
 
     public int DoorsOpen() {
-        return this.DoorState;
+        if(this.level != null && this.GetInterior() != null && !this.level.isClientSide) return this.level.getServer().getLevel(this.GetInterior()).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION))).GetData().getInteriorDoorData().getDoorsOpen();
+        else return this.DoorState;
     }
 
     @Nullable
@@ -157,7 +160,7 @@ public class ExteriorTile extends AbstractPortalTile {
                     new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
             float X, Y, Z;
             BlockPos pos =
-                    cap.GetData().getDoorData().getLocation().GetBlockPos().north();
+                    cap.GetData().getDoorData().getLocation().GetBlockPos().relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
             X = pos.getX() + 0.5f;
             Y = pos.getY() == 0 ? 128 : pos.getY();
             Z = pos.getZ() + 0.5f;
@@ -227,6 +230,12 @@ public class ExteriorTile extends AbstractPortalTile {
         if (tag.contains("IsEmptyShell")) {
             this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
         }
+
+        if(tag.contains("interior")) {
+            this.INTERIOR_DIMENSION = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(MODID + "-tardis", tag.getString("interior")));
+            this.targetLevel = this.INTERIOR_DIMENSION;
+        }
+
         super.load(tag);
     }
 
@@ -313,6 +322,8 @@ public class ExteriorTile extends AbstractPortalTile {
         tag.putFloat("Transparency", this.transparency);
         Exterior.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
         tag.putInt("doors", this.DoorState);
+        if(this.INTERIOR_DIMENSION != null)
+            tag.putString("interior", this.INTERIOR_DIMENSION.location().getPath());
 
         super.saveAdditional(tag);
     }

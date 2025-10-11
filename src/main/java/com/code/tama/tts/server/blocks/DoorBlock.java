@@ -9,13 +9,13 @@ import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.Set;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -26,10 +26,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Set;
+import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class DoorBlock extends Block implements EntityBlock {
@@ -86,7 +91,7 @@ public class DoorBlock extends Block implements EntityBlock {
             // };
             cap.GetData()
                     .setInteriorDoorData(new DoorData(
-                            direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1))));
+                            direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1)), 0));
         });
 
         super.onPlace(state, level, blockPos, blockState, p_60570_);
@@ -98,7 +103,7 @@ public class DoorBlock extends Block implements EntityBlock {
             @NotNull Level level,
             net.minecraft.core.@NotNull BlockPos pos,
             net.minecraft.world.entity.@NotNull Entity entity) {
-        this.TeleportToExterior(entity, level);
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> this.TeleportToExterior(entity, level));
     }
 
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
@@ -166,5 +171,12 @@ public class DoorBlock extends Block implements EntityBlock {
             default -> f = 0f;
         }
         return f;
+    }
+
+    @Override
+    public InteractionResult use(BlockState p_60503_, Level Level, BlockPos p_60505_, Player p_60506_, InteractionHand hand, BlockHitResult p_60508_) {
+        if(hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
+        Level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+        return super.use(p_60503_, Level, p_60505_, p_60506_, hand, p_60508_);
     }
 }

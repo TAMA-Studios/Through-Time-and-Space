@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -20,6 +16,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
 
 public class GallifreyEffects extends DimensionSpecialEffects {
 
@@ -142,7 +142,7 @@ public class GallifreyEffects extends DimensionSpecialEffects {
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             SunsVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
             SunsVBO.bind();
-            SunsVBO.upload(drawPlanet(buffer, poseStack, position, rotation, PivotPoint, size));
+            SunsVBO.upload(drawPlanet(buffer, size));
 
             VertexBuffer.unbind();
         }

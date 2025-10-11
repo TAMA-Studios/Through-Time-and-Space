@@ -1,7 +1,6 @@
 package com.code.tama.tts.mixin.client;
 
 import com.code.tama.triggerapi.botiutils.IHelpWithFBOs;
-import com.code.tama.triggerapi.botiutils.IPCGlobal;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.pipeline.MainTarget;
@@ -36,9 +35,9 @@ public abstract class MixinMainTarget extends RenderTarget {
         boolean isStencilBufferEnabled = ((IHelpWithFBOs) this).tts$IsStencilBufferEnabled();
 
         if (isStencilBufferEnabled) {
-            pInternalFormat = IPCGlobal.useSeparatedStencilFormat ? GL_DEPTH32F_STENCIL8 : GL_DEPTH24_STENCIL8;
+            pInternalFormat = false ? GL_DEPTH32F_STENCIL8 : GL_DEPTH24_STENCIL8;
             pFormat = ARBFramebufferObject.GL_DEPTH_STENCIL;
-            pType = IPCGlobal.useSeparatedStencilFormat ? GL_FLOAT_32_UNSIGNED_INT_24_8_REV : GL30C.GL_UNSIGNED_INT_24_8;
+            pType = false ? GL_FLOAT_32_UNSIGNED_INT_24_8_REV : GL30C.GL_UNSIGNED_INT_24_8;
         }
         
         original.call(pTarget, pLevel, pInternalFormat, pWidth, pHeight, pBorder, pFormat, pType, pPixels);

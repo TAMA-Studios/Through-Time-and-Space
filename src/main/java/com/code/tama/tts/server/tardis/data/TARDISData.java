@@ -56,7 +56,7 @@ public class TARDISData {
     UUID OwnerUUID;
     Exterior ExteriorModel = Exteriors.EXTERIORS.get(0);
     boolean Powered, IsDiscoMode;
-    DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO));
+    DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
     SubsystemsData SubSystemsData = new SubsystemsData();
     ControlParameters ControlData = new ControlParameters();
     ProtocolData ProtocolsData = new ProtocolData();
@@ -104,11 +104,7 @@ public class TARDISData {
 
     public DoorData getDoorData() {
         if (this.InteriorDoorData == null) {
-            // if(this.level != null && !this.level.isClientSide) {
-            // List<>this.level.blockEn.getEntitiesOfClass(DoorTile.class, new AABB(new
-            // BlockPos(0, 128, 0)).inflate(100));
-            // }
-            this.InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(new BlockPos(0, 128, 0)));
+            this.InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(new BlockPos(0, 128, 0)), 0);
         }
         return this.InteriorDoorData;
     }

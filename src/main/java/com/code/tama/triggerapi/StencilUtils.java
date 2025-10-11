@@ -1,8 +1,8 @@
-/* (C) TAMA Studios 2025 */
-package com.code.tama.triggerapi;
+package com.code.tama.triggerapi;/* (C) TAMA Studios 2025 */
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.phys.Vec3;
@@ -85,6 +85,92 @@ public class StencilUtils {
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
+    public static void drawColoredCube(PoseStack stack, float size, Vec3 color) {
+        for(int i = 0; i < 4; i++) {
+            stack.pushPose();
+            stack.mulPose(Axis.YP.rotationDegrees(i * 90));
+            stack.translate(0, 0, size / 2);
+            drawColoredFrame(stack, size, size, color);
+            stack.popPose();
+        }
+
+        stack.pushPose();
+        stack.mulPose(Axis.XP.rotationDegrees(90));
+        stack.translate(0, 0, size / 2);
+        drawColoredFrame(stack, size, size, color);
+        stack.popPose();
+
+        stack.pushPose();
+        stack.mulPose(Axis.XN.rotationDegrees(90));
+        stack.translate(0, 0, size / 2);
+        drawColoredFrame(stack, size, size, color);
+        stack.popPose();
+//        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+//        RenderSystem.setShaderColor((float) color.x, (float) color.y, (float) color.z, 1);
+//        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+//        Matrix4f matrix = new Matrix4f(); // poseStack.last().pose();
+//        float BaseSize = 20.0F;
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).endVertex();
+//
+//        // Top
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//
+//        // East
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).endVertex();
+//
+//        // West
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size)
+//
+//                .endVertex();
+//
+//        // SOUTH
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
+//
+//                .endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).endVertex();
+//
+//        // Down
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).endVertex();
+//        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).endVertex();
+//        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).endVertex();
+//
+//        buffer.end();
+//        RenderSystem.setShaderColor(1, 1, 1, 1);
+    }
+
     public static void setupStencil(Consumer<PoseStack> drawPortal, PoseStack stack) {
         GL11.glEnable(GL11.GL_STENCIL_TEST);
 
@@ -111,6 +197,4 @@ public class StencilUtils {
         GL11.glStencilMask(0xFF);
         GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
     }
-
-
 }

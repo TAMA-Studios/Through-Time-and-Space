@@ -36,7 +36,7 @@ import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
@@ -50,7 +50,7 @@ public class FBOHelper {
     public static StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
     public RenderTarget renderTarget;
 
-    private static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png"); // TODO: set RGB values when rendering this for sky color
+    public static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png"); // TODO: set RGB values when rendering this for sky color
 
     public static void copyRenderTarget(RenderTarget src, RenderTarget dest) {
         GlStateManager._glBindFramebuffer(GlConst.GL_READ_FRAMEBUFFER, src.frameBufferId);
@@ -77,7 +77,6 @@ public class FBOHelper {
     public void Render(AbstractPortalTile blockEntity, PoseStack stack, int packedLight) {
         RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
 
-        // TODO: implement StencilUtils
         if (ModList.get().isLoaded("immersive_portals")) {
             return; // Don't even risk it
         }
@@ -212,10 +211,9 @@ public class FBOHelper {
 
 
 
-    public void Render(PoseStack stack, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawMask, Consumer<PoseStack> drawScene) {
+    public void Render(PoseStack stack, BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawStencil, BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawFrame, BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawScene) {
         RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
 
-        // TODO: implement StencilUtils
         if (ModList.get().isLoaded("immersive_portals")) {
             return; // Don't even risk it
         }
@@ -236,7 +234,7 @@ public class FBOHelper {
 
         MultiBufferSource.BufferSource botiBuffer = stencilBufferStorage.getConsumer();
         // TODO: Render Door Frame RIGHT HERE (implement datapack door frames, BOTI mask named "BOTI")
-
+//        drawStencil.accept(stack, botiBuffer);
 //        botiBuffer.endBatch();
 
         // Enable and configure stencil buffer
@@ -254,7 +252,9 @@ public class FBOHelper {
         // TODO: datapack door frame stencil here
         // Render Stencil
         GL11.glColorMask(false, false, false, false);
-        drawFrame.accept(stack);
+//        BotiPortalModel.createBodyLayer().bakeRoot().render(stack, botiBuffer.getBuffer(RenderType.solid()), 0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+        drawStencil.accept(stack, botiBuffer);
+//        drawFrame.accept(stack);
         botiBuffer.endBatch();
         stack.popPose();
 
@@ -267,16 +267,20 @@ public class FBOHelper {
         GL11.glStencilMask(0x00);
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
 
+        drawFrame.accept(stack, botiBuffer);
+        botiBuffer.endBatch();
 
         GL11.glColorMask(true, true, true, false);
 
-        // Render Mask
         stack.pushPose();
-        stack.translate(0, 0.5, 0);
+//        stack.scale(10, 10, 10);
+
+        // Render BOTI Scene
         RenderSystem.enableCull();
-        drawScene.accept(stack);
-        RenderSystem.disableCull();
+        drawScene.accept(stack, botiBuffer);
         botiBuffer.endBatch();
+        RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
 
         stack.popPose();
 

@@ -38,9 +38,10 @@ import org.apache.logging.log4j.Logger;
 import terrablender.api.SurfaceRuleManager;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
 import static com.code.tama.tts.server.registries.TTSBlocks.BLOCKS;
 import static com.code.tama.tts.server.registries.TTSCreativeTabs.CREATIVE_MODE_TABS;
 import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
@@ -69,10 +70,11 @@ public class TTSMod {
             MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
         });
 
-        triggerAPI = new TriggerAPI(modEventBus);
+        triggerAPI = new TriggerAPI(modEventBus, MODID);
+
 
         FileHelper.createStoredFile(
-                "last_time_launched", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH_mm")));
+                "last_time_launched", LocalDateTime.now().format(DATE_FORMAT_FILE) + LocalDateTime.now().format(DATE_FORMAT_FOLDER));
 
         // Register Blocks, Items, Dimensions etc...
 

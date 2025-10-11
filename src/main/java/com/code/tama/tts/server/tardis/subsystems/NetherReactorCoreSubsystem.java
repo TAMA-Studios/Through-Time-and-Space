@@ -3,12 +3,13 @@ package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSBlocks;
-import java.util.Map;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
 
 @NoArgsConstructor
 public class NetherReactorCoreSubsystem extends AbstractSubsystem {
@@ -69,4 +70,8 @@ public class NetherReactorCoreSubsystem extends AbstractSubsystem {
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> cap.GetData().getSubSystemsData().setNetherReactorCoreSubsystem(this));
     }
+
+
+    @Override
+    public String name() { return "dimensional_core"; }
 }

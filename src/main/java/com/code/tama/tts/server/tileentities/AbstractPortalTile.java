@@ -68,12 +68,12 @@ public abstract class AbstractPortalTile extends TickingTile {
 
     public ResourceKey<DimensionType> dimensionTypeId;
 
-    public Vec3 SkyColor;
+    public Vec3 SkyColor = Vec3.ZERO;
 
     @Getter
-    public BlockPos targetPos;
+    public BlockPos targetPos = new BlockPos(0, 128, 0);
 
-    public float targetY;
+    public float targetY = 0;
 
     private final List<Integer> recievedPackets = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
     @Override
     public void tick() {
-        if (this.targetLevel != null || this.targetPos != null) return;
+        if (this.targetLevel != null) return;
         assert this.level != null;
         this.level
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)

@@ -1,13 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class NBTUtils {
     public static BlockPos ReadBlockPos(String id, CompoundTag tag) {
@@ -60,6 +62,40 @@ public class NBTUtils {
         }
 
         return map;
+    }
+
+    public static void putList(String id, List<String> list, CompoundTag tag) {
+        ListTag listTag = new ListTag();
+
+        for (String entry : list) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putString("value", String.valueOf(entry));
+            listTag.add(entryTag);
+        }
+
+        tag.put(id, listTag);
+    }
+
+    /**
+     * Get a Map from a CompoundTag.
+     * @param id The key in the parent tag.
+     * @param tag The parent CompoundTag.
+     * @return A Map<String, String> reconstructed from NBT.
+     */
+    public static List<String> getList(String id, CompoundTag tag) {
+        List<String> list = new java.util.ArrayList<>();
+
+        if (tag.contains(id, Tag.TAG_LIST)) {
+            ListTag listTag = tag.getList(id, Tag.TAG_COMPOUND);
+
+            for (int i = 0; i < listTag.size(); i++) {
+                CompoundTag entryTag = listTag.getCompound(i);
+                String value = entryTag.getString("value");
+                list.add(value);
+            }
+        }
+
+        return list;
     }
 
     public static void putPlayerPosMap(String id, Map<UUID, PlayerPosition> map, CompoundTag tag) {

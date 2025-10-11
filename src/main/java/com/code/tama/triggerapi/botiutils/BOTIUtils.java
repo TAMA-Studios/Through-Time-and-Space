@@ -2,6 +2,7 @@
 package com.code.tama.triggerapi.botiutils;
 
 import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.triggerapi.StencilUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -18,7 +19,6 @@ import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -27,7 +27,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -210,13 +209,12 @@ public class BOTIUtils {
         }
     }
 
-    public static void Render(PoseStack pose, MultiBufferSource buffer, AbstractPortalTile portal) {
+    public static void RenderMinimal(PoseStack pose, AbstractPortalTile portal) {
         Minecraft mc = Minecraft.getInstance();
-
         assert mc.level != null;
         mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             pose.pushPose();
-            portal.getFBOContainer().Render(portal, pose, 0xf000f0);
+            portal.getFBOContainer().Render(pose, (stack, botiSource) -> StencilUtils.drawFrame(stack, 1, 2), (stack, buff) -> {},(stack, botiSource) -> BOTIUtils.RenderScene(stack, portal));
             pose.popPose();
         });
     }
@@ -228,7 +226,7 @@ public class BOTIUtils {
         assert minecraft.level != null;
         long currentTime = minecraft.level.getGameTime();
 
-        if (currentTime - portal.lastUpdateTime >= 80) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
+        if (currentTime - portal.lastUpdateTime >= 1200) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
             BOTIUtils.updateChunkModel(portal);
             portal.lastUpdateTime = currentTime;
         }
@@ -245,11 +243,7 @@ public class BOTIUtils {
                 pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
             });
 
-            assert GameRenderer.getPositionColorTexLightmapShader() != null;
-            RenderSystem.setupShaderLights(GameRenderer.getPositionColorTexLightmapShader());
-
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 
             portal.MODEL_VBO.bind();
             portal.MODEL_VBO.drawWithShader(

@@ -2,12 +2,13 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
-import java.util.Map;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
 
 @NoArgsConstructor
 public class DematerializationCircuit extends AbstractSubsystem {
@@ -63,4 +64,7 @@ public class DematerializationCircuit extends AbstractSubsystem {
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> cap.GetData().getSubSystemsData().setDematerializationCircuit(this));
     }
+
+    @Override
+    public String name() { return "dematerialization_circuit"; }
 }
