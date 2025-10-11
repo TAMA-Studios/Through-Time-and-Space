@@ -1,5 +1,5 @@
 {
-  "client" : [ "IHelpWithLevelRendererMixin", "client.IMinecraftAccessor", "client.MixinMainTarget", "client.MixinRenderTarget", "client.RenderStateShardAccessor" ],
+  "client" : [ "IHelpWithLevelRendererMixin", "client.IMinecraftAccessor", "client.MixinRenderTarget", "client.RenderStateShardAccessor" ],
   "compatibilityLevel" : "JAVA_8",
   "injectors" : {
     "defaultRequire" : 1
