@@ -1,6 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.TTSBlocks.BLOCKS;
+import static com.code.tama.tts.server.registries.TTSCreativeTabs.CREATIVE_MODE_TABS;
+import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
+import static com.code.tama.tts.server.registries.TTSTileEntities.TILE_ENTITIES;
+
 import com.code.tama.triggerapi.AnnotationUtils;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.triggerapi.TriggerAPI;
@@ -20,6 +28,8 @@ import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,17 +46,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.Logger;
 import terrablender.api.SurfaceRuleManager;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.TTSBlocks.BLOCKS;
-import static com.code.tama.tts.server.registries.TTSCreativeTabs.CREATIVE_MODE_TABS;
-import static com.code.tama.tts.server.registries.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.TTSItems.ITEMS;
-import static com.code.tama.tts.server.registries.TTSTileEntities.TILE_ENTITIES;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
@@ -72,9 +71,10 @@ public class TTSMod {
 
         triggerAPI = new TriggerAPI(modEventBus, MODID);
 
-
         FileHelper.createStoredFile(
-                "last_time_launched", LocalDateTime.now().format(DATE_FORMAT_FILE) + LocalDateTime.now().format(DATE_FORMAT_FOLDER));
+                "last_time_launched",
+                LocalDateTime.now().format(DATE_FORMAT_FILE)
+                        + LocalDateTime.now().format(DATE_FORMAT_FOLDER));
 
         // Register Blocks, Items, Dimensions etc...
 

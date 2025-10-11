@@ -1,10 +1,10 @@
+/* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
 import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
 import com.code.tama.tts.server.tardis.subsystems.DynamorphicController;
 import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
-
 import java.util.ArrayList;
 
 public class SubsystemsRegistry {

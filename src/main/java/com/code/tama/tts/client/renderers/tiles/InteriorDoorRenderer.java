@@ -37,31 +37,42 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
         poseStack.pushPose();
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
-//        poseStack.translate(-0.5, -0.645, 0.33);
-//        poseStack.scale(0.43f, 0.43f, 0.43f);
-//        this.MODEL.yRot = (float) Math.toRadians(180.0);
+        //        poseStack.translate(-0.5, -0.645, 0.33);
+        //        poseStack.scale(0.43f, 0.43f, 0.43f);
+        //        this.MODEL.yRot = (float) Math.toRadians(180.0);
 
         poseStack.translate(-0.5, 0, 0.5);
         doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            AbstractJSONRenderer renderer = new AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
+            AbstractJSONRenderer renderer =
+                    new AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
             JavaJSONParsed parsed = renderer.getJavaJSON();
-
-            parsed.getPart("IntRightDoor").y = cap.GetData().getDoorData().getDoorsOpen() >= 1 ? 90 : 0;
-            parsed.getPart("IntLeftDoor").y = cap.GetData().getDoorData().getDoorsOpen() >= 0 ? 90 : 0;
 
             JavaJSONRenderer door = parsed.getPart("InteriorDoor");
 
-            door.render(poseStack, bufferSource.getBuffer(renderer.getRenderType()), combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+            parsed.getPart("IntRightDoor").yRot =
+                    (float) (cap.GetData().getDoorData().getDoorsOpen() == 2 ? Math.toRadians(90) : Math.toRadians(0));
+            parsed.getPart("IntLeftDoor").yRot =
+                    (float) (cap.GetData().getDoorData().getDoorsOpen() >= 1 ? -Math.toRadians(90) : Math.toRadians(0));
+
+            door.render(
+                    poseStack,
+                    bufferSource.getBuffer(renderer.getRenderType()),
+                    combinedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    1,
+                    1,
+                    1,
+                    1);
         });
-//        this.MODEL.render(
-//                poseStack,
-//                bufferSource.getBuffer(RenderType.debugFilledBox()),
-//                combinedLight,
-//                OverlayTexture.NO_OVERLAY,
-//                1.0f,
-//                1.0f,
-//                1.0f,
-//                1.0f);
+        //        this.MODEL.render(
+        //                poseStack,
+        //                bufferSource.getBuffer(RenderType.debugFilledBox()),
+        //                combinedLight,
+        //                OverlayTexture.NO_OVERLAY,
+        //                1.0f,
+        //                1.0f,
+        //                1.0f,
+        //                1.0f);
         poseStack.popPose();
     }
 }

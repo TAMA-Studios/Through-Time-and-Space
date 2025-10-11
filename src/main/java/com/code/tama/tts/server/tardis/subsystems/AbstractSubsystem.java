@@ -2,6 +2,8 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.blocks.FragmentLinksBlock;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter
@@ -73,7 +72,6 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
         if (this.blockPos != null) tag.put("pos", NbtUtils.writeBlockPos(this.blockPos));
         return tag;
     }
-
 
     public abstract String name();
 }

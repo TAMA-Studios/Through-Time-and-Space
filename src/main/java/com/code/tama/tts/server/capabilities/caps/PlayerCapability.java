@@ -4,12 +4,11 @@ package com.code.tama.tts.server.capabilities.caps;
 import com.code.tama.triggerapi.FileHelper;
 import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
 import com.code.tama.tts.server.misc.NBTUtils;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerCapability implements IPlayerCap {
     String ViewedTARDIS = "";
@@ -37,14 +36,18 @@ public class PlayerCapability implements IPlayerCap {
         AtomicReference<String> Owned = new AtomicReference<>();
         this.OwnedTARDISes.forEach(tard -> Owned.set(Owned.get() + "\n" + tard));
 
-        FileHelper.createStoredFile("/pdat/" + player.getDisplayName().getString() + "-data", String.format("""
+        FileHelper.createStoredFile(
+                "/pdat/" + player.getDisplayName().getString() + "-data",
+                String.format(
+                        """
                 This file is to help server owners find info on players and owned TARDISes
-                
+
                 This player currently owns %s TARDISes
-                
+
                 Owned TARDISes:
                 %s
-                """, this.OwnedTARDISes.size(), Owned.get()));
+                """,
+                        this.OwnedTARDISes.size(), Owned.get()));
     }
 
     public int GetOwnedTARDISes() {

@@ -9,6 +9,10 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -23,11 +27,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Other tiles implement this to get data for portals
@@ -105,7 +104,8 @@ public abstract class AbstractPortalTile extends TickingTile {
         this.targetLevel = levelKey;
         this.targetPos = targetPos;
         this.type = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionType();
-        this.dimensionTypeId = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionTypeId();
+        this.dimensionTypeId =
+                ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionTypeId();
         this.targetY = yRot;
 
         chunkModels.clear();
@@ -129,6 +129,7 @@ public abstract class AbstractPortalTile extends TickingTile {
                 .ifPresent(cap -> this.setTargetLevel(
                         cap.GetCurrentLevel(),
                         cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(),
-                        targetY, true));
+                        targetY,
+                        true));
     }
 }

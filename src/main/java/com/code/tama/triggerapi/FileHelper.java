@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import net.minecraftforge.fml.loading.FMLPaths;
-
 import java.io.*;
 import java.nio.file.Path;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public class FileHelper {
     public static boolean createStoredFile(String fileName, String content) {
@@ -52,7 +51,6 @@ public class FileHelper {
         }
     }
 
-
     public static String getStoredFile(String fileName) {
         Path filePath = FMLPaths.GAMEDIR.get().resolve(getBaseDir()).resolve(fileName + ".txt");
         File file = filePath.toFile();
@@ -82,7 +80,7 @@ public class FileHelper {
     }
 
     public static String getOrCreateFile(String fileName) {
-        if(storedFileExists(fileName)) return getStoredFile(fileName);
+        if (storedFileExists(fileName)) return getStoredFile(fileName);
         else createStoredFile(fileName, "");
         return "";
     }

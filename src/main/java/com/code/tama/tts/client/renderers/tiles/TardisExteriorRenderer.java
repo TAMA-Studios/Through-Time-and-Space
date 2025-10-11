@@ -97,7 +97,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         //                        combinedLight,
         //                        combinedOverlay);
 
-
         AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
@@ -108,13 +107,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
         ModelPart boti = parsed.getPart("BOTI").modelPart;
         ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
 
-//        parsed.getPart("baseRoot").render(stack, bufferSource.getBuffer(ext.getRenderType()), combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-//        ext.render(exteriorTile, 0, stack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY);
+        //        parsed.getPart("baseRoot").render(stack, bufferSource.getBuffer(ext.getRenderType()), combinedLight,
+        // OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+        //        ext.render(exteriorTile, 0, stack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY);
 
-
-
-        if(false) // TODO: CONFIG FOR END PORTAL/GREEN SCREEN BOTI
-            HalfBOTIRenderer.render(
+        if (false) // TODO: CONFIG FOR END PORTAL/GREEN SCREEN BOTI
+        HalfBOTIRenderer.render(
                     exteriorTile.getLevel(),
                     exteriorTile,
                     stack,
@@ -122,51 +120,105 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                     partialTicks,
                     combinedLight,
                     combinedOverlay);
-
-
         else {
             stack.pushPose();
             stack.translate(0, 0, 0.5);
-            exteriorTile.getFBOContainer().Render(stack, (pose, botiSource) -> {
-                        pose.pushPose();
-                        pose.translate(0, 1.5, 0);
-                        boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-                        if (true) // TODO: CONFIG FOR PARTIAL BOTI!
-                            partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-                        pose.popPose();
-                    },
-                    (pose, buffer) -> {},
-                    (pose, botiSource) -> {
-                        // TODO: SKY RENDERER!!!
-                        pose.pushPose();
-                        pose.scale(2, 4, 2);
-                        if (exteriorTile.SkyColor == null || (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1) % 1200 == 0) {
-                            if (exteriorTile.type != null) {
-                                Minecraft mc = Minecraft.getInstance();
-                                ClientLevel oldLevel = mc.level;
-                                assert mc.level != null;
-                                Holder<DimensionType> dimType = mc.level.registryAccess()
-                                        .registryOrThrow(Registries.DIMENSION_TYPE)
-                                        .getHolderOrThrow(exteriorTile.dimensionTypeId);
+            exteriorTile
+                    .getFBOContainer()
+                    .Render(
+                            stack,
+                            (pose, botiSource) -> {
+                                pose.pushPose();
+                                pose.translate(0, 1.5, 0);
+                                boti.render(
+                                        stack,
+                                        botiSource.getBuffer(RenderType.solid()),
+                                        0xf000f0,
+                                        OverlayTexture.NO_OVERLAY,
+                                        0,
+                                        0,
+                                        0,
+                                        0);
+                                if (true) // TODO: CONFIG FOR PARTIAL BOTI!
+                                partialBOTI.render(
+                                            stack,
+                                            botiSource.getBuffer(RenderType.solid()),
+                                            0xf000f0,
+                                            OverlayTexture.NO_OVERLAY,
+                                            0,
+                                            0,
+                                            0,
+                                            0);
+                                pose.popPose();
+                            },
+                            (pose, buffer) -> {},
+                            (pose, botiSource) -> {
+                                // TODO: SKY RENDERER!!!
+                                pose.pushPose();
+                                pose.scale(2, 4, 2);
+                                if (exteriorTile.SkyColor == null
+                                        || (Minecraft.getInstance().level != null
+                                                                ? Minecraft.getInstance()
+                                                                        .level
+                                                                        .getGameTime()
+                                                                : 1)
+                                                        % 1200
+                                                == 0) {
+                                    if (exteriorTile.type != null) {
+                                        Minecraft mc = Minecraft.getInstance();
+                                        ClientLevel oldLevel = mc.level;
+                                        assert mc.level != null;
+                                        Holder<DimensionType> dimType = mc.level
+                                                .registryAccess()
+                                                .registryOrThrow(Registries.DIMENSION_TYPE)
+                                                .getHolderOrThrow(exteriorTile.dimensionTypeId);
 
-                                LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(), mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
-                                ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(), exteriorTile.targetLevel, dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(), mc.level.getProfilerSupplier(), renderer, false, 0);
-                                renderer.setLevel(level);
+                                        LevelRenderer renderer = new LevelRenderer(
+                                                mc,
+                                                mc.getEntityRenderDispatcher(),
+                                                mc.getBlockEntityRenderDispatcher(),
+                                                mc.renderBuffers());
+                                        ClientLevel level = new ClientLevel(
+                                                mc.player.connection,
+                                                mc.level.getLevelData(),
+                                                exteriorTile.targetLevel,
+                                                dimType,
+                                                mc.options.getEffectiveRenderDistance(),
+                                                mc.options.getEffectiveRenderDistance(),
+                                                mc.level.getProfilerSupplier(),
+                                                renderer,
+                                                false,
+                                                0);
+                                        renderer.setLevel(level);
 
-                                mc.level = level;
-                                exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(exteriorTile.targetPos.getCenter(), ((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-                                mc.level = oldLevel;
-                            } else
-                                exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(Minecraft.getInstance().player.position(), ((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-                        }
-                        StencilUtils.drawColoredCube(stack, 1, exteriorTile.SkyColor);
-                        botiSource.endBatch();
-                        pose.popPose();
-                        pose.pushPose();
-                        pose.translate(-0.5, -0.5, -0.5);
-                        BOTIUtils.RenderScene(pose, exteriorTile);
-                        pose.popPose();
-                    });
+                                        mc.level = level;
+                                        exteriorTile.SkyColor = Minecraft.getInstance()
+                                                .level
+                                                .getSkyColor(
+                                                        exteriorTile.targetPos.getCenter(),
+                                                        ((IMinecraftAccessor) Minecraft.getInstance())
+                                                                .getTimer()
+                                                                .partialTick);
+                                        mc.level = oldLevel;
+                                    } else
+                                        exteriorTile.SkyColor = Minecraft.getInstance()
+                                                .level
+                                                .getSkyColor(
+                                                        Minecraft.getInstance()
+                                                                .player
+                                                                .position(),
+                                                        ((IMinecraftAccessor) Minecraft.getInstance())
+                                                                .getTimer()
+                                                                .partialTick);
+                                }
+                                StencilUtils.drawColoredCube(stack, 1, exteriorTile.SkyColor);
+                                botiSource.endBatch();
+                                pose.popPose();
+                                pose.pushPose();
+                                pose.translate(-0.5, -0.5, -0.5);
+                                BOTIUtils.RenderScene(pose, exteriorTile);
+                                pose.popPose();
+                            });
             stack.popPose();
         }
 

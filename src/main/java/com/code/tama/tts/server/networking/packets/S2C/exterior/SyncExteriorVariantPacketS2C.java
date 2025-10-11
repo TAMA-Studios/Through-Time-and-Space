@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -11,12 +12,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
-
 public class SyncExteriorVariantPacketS2C {
     public static SyncExteriorVariantPacketS2C decode(FriendlyByteBuf buffer) {
         return new SyncExteriorVariantPacketS2C(
-                buffer.readResourceLocation(), buffer.readInt(), buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(), buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
+                buffer.readResourceLocation(),
+                buffer.readInt(),
+                buffer.readResourceKey(Registries.DIMENSION),
+                buffer.readFloat(),
+                buffer.readJsonWithCodec(BlockPos.CODEC),
+                buffer.readInt(),
+                buffer.readInt(),
+                buffer.readInt());
     }
 
     public static void encode(SyncExteriorVariantPacketS2C packet, FriendlyByteBuf buffer) {
@@ -61,7 +67,15 @@ public class SyncExteriorVariantPacketS2C {
 
     private final BlockPos targetPos;
 
-    public SyncExteriorVariantPacketS2C(ResourceLocation model, int variant, ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
+    public SyncExteriorVariantPacketS2C(
+            ResourceLocation model,
+            int variant,
+            ResourceKey<Level> level,
+            float targetY,
+            BlockPos targetPos,
+            int x,
+            int y,
+            int z) {
         this.variant = variant;
         this.model = model;
         this.level = level;

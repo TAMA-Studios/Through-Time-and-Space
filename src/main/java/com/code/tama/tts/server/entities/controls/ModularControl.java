@@ -106,7 +106,8 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
     @Override
     public void OnControlHit(ITARDISLevel capability, Entity entity) {
-        if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND || entity.level().isClientSide) return;
+        if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND
+                || entity.level().isClientSide) return;
         InteractionResult interactionResult = this.GetControl().GetControl().OnLeftClick(capability, entity);
 
         this.level()

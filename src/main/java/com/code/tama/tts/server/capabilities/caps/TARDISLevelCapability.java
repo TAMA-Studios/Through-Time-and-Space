@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -33,8 +35,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
-
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     TARDISData data = new TARDISData(this);
@@ -160,23 +160,22 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
                         assert tardisLevel != null;
 
-                        ChunkAccess chunk = this.level.getChunk(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+                        ChunkAccess chunk = this.level.getChunk(
+                                this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
-                        BlockEntity fromChunk = chunk.getBlockEntity(this.navigationalData.getDestination().GetBlockPos());
+                        BlockEntity fromChunk = chunk.getBlockEntity(
+                                this.navigationalData.getDestination().GetBlockPos());
 
-                        if (fromChunk instanceof ExteriorTile tile)
-                            return exteriorTile = tile;
+                        if (fromChunk instanceof ExteriorTile tile) return exteriorTile = tile;
 
                         this.ForceLoadExteriorChunk(true);
 
-                        this.exteriorTile = (ExteriorTile) chunk.getBlockEntity(this.GetNavigationalData()
-                                .GetExteriorLocation()
-                                .GetBlockPos());
+                        this.exteriorTile = (ExteriorTile) chunk.getBlockEntity(
+                                this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
                         this.ForceLoadExteriorChunk(false);
 
                         return this.exteriorTile;
-
                     }
                 }
             } else return this.exteriorTile;

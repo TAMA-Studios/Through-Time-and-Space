@@ -33,10 +33,8 @@ public class PortalChunkRequestPacketC2S {
             if (player != null) {
                 ServerLevel level = player.server.getLevel(msg.targetLevel);
                 if (level != null) {
-                    BOTIUtils.PortalChunkDataPacketS2C(
-                            player,
-                            (AbstractPortalTile) ctx.get().getSender().level().getBlockEntity(msg.portalPos),
-                            level);
+                    BOTIUtils.GatherChunkData(
+                            (AbstractPortalTile) ctx.get().getSender().level().getBlockEntity(msg.portalPos), level);
                 } else {
                     System.out.println("Target level not loaded: " + msg.targetLevel.location());
                 }

@@ -3,14 +3,13 @@ package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSBlocks;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @NoArgsConstructor
 public class DynamorphicController extends AbstractSubsystem {
@@ -72,7 +71,8 @@ public class DynamorphicController extends AbstractSubsystem {
                 .ifPresent(cap -> cap.GetData().getSubSystemsData().setDynamorphicController(this));
     }
 
-
     @Override
-    public String name() { return "dynamorphic_controller"; }
+    public String name() {
+        return "dynamorphic_controller";
+    }
 }

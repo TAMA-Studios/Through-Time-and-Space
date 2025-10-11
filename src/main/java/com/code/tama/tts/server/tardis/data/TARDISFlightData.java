@@ -41,6 +41,7 @@ public class TARDISFlightData {
     public TARDISFlightData(TARDISLevelCapability TARDIS) {
         this.TARDIS = TARDIS;
     }
+
     public TARDISFlightData(
             int ticksInFlight,
             int ticksTillDestination,

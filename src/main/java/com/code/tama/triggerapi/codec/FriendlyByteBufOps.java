@@ -5,14 +5,13 @@ import com.code.tama.tts.TTSMod;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * A DynamicOps implementation for serializing/deserializing via FriendlyByteBuf.
@@ -21,8 +20,7 @@ import java.util.stream.Stream;
 public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
     public static final FriendlyByteBufOps INSTANCE = new FriendlyByteBufOps();
 
-    private FriendlyByteBufOps() {
-    }
+    private FriendlyByteBufOps() {}
 
     // ---------------------------------------------------------
     // Base Ops
@@ -176,8 +174,7 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 
                 @Override
                 public Stream<Pair<FriendlyByteBuf, FriendlyByteBuf>> entries() {
-                    return map.entrySet().stream()
-                            .map(e -> Pair.of(createString(e.getKey()), e.getValue()));
+                    return map.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()));
                 }
 
                 @Override
@@ -216,7 +213,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
     public DataResult<FriendlyByteBuf> mergeToList(FriendlyByteBuf list, FriendlyByteBuf value) {
         // NOTE: Must duplicate 'list' before calling getStream, as getStream consumes it.
         try {
-            Stream<FriendlyByteBuf> stream = getStream(new FriendlyByteBuf(list.copy())).result().orElse(Stream.empty());
+            Stream<FriendlyByteBuf> stream =
+                    getStream(new FriendlyByteBuf(list.copy())).result().orElse(Stream.empty());
             return DataResult.success(createList(Stream.concat(stream, Stream.of(value))));
         } catch (Exception e) {
             return DataResult.error(() -> "Failed mergeToList: " + e);
@@ -238,9 +236,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
                 ml.entries().forEach(p -> m.put(new FriendlyByteBuf(p.getFirst().copy()).readUtf(), p.getSecond()));
             }
             m.put(safeKey.readUtf(), value);
-            return DataResult.success(createMap(
-                    m.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()))
-            ));
+            return DataResult.success(
+                    createMap(m.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()))));
         } catch (Exception e) {
             return DataResult.error(() -> "Failed mergeToMap: " + e);
         }
@@ -261,9 +258,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
             // Must duplicate key buffers from the input MapLike entries before consuming them!
             values.entries().forEach(p -> m.put(new FriendlyByteBuf(p.getFirst().copy()).readUtf(), p.getSecond()));
 
-            return DataResult.success(createMap(
-                    m.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()))
-            ));
+            return DataResult.success(
+                    createMap(m.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()))));
         } catch (Exception e) {
             return DataResult.error(() -> "Failed mergeToMap(values): " + e);
         }
@@ -326,7 +322,5 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
                     .resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err))
                     .orElseThrow();
         }
-
     }
-
 }

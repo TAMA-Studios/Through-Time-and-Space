@@ -43,6 +43,7 @@ public class TARDISNavigationalData {
     public TARDISNavigationalData(TARDISLevelCapability TARDIS) {
         this.TARDIS = TARDIS;
     }
+
     public TARDISNavigationalData(
             int Increment,
             ResourceKey<Level> exteriorDimensionKey,

@@ -4,7 +4,6 @@ package com.code.tama.tts.server.registries;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tardis.flightsoundschemes.SmithSoundScheme;
 import com.mojang.serialization.Codec;
-
 import java.util.ArrayList;
 
 public class FlightSoundSchemesRegistry {
@@ -14,7 +13,7 @@ public class FlightSoundSchemesRegistry {
     public static ArrayList<AbstractSoundScheme> FLIGHT_SOUND_SCHEMES = new ArrayList<>();
 
     public static AbstractSoundScheme SMITH = AddSoundScheme(new SmithSoundScheme());
-    
+
     public static AbstractSoundScheme GetSoundScheme(int ID) {
         return FLIGHT_SOUND_SCHEMES.get(ID);
     }

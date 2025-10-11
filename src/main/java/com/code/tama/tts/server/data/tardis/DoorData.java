@@ -26,7 +26,6 @@ public class DoorData {
         return this.DoorsOpen = switch (this.DoorsOpen) {
             case 0 -> 1;
             case 1 -> 2;
-            default -> 0;
-        };
+            default -> 0;};
     }
 }

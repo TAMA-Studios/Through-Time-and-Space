@@ -1,21 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.botiutils;
 
-import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.StencilUtils;
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
 import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
@@ -25,15 +26,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -41,9 +39,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
-
-import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
@@ -132,10 +127,10 @@ public class BOTIUtils {
                 float brightness = (float) (container.getLight() / 0xf000f0);
 
                 // Apply brightness to base RGB values
-                float rLit = r;// *= brightness;
-                float gLit = g;// *= brightness;
-                float bLit = b;// *= brightness;
-                
+                float rLit = r *= brightness;
+                float gLit = g *= brightness;
+                float bLit = b *= brightness;
+
                 buffer.putBulkData(
                         stack.last(),
                         quad,
@@ -168,9 +163,9 @@ public class BOTIUtils {
 
         long currentTime = Minecraft.getInstance().level.getGameTime();
 
-        if(tileEntity.targetLevel != null)
+        if (tileEntity.targetLevel != null)
             Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
-                tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
+                    tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
 
         tileEntity.lastRequestTime = currentTime;
     }
@@ -214,7 +209,12 @@ public class BOTIUtils {
         assert mc.level != null;
         mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             pose.pushPose();
-            portal.getFBOContainer().Render(pose, (stack, botiSource) -> StencilUtils.drawFrame(stack, 1, 2), (stack, buff) -> {},(stack, botiSource) -> BOTIUtils.RenderScene(stack, portal));
+            portal.getFBOContainer()
+                    .Render(
+                            pose,
+                            (stack, botiSource) -> StencilUtils.drawFrame(stack, 1, 2),
+                            (stack, buff) -> {},
+                            (stack, botiSource) -> BOTIUtils.RenderScene(stack, portal));
             pose.popPose();
         });
     }
@@ -226,7 +226,9 @@ public class BOTIUtils {
         assert minecraft.level != null;
         long currentTime = minecraft.level.getGameTime();
 
-        if (currentTime - portal.lastUpdateTime >= 1200) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on chunk update!
+        if (currentTime - portal.lastUpdateTime
+                >= 1200) { // update model every 1200 ticks, or a minute TODO: make configurable! also make only on
+            // chunk update!
             BOTIUtils.updateChunkModel(portal);
             portal.lastUpdateTime = currentTime;
         }
@@ -240,7 +242,8 @@ public class BOTIUtils {
             minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                 pose.translate(-0.5, 2, 0);
                 pose.scale(0.2f, 0.2f, 0.2f);
-                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+                pose.mulPose(Axis.YP.rotationDegrees(
+                        cap.GetNavigationalData().getFacing().toYRot()));
             });
 
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
@@ -256,120 +259,9 @@ public class BOTIUtils {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
-    public static void PortalChunkDataPacketS2C(ServerPlayer player, AbstractPortalTile portalTile, Level level) {
-        BlockPos portalPos = portalTile.getBlockPos();
+    public static void GatherChunkData(AbstractPortalTile portalTile, Level level) {
         BlockPos targetPos = portalTile.getTargetPos();
-        Direction exteriorAxis = Direction.fromYRot(portalTile.targetY);
-
-        int maxBlocks = 71267;
-
-        try {
-            ArrayList<BotiChunkContainer> containers = new ArrayList<>();
-            List<List<BotiChunkContainer>> containerLists = new ArrayList<>();
-            boolean isSquare = true;
-            int chunksToRender = 8;
-            int uMax = (exteriorAxis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
-            int uMin = (exteriorAxis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
-            int vMax = (exteriorAxis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);
-            int vMin = (exteriorAxis.equals(Direction.SOUTH) ? 0 : -chunksToRender / 2);
-
-            if(isSquare) {
-                vMin = -chunksToRender / 2;
-                vMax = chunksToRender / 2;
-                uMax = chunksToRender / 2;
-                uMin = -chunksToRender / 2;
-            }
-            for (int u = uMin + 1; u < uMax; u++) { // turn either the u or the v to = 0 based on the direction you're viewing from
-                for (int v = vMin + 1; v < vMax; v++) {
-                    ChunkPos chunkPos = new ChunkPos(
-                            new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
-                    level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
-                    LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
-                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
-
-                    BlockPos relTargetPos = new BlockPos(targetPos.getX() % 16, targetPos.getY() % 16, targetPos.getZ() % 16);
-
-                    for (int y = 0; y < 16; y++) {
-                        for (int x = 0; x < 16; x++) {
-                            for (int z = 0; z < 16; z++) {
-                                BlockState state = section.getBlockState(x, y, z);
-                                FluidState fluidState = section.getFluidState(x, y, z);
-
-                                if (!state.isAir()) {
-                                    BlockPos pos = new BlockPos(
-                                            x + (u * 16) - relTargetPos.getX(),
-                                            y - relTargetPos.getY(),
-                                            z + (v * 16) - relTargetPos.getZ()
-                                    );
-
-//                                    if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos, exteriorAxis)) continue;
-
-
-                                    //
-                                    // if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                                    //                                            .atY(targetPos.getY())) != null) {
-                                    //                                        BlockEntity entity =
-                                    // level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                                    //                                                .atY(targetPos.getY()));
-                                    //                                        containers.add(new
-                                    // BotiChunkContainer(level,
-                                    //                                                state,
-                                    //                                                pos,
-                                    //                                                BlockUtils.getPackedLight(
-                                    //                                                        level,
-                                    //
-                                    // BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                                    //
-                                    // .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
-                                    //                                    }
-
-                                    if (fluidState.isEmpty())
-                                        containers.add(new BotiChunkContainer(
-                                                level,
-                                                state,
-                                                pos,
-                                                BlockUtils.getPackedLight(
-                                                        level,
-                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-                                                                .atY(targetPos.getY()))));
-                                    else
-                                        containers.add(new BotiChunkContainer(
-                                                level,
-                                                state,
-                                                fluidState,
-                                                pos,
-                                                BlockUtils.getPackedLight(
-                                                        level,
-                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-                                                                .atY(targetPos.getY()))));
-                                }
-                                if (containers.size() >= maxBlocks) {
-                                    containerLists.add((List<BotiChunkContainer>) containers.clone());
-                                    containers.clear();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (!containers.isEmpty()) {
-                containerLists.add((List<BotiChunkContainer>) containers.clone());
-                containers.clear();
-            }
-
-            for (int i = 0; i < containerLists.size(); i++) {
-                Networking.INSTANCE.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new PortalChunkDataPacketS2C(portalPos, containerLists.get(i), i, containerLists.size()));
-            }
-            // 126142 (Too big)
-            // 71267 (prob could go higher before hitting the limit but this works at 6-ish chunks)
-
-        } catch (Exception e) {
-            TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
-        }
+        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level);
     }
 
     public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {

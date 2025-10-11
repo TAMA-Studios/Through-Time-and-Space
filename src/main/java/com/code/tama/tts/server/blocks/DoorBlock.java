@@ -9,6 +9,9 @@ import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,10 +34,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class DoorBlock extends Block implements EntityBlock {
@@ -103,7 +102,8 @@ public class DoorBlock extends Block implements EntityBlock {
             @NotNull Level level,
             net.minecraft.core.@NotNull BlockPos pos,
             net.minecraft.world.entity.@NotNull Entity entity) {
-        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> this.TeleportToExterior(entity, level));
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> this.TeleportToExterior(entity, level));
     }
 
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
@@ -174,9 +174,16 @@ public class DoorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState p_60503_, Level Level, BlockPos p_60505_, Player p_60506_, InteractionHand hand, BlockHitResult p_60508_) {
-        if(hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
-        Level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+    public InteractionResult use(
+            BlockState p_60503_,
+            Level Level,
+            BlockPos p_60505_,
+            Player p_60506_,
+            InteractionHand hand,
+            BlockHitResult p_60508_) {
+        if (hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
+        Level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
         return super.use(p_60503_, Level, p_60505_, p_60506_, hand, p_60508_);
     }
 }

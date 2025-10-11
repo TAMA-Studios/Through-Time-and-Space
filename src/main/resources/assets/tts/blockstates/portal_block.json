@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/portal_glass"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/portal_glass"
     }
   }
 }
