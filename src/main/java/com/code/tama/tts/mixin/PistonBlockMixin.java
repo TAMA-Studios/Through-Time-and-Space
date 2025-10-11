@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin;
 
-import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.SignalGetter;
@@ -11,21 +9,16 @@ import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
+
 @Mixin(PistonBaseBlock.class)
 public abstract class PistonBlockMixin extends DirectionalBlock {
-    @Shadow
-    @Final
-    public static BooleanProperty EXTENDED;
-
     protected PistonBlockMixin(Properties p_52591_) {
         super(p_52591_);
     }
@@ -35,7 +28,7 @@ public abstract class PistonBlockMixin extends DirectionalBlock {
         this.registerDefaultState(this.stateDefinition
                 .any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(EXTENDED, false)
+                .setValue(PistonBaseBlock.EXTENDED, false)
                 .setValue(SONICD, false));
     }
 
