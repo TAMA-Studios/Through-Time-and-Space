@@ -9,24 +9,30 @@ import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import net.minecraft.world.entity.player.Player;
 
 public class UIComponentXCoord extends UIComponent {
-    public UIComponentXCoord(Float[] x, Float[] y, ComponentTypes type) {
-        super(x, y, type, UICategoryRegistry.DESTINATION_LOC.get());
-    }
+  public UIComponentXCoord(Float[] x, Float[] y, ComponentTypes type) {
+    super(x, y, type, UICategoryRegistry.DESTINATION_LOC.get());
+  }
 
-    @Override
-    public void onInteract(Player player, AbstractMonitorTile monitor) {
-        super.onInteract(player, monitor);
-        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            if (player.isCrouching())
+  @Override
+  public void onInteract(Player player, AbstractMonitorTile monitor) {
+    super.onInteract(player, monitor);
+    monitor
+        .getLevel()
+        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+        .ifPresent(
+            cap -> {
+              if (player.isCrouching())
                 cap.GetNavigationalData()
-                        .setDestination(cap.GetNavigationalData()
-                                .getDestination()
-                                .AddX(-cap.GetNavigationalData().getIncrement()));
-            else
+                    .setDestination(
+                        cap.GetNavigationalData()
+                            .getDestination()
+                            .AddX(-cap.GetNavigationalData().getIncrement()));
+              else
                 cap.GetNavigationalData()
-                        .setDestination(cap.GetNavigationalData()
-                                .getDestination()
-                                .AddX(cap.GetNavigationalData().getIncrement()));
-        });
-    }
+                    .setDestination(
+                        cap.GetNavigationalData()
+                            .getDestination()
+                            .AddX(cap.GetNavigationalData().getIncrement()));
+            });
+  }
 }

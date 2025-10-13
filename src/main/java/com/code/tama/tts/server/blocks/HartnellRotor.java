@@ -15,18 +15,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HartnellRotor extends Block implements EntityBlock {
-    public HartnellRotor(BlockBehaviour.Properties blockBehaviour) {
-        super(blockBehaviour);
-    }
+  public HartnellRotor(BlockBehaviour.Properties blockBehaviour) {
+    super(blockBehaviour);
+  }
 
-    @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-            Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-        return HartnellRotorTile::tick;
-    }
+  @Override
+  public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+      Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
+    return HartnellRotorTile::tick;
+  }
 
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new HartnellRotorTile(pos, state);
-    }
+  @Override
+  public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+    return new HartnellRotorTile(pos, state);
+  }
 }

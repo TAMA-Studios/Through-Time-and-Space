@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MonitorTile extends AbstractMonitorTile {
-    public MonitorTile(BlockPos pos, BlockState state) {
-        super(TTSTileEntities.MONITOR_TILE.get(), pos, state);
-    }
+  public MonitorTile(BlockPos pos, BlockState state) {
+    super(TTSTileEntities.MONITOR_TILE.get(), pos, state);
+  }
 }

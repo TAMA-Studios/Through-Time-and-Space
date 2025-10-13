@@ -17,57 +17,58 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class HartnellDoorRenderer implements BlockEntityRenderer<HartnellDoorTile>, IUseJavaJSON {
-    double Frame = 0;
-    float OldFrame = 0;
-    boolean OldState = false;
+  double Frame = 0;
+  float OldFrame = 0;
+  boolean OldState = false;
 
-    public HartnellDoorRenderer(BlockEntityRendererProvider.Context context) {
-        this.registerJavaJSON(new ResourceLocation(MODID, "models/tile/hartnell_door.json"));
+  public HartnellDoorRenderer(BlockEntityRendererProvider.Context context) {
+    this.registerJavaJSON(new ResourceLocation(MODID, "models/tile/hartnell_door.json"));
+  }
+
+  @Override
+  public void render(
+      @NotNull HartnellDoorTile example,
+      float partialTicks,
+      @NotNull PoseStack poseStack,
+      @NotNull MultiBufferSource bufferSource,
+      int combinedLight,
+      int combinedOverlay) {
+    poseStack.pushPose();
+    poseStack.translate(1.5, 1.5, 0);
+    poseStack.mulPose(Axis.XP.rotationDegrees(180));
+    poseStack.mulPose(Axis.YP.rotationDegrees(180));
+
+    JavaJSONParsed parsed = JavaJSON.getParsedJavaJSON(this);
+
+    if (this.OldState) {
+      if (this.OldFrame != partialTicks) {
+        if (this.Frame < 22.5) this.Frame++;
+        this.OldFrame = partialTicks;
+      }
+    } else {
+      if (this.OldFrame != partialTicks) {
+        if (this.Frame > 0) this.Frame--;
+        this.OldFrame = partialTicks;
+      }
     }
 
-    @Override
-    public void render(
-            @NotNull HartnellDoorTile example,
-            float partialTicks,
-            @NotNull PoseStack poseStack,
-            @NotNull MultiBufferSource bufferSource,
-            int combinedLight,
-            int combinedOverlay) {
-        poseStack.pushPose();
-        poseStack.translate(1.5, 1.5, 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(180));
-        poseStack.mulPose(Axis.YP.rotationDegrees(180));
+    parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(-Math.max(Frame * 3.5, 0));
+    parsed.getPart("RightDoor").yRot = (float) Math.toRadians(Math.max(Frame * 3.5, 0));
+    parsed
+        .getModelInfo()
+        .getModel()
+        .renderToBuffer(
+            poseStack,
+            bufferSource.getBuffer(this.getRenderType()),
+            combinedLight,
+            OverlayTexture.NO_OVERLAY,
+            1.0f,
+            1.0f,
+            1.0f,
+            1.0f);
 
-        JavaJSONParsed parsed = JavaJSON.getParsedJavaJSON(this);
+    poseStack.popPose();
 
-        if (this.OldState) {
-            if (this.OldFrame != partialTicks) {
-                if (this.Frame < 22.5) this.Frame++;
-                this.OldFrame = partialTicks;
-            }
-        } else {
-            if (this.OldFrame != partialTicks) {
-                if (this.Frame > 0) this.Frame--;
-                this.OldFrame = partialTicks;
-            }
-        }
-
-        parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(-Math.max(Frame * 3.5, 0));
-        parsed.getPart("RightDoor").yRot = (float) Math.toRadians(Math.max(Frame * 3.5, 0));
-        parsed.getModelInfo()
-                .getModel()
-                .renderToBuffer(
-                        poseStack,
-                        bufferSource.getBuffer(this.getRenderType()),
-                        combinedLight,
-                        OverlayTexture.NO_OVERLAY,
-                        1.0f,
-                        1.0f,
-                        1.0f,
-                        1.0f);
-
-        poseStack.popPose();
-
-        this.OldState = example.IsOpen();
-    }
+    this.OldState = example.IsOpen();
+  }
 }

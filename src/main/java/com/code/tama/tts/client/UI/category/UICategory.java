@@ -12,16 +12,19 @@ import net.minecraft.resources.ResourceLocation;
 
 @Getter
 public class UICategory {
-    public static final Component OS_VER = Component.literal("TARDISOS - 1.0");
-    protected int ID;
-    ResourceLocation overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
+  public static final Component OS_VER = Component.literal("TARDISOS - 1.0");
+  protected int ID;
+  ResourceLocation overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
 
-    public UICategory() {
-        this.ID = UICategoryRegistry.getID();
-    }
+  public UICategory() {
+    this.ID = UICategoryRegistry.getID();
+  }
 
-    public void Render(
-            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
-        // This method is intentionally left blank. It can be overridden by subclasses.
-    }
+  public void Render(
+      AbstractMonitorTile monitor,
+      PoseStack poseStack,
+      MultiBufferSource bufferSource,
+      int combinedLight) {
+    // This method is intentionally left blank. It can be overridden by subclasses.
+  }
 }

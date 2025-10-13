@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ChromiumBlockEntity extends BlockEntity {
-    public ChromiumBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(), pPos, pBlockState);
-    }
+  public ChromiumBlockEntity(BlockPos pPos, BlockState pBlockState) {
+    super(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(), pPos, pBlockState);
+  }
 }

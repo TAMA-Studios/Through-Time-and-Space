@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class DoorTile extends BlockEntity {
-    public DoorTile(BlockPos p_155229_, BlockState p_155230_) {
-        super(TTSTileEntities.DOOR_TILE.get(), p_155229_, p_155230_);
-    }
+  public DoorTile(BlockPos p_155229_, BlockState p_155230_) {
+    super(TTSTileEntities.DOOR_TILE.get(), p_155229_, p_155230_);
+  }
 }

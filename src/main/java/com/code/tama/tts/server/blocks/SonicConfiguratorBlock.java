@@ -27,58 +27,59 @@ import org.jetbrains.annotations.Nullable;
 
 // The block Tile Entity class must implement EntityBlock
 public class SonicConfiguratorBlock extends Block implements EntityBlock {
-    public SonicConfiguratorBlock(Properties props) {
-        super(props);
-    }
+  public SonicConfiguratorBlock(Properties props) {
+    super(props);
+  }
 
-    @Override
-    public @NotNull VoxelShape getShape(
-            BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        return Shapes.join(Block.box(0, 0, 3, 16, 2, 13), Block.box(3, 2, 6, 13, 6, 10), BooleanOp.OR);
-    }
+  @Override
+  public @NotNull VoxelShape getShape(
+      BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+    return Shapes.join(Block.box(0, 0, 3, 16, 2, 13), Block.box(3, 2, 6, 13, 6, 10), BooleanOp.OR);
+  }
 
-    @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        // Set this to your tile entity RegistryObject
-        return TTSTileEntities.SONIC_CONFIGURATOR.get().create(blockPos, blockState);
-    }
+  @Override
+  public @Nullable BlockEntity newBlockEntity(
+      @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+    // Set this to your tile entity RegistryObject
+    return TTSTileEntities.SONIC_CONFIGURATOR.get().create(blockPos, blockState);
+  }
 
-    @Override
-    public @NotNull InteractionResult use(
-            BlockState p_60503_,
-            Level level,
-            BlockPos blockPos,
-            Player player,
-            InteractionHand p_60507_,
-            BlockHitResult p_60508_) {
-        if (p_60507_.equals(InteractionHand.OFF_HAND))
-            return super.use(p_60503_, level, blockPos, player, p_60507_, p_60508_);
+  @Override
+  public @NotNull InteractionResult use(
+      BlockState p_60503_,
+      Level level,
+      BlockPos blockPos,
+      Player player,
+      InteractionHand p_60507_,
+      BlockHitResult p_60508_) {
+    if (p_60507_.equals(InteractionHand.OFF_HAND))
+      return super.use(p_60503_, level, blockPos, player, p_60507_, p_60508_);
 
-        if (level.getBlockEntity(blockPos) != null
-                && level.getBlockEntity(blockPos) instanceof SonicConfiguratorTileEntity sonicConfiguratorTileEntity) {
-            ItemStack stack = sonicConfiguratorTileEntity.getStack();
+    if (level.getBlockEntity(blockPos) != null
+        && level.getBlockEntity(blockPos)
+            instanceof SonicConfiguratorTileEntity sonicConfiguratorTileEntity) {
+      ItemStack stack = sonicConfiguratorTileEntity.getStack();
 
-            if (stack.equals(ItemStack.EMPTY)) {
-                if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
-                    if (sonicItem.IsExtended(player.getMainHandItem()))
-                        sonicItem.ToggleExtend(player.getMainHandItem());
-                    sonicConfiguratorTileEntity.setStack(
-                            player.getMainHandItem().copy());
-                    player.getMainHandItem().shrink(1);
-                }
-            } else if (stack.getItem() instanceof SonicItem sonicItem) {
-                if (player.isCrouching()) {
-                    ItemEntity item = EntityType.ITEM.create(level);
-                    assert item != null;
-                    item.setPos(blockPos.above().getCenter());
-                    item.setItem(sonicConfiguratorTileEntity.getStack().copy());
-                    level.addFreshEntity(item);
-                    sonicConfiguratorTileEntity.setStack(ItemStack.EMPTY);
-                } else {
-                    sonicItem.CycleVariant(stack);
-                }
-            }
+      if (stack.equals(ItemStack.EMPTY)) {
+        if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
+          if (sonicItem.IsExtended(player.getMainHandItem()))
+            sonicItem.ToggleExtend(player.getMainHandItem());
+          sonicConfiguratorTileEntity.setStack(player.getMainHandItem().copy());
+          player.getMainHandItem().shrink(1);
         }
-        return super.use(p_60503_, level, blockPos, player, p_60507_, p_60508_);
+      } else if (stack.getItem() instanceof SonicItem sonicItem) {
+        if (player.isCrouching()) {
+          ItemEntity item = EntityType.ITEM.create(level);
+          assert item != null;
+          item.setPos(blockPos.above().getCenter());
+          item.setItem(sonicConfiguratorTileEntity.getStack().copy());
+          level.addFreshEntity(item);
+          sonicConfiguratorTileEntity.setStack(ItemStack.EMPTY);
+        } else {
+          sonicItem.CycleVariant(stack);
+        }
+      }
     }
+    return super.use(p_60503_, level, blockPos, player, p_60507_, p_60508_);
+  }
 }

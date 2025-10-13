@@ -7,18 +7,18 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(RenderStateShard.class)
 public interface RenderStateShardAccessor {
-    @Accessor
-    static RenderStateShard.TransparencyStateShard getTRANSLUCENT_TRANSPARENCY() {
-        throw new AssertionError();
-    }
+  @Accessor
+  static RenderStateShard.TransparencyStateShard getTRANSLUCENT_TRANSPARENCY() {
+    throw new AssertionError();
+  }
 
-    @Accessor
-    static RenderStateShard.TextureStateShard getBLOCK_SHEET_MIPPED() {
-        throw new AssertionError();
-    }
+  @Accessor
+  static RenderStateShard.TextureStateShard getBLOCK_SHEET_MIPPED() {
+    throw new AssertionError();
+  }
 
-    @Accessor
-    static RenderStateShard.LayeringStateShard getNO_LAYERING() {
-        throw new AssertionError();
-    }
+  @Accessor
+  static RenderStateShard.LayeringStateShard getNO_LAYERING() {
+    throw new AssertionError();
+  }
 }

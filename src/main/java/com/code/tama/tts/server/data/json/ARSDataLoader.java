@@ -21,94 +21,95 @@ import org.slf4j.Logger;
 
 @Getter
 public class ARSDataLoader implements ResourceManagerReloadListener {
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private final List<ARSStructure> dataRoom = new ArrayList<>(); // List to store Data ars objects
+  private static final Logger LOGGER = LogUtils.getLogger();
+  private final List<ARSStructure> dataRoom = new ArrayList<>(); // List to store Data ars objects
 
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-        dataRoom.clear(); // Reset the list of Data ars objects
+  @Override
+  public void onResourceManagerReload(ResourceManager resourceManager) {
+    dataRoom.clear(); // Reset the list of Data ars objects
 
-        // Iterate over all namespaces
-        for (String namespace : resourceManager.getNamespaces()) {
-            //            LOGGER.info("Searching resources in namespace: {}", namespace);
+    // Iterate over all namespaces
+    for (String namespace : resourceManager.getNamespaces()) {
+      //            LOGGER.info("Searching resources in namespace: {}", namespace);
 
-            // List all resources in this namespace inside 'data' folder, looking for .json
-            // files
-            Map<ResourceLocation, Resource> resources = resourceManager.listResources(
-                    "tts/ars", fileName -> fileName.toString().endsWith(".json"));
+      // List all resources in this namespace inside 'data' folder, looking for .json
+      // files
+      Map<ResourceLocation, Resource> resources =
+          resourceManager.listResources(
+              "tts/ars", fileName -> fileName.toString().endsWith(".json"));
 
-            // Log the paths being searched for resources
-            //            LOGGER.info("Searching for nbt under {}:structures/", namespace);
+      // Log the paths being searched for resources
+      //            LOGGER.info("Searching for nbt under {}:structures/", namespace);
 
-            // Log the resources found in this namespace
-            //            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
+      // Log the resources found in this namespace
+      //            LOGGER.info("Resources found in {}: {}", namespace, resources.keySet());
 
-            if (resources.isEmpty()) {
-                LOGGER.warn("No resources found for namespace: {}", namespace);
+      if (resources.isEmpty()) {
+        LOGGER.warn("No resources found for namespace: {}", namespace);
+      }
+
+      for (ResourceLocation rl : resources.keySet()) { // Iterate over the keys
+        //                LOGGER.info("Found resource: {}", rl);
+
+        Resource resource = resources.get(rl);
+
+        try (InputStreamReader reader = new InputStreamReader(resource.open())) {
+          JsonElement jsonElement = GsonHelper.parse(reader);
+
+          if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (isValidJson(jsonObject)) {
+              JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+              String name = valuesObject.get("name").getAsString();
+              String location = valuesObject.get("location").getAsString();
+              ResourceLocation structureLocation = new ResourceLocation(location);
+              int heightOffs;
+              if (!valuesObject.asMap().containsKey("yOffs")) heightOffs = 0;
+              else heightOffs = valuesObject.get("yOffs").getAsInt();
+              // Create Data ars rooms and add it to the list
+              ARSStructure Structure =
+                  new ARSStructure(structureLocation, Component.translatable(name), heightOffs);
+              if (!dataRoom.contains(Structure)) dataRoom.add(Structure);
+            } else {
+              LOGGER.warn("Invalid JSON structure in {}", rl);
             }
-
-            for (ResourceLocation rl : resources.keySet()) { // Iterate over the keys
-                //                LOGGER.info("Found resource: {}", rl);
-
-                Resource resource = resources.get(rl);
-
-                try (InputStreamReader reader = new InputStreamReader(resource.open())) {
-                    JsonElement jsonElement = GsonHelper.parse(reader);
-
-                    if (jsonElement.isJsonObject()) {
-                        JsonObject jsonObject = jsonElement.getAsJsonObject();
-                        if (isValidJson(jsonObject)) {
-                            JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-                            String name = valuesObject.get("name").getAsString();
-                            String location = valuesObject.get("location").getAsString();
-                            ResourceLocation structureLocation = new ResourceLocation(location);
-                            int heightOffs;
-                            if (!valuesObject.asMap().containsKey("yOffs")) heightOffs = 0;
-                            else heightOffs = valuesObject.get("yOffs").getAsInt();
-                            // Create Data ars rooms and add it to the list
-                            ARSStructure Structure =
-                                    new ARSStructure(structureLocation, Component.translatable(name), heightOffs);
-                            if (!dataRoom.contains(Structure)) dataRoom.add(Structure);
-                        } else {
-                            LOGGER.warn("Invalid JSON structure in {}", rl);
-                        }
-                    }
-                } catch (IOException e) {
-                    LOGGER.error("Error reading or parsing JSON file: {}", rl, e);
-                }
-            }
+          }
+        } catch (IOException e) {
+          LOGGER.error("Error reading or parsing JSON file: {}", rl, e);
         }
-
-        // Store the list of Data ars room objects in the Data ars Array
-        DataARSList.setList(dataRoom);
+      }
     }
 
-    private boolean isValidJson(JsonObject jsonObject) {
-        if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
-            JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+    // Store the list of Data ars room objects in the Data ars Array
+    DataARSList.setList(dataRoom);
+  }
 
-            // Validate name and structure fields
-            if (valuesObject.has("name") && valuesObject.has("location")) {
-                String name = valuesObject.get("name").getAsString();
-                String location = valuesObject.get("location").getAsString();
+  private boolean isValidJson(JsonObject jsonObject) {
+    if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
+      JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
-                // Check for non-empty name
-                if (name.isEmpty()) {
-                    LOGGER.warn("Empty name field");
-                    return false;
-                }
+      // Validate name and structure fields
+      if (valuesObject.has("name") && valuesObject.has("location")) {
+        String name = valuesObject.get("name").getAsString();
+        String location = valuesObject.get("location").getAsString();
 
-                // Validate structure as ResourceLocation
-                try {
-                    ResourceLocation.parse(location); // Will throw exception if invalid
-                } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid structure ResourceLocation: {}", location);
-                    return false;
-                }
-
-                return true;
-            }
+        // Check for non-empty name
+        if (name.isEmpty()) {
+          LOGGER.warn("Empty name field");
+          return false;
         }
-        return false;
+
+        // Validate structure as ResourceLocation
+        try {
+          ResourceLocation.parse(location); // Will throw exception if invalid
+        } catch (IllegalArgumentException e) {
+          LOGGER.warn("Invalid structure ResourceLocation: {}", location);
+          return false;
+        }
+
+        return true;
+      }
     }
+    return false;
+  }
 }

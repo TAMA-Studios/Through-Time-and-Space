@@ -17,45 +17,45 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-/** Renderer for the ConsoleTile BlockItem **/
+/** Renderer for the ConsoleTile BlockItem * */
 public class ConsoleItemRenderer extends BlockEntityWithoutLevelRenderer {
-    private final AbstractConsoleTile ConsoleToRender;
+  private final AbstractConsoleTile ConsoleToRender;
 
-    public ConsoleItemRenderer(
-            BlockEntityRenderDispatcher dispatcher,
-            EntityModelSet modelSet,
-            BlockEntityType<?> type,
-            BlockState state) {
-        super(dispatcher, modelSet);
-        this.ConsoleToRender = (AbstractConsoleTile) type.create(BlockPos.ZERO, state);
+  public ConsoleItemRenderer(
+      BlockEntityRenderDispatcher dispatcher,
+      EntityModelSet modelSet,
+      BlockEntityType<?> type,
+      BlockState state) {
+    super(dispatcher, modelSet);
+    this.ConsoleToRender = (AbstractConsoleTile) type.create(BlockPos.ZERO, state);
+  }
+
+  @Override
+  public void renderByItem(
+      @NotNull ItemStack stack,
+      @NotNull ItemDisplayContext context,
+      @NotNull PoseStack poseStack,
+      @NotNull MultiBufferSource buffer,
+      int packedLight,
+      int packedOverlay) {
+
+    BlockEntityRenderer<AbstractConsoleTile> renderer =
+        Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(this.ConsoleToRender);
+    poseStack.pushPose();
+    if (context.equals(ItemDisplayContext.GUI)) {
+      poseStack.scale(0.35f, 0.35f, 0.35f);
+      poseStack.translate(2f, 0.3f, 0.5f);
+      poseStack.mulPose(Axis.XP.rotationDegrees(20f));
+      poseStack.mulPose(Axis.YP.rotationDegrees(225f));
+
+    } else {
+      poseStack.scale(0.3f, 0.3f, 0.3f);
+      poseStack.translate(1f, 1f, 1f);
     }
 
-    @Override
-    public void renderByItem(
-            @NotNull ItemStack stack,
-            @NotNull ItemDisplayContext context,
-            @NotNull PoseStack poseStack,
-            @NotNull MultiBufferSource buffer,
-            int packedLight,
-            int packedOverlay) {
-
-        BlockEntityRenderer<AbstractConsoleTile> renderer =
-                Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(this.ConsoleToRender);
-        poseStack.pushPose();
-        if (context.equals(ItemDisplayContext.GUI)) {
-            poseStack.scale(0.35f, 0.35f, 0.35f);
-            poseStack.translate(2f, 0.3f, 0.5f);
-            poseStack.mulPose(Axis.XP.rotationDegrees(20f));
-            poseStack.mulPose(Axis.YP.rotationDegrees(225f));
-
-        } else {
-            poseStack.scale(0.3f, 0.3f, 0.3f);
-            poseStack.translate(1f, 1f, 1f);
-        }
-
-        if (renderer != null) {
-            renderer.render(this.ConsoleToRender, 0, poseStack, buffer, packedLight, packedOverlay);
-        }
-        poseStack.popPose();
+    if (renderer != null) {
+      renderer.render(this.ConsoleToRender, 0, poseStack, buffer, packedLight, packedOverlay);
     }
+    poseStack.popPose();
+  }
 }

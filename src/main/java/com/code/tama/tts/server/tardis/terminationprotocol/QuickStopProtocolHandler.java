@@ -4,7 +4,7 @@ package com.code.tama.tts.server.tardis.terminationprotocol;
 import com.code.tama.tts.server.registries.FlightTerminationProtocolRegistry;
 
 public class QuickStopProtocolHandler extends TerminationProtocolHandler {
-    public QuickStopProtocolHandler() {
-        super(FlightTerminationProtocolRegistry.QUICK_STOP);
-    }
+  public QuickStopProtocolHandler() {
+    super(FlightTerminationProtocolRegistry.QUICK_STOP);
+  }
 }

@@ -11,19 +11,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class ExteriorItem extends BlockItem {
-    public ExteriorItem(Block block, Item.Properties properties) {
-        super(block, properties);
-    }
+  public ExteriorItem(Block block, Item.Properties properties) {
+    super(block, properties);
+  }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new ExteriorItemRenderer(
-                        Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-                        Minecraft.getInstance().getEntityModels());
-            }
+  @Override
+  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+    consumer.accept(
+        new IClientItemExtensions() {
+          @Override
+          public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return new ExteriorItemRenderer(
+                Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                Minecraft.getInstance().getEntityModels());
+          }
         });
-    }
+  }
 }

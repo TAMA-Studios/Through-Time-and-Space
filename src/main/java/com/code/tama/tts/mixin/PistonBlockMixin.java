@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin;
 
+import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.SignalGetter;
@@ -15,34 +17,37 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
-
 @Mixin(PistonBaseBlock.class)
 public abstract class PistonBlockMixin extends DirectionalBlock {
-    protected PistonBlockMixin(Properties p_52591_) {
-        super(p_52591_);
-    }
+  protected PistonBlockMixin(Properties p_52591_) {
+    super(p_52591_);
+  }
 
-    @Inject(method = "<init>", at = @At(value = "TAIL"))
-    private void init(CallbackInfo ci) {
-        this.registerDefaultState(this.stateDefinition
-                .any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(PistonBaseBlock.EXTENDED, false)
-                .setValue(SONICD, false));
-    }
+  @Inject(method = "<init>", at = @At(value = "TAIL"))
+  private void init(CallbackInfo ci) {
+    this.registerDefaultState(
+        this.stateDefinition
+            .any()
+            .setValue(FACING, Direction.NORTH)
+            .setValue(PistonBaseBlock.EXTENDED, false)
+            .setValue(SONICD, false));
+  }
 
-    @Inject(method = "createBlockStateDefinition", at = @At("TAIL"))
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state, CallbackInfo ci) {
-        state.add(SONICD);
-    }
+  @Inject(method = "createBlockStateDefinition", at = @At("TAIL"))
+  protected void createBlockStateDefinition(
+      StateDefinition.Builder<Block, BlockState> state, CallbackInfo ci) {
+    state.add(SONICD);
+  }
 
-    @Inject(method = "getNeighborSignal", at = @At(value = "HEAD"), cancellable = true)
-    private void getNeighborSignal(
-            SignalGetter signalGetter, BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if (signalGetter.getBlockState(pos).getValue(SONICD)) {
-            cir.setReturnValue(true);
-            cir.cancel();
-        }
+  @Inject(method = "getNeighborSignal", at = @At(value = "HEAD"), cancellable = true)
+  private void getNeighborSignal(
+      SignalGetter signalGetter,
+      BlockPos pos,
+      Direction direction,
+      CallbackInfoReturnable<Boolean> cir) {
+    if (signalGetter.getBlockState(pos).getValue(SONICD)) {
+      cir.setReturnValue(true);
+      cir.cancel();
     }
+  }
 }

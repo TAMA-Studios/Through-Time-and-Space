@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public record DataARSRoom(String name, ResourceLocation structure) {
-    @Override
-    public @NotNull String toString() {
-        return "DataARSRoom{" + "name='" + name + '\'' + ", location=" + structure + '}';
-    }
+  @Override
+  public @NotNull String toString() {
+    return "DataARSRoom{" + "name='" + name + '\'' + ", location=" + structure + '}';
+  }
 }

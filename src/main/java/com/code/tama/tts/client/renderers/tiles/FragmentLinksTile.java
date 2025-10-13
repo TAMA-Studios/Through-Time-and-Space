@@ -15,24 +15,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class FragmentLinksTile extends BlockEntity {
 
-    public FragmentLinksTile(BlockPos blockPos, BlockState blockState) {
-        super(TTSTileEntities.FRAGMENT_LINKS_TILE.get(), blockPos, blockState);
-    }
+  public FragmentLinksTile(BlockPos blockPos, BlockState blockState) {
+    super(TTSTileEntities.FRAGMENT_LINKS_TILE.get(), blockPos, blockState);
+  }
 
-    private final EnergyStorage energyStorage = new EnergyStorage(10000, 1000); // maxEnergy, maxReceive
-    private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energyStorage);
+  private final EnergyStorage energyStorage =
+      new EnergyStorage(10000, 1000); // maxEnergy, maxReceive
+  private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energyStorage);
 
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return energyCap.cast();
-        }
-        return super.getCapability(cap, side);
+  @Override
+  public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
+    if (cap == ForgeCapabilities.ENERGY) {
+      return energyCap.cast();
     }
+    return super.getCapability(cap, side);
+  }
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        energyCap.invalidate();
-    }
+  @Override
+  public void setRemoved() {
+    super.setRemoved();
+    energyCap.invalidate();
+  }
 }

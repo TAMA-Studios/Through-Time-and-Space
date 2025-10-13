@@ -14,34 +14,34 @@ import net.minecraft.resources.ResourceLocation;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UIComponent extends AbstractUIComponent {
-    public final Float x[];
-    public final Float y[];
-    public final ComponentTypes type;
-    public UICategory category = UICategoryRegistry.ALL.get();
-    public ResourceLocation icon = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
+  public final Float x[];
+  public final Float y[];
+  public final ComponentTypes type;
+  public UICategory category = UICategoryRegistry.ALL.get();
+  public ResourceLocation icon = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
 
-    public UIComponent(Float x[], Float y[], ComponentTypes type, UICategory category) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.category = category;
-    }
+  public UIComponent(Float x[], Float y[], ComponentTypes type, UICategory category) {
+    this.x = x;
+    this.y = y;
+    this.type = type;
+    this.category = category;
+  }
 
-    @Override
-    public ResourceLocation GetIcon() {
-        return this.icon;
-    }
+  @Override
+  public ResourceLocation GetIcon() {
+    return this.icon;
+  }
 
-    @Override
-    public ComponentTypes Type() {
-        return this.type;
-    }
+  @Override
+  public ComponentTypes Type() {
+    return this.type;
+  }
 
-    @Override
-    public Map<Axis, Float[]> XYBounds() {
-        Map<Axis, Float[]> bounds = new HashMap<>();
-        bounds.put(Axis.XP, this.x);
-        bounds.put(Axis.YP, this.y);
-        return bounds;
-    }
+  @Override
+  public Map<Axis, Float[]> XYBounds() {
+    Map<Axis, Float[]> bounds = new HashMap<>();
+    bounds.put(Axis.XP, this.x);
+    bounds.put(Axis.YP, this.y);
+    return bounds;
+  }
 }

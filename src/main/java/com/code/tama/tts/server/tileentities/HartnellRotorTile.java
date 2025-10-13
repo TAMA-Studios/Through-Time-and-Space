@@ -8,26 +8,33 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HartnellRotorTile extends TickingTile {
-    private final AnimationState RotorAnimationState = new AnimationState();
+  private final AnimationState RotorAnimationState = new AnimationState();
 
-    public AnimationState getRotorAnimationState() {
-        return this.RotorAnimationState;
-    }
+  public AnimationState getRotorAnimationState() {
+    return this.RotorAnimationState;
+  }
 
-    public HartnellRotorTile(BlockPos pos, BlockState state) {
-        super(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
-    }
+  public HartnellRotorTile(BlockPos pos, BlockState state) {
+    super(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
+  }
 
-    @Override
-    public void tick() {
-        assert level != null;
-        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            if (level.isClientSide)
+  @Override
+  public void tick() {
+    assert level != null;
+    level
+        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+        .ifPresent(
+            cap -> {
+              if (level.isClientSide)
                 this.getRotorAnimationState()
-                        .animateWhen(cap.GetFlightData().isPlayRotorAnimation(), (int) level.getGameTime());
-            if (cap.GetFlightData().isPlayRotorAnimation()) {
-                cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayIfFinished(level, this.worldPosition);
-            } else cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);
-        });
-    }
+                    .animateWhen(
+                        cap.GetFlightData().isPlayRotorAnimation(), (int) level.getGameTime());
+              if (cap.GetFlightData().isPlayRotorAnimation()) {
+                cap.GetFlightData()
+                    .getFlightSoundScheme()
+                    .GetFlightLoop()
+                    .PlayIfFinished(level, this.worldPosition);
+              } else cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);
+            });
+  }
 }

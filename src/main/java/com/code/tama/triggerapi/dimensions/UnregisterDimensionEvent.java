@@ -7,18 +7,15 @@ import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Fires when a dimension/level is about to be unregistered.<br>
- * This event fires on
- * {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS} and is not
+ * This event fires on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS} and is not
  * cancellable.<br>
  */
 @Getter
 public class UnregisterDimensionEvent extends Event {
-    /**
-     * The level that is about to be unregistered.
-     */
-    private final ServerLevel level;
+  /** The level that is about to be unregistered. */
+  private final ServerLevel level;
 
-    public UnregisterDimensionEvent(ServerLevel level) {
-        this.level = level;
-    }
+  public UnregisterDimensionEvent(ServerLevel level) {
+    this.level = level;
+  }
 }

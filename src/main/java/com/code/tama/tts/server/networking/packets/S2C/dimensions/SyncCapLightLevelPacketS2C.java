@@ -7,34 +7,34 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-/**
- * Used to sync the light level between the server and the client
- */
+/** Used to sync the light level between the server and the client */
 public class SyncCapLightLevelPacketS2C {
-    public static SyncCapLightLevelPacketS2C decode(FriendlyByteBuf buffer) {
-        return new SyncCapLightLevelPacketS2C(buffer.readFloat());
-    }
+  public static SyncCapLightLevelPacketS2C decode(FriendlyByteBuf buffer) {
+    return new SyncCapLightLevelPacketS2C(buffer.readFloat());
+  }
 
-    public static void encode(SyncCapLightLevelPacketS2C packet, FriendlyByteBuf buffer) {
-        buffer.writeFloat(packet.level);
-    }
+  public static void encode(SyncCapLightLevelPacketS2C packet, FriendlyByteBuf buffer) {
+    buffer.writeFloat(packet.level);
+  }
 
-    public static void handle(SyncCapLightLevelPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            if (Minecraft.getInstance().level != null) {
-                Minecraft.getInstance()
-                        .level
-                        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> cap.GetData().SetLightLevel(packet.level));
-            }
+  public static void handle(
+      SyncCapLightLevelPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
+    NetworkEvent.Context context = contextSupplier.get();
+    context.enqueueWork(
+        () -> {
+          if (Minecraft.getInstance().level != null) {
+            Minecraft.getInstance()
+                .level
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> cap.GetData().SetLightLevel(packet.level));
+          }
         });
-        context.setPacketHandled(true);
-    }
+    context.setPacketHandled(true);
+  }
 
-    private final float level;
+  private final float level;
 
-    public SyncCapLightLevelPacketS2C(float LightLevel) {
-        this.level = LightLevel;
-    }
+  public SyncCapLightLevelPacketS2C(float LightLevel) {
+    this.level = LightLevel;
+  }
 }

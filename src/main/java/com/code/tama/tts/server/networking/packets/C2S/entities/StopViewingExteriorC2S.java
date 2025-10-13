@@ -8,33 +8,39 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
-/** Blows up the creeper supplied by the packet **/
+/** Blows up the creeper supplied by the packet * */
 public class StopViewingExteriorC2S {
 
-    public static StopViewingExteriorC2S decode(FriendlyByteBuf buf) {
-        return new StopViewingExteriorC2S(buf.readUUID());
-    }
+  public static StopViewingExteriorC2S decode(FriendlyByteBuf buf) {
+    return new StopViewingExteriorC2S(buf.readUUID());
+  }
 
-    public static void encode(StopViewingExteriorC2S mes, FriendlyByteBuf buf) {
-        buf.writeUUID(mes.player);
-    }
+  public static void encode(StopViewingExteriorC2S mes, FriendlyByteBuf buf) {
+    buf.writeUUID(mes.player);
+  }
 
-    public static void handle(StopViewingExteriorC2S mes, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
-            ServerPlayer player1 = (ServerPlayer) context.get()
-                    .getSender()
-                    .level()
-                    .getServer()
-                    .getLevel(context.get().getSender().level().dimension())
-                    .getEntity(mes.player);
-            EnvironmentViewerUtils.endShellView(player1);
-        });
-        context.get().setPacketHandled(true);
-    }
+  public static void handle(StopViewingExteriorC2S mes, Supplier<NetworkEvent.Context> context) {
+    context
+        .get()
+        .enqueueWork(
+            () -> {
+              ServerPlayer player1 =
+                  (ServerPlayer)
+                      context
+                          .get()
+                          .getSender()
+                          .level()
+                          .getServer()
+                          .getLevel(context.get().getSender().level().dimension())
+                          .getEntity(mes.player);
+              EnvironmentViewerUtils.endShellView(player1);
+            });
+    context.get().setPacketHandled(true);
+  }
 
-    public UUID player;
+  public UUID player;
 
-    public StopViewingExteriorC2S(UUID player) {
-        this.player = player;
-    }
+  public StopViewingExteriorC2S(UUID player) {
+    this.player = player;
+  }
 }

@@ -11,124 +11,127 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
-    private final BlockEntityRendererProvider.Context context;
-    private float lastRenderTick = -1;
-    private final Minecraft mc = Minecraft.getInstance();
+  private final BlockEntityRendererProvider.Context context;
+  private float lastRenderTick = -1;
+  private final Minecraft mc = Minecraft.getInstance();
 
-    public boolean mode = true; // 0 - Fast but Innacurate (VBO) 1 - Slow but accurate (Native)
+  public boolean mode = true; // 0 - Fast but Innacurate (VBO) 1 - Slow but accurate (Native)
 
-    public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+  public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
+    this.context = context;
+  }
+
+  @Override
+  public void render(
+      @NotNull PortalTileEntity portal,
+      float partialTick,
+      @NotNull PoseStack pose,
+      @NotNull MultiBufferSource buffer,
+      int packedLight,
+      int packedOverlay) {
+    assert mc.level != null;
+    if (portal.getTargetLevel() == null || portal.getTargetPos() == null) {
+      return;
     }
 
-    @Override
-    public void render(
-            @NotNull PortalTileEntity portal,
-            float partialTick,
-            @NotNull PoseStack pose,
-            @NotNull MultiBufferSource buffer,
-            int packedLight,
-            int packedOverlay) {
-        assert mc.level != null;
-        if (portal.getTargetLevel() == null || portal.getTargetPos() == null) {
-            return;
-        }
+    //        StencilUtils.DrawStencil(poseStack, (pose) -> {
+    //            pose.pushPose();
 
-        //        StencilUtils.DrawStencil(poseStack, (pose) -> {
-        //            pose.pushPose();
+    //            pose.translate(0, 0, 1);
+    //            StencilUtils.drawFrame(pose, 4, 8);
+    //            pose.translate(0.005, 0.005, 0.005);
+    //            pose.scale(2f, 2f, 2f);
+    //
+    //            pose.pushPose();
+    //            pose.translate(0.5, 1, 0.5);
+    //            pose.mulPose(Axis.XP.rotationDegrees(90));
+    //
+    //            StencilUtils.drawFrame(pose, 1, 1);
+    //            pose.popPose();
+    //
+    //            pose.pushPose();
+    //            pose.translate(0.5, 0.5, 0);
+    //
+    //            StencilUtils.drawFrame(pose, 1, 1);
+    //            pose.popPose();
+    //
+    //            pose.pushPose();
+    //            pose.mulPose(Axis.YP.rotationDegrees(90));
+    //            pose.translate(-0.5, 0.5, 0);
+    //
+    //            StencilUtils.drawFrame(pose, 1, 1);
+    //            pose.popPose();
+    //
+    //            pose.pushPose();
+    //            pose.mulPose(Axis.YP.rotationDegrees(180));
+    //            pose.translate(-0.5, 0.5, -1);
+    //
+    //            StencilUtils.drawFrame(pose, 1, 1);
+    //            pose.popPose();
+    //
+    //            pose.pushPose();
+    //            pose.mulPose(Axis.YP.rotationDegrees(270));
+    //            pose.translate(0.5, 0.5, -1);
+    //
+    //            StencilUtils.drawFrame(pose, 1, 1);
+    //            pose.popPose();
 
-        //            pose.translate(0, 0, 1);
-        //            StencilUtils.drawFrame(pose, 4, 8);
-        //            pose.translate(0.005, 0.005, 0.005);
-        //            pose.scale(2f, 2f, 2f);
-        //
-        //            pose.pushPose();
-        //            pose.translate(0.5, 1, 0.5);
-        //            pose.mulPose(Axis.XP.rotationDegrees(90));
-        //
-        //            StencilUtils.drawFrame(pose, 1, 1);
-        //            pose.popPose();
-        //
-        //            pose.pushPose();
-        //            pose.translate(0.5, 0.5, 0);
-        //
-        //            StencilUtils.drawFrame(pose, 1, 1);
-        //            pose.popPose();
-        //
-        //            pose.pushPose();
-        //            pose.mulPose(Axis.YP.rotationDegrees(90));
-        //            pose.translate(-0.5, 0.5, 0);
-        //
-        //            StencilUtils.drawFrame(pose, 1, 1);
-        //            pose.popPose();
-        //
-        //            pose.pushPose();
-        //            pose.mulPose(Axis.YP.rotationDegrees(180));
-        //            pose.translate(-0.5, 0.5, -1);
-        //
-        //            StencilUtils.drawFrame(pose, 1, 1);
-        //            pose.popPose();
-        //
-        //            pose.pushPose();
-        //            pose.mulPose(Axis.YP.rotationDegrees(270));
-        //            pose.translate(0.5, 0.5, -1);
-        //
-        //            StencilUtils.drawFrame(pose, 1, 1);
-        //            pose.popPose();
+    //            pose.popPose();
+    //        }, (pose) -> {
 
-        //            pose.popPose();
-        //        }, (pose) -> {
+    //        StencilUtils.DrawStencil(pose, (stack) -> {
+    //            stack.pushPose();
+    //            pose.translate(0, 1, 0);
+    //            StencilUtils.drawFrame(stack, 2, 2);
+    //            stack.popPose();
+    //        }, (stack) -> {
+    //            stack.pushPose();
+    //
+    ////            stack.translate(0, 0, 10);
+    ////            stack.scale(100, 100, 100);
+    ////            StencilUtils.drawBlackFrame(stack, 1, 1);
+    //
+    //            stack.popPose();
+    //
+    //            stack.pushPose();
+    //                BOTIUtils.RenderStuff(p, portal);
+    //            stack.popPose();
+    //        });
 
-        //        StencilUtils.DrawStencil(pose, (stack) -> {
-        //            stack.pushPose();
-        //            pose.translate(0, 1, 0);
-        //            StencilUtils.drawFrame(stack, 2, 2);
-        //            stack.popPose();
-        //        }, (stack) -> {
-        //            stack.pushPose();
-        //
-        ////            stack.translate(0, 0, 10);
-        ////            stack.scale(100, 100, 100);
-        ////            StencilUtils.drawBlackFrame(stack, 1, 1);
-        //
-        //            stack.popPose();
-        //
-        //            stack.pushPose();
-        //                BOTIUtils.RenderStuff(p, portal);
-        //            stack.popPose();
-        //        });
+    //        pose.pushPose();
+    //        RenderSystem.disableDepthTest();
+    //        pose.translate(0, 0, 100);
+    //        pose.scale(100, 100, 100);
+    //        StencilUtils.drawBlackFrame(pose, 1, 1);
+    //        RenderSystem.enableDepthTest();
+    //        pose.popPose();
+    //
+    //        pose.pushPose();
+    //        pose.translate(0.5, 0.5, 0.5);
+    //            BOTIUtils.RenderStuff(pose, portal);
+    //        pose.popPose();
 
-        //        pose.pushPose();
-        //        RenderSystem.disableDepthTest();
-        //        pose.translate(0, 0, 100);
-        //        pose.scale(100, 100, 100);
-        //        StencilUtils.drawBlackFrame(pose, 1, 1);
-        //        RenderSystem.enableDepthTest();
-        //        pose.popPose();
-        //
-        //        pose.pushPose();
-        //        pose.translate(0.5, 0.5, 0.5);
-        //            BOTIUtils.RenderStuff(pose, portal);
-        //        pose.popPose();
+    pose.pushPose();
 
-        pose.pushPose();
+    pose.translate(0.5, 0.5, 0.5);
+    //
+    // portal.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+    //
+    // pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+    //            });
+    //            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() %
+    // 360));
 
-        pose.translate(0.5, 0.5, 0.5);
-        //            portal.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-        //                pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
-        //            });
-        //            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
+    //            pose.scale(0.05f, 0.05f, 0.05f);
 
-        //            pose.scale(0.05f, 0.05f, 0.05f);
+    portal.getFBOContainer().Render(portal, pose, 0xf000f0);
 
-        portal.getFBOContainer().Render(portal, pose, 0xf000f0);
+    pose.popPose();
+    //        });
+  }
 
-        pose.popPose();
-        //        });
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(@NotNull PortalTileEntity tileEntity) {
-        return true;
-    }
+  @Override
+  public boolean shouldRenderOffScreen(@NotNull PortalTileEntity tileEntity) {
+    return true;
+  }
 }

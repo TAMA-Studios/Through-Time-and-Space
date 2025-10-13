@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Block.class)
 public interface BlockAccessor {
-    @Accessor("OCCLUSION_CACHE")
-    public static ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>> getOcclusionCache() {
-        throw new AssertionError();
-    }
+  @Accessor("OCCLUSION_CACHE")
+  public static ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>>
+      getOcclusionCache() {
+    throw new AssertionError();
+  }
 }

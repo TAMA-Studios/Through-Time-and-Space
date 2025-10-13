@@ -10,17 +10,20 @@ import net.minecraft.resources.ResourceLocation;
 @NoArgsConstructor
 @Getter
 public class Exterior {
-    public static Codec<Exterior> CODEC = RecordCodecBuilder.create(exteriorInstance -> exteriorInstance
-            .group(
-                    ResourceLocation.CODEC.fieldOf("model").forGetter(Exterior::getModel),
-                    Codec.STRING.fieldOf("name").forGetter(Exterior::getName))
-            .apply(exteriorInstance, Exterior::new));
+  public static Codec<Exterior> CODEC =
+      RecordCodecBuilder.create(
+          exteriorInstance ->
+              exteriorInstance
+                  .group(
+                      ResourceLocation.CODEC.fieldOf("model").forGetter(Exterior::getModel),
+                      Codec.STRING.fieldOf("name").forGetter(Exterior::getName))
+                  .apply(exteriorInstance, Exterior::new));
 
-    private ResourceLocation Model;
-    private String Name;
+  private ResourceLocation Model;
+  private String Name;
 
-    public Exterior(ResourceLocation model, String name) {
-        Model = model;
-        Name = name;
-    }
+  public Exterior(ResourceLocation model, String name) {
+    Model = model;
+    Name = name;
+  }
 }

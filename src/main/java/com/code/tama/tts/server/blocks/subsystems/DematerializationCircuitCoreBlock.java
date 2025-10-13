@@ -6,7 +6,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class DematerializationCircuitCoreBlock extends AbstractSubsystemBlock {
-    public DematerializationCircuitCoreBlock() {
-        super(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.METAL), new DematerializationCircuit());
-    }
+  public DematerializationCircuitCoreBlock() {
+    super(
+        BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.METAL),
+        new DematerializationCircuit());
+  }
 }

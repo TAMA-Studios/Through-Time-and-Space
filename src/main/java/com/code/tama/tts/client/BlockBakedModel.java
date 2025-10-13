@@ -16,48 +16,48 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockBakedModel implements BakedModel {
-    public final List<BakedQuad> quads;
+  public final List<BakedQuad> quads;
 
-    public BlockBakedModel(List<BakedQuad> quads) {
-        this.quads = quads;
-    }
+  public BlockBakedModel(List<BakedQuad> quads) {
+    this.quads = quads;
+  }
 
-    @Override
-    public @NotNull ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
+  @Override
+  public @NotNull ItemOverrides getOverrides() {
+    return ItemOverrides.EMPTY;
+  }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public @NotNull TextureAtlasSprite getParticleIcon() {
-        return Minecraft.getInstance()
-                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(new ResourceLocation("minecraft", "stone"));
-    }
+  @SuppressWarnings("deprecation")
+  @Override
+  public @NotNull TextureAtlasSprite getParticleIcon() {
+    return Minecraft.getInstance()
+        .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+        .apply(new ResourceLocation("minecraft", "stone"));
+  }
 
-    @Override
-    public @NotNull List<BakedQuad> getQuads(
-            @Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
-        return this.quads;
-    }
+  @Override
+  public @NotNull List<BakedQuad> getQuads(
+      @Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
+    return this.quads;
+  }
 
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
+  @Override
+  public boolean isCustomRenderer() {
+    return false;
+  }
 
-    @Override
-    public boolean isGui3d() {
-        return true;
-    }
+  @Override
+  public boolean isGui3d() {
+    return true;
+  }
 
-    @Override
-    public boolean useAmbientOcclusion() {
-        return true;
-    }
+  @Override
+  public boolean useAmbientOcclusion() {
+    return true;
+  }
 
-    @Override
-    public boolean usesBlockLight() {
-        return true;
-    }
+  @Override
+  public boolean usesBlockLight() {
+    return true;
+  }
 }

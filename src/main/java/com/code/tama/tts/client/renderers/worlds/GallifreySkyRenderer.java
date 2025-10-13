@@ -12,23 +12,23 @@ import org.joml.Matrix4f;
 
 public class GallifreySkyRenderer extends AbstractLevelRenderer {
 
-    @Override
-    public ResourceLocation EffectsLocation() {
-        return MDimensions.DimensionEffects.GALLIFREY_EFFECTS.location();
-    }
+  @Override
+  public ResourceLocation EffectsLocation() {
+    return MDimensions.DimensionEffects.GALLIFREY_EFFECTS.location();
+  }
 
-    @Override
-    public void RenderLevel(
-            @NotNull Camera camera,
-            Matrix4f matrix4f,
-            @NotNull PoseStack poseStack,
-            Frustum frustum,
-            float partialTicks) {
-        // RenderStars(poseStack, matrix4f, partialTicks);x
-    }
+  @Override
+  public void RenderLevel(
+      @NotNull Camera camera,
+      Matrix4f matrix4f,
+      @NotNull PoseStack poseStack,
+      Frustum frustum,
+      float partialTicks) {
+    // RenderStars(poseStack, matrix4f, partialTicks);x
+  }
 
-    @Override
-    public boolean ShouldRenderVoid() {
-        return false;
-    }
+  @Override
+  public boolean ShouldRenderVoid() {
+    return false;
+  }
 }
