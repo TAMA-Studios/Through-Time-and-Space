@@ -6,10 +6,7 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -38,6 +35,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
@@ -177,7 +179,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             tardisLevelCapability
                                     .GetNavigationalData()
                                     .setDestination(destination.AddX(Crouching ? -DestOffset : DestOffset));
-                            tardisLevelCapability.UpdateClient();
+                            tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
@@ -188,7 +190,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             tardisLevelCapability
                                     .GetNavigationalData()
                                     .setDestination(destination.AddY(Crouching ? -DestOffset : DestOffset));
-                            tardisLevelCapability.UpdateClient();
+                            tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
@@ -200,7 +202,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
                             tardisLevelCapability
                                     .GetNavigationalData()
                                     .setDestination(destination.AddZ(Crouching ? -DestOffset : DestOffset));
-                            tardisLevelCapability.UpdateClient();
+                            tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
                             player.displayClientMessage(
                                     Component.literal("Current Destination = " + destination.ReadableString()), true);
                             world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);

@@ -3,7 +3,7 @@ package com.code.tama.tts.server.tileentities.monitors;
 
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +60,8 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 
     @Override
     public void onLoad() {
-        this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::UpdateClient);
+        assert this.getLevel() != null;
+        this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
         super.onLoad();
     }
 

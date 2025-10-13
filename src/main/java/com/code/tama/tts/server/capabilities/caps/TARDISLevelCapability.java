@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
-
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -35,6 +33,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
+
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     TARDISData data = new TARDISData(this);
@@ -142,7 +142,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public ResourceKey<Level> GetCurrentLevel() {
         if (this.navigationalData.getLocation().getLevelKey() != null)
             return this.navigationalData.getLocation().getLevelKey();
-        if (this.level.isClientSide && this.navigationalData.getExteriorDimensionKey() == null) this.UpdateClient();
+        if (this.level.isClientSide && this.navigationalData.getExteriorDimensionKey() == null) this.UpdateClient(DataUpdateValues.DATA);
         if (this.navigationalData.getExteriorDimensionKey() == null) {
             if (this.GetExteriorTile() != null) {
                 this.navigationalData.setExteriorDimensionKey(
@@ -235,7 +235,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         ext.UtterlyDestroy();
 
         this.ForceLoadExteriorChunk(false);
-        this.UpdateClient();
+        this.UpdateClient(DataUpdateValues.FLIGHT);
+        this.UpdateClient(DataUpdateValues.NAVIGATIONAL);
         MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
     }
 
@@ -252,7 +253,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
             this.GetFlightData().setInFlight(true);
             this.GetFlightData().getFlightSoundScheme().GetTakeoff().SetFinished(true);
             // Lands the TARDIS, creating an exterior
-            this.UpdateClient();
+            this.UpdateClient(DataUpdateValues.FLIGHT);
+            this.UpdateClient(DataUpdateValues.NAVIGATIONAL);
             this.Rematerialize();
         } else {
             // Start a new Takeoff thread
@@ -318,7 +320,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
             }
             this.ForceLoadExteriorChunk(false);
             this.GetFlightData().setPlayRotorAnimation(false);
-            this.UpdateClient();
+            this.UpdateClient(DataUpdateValues.FLIGHT);
+            this.UpdateClient(DataUpdateValues.NAVIGATIONAL);
         }
 
         MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
@@ -352,27 +355,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
             if (this.level.getServer().getLevel(this.GetCurrentLevel()) == null)
                 this.GetNavigationalData()
                         .SetCurrentLevel(this.level.getServer().overworld().dimension());
-    }
-
-    public void UpdateClient() {
-        if (this.level == null) return;
-        if (this.level.isClientSide)
-            Networking.sendPacketToDimension(
-                    this.level.dimension(), new TriggerSyncCapPacketC2S(this.level.dimension(), DataUpdateValues.ALL));
-        else {
-            Networking.sendPacketToDimension(
-                    this.level.dimension(),
-                    new SyncTARDISCapPacketS2C(
-                            this.data, this.navigationalData, this.flightData, DataUpdateValues.ALL));
-
-            if (this.GetExteriorTile() != null) {
-                this.GetExteriorTile().Model = this.data.getExteriorModel();
-                this.GetExteriorTile()
-                        .setModelIndex(this.data.getExteriorModel().getModel());
-                this.GetExteriorTile().setChanged();
-                this.GetExteriorTile().NeedsClientUpdate();
-            }
-        }
     }
 
     public void UpdateClient(int toUpdate) {

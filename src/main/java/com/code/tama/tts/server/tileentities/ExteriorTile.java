@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
@@ -20,11 +18,8 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -48,6 +43,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends AbstractPortalTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
@@ -313,8 +315,7 @@ public class ExteriorTile extends AbstractPortalTile {
                 level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
                     this.ModelIndex = cap.GetData().getExteriorModel().getModel();
                     this.Model = cap.GetData().getExteriorModel();
-                    cap.UpdateClient();
-
+                    cap.UpdateClient(DataUpdateValues.RENDERING);
                     // Networking.sendPacketToDimension(this.level.dimension(), new
                     // SyncExteriorVariantPacketS2C(this.ModelIndex,
                     // ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(),

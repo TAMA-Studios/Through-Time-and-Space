@@ -3,6 +3,7 @@ package com.code.tama.tts.server.threads;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.PhysicalStateManager;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 
 public class TakeOffThread extends Thread {
     ITARDISLevel itardisLevel;
@@ -15,7 +16,8 @@ public class TakeOffThread extends Thread {
     @Override
     public void run() {
         this.itardisLevel.GetFlightData().setPlayRotorAnimation(true);
-        this.itardisLevel.UpdateClient();
+        this.itardisLevel.UpdateClient(DataUpdateValues.FLIGHT);
+        this.itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
         new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverTakeOff();
 
         super.run();

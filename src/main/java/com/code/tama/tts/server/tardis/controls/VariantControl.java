@@ -4,6 +4,7 @@ package com.code.tama.tts.server.tardis.controls;
 import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +32,7 @@ public class VariantControl extends AbstractControl {
         itardisLevel
                 .GetData()
                 .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
-        itardisLevel.UpdateClient();
+        itardisLevel.UpdateClient(DataUpdateValues.RENDERING);
         return InteractionResult.SUCCESS;
     }
 
@@ -40,7 +41,7 @@ public class VariantControl extends AbstractControl {
         itardisLevel
                 .GetData()
                 .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
-        itardisLevel.UpdateClient();
+        itardisLevel.UpdateClient(DataUpdateValues.RENDERING);
         return InteractionResult.SUCCESS;
     }
 }

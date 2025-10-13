@@ -3,6 +3,7 @@ package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -60,7 +61,7 @@ public class ThrottleControl extends AbstractControl {
                     .getFlightSoundScheme()
                     .GetTakeoff()
                     .Play(itardisLevel.GetLevel(), player.blockPosition());
-            itardisLevel.UpdateClient();
+            itardisLevel.UpdateClient(DataUpdateValues.FLIGHT);
         }
         this.SetNeedsUpdate(true);
         return InteractionResult.SUCCESS;

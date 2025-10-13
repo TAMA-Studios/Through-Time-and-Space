@@ -1,15 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
-import java.util.Objects;
+import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,11 +23,15 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
     @SubscribeEvent
     public static void PlayerJoin(EntityJoinLevelEvent event) {
-        event.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::UpdateClient);
+        event.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 
         if (event.getEntity().level().isClientSide) CameraShakeHandler.endShake();
 
