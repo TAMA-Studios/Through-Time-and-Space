@@ -15,94 +15,94 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
-  TARDISFlightData GetFlightData();
+    TARDISFlightData GetFlightData();
 
-  TARDISNavigationalData GetNavigationalData();
+    TARDISNavigationalData GetNavigationalData();
 
-  /** THIS ONLY EXISTS CLIENT SIDE DO NOT REFERENCE IT FROM SERVERS * */
-  @OnlyIn(Dist.CLIENT)
-  TARDISClientData GetClientData();
+    /** THIS ONLY EXISTS CLIENT SIDE DO NOT REFERENCE IT FROM SERVERS * */
+    @OnlyIn(Dist.CLIENT)
+    TARDISClientData GetClientData();
 
-  TARDISData GetData();
+    TARDISData GetData();
 
-  void setData(TARDISData data);
+    void setData(TARDISData data);
 
-  void setNavigationalData(TARDISNavigationalData data);
+    void setNavigationalData(TARDISNavigationalData data);
 
-  void setFlightData(TARDISFlightData data);
+    void setFlightData(TARDISFlightData data);
 
-  /** Returns whether the TARDIS is capable of flight in its current state * */
-  boolean CanFly();
+    /** Returns whether the TARDIS is capable of flight in its current state * */
+    boolean CanFly();
 
-  /** Crash's the TARDIS, basically explosion at the exterior, particles, maybe some fire */
-  void Crash();
+    /** Crash's the TARDIS, basically explosion at the exterior, particles, maybe some fire */
+    void Crash();
 
-  /**
-   * Initiates the TARDIS takeoff sequence, the sequence goes as follows:
-   *
-   * <ol>
-   *   <li>Starts takeoff animation and waits for it to finish
-   *   <li>Calls ITARDISLevel#Fly() which then
-   *       <ul>
-   *         <li>Runs Calculations
-   *             <ul>
-   *               <li>Distance to Destination
-   *               <li>Ticks before the Destination is reached
-   *             </ul>
-   *         <li>Finishes up flight
-   *             <ul>
-   *               <li>Force loads the exterior world
-   *               <li>Utterly Destroys the exterior
-   *               <li>Un-force loads the exterior world
-   *             </ul>
-   *       </ul>
-   * </ol>
-   */
-  void Dematerialize();
+    /**
+     * Initiates the TARDIS takeoff sequence, the sequence goes as follows:
+     *
+     * <ol>
+     *   <li>Starts takeoff animation and waits for it to finish
+     *   <li>Calls ITARDISLevel#Fly() which then
+     *       <ul>
+     *         <li>Runs Calculations
+     *             <ul>
+     *               <li>Distance to Destination
+     *               <li>Ticks before the Destination is reached
+     *             </ul>
+     *         <li>Finishes up flight
+     *             <ul>
+     *               <li>Force loads the exterior world
+     *               <li>Utterly Destroys the exterior
+     *               <li>Un-force loads the exterior world
+     *             </ul>
+     *       </ul>
+     * </ol>
+     */
+    void Dematerialize();
 
-  /**
-   * Finishes up the takeoff sequence by doing calculations and removing the exterior block
-   * <li>Runs Calculations
-   *
-   *     <ul>
-   *       <li>Distance to Destination
-   *       <li>Ticks before the Destination is reached
-   *     </ul>
-   *
-   * <li>Finishes up flight
-   *
-   *     <ul>
-   *       <li>Force loads the exterior world
-   *       <li>Utterly Destroys the exterior
-   *       <li>Un-force loads the exterior world
-   *     </ul>
-   *
-   * </ul>
-   */
-  void Fly();
+    /**
+     * Finishes up the takeoff sequence by doing calculations and removing the exterior block
+     * <li>Runs Calculations
+     *
+     *     <ul>
+     *       <li>Distance to Destination
+     *       <li>Ticks before the Destination is reached
+     *     </ul>
+     *
+     * <li>Finishes up flight
+     *
+     *     <ul>
+     *       <li>Force loads the exterior world
+     *       <li>Utterly Destroys the exterior
+     *       <li>Un-force loads the exterior world
+     *     </ul>
+     *
+     * </ul>
+     */
+    void Fly();
 
-  ResourceKey<Level> GetCurrentLevel();
+    ResourceKey<Level> GetCurrentLevel();
 
-  ExteriorTile GetExteriorTile();
+    ExteriorTile GetExteriorTile();
 
-  void SetExteriorTile(ExteriorTile tile);
+    void SetExteriorTile(ExteriorTile tile);
 
-  Level GetLevel();
+    Level GetLevel();
 
-  float GetLightLevel();
+    float GetLightLevel();
 
-  /** Finishes up the landing sequence * */
-  void Land();
+    /** Finishes up the landing sequence * */
+    void Land();
 
-  /** Initiates the TARDIS Landing sequence * */
-  void Rematerialize();
+    /** Initiates the TARDIS Landing sequence * */
+    void Rematerialize();
 
-  long getTicks();
+    long getTicks();
 
-  /** Does what it says on the tin * */
-  void Tick();
+    /** Does what it says on the tin * */
+    void Tick();
 
-  void UpdateClient();
+    void UpdateClient();
 
-  void UpdateClient(int toUpdate);
+    void UpdateClient(int toUpdate);
 }

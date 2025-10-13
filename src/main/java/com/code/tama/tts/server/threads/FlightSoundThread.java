@@ -9,41 +9,41 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
 public class FlightSoundThread extends Thread {
-  BlockPos blockPos;
-  Level level;
-  AbstractFlightSound sound;
-  static Map<BlockPos, Level> lockedIn = new HashMap<>();
-  private boolean run = true;
-  private int id = 0;
-  private boolean jumpstarted = false;
-  private long OTicks = 0;
+    BlockPos blockPos;
+    Level level;
+    AbstractFlightSound sound;
+    static Map<BlockPos, Level> lockedIn = new HashMap<>();
+    private boolean run = true;
+    private int id = 0;
+    private boolean jumpstarted = false;
+    private long OTicks = 0;
 
-  public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound) {
-    this.setName("Flight Sound Thread");
-    this.level = level;
-    this.blockPos = blockPos;
-    this.sound = sound;
-  }
-
-  @Override
-  public void run() {
-    if (!this.run) {
-      //            this.stop();
-      return;
+    public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound) {
+        this.setName("Flight Sound Thread");
+        this.level = level;
+        this.blockPos = blockPos;
+        this.sound = sound;
     }
-    int ticks = 0;
-    while (!this.sound.IsFinished()) {
-      if (ticks == 0) level.playSound(null, blockPos, this.sound.GetSound(), SoundSource.BLOCKS);
-      if (this.level.getGameTime() != OTicks) {
-        if (ticks >= this.sound.GetLength()) {
-          this.sound.SetFinished(true);
-          break;
+
+    @Override
+    public void run() {
+        if (!this.run) {
+            //            this.stop();
+            return;
         }
-        ticks++;
-        OTicks = (int) this.level.getGameTime();
-      }
+        int ticks = 0;
+        while (!this.sound.IsFinished()) {
+            if (ticks == 0) level.playSound(null, blockPos, this.sound.GetSound(), SoundSource.BLOCKS);
+            if (this.level.getGameTime() != OTicks) {
+                if (ticks >= this.sound.GetLength()) {
+                    this.sound.SetFinished(true);
+                    break;
+                }
+                ticks++;
+                OTicks = (int) this.level.getGameTime();
+            }
+        }
+        //        jumpstarted = false;
+        super.run();
     }
-    //        jumpstarted = false;
-    super.run();
-  }
 }

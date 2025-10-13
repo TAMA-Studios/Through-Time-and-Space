@@ -11,24 +11,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class UIComponentPower extends UIComponent {
-  public UIComponentPower(Float[] x, Float[] y, ComponentTypes type) {
-    super(
-        x,
-        y,
-        type,
-        UICategoryRegistry.ALL.get(),
-        new ResourceLocation(MODID, "textures/gui/power.png"));
-  }
+    public UIComponentPower(Float[] x, Float[] y, ComponentTypes type) {
+        super(x, y, type, UICategoryRegistry.ALL.get(), new ResourceLocation(MODID, "textures/gui/power.png"));
+    }
 
-  @Override
-  public void onInteract(Player player, AbstractMonitorTile monitor) {
-    super.onInteract(player, monitor);
-    monitor.powered = !monitor.powered;
+    @Override
+    public void onInteract(Player player, AbstractMonitorTile monitor) {
+        super.onInteract(player, monitor);
+        monitor.powered = !monitor.powered;
 
-    monitor.setChanged();
-    monitor
-        .getLevel()
-        .sendBlockUpdated(
-            monitor.getBlockPos(), monitor.getBlockState(), monitor.getBlockState(), 3);
-  }
+        monitor.setChanged();
+        monitor.getLevel().sendBlockUpdated(monitor.getBlockPos(), monitor.getBlockState(), monitor.getBlockState(), 3);
+    }
 }

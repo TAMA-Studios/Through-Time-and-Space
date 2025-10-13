@@ -21,136 +21,129 @@ import net.minecraftforge.network.PacketDistributor;
 
 @AllArgsConstructor
 public class ChunkGatheringThread extends Thread {
-  BlockPos targetPos;
-  AbstractPortalTile portalTile;
-  ServerLevel level;
+    BlockPos targetPos;
+    AbstractPortalTile portalTile;
+    ServerLevel level;
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public void run() {
-    this.setName("BOTIChunkGatheringThread");
+    @Override
+    @SuppressWarnings("unchecked")
+    public void run() {
+        this.setName("BOTIChunkGatheringThread");
 
-    //        Direction axis = Direction.fromYRot(portalTile.targetY);
-    BlockPos portalPos = portalTile.getBlockPos();
-    int maxBlocks = 80000;
+        //        Direction axis = Direction.fromYRot(portalTile.targetY);
+        BlockPos portalPos = portalTile.getBlockPos();
+        int maxBlocks = 80000;
 
-    try {
-      ArrayList<BotiChunkContainer> containers = new ArrayList<>();
-      ArrayList<List<BotiChunkContainer>> containerLists = new ArrayList<>();
-      boolean isSquare = true;
-      int chunksToRender = 8;
-      int uMax; // = (axis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
-      int uMin; // = (axis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
-      int vMax; // = (axis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);
-      int vMin; // = (axis.equals(Direction.SOUTH) ? 0 : -chunksToRender / 2);
+        try {
+            ArrayList<BotiChunkContainer> containers = new ArrayList<>();
+            ArrayList<List<BotiChunkContainer>> containerLists = new ArrayList<>();
+            boolean isSquare = true;
+            int chunksToRender = 8;
+            int uMax; // = (axis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
+            int uMin; // = (axis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
+            int vMax; // = (axis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);
+            int vMin; // = (axis.equals(Direction.SOUTH) ? 0 : -chunksToRender / 2);
 
-      vMin = -chunksToRender / 2;
-      vMax = chunksToRender / 2;
-      uMax = chunksToRender / 2;
-      uMin = -chunksToRender / 2;
+            vMin = -chunksToRender / 2;
+            vMax = chunksToRender / 2;
+            uMax = chunksToRender / 2;
+            uMin = -chunksToRender / 2;
 
-      for (int u = uMin + 1;
-          u < uMax;
-          u++) { // turn either the u or the v to = 0 based on the direction you're viewing from
-        for (int v = vMin + 1; v < vMax; v++) {
-          ChunkPos chunkPos =
-              new ChunkPos(
-                  new BlockPos(
-                      targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
-          level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
-          LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
-          LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
+            for (int u = uMin + 1;
+                    u < uMax;
+                    u++) { // turn either the u or the v to = 0 based on the direction you're viewing from
+                for (int v = vMin + 1; v < vMax; v++) {
+                    ChunkPos chunkPos = new ChunkPos(
+                            new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
+                    level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
+                    LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
+                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 
-          BlockPos relTargetPos =
-              new BlockPos(targetPos.getX() % 16, targetPos.getY() % 16, targetPos.getZ() % 16);
+                    BlockPos relTargetPos =
+                            new BlockPos(targetPos.getX() % 16, targetPos.getY() % 16, targetPos.getZ() % 16);
 
-          for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
-              for (int z = 0; z < 16; z++) {
-                BlockState state = section.getBlockState(x, y, z);
-                FluidState fluidState = section.getFluidState(x, y, z);
+                    for (int y = 0; y < 16; y++) {
+                        for (int x = 0; x < 16; x++) {
+                            for (int z = 0; z < 16; z++) {
+                                BlockState state = section.getBlockState(x, y, z);
+                                FluidState fluidState = section.getFluidState(x, y, z);
 
-                if (!state.isAir()) {
-                  BlockPos pos =
-                      new BlockPos(
-                          x + (u * 16) - relTargetPos.getX(),
-                          y - relTargetPos.getY(),
-                          z + (v * 16) - relTargetPos.getZ());
+                                if (!state.isAir()) {
+                                    BlockPos pos = new BlockPos(
+                                            x + (u * 16) - relTargetPos.getX(),
+                                            y - relTargetPos.getY(),
+                                            z + (v * 16) - relTargetPos.getZ());
 
-                  //
-                  // if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos, exteriorAxis))
-                  // continue;
+                                    //
+                                    // if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos, exteriorAxis))
+                                    // continue;
 
-                  //
-                  // if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                  //                                            .atY(targetPos.getY())) != null) {
-                  //                                        BlockEntity entity =
-                  // level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                  //                                                .atY(targetPos.getY()));
-                  //                                        containers.add(new
-                  // BotiChunkContainer(level,
-                  //                                                state,
-                  //                                                pos,
-                  //                                                BlockUtils.getPackedLight(
-                  //                                                        level,
-                  //
-                  // BlockUtils.fromChunkAndLocal(chunkPos, pos)
-                  //
-                  // .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
-                  //                                    }
+                                    //
+                                    // if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+                                    //                                            .atY(targetPos.getY())) != null) {
+                                    //                                        BlockEntity entity =
+                                    // level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+                                    //                                                .atY(targetPos.getY()));
+                                    //                                        containers.add(new
+                                    // BotiChunkContainer(level,
+                                    //                                                state,
+                                    //                                                pos,
+                                    //                                                BlockUtils.getPackedLight(
+                                    //                                                        level,
+                                    //
+                                    // BlockUtils.fromChunkAndLocal(chunkPos, pos)
+                                    //
+                                    // .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
+                                    //                                    }
 
-                  if (fluidState.isEmpty())
-                    containers.add(
-                        new BotiChunkContainer(
-                            level,
-                            state,
-                            pos,
-                            BlockUtils.getPackedLight(
-                                level,
-                                BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-                                    .atY(targetPos.getY()))));
-                  else
-                    containers.add(
-                        new BotiChunkContainer(
-                            level,
-                            state,
-                            fluidState,
-                            pos,
-                            BlockUtils.getPackedLight(
-                                level,
-                                BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-                                    .atY(targetPos.getY()))));
+                                    if (fluidState.isEmpty())
+                                        containers.add(new BotiChunkContainer(
+                                                level,
+                                                state,
+                                                pos,
+                                                BlockUtils.getPackedLight(
+                                                        level,
+                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
+                                                                .atY(targetPos.getY()))));
+                                    else
+                                        containers.add(new BotiChunkContainer(
+                                                level,
+                                                state,
+                                                fluidState,
+                                                pos,
+                                                BlockUtils.getPackedLight(
+                                                        level,
+                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
+                                                                .atY(targetPos.getY()))));
+                                }
+                                if (containers.size() >= maxBlocks) {
+                                    containerLists.add((List<BotiChunkContainer>) containers.clone());
+                                    containers.clear();
+                                }
+                            }
+                        }
+                    }
                 }
-                if (containers.size() >= maxBlocks) {
-                  containerLists.add((List<BotiChunkContainer>) containers.clone());
-                  containers.clear();
-                }
-              }
             }
-          }
+            if (!containers.isEmpty()) {
+                containerLists.add((List<BotiChunkContainer>) containers.clone());
+                containers.clear();
+            }
+
+            for (int i = 0; i < containerLists.size(); i++) {
+                Networking.INSTANCE.send(
+                        PacketDistributor.DIMENSION.with(() -> {
+                            assert portalTile.getLevel() != null;
+                            return portalTile.getLevel().dimension();
+                        }),
+                        new PortalChunkDataPacketS2C(portalPos, containerLists.get(i), i, containerLists.size()));
+            }
+            // 126142 (Too big)
+            // 71267 (prob could go higher before hitting the limit but this works at 6-ish chunks)
+
+        } catch (Exception e) {
+            TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
         }
-      }
-      if (!containers.isEmpty()) {
-        containerLists.add((List<BotiChunkContainer>) containers.clone());
-        containers.clear();
-      }
-
-      for (int i = 0; i < containerLists.size(); i++) {
-        Networking.INSTANCE.send(
-            PacketDistributor.DIMENSION.with(
-                () -> {
-                  assert portalTile.getLevel() != null;
-                  return portalTile.getLevel().dimension();
-                }),
-            new PortalChunkDataPacketS2C(
-                portalPos, containerLists.get(i), i, containerLists.size()));
-      }
-      // 126142 (Too big)
-      // 71267 (prob could go higher before hitting the limit but this works at 6-ish chunks)
-
-    } catch (Exception e) {
-      TTSMod.LOGGER.error("Exception in packet construction: {}", e.getMessage());
+        super.run();
     }
-    super.run();
-  }
 }

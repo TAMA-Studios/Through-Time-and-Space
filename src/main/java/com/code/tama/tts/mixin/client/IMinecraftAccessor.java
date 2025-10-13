@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Minecraft.class)
 public interface IMinecraftAccessor {
-  @Mutable
-  @Accessor("levelRenderer")
-  void setLevelRenderer(LevelRenderer renderer);
+    @Mutable
+    @Accessor("levelRenderer")
+    void setLevelRenderer(LevelRenderer renderer);
 
-  @Accessor
-  Timer getTimer();
+    @Accessor
+    Timer getTimer();
 }

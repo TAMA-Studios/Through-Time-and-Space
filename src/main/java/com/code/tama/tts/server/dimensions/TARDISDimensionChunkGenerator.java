@@ -33,112 +33,101 @@ import org.jetbrains.annotations.NotNull;
 
 public class TARDISDimensionChunkGenerator extends ChunkGenerator {
 
-  public static final Codec<TARDISDimensionChunkGenerator> CODEC =
-      RecordCodecBuilder.create(
-          instance ->
-              instance
-                  .group(
-                      RegistryOps.retrieveRegistryLookup(Registries.BIOME)
-                          .forGetter(gen -> gen.biomeReg))
-                  .apply(instance, TARDISDimensionChunkGenerator::new));
+    public static final Codec<TARDISDimensionChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
+                    .apply(instance, TARDISDimensionChunkGenerator::new));
 
-  public final HolderLookup.RegistryLookup<Biome> biomeReg;
-  public final RandomSource random;
+    public final HolderLookup.RegistryLookup<Biome> biomeReg;
+    public final RandomSource random;
 
-  public TARDISDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
-    super(new FixedBiomeSource(biomeReg.getOrThrow(Biomes.TARDIS_BIOME)));
-    this.biomeReg = biomeReg;
-    this.random = new SingleThreadedRandomSource(0);
-  }
-
-  // Leave (most) these functions below empty to stop stuff from generating
-
-  @Override
-  public void addDebugScreenInfo(
-      List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {}
-
-  @Override
-  public void applyCarvers(
-      WorldGenRegion p_223043_,
-      long p_223044_,
-      RandomState p_223045_,
-      BiomeManager p_223046_,
-      StructureManager p_223047_,
-      ChunkAccess p_223048_,
-      GenerationStep.Carving p_223049_) {}
-
-  @Override
-  public void buildSurface(
-      WorldGenRegion p_223050_,
-      StructureManager p_223051_,
-      RandomState p_223052_,
-      ChunkAccess p_223053_) {}
-
-  @Override
-  public @NotNull Codec<TARDISDimensionChunkGenerator> codec() {
-    return CODEC;
-  }
-
-  @Override
-  public void createReferences(
-      WorldGenLevel pLevel, StructureManager pStructureManager, ChunkAccess pChunk) {}
-
-  @Override
-  public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(
-      Executor executor,
-      Blender blender,
-      RandomState randomState,
-      StructureManager structureManager,
-      ChunkAccess chunk) {
-
-    BlockState stone = Blocks.STONE.defaultBlockState();
-    int minY = this.getMinY();
-    int maxY = minY + this.getGenDepth();
-
-    for (int y = minY; y < maxY; y++) {
-      for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
-          chunk.setBlockState(new BlockPos(x, y, z), stone, false);
-        }
-      }
+    public TARDISDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
+        super(new FixedBiomeSource(biomeReg.getOrThrow(Biomes.TARDIS_BIOME)));
+        this.biomeReg = biomeReg;
+        this.random = new SingleThreadedRandomSource(0);
     }
 
-    return CompletableFuture.completedFuture(chunk);
-  }
+    // Leave (most) these functions below empty to stop stuff from generating
 
-  @Override
-  public @NotNull NoiseColumn getBaseColumn(
-      int x, int z, @NotNull LevelHeightAccessor level, @NotNull RandomState state) {
-    int height = level.getHeight(); // Usually 384
-    BlockState[] blocks = new BlockState[height];
-    BlockState stone = Blocks.STONE.defaultBlockState();
+    @Override
+    public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {}
 
-    Arrays.fill(blocks, stone);
+    @Override
+    public void applyCarvers(
+            WorldGenRegion p_223043_,
+            long p_223044_,
+            RandomState p_223045_,
+            BiomeManager p_223046_,
+            StructureManager p_223047_,
+            ChunkAccess p_223048_,
+            GenerationStep.Carving p_223049_) {}
 
-    return new NoiseColumn(getMinY(), blocks);
-  }
+    @Override
+    public void buildSurface(
+            WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_, ChunkAccess p_223053_) {}
 
-  @Override
-  public int getBaseHeight(
-      int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState state) {
-    return getMinY() + getGenDepth(); // top of the filled area
-  }
+    @Override
+    public @NotNull Codec<TARDISDimensionChunkGenerator> codec() {
+        return CODEC;
+    }
 
-  @Override
-  public int getGenDepth() {
-    return 384;
-  }
+    @Override
+    public void createReferences(WorldGenLevel pLevel, StructureManager pStructureManager, ChunkAccess pChunk) {}
 
-  @Override
-  public int getMinY() {
-    return -64;
-  }
+    @Override
+    public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(
+            Executor executor,
+            Blender blender,
+            RandomState randomState,
+            StructureManager structureManager,
+            ChunkAccess chunk) {
 
-  @Override
-  public int getSeaLevel() {
-    return -64;
-  }
+        BlockState stone = Blocks.STONE.defaultBlockState();
+        int minY = this.getMinY();
+        int maxY = minY + this.getGenDepth();
 
-  @Override
-  public void spawnOriginalMobs(WorldGenRegion p_62167_) {}
+        for (int y = minY; y < maxY; y++) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    chunk.setBlockState(new BlockPos(x, y, z), stone, false);
+                }
+            }
+        }
+
+        return CompletableFuture.completedFuture(chunk);
+    }
+
+    @Override
+    public @NotNull NoiseColumn getBaseColumn(
+            int x, int z, @NotNull LevelHeightAccessor level, @NotNull RandomState state) {
+        int height = level.getHeight(); // Usually 384
+        BlockState[] blocks = new BlockState[height];
+        BlockState stone = Blocks.STONE.defaultBlockState();
+
+        Arrays.fill(blocks, stone);
+
+        return new NoiseColumn(getMinY(), blocks);
+    }
+
+    @Override
+    public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState state) {
+        return getMinY() + getGenDepth(); // top of the filled area
+    }
+
+    @Override
+    public int getGenDepth() {
+        return 384;
+    }
+
+    @Override
+    public int getMinY() {
+        return -64;
+    }
+
+    @Override
+    public int getSeaLevel() {
+        return -64;
+    }
+
+    @Override
+    public void spawnOriginalMobs(WorldGenRegion p_62167_) {}
 }

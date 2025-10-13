@@ -7,22 +7,22 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class JavaJSON {
-  public static Model getModel(IUseJavaJSON part) {
-    if (getParsedJavaJSON(part) == null) return null;
-    return getParsedJavaJSON(part).getModelInfo().getModel();
-  }
+    public static Model getModel(IUseJavaJSON part) {
+        if (getParsedJavaJSON(part) == null) return null;
+        return getParsedJavaJSON(part).getModelInfo().getModel();
+    }
 
-  public static JavaJSONParsed getParsedJavaJSON(IUseJavaJSON part) {
-    return JavaJSONParser.loadModel(JavaJSONCache.reloadableModels.get(part));
-  }
+    public static JavaJSONParsed getParsedJavaJSON(IUseJavaJSON part) {
+        return JavaJSONParser.loadModel(JavaJSONCache.reloadableModels.get(part));
+    }
 
-  public static ResourceLocation getTexture(IUseJavaJSON part) {
-    if (getParsedJavaJSON(part) == null) return null;
-    return getParsedJavaJSON(part).getModelInfo().getTexture();
-  }
+    public static ResourceLocation getTexture(IUseJavaJSON part) {
+        if (getParsedJavaJSON(part) == null) return null;
+        return getParsedJavaJSON(part).getModelInfo().getTexture();
+    }
 
-  @SubscribeEvent
-  public static void onClientSetup(FMLClientSetupEvent event) {
-    event.enqueueWork(JavaJSONCache::init);
-  }
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(JavaJSONCache::init);
+    }
 }

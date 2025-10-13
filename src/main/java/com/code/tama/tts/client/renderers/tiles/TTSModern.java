@@ -14,29 +14,22 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class TTSModern<T extends BlockEntity> implements IUseJavaJSON, BlockEntityRenderer<T> {
-  public TTSModern() {
-    this.registerJavaJSON(new ResourceLocation(MODID, "models/exterior/voxel_moffat.json"));
-  }
+    public TTSModern() {
+        this.registerJavaJSON(new ResourceLocation(MODID, "models/exterior/voxel_moffat.json"));
+    }
 
-  public TTSModern(BlockEntityRendererProvider.Context context) {
-    this.registerJavaJSON(new ResourceLocation(MODID, "models/java/tts.json"));
-  }
+    public TTSModern(BlockEntityRendererProvider.Context context) {
+        this.registerJavaJSON(new ResourceLocation(MODID, "models/java/tts.json"));
+    }
 
-  @Override
-  public void render(
-      @NotNull T exampleTileEntity,
-      float v,
-      PoseStack poseStack,
-      MultiBufferSource bufferSource,
-      int i,
-      int i1) {
-    poseStack.pushPose();
-    poseStack.translate(0.5f, 1.5f, 0.5f);
-    poseStack.mulPose(XP.rotationDegrees(180));
-    getModel()
-        .renderToBuffer(
-            poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
-    // Extra
-    poseStack.popPose();
-  }
+    @Override
+    public void render(
+            @NotNull T exampleTileEntity, float v, PoseStack poseStack, MultiBufferSource bufferSource, int i, int i1) {
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 1.5f, 0.5f);
+        poseStack.mulPose(XP.rotationDegrees(180));
+        getModel().renderToBuffer(poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
+        // Extra
+        poseStack.popPose();
+    }
 }

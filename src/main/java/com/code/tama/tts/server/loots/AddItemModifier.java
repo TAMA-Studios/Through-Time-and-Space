@@ -16,41 +16,33 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class AddItemModifier extends LootModifier {
-  public static final Supplier<Codec<AddItemModifier>> CODEC =
-      Suppliers.memoize(
-          () ->
-              RecordCodecBuilder.create(
-                  inst ->
-                      codecStart(inst)
-                          .and(
-                              ForgeRegistries.ITEMS
-                                  .getCodec()
-                                  .fieldOf("item")
-                                  .forGetter(m -> m.item))
-                          .apply(inst, AddItemModifier::new)));
-  private final Item item;
+    public static final Supplier<Codec<AddItemModifier>> CODEC =
+            Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst)
+                    .and(ForgeRegistries.ITEMS.getCodec().fieldOf("item").forGetter(m -> m.item))
+                    .apply(inst, AddItemModifier::new)));
+    private final Item item;
 
-  public AddItemModifier(LootItemCondition[] conditionsIn, Item item) {
-    super(conditionsIn);
-    this.item = item;
-  }
-
-  @Override
-  public Codec<? extends IGlobalLootModifier> codec() {
-    return CODEC.get();
-  }
-
-  @Override
-  protected @NotNull ObjectArrayList<ItemStack> doApply(
-      ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-    for (LootItemCondition condition : this.conditions) {
-      if (!condition.test(context)) {
-        return generatedLoot;
-      }
+    public AddItemModifier(LootItemCondition[] conditionsIn, Item item) {
+        super(conditionsIn);
+        this.item = item;
     }
 
-    generatedLoot.add(new ItemStack(this.item));
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return CODEC.get();
+    }
 
-    return generatedLoot;
-  }
+    @Override
+    protected @NotNull ObjectArrayList<ItemStack> doApply(
+            ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+        for (LootItemCondition condition : this.conditions) {
+            if (!condition.test(context)) {
+                return generatedLoot;
+            }
+        }
+
+        generatedLoot.add(new ItemStack(this.item));
+
+        return generatedLoot;
+    }
 }

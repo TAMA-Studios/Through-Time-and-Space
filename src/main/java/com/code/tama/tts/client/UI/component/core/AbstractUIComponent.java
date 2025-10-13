@@ -15,30 +15,30 @@ import net.minecraft.world.entity.player.Player;
 @Setter
 @Getter
 public abstract class AbstractUIComponent {
-  boolean State;
+    boolean State;
 
-  /** The category this UIComponent shows up in */
-  UICategory Category;
+    /** The category this UIComponent shows up in */
+    UICategory Category;
 
-  public ResourceLocation GetIcon() {
-    return new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
-  }
-
-  public abstract ComponentTypes Type();
-
-  public void onInteract(Player player, AbstractMonitorTile monitor) {
-    switch (this.Type()) {
-      case TOGGLE, RADIO, CHECK -> this.State = !this.State;
-      case BUTTON -> {
-        this.State = true;
-        if (!player.level().isClientSide)
-          player.level().getServer().execute(new TickTask(5, () -> this.setState(false)));
-      }
+    public ResourceLocation GetIcon() {
+        return new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
     }
-  }
 
-  /**
-   * @return a map with an axis (XP or YP) and a float array (0 being minimum, 1 being maximum)
-   */
-  public abstract Map<Axis, Float[]> XYBounds();
+    public abstract ComponentTypes Type();
+
+    public void onInteract(Player player, AbstractMonitorTile monitor) {
+        switch (this.Type()) {
+            case TOGGLE, RADIO, CHECK -> this.State = !this.State;
+            case BUTTON -> {
+                this.State = true;
+                if (!player.level().isClientSide)
+                    player.level().getServer().execute(new TickTask(5, () -> this.setState(false)));
+            }
+        }
+    }
+
+    /**
+     * @return a map with an axis (XP or YP) and a float array (0 being minimum, 1 being maximum)
+     */
+    public abstract Map<Axis, Float[]> XYBounds();
 }

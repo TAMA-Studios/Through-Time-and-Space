@@ -7,15 +7,16 @@ import java.util.List;
 import lombok.Getter;
 
 public class DataRecipeList {
-  @Getter private static List<DataRecipe> RecipeList;
+    @Getter
+    private static List<DataRecipe> RecipeList;
 
-  public static void setList(List<DataRecipe> list) {
-    // Remove duplicates from the list
-    for (DataRecipe recipe : list) {
-      list.removeIf(r -> r != recipe && r.toString().equals(recipe.toString()));
+    public static void setList(List<DataRecipe> list) {
+        // Remove duplicates from the list
+        for (DataRecipe recipe : list) {
+            list.removeIf(r -> r != recipe && r.toString().equals(recipe.toString()));
+        }
+        RecipeList = list;
+        RecipeRegistry.RECIPES.clear();
+        RecipeRegistry.RECIPES.addAll(list);
     }
-    RecipeList = list;
-    RecipeRegistry.RECIPES.clear();
-    RecipeRegistry.RECIPES.addAll(list);
-  }
 }

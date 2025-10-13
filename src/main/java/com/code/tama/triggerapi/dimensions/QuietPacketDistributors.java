@@ -13,21 +13,17 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 // we can't just wrap the existing distributors because of the way the functors
 // are written
 public final class QuietPacketDistributors {
-  // sends packets to all players but just the ones that have the provided channel
-  private static final PacketDistributor<SimpleChannel> ALL =
-      new PacketDistributor<>(
-          (distributor, channelGetter) ->
-              packet ->
-                  ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers().stream()
-                      .filter(
-                          player ->
-                              channelGetter.get().isRemotePresent(player.connection.connection))
-                      .forEach(player -> player.connection.connection.send(packet)),
-          NetworkDirection.PLAY_TO_CLIENT);
+    // sends packets to all players but just the ones that have the provided channel
+    private static final PacketDistributor<SimpleChannel> ALL = new PacketDistributor<>(
+            (distributor, channelGetter) ->
+                    packet -> ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers().stream()
+                            .filter(player -> channelGetter.get().isRemotePresent(player.connection.connection))
+                            .forEach(player -> player.connection.connection.send(packet)),
+            NetworkDirection.PLAY_TO_CLIENT);
 
-  public static <PACKET> void sendToAll(SimpleChannel channel, PACKET packet) {
-    channel.send(ALL.with(() -> channel), packet);
-  }
+    public static <PACKET> void sendToAll(SimpleChannel channel, PACKET packet) {
+        channel.send(ALL.with(() -> channel), packet);
+    }
 
-  private QuietPacketDistributors() {}
+    private QuietPacketDistributors() {}
 }

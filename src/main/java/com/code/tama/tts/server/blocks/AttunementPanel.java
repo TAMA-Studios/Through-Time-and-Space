@@ -16,30 +16,26 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class AttunementPanel extends Block {
-  public AttunementPanel(Properties p_49795_) {
-    super(p_49795_);
-  }
+    public AttunementPanel(Properties p_49795_) {
+        super(p_49795_);
+    }
 
-  @Override
-  @SuppressWarnings("deprecation")
-  public @NotNull InteractionResult use(
-      @NotNull BlockState p_60503_,
-      Level level,
-      @NotNull BlockPos p_60505_,
-      @NotNull Player player,
-      @NotNull InteractionHand p_60507_,
-      @NotNull BlockHitResult p_60508_) {
-    level
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(
-            tardis -> {
-              if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
+    @Override
+    @SuppressWarnings("deprecation")
+    public @NotNull InteractionResult use(
+            @NotNull BlockState p_60503_,
+            Level level,
+            @NotNull BlockPos p_60505_,
+            @NotNull Player player,
+            @NotNull InteractionHand p_60507_,
+            @NotNull BlockHitResult p_60508_) {
+        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardis -> {
+            if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
                 ItemStack sonic = player.getMainHandItem();
                 sonicItem.Attune(tardis, sonic);
-                player.displayClientMessage(
-                    Component.literal(String.format("Attuned %s", sonicItem)), true);
-              }
-            });
-    return super.use(p_60503_, level, p_60505_, player, p_60507_, p_60508_);
-  }
+                player.displayClientMessage(Component.literal(String.format("Attuned %s", sonicItem)), true);
+            }
+        });
+        return super.use(p_60503_, level, p_60505_, player, p_60507_, p_60508_);
+    }
 }

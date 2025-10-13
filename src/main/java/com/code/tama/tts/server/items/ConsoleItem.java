@@ -13,25 +13,24 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ConsoleItem<T extends AbstractConsoleTile> extends BlockItem {
-  RegistryObject<BlockEntityType<T>> type;
+    RegistryObject<BlockEntityType<T>> type;
 
-  public ConsoleItem(RegistryObject<BlockEntityType<T>> type, Block block, Properties properties) {
-    super(block, properties);
-    this.type = type;
-  }
+    public ConsoleItem(RegistryObject<BlockEntityType<T>> type, Block block, Properties properties) {
+        super(block, properties);
+        this.type = type;
+    }
 
-  @Override
-  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-    consumer.accept(
-        new IClientItemExtensions() {
-          @Override
-          public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return new ConsoleItemRenderer(
-                Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-                Minecraft.getInstance().getEntityModels(),
-                type.get(),
-                getBlock().defaultBlockState());
-          }
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return new ConsoleItemRenderer(
+                        Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                        Minecraft.getInstance().getEntityModels(),
+                        type.get(),
+                        getBlock().defaultBlockState());
+            }
         });
-  }
+    }
 }

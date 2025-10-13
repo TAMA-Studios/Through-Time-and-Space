@@ -28,127 +28,104 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
-  @SubscribeEvent
-  public static void PlayerJoin(EntityJoinLevelEvent event) {
-    event
-        .getLevel()
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(ITARDISLevel::UpdateClient);
+    @SubscribeEvent
+    public static void PlayerJoin(EntityJoinLevelEvent event) {
+        event.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::UpdateClient);
 
-    if (event.getEntity().level().isClientSide) CameraShakeHandler.endShake();
+        if (event.getEntity().level().isClientSide) CameraShakeHandler.endShake();
 
-    if (event.getEntity() instanceof ServerPlayer player) {
-      player
-          .getCapability(Capabilities.PLAYER_CAPABILITY)
-          .ifPresent(
-              cap ->
-                  Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
+        if (event.getEntity() instanceof ServerPlayer player) {
+            player.getCapability(Capabilities.PLAYER_CAPABILITY)
+                    .ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
+        }
     }
-  }
 
-  @SubscribeEvent
-  public static void onRenderGameOverlay(RenderGuiOverlayEvent.Pre event) {
-    // Hide specific overlays
-    Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, Minecraft.getInstance().player)
-        .ifPresent(
-            cap -> {
-              if (!Objects.equals(cap.GetViewingTARDIS(), "")) {
-                event.setCanceled(true);
-              }
-            });
-  }
+    @SubscribeEvent
+    public static void onRenderGameOverlay(RenderGuiOverlayEvent.Pre event) {
+        // Hide specific overlays
+        Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, Minecraft.getInstance().player)
+                .ifPresent(cap -> {
+                    if (!Objects.equals(cap.GetViewingTARDIS(), "")) {
+                        event.setCanceled(true);
+                    }
+                });
+    }
 
-  @SubscribeEvent
-  public static void onRenderHand(RenderHandEvent event) {
-    // Hide specific overlays
-    Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, Minecraft.getInstance().player)
-        .ifPresent(
-            cap -> {
-              if (!Objects.equals(cap.GetViewingTARDIS(), "")) event.setCanceled(true);
-            });
-  }
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        // Hide specific overlays
+        Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, Minecraft.getInstance().player)
+                .ifPresent(cap -> {
+                    if (!Objects.equals(cap.GetViewingTARDIS(), "")) event.setCanceled(true);
+                });
+    }
 
-  @SubscribeEvent
-  public static void onInputUpdate(MovementInputUpdateEvent event) {
-    Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, event.getEntity())
-        .ifPresent(
-            cap -> {
-              if (!cap.GetViewingTARDIS().isEmpty()) {
+    @SubscribeEvent
+    public static void onInputUpdate(MovementInputUpdateEvent event) {
+        Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, event.getEntity()).ifPresent(cap -> {
+            if (!cap.GetViewingTARDIS().isEmpty()) {
                 event.getInput().forwardImpulse = 0;
                 event.getInput().leftImpulse = 0;
                 event.getInput().up = false;
                 event.getInput().down = false;
                 event.getInput().jumping = false;
-              }
-            });
-  }
+            }
+        });
+    }
 
-  @SubscribeEvent
-  public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-    if (event.player.level().isClientSide) {
-      event
-          .player
-          .getCapability(Capabilities.PLAYER_CAPABILITY)
-          .ifPresent(
-              cap -> {
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.player.level().isClientSide) {
+            event.player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
                 while (ClientSetup.EXTERIOR_VIEW.get().consumeClick()) {
-                  cap.SetViewingTARDIS("");
-                  Networking.sendToServer(new StopViewingExteriorC2S(event.player.getUUID()));
+                    cap.SetViewingTARDIS("");
+                    Networking.sendToServer(new StopViewingExteriorC2S(event.player.getUUID()));
                 }
-              });
-    }
-  }
-
-  @SubscribeEvent
-  public void onBlockBreak(BlockEvent.BreakEvent event) {
-    Player player = event.getPlayer();
-    Level level = (Level) event.getLevel();
-
-    player
-        .getCapability(Capabilities.PLAYER_CAPABILITY)
-        .ifPresent(
-            cap -> {
-              if (!cap.GetViewingTARDIS().isEmpty()) event.setCanceled(true);
             });
-  }
-
-  @SubscribeEvent
-  public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-    if (event.getEntity() instanceof Player player) {
-      Level level = (Level) event.getLevel();
-
-      player
-          .getCapability(Capabilities.PLAYER_CAPABILITY)
-          .ifPresent(
-              cap -> {
-                if (!cap.GetViewingTARDIS().isEmpty()) event.setCanceled(true);
-              });
+        }
     }
-  }
 
-  @SubscribeEvent
-  public static void Render(RenderLivingEvent<Player, PlayerModel<Player>> event) {
-    if (event.getEntity() instanceof Player player) {
-      player
-          .getCapability(Capabilities.PLAYER_CAPABILITY)
-          .ifPresent(
-              cap -> {
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        Level level = (Level) event.getLevel();
+
+        player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
+            if (!cap.GetViewingTARDIS().isEmpty()) event.setCanceled(true);
+        });
+    }
+
+    @SubscribeEvent
+    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            Level level = (Level) event.getLevel();
+
+            player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
+                if (!cap.GetViewingTARDIS().isEmpty()) event.setCanceled(true);
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void Render(RenderLivingEvent<Player, PlayerModel<Player>> event) {
+        if (event.getEntity() instanceof Player player) {
+            player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
                 if (cap.GetViewingTARDIS().isEmpty()) return;
                 else {
-                  event.getRenderer().getModel().body.visible = false;
-                  event.getRenderer().getModel().jacket.visible = false;
-                  event.getRenderer().getModel().head.visible = false;
-                  event.getRenderer().getModel().hat.visible = false;
-                  event.getRenderer().getModel().leftArm.visible = false;
-                  event.getRenderer().getModel().leftSleeve.visible = false;
-                  event.getRenderer().getModel().leftLeg.visible = false;
-                  event.getRenderer().getModel().leftPants.visible = false;
-                  event.getRenderer().getModel().rightArm.visible = false;
-                  event.getRenderer().getModel().rightSleeve.visible = false;
-                  event.getRenderer().getModel().rightLeg.visible = false;
-                  event.getRenderer().getModel().rightPants.visible = false;
+                    event.getRenderer().getModel().body.visible = false;
+                    event.getRenderer().getModel().jacket.visible = false;
+                    event.getRenderer().getModel().head.visible = false;
+                    event.getRenderer().getModel().hat.visible = false;
+                    event.getRenderer().getModel().leftArm.visible = false;
+                    event.getRenderer().getModel().leftSleeve.visible = false;
+                    event.getRenderer().getModel().leftLeg.visible = false;
+                    event.getRenderer().getModel().leftPants.visible = false;
+                    event.getRenderer().getModel().rightArm.visible = false;
+                    event.getRenderer().getModel().rightSleeve.visible = false;
+                    event.getRenderer().getModel().rightLeg.visible = false;
+                    event.getRenderer().getModel().rightPants.visible = false;
                 }
-              });
+            });
+        }
     }
-  }
 }

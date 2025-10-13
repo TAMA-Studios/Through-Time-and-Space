@@ -12,10 +12,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @Getter
 public class WorkbenchTile extends BlockEntity {
-  public ArrayList<Item> StoredItems = new ArrayList<>();
-  public NozzleItem nozzle;
+    public ArrayList<Item> StoredItems = new ArrayList<>();
+    public NozzleItem nozzle;
 
-  public WorkbenchTile(BlockPos pos, BlockState state) {
-    super(TTSTileEntities.WORKBENCH_TILE.get(), pos, state);
-  }
+    public WorkbenchTile(BlockPos pos, BlockState state) {
+        super(TTSTileEntities.WORKBENCH_TILE.get(), pos, state);
+    }
 }

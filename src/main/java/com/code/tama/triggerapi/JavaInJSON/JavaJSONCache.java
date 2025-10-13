@@ -16,43 +16,42 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class JavaJSONCache extends SimplePreparableReloadListener<Void> {
 
-  protected static Map<ResourceLocation, JavaJSONParsed> bakedCache = new HashMap<>();
-  protected static Map<IUseJavaJSON, ResourceLocation> reloadableModels = new HashMap<>();
-  protected static List<ResourceLocation> unbakedCache = new ArrayList<>();
+    protected static Map<ResourceLocation, JavaJSONParsed> bakedCache = new HashMap<>();
+    protected static Map<IUseJavaJSON, ResourceLocation> reloadableModels = new HashMap<>();
+    protected static List<ResourceLocation> unbakedCache = new ArrayList<>();
 
-  public static void register(IUseJavaJSON part, ResourceLocation model) {
-    JavaJSONCache.reloadableModels.put(part, model);
-    part.reload();
-  }
-
-  @SubscribeEvent
-  public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
-    event.registerReloadListener(new JavaJSONCache());
-  }
-
-  protected static void init() {
-    // Handled in event
-  }
-
-  @Override
-  protected void apply(Void object, ResourceManager resourceManager, ProfilerFiller profiler) {
-    JavaJSONCache.bakedCache.clear();
-
-    for (ResourceLocation location : JavaJSONCache.unbakedCache) {
-      JavaJSONParser.loadModel(location);
+    public static void register(IUseJavaJSON part, ResourceLocation model) {
+        JavaJSONCache.reloadableModels.put(part, model);
+        part.reload();
     }
 
-    for (Map.Entry<ResourceLocation, JavaJSONParsed> entry : JavaJSONCache.bakedCache.entrySet()) {
-      entry.getValue().load();
+    @SubscribeEvent
+    public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(new JavaJSONCache());
     }
-    for (Map.Entry<IUseJavaJSON, ResourceLocation> entry :
-        JavaJSONCache.reloadableModels.entrySet()) {
-      entry.getKey().reload();
-    }
-  }
 
-  @Override
-  protected Void prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
-    return null;
-  }
+    protected static void init() {
+        // Handled in event
+    }
+
+    @Override
+    protected void apply(Void object, ResourceManager resourceManager, ProfilerFiller profiler) {
+        JavaJSONCache.bakedCache.clear();
+
+        for (ResourceLocation location : JavaJSONCache.unbakedCache) {
+            JavaJSONParser.loadModel(location);
+        }
+
+        for (Map.Entry<ResourceLocation, JavaJSONParsed> entry : JavaJSONCache.bakedCache.entrySet()) {
+            entry.getValue().load();
+        }
+        for (Map.Entry<IUseJavaJSON, ResourceLocation> entry : JavaJSONCache.reloadableModels.entrySet()) {
+            entry.getKey().reload();
+        }
+    }
+
+    @Override
+    protected Void prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        return null;
+    }
 }

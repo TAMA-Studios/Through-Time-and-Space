@@ -8,12 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HudolinConsoleTile extends AbstractConsoleTile {
-  public HudolinConsoleTile(BlockPos p_155229_, BlockState p_155230_) {
-    super(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(), p_155229_, p_155230_);
-  }
+    public HudolinConsoleTile(BlockPos p_155229_, BlockState p_155230_) {
+        super(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(), p_155229_, p_155230_);
+    }
 
-  @Override
-  public AbstractControlList GetControlList() {
-    return ControlLists.GetHudolin();
-  }
+    @Override
+    public AbstractControlList GetControlList() {
+        return ControlLists.GetHudolin();
+    }
 }

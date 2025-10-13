@@ -7,11 +7,12 @@ import java.util.List;
 import lombok.Getter;
 
 public class DataARSList {
-  @Getter private static List<ARSStructure> StructureList;
+    @Getter
+    private static List<ARSStructure> StructureList;
 
-  public static void setList(List<ARSStructure> list) {
-    StructureList = list;
-    ARSRegistry.STRUCTURES.clear();
-    ARSRegistry.STRUCTURES.addAll(list);
-  }
+    public static void setList(List<ARSStructure> list) {
+        StructureList = list;
+        ARSRegistry.STRUCTURES.clear();
+        ARSRegistry.STRUCTURES.addAll(list);
+    }
 }

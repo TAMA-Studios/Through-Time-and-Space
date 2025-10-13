@@ -13,22 +13,21 @@ import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class HierarchicalExteriorModel extends HierarchicalModel<Entity>
-    implements IExteriorModel<ExteriorTile> {
-  static boolean innited = false;
+        implements IExteriorModel<ExteriorTile> {
+    static boolean innited = false;
 
-  public HierarchicalExteriorModel(
-      ModelPart root, ResourceLocation name, ModelLayerLocation location) {
-    // if(!innited)
-    // ExteriorModelsHandler.GetInstance().AddModel(this.getClass(), location);
-    // innited = true;
-  }
+    public HierarchicalExteriorModel(ModelPart root, ResourceLocation name, ModelLayerLocation location) {
+        // if(!innited)
+        // ExteriorModelsHandler.GetInstance().AddModel(this.getClass(), location);
+        // innited = true;
+    }
 
-  /**
-   * Modid + name of the exterior <br>
-   * If you're adding a custom exterior with an addon just use your modid + exterior name
-   */
-  public abstract ResourceLocation GetModelName();
+    /**
+     * Modid + name of the exterior <br>
+     * If you're adding a custom exterior with an addon just use your modid + exterior name
+     */
+    public abstract ResourceLocation GetModelName();
 
-  @Override
-  public void setupAnim(@NotNull Entity entity, float v, float v1, float v2, float v3, float v4) {}
+    @Override
+    public void setupAnim(@NotNull Entity entity, float v, float v1, float v2, float v3, float v4) {}
 }

@@ -16,26 +16,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
 
-  protected PlayerMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
-    super(p_20966_, p_20967_);
-  }
+    protected PlayerMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
+        super(p_20966_, p_20967_);
+    }
 
-  @Inject(method = "travel(Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), cancellable = true)
-  private void travel(Vec3 vec3, CallbackInfo info) {
-    Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, TTS$GetPlayer().level())
-        .ifPresent(
-            tardis -> {
-              if (!tardis.GetData().IsViewingTARDIS(TTS$GetPlayer().getUUID())) return;
-              TTS$GetPlayer().setTicksFrozen(1);
-              TTS$GetPlayer().setDeltaMovement(Vec3.ZERO);
-              TTS$GetPlayer().fallDistance = 0.0F;
-              info.cancel();
-            });
+    @Inject(method = "travel(Lnet/minecraft/world/phys/Vec3;)V", at = @At("HEAD"), cancellable = true)
+    private void travel(Vec3 vec3, CallbackInfo info) {
+        Capabilities.getCap(
+                        Capabilities.TARDIS_LEVEL_CAPABILITY, TTS$GetPlayer().level())
+                .ifPresent(tardis -> {
+                    if (!tardis.GetData().IsViewingTARDIS(TTS$GetPlayer().getUUID())) return;
+                    TTS$GetPlayer().setTicksFrozen(1);
+                    TTS$GetPlayer().setDeltaMovement(Vec3.ZERO);
+                    TTS$GetPlayer().fallDistance = 0.0F;
+                    info.cancel();
+                });
 
-    // TODO: mavity
-  }
+        // TODO: mavity
+    }
 
-  @Unique private Player TTS$GetPlayer() {
-    return ((Player) (Object) this);
-  }
+    @Unique private Player TTS$GetPlayer() {
+        return ((Player) (Object) this);
+    }
 }

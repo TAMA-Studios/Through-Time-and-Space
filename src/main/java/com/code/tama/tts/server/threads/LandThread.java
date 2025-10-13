@@ -5,18 +5,18 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.PhysicalStateManager;
 
 public class LandThread extends Thread {
-  ITARDISLevel itardisLevel;
+    ITARDISLevel itardisLevel;
 
-  public LandThread(ITARDISLevel itardisLevel) {
-    this.setName("Landing Thread");
-    this.itardisLevel = itardisLevel;
-  }
+    public LandThread(ITARDISLevel itardisLevel) {
+        this.setName("Landing Thread");
+        this.itardisLevel = itardisLevel;
+    }
 
-  @Override
-  public void run() {
-    this.itardisLevel.GetFlightData().setPlayRotorAnimation(false);
-    this.itardisLevel.UpdateClient();
-    new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverLand();
-    super.run();
-  }
+    @Override
+    public void run() {
+        this.itardisLevel.GetFlightData().setPlayRotorAnimation(false);
+        this.itardisLevel.UpdateClient();
+        new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverLand();
+        super.run();
+    }
 }

@@ -31,110 +31,103 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 /** Other tiles implement this to get data for portals */
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
-  public AbstractPortalTile(
-      BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
-    super(p_155228_, p_155229_, p_155230_);
-  }
+    public AbstractPortalTile(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
+        super(p_155228_, p_155229_, p_155230_);
+    }
 
-  @OnlyIn(Dist.CLIENT)
-  public VertexBuffer MODEL_VBO;
+    @OnlyIn(Dist.CLIENT)
+    public VertexBuffer MODEL_VBO;
 
-  @OnlyIn(Dist.CLIENT)
-  private FBOHelper FBOContainer;
+    @OnlyIn(Dist.CLIENT)
+    private FBOHelper FBOContainer;
 
-  public FBOHelper getFBOContainer() {
-    return this.FBOContainer == null ? this.FBOContainer = new FBOHelper() : this.FBOContainer;
-  }
+    public FBOHelper getFBOContainer() {
+        return this.FBOContainer == null ? this.FBOContainer = new FBOHelper() : this.FBOContainer;
+    }
 
-  @OnlyIn(Dist.CLIENT)
-  public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
+    @OnlyIn(Dist.CLIENT)
+    public Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
 
-  @OnlyIn(Dist.CLIENT)
-  public Map<BakedModel, Integer> chunkModels = new HashMap<>();
+    @OnlyIn(Dist.CLIENT)
+    public Map<BakedModel, Integer> chunkModels = new HashMap<>();
 
-  @OnlyIn(Dist.CLIENT)
-  public List<BotiChunkContainer> containers = new ArrayList<>();
+    @OnlyIn(Dist.CLIENT)
+    public List<BotiChunkContainer> containers = new ArrayList<>();
 
-  public long lastRequestTime = 0;
+    public long lastRequestTime = 0;
 
-  public long lastUpdateTime = 0;
+    public long lastUpdateTime = 0;
 
-  @Getter public ResourceKey<Level> targetLevel;
+    @Getter
+    public ResourceKey<Level> targetLevel;
 
-  public DimensionType type;
+    public DimensionType type;
 
-  public ResourceKey<DimensionType> dimensionTypeId;
+    public ResourceKey<DimensionType> dimensionTypeId;
 
-  public Vec3 SkyColor = Vec3.ZERO;
+    public Vec3 SkyColor = Vec3.ZERO;
 
-  @Getter public BlockPos targetPos = new BlockPos(0, 128, 0);
+    @Getter
+    public BlockPos targetPos = new BlockPos(0, 128, 0);
 
-  public float targetY = 0;
+    public float targetY = 0;
 
-  private final List<Integer> recievedPackets = new ArrayList<>();
+    private final List<Integer> recievedPackets = new ArrayList<>();
 
-  @OnlyIn(Dist.CLIENT)
-  public void updateChunkDataFromServer(
-      List<BotiChunkContainer> chunkData, int packetIndex, int totalPackets) {
-    if (packetIndex > totalPackets || this.recievedPackets.contains(packetIndex)) {
-      TTSMod.LOGGER.warn(
-          "Portal tile received packet not meant for it, or it's updating too quickly... ruh roh");
-      return;
-    } else recievedPackets.add(packetIndex);
+    @OnlyIn(Dist.CLIENT)
+    public void updateChunkDataFromServer(List<BotiChunkContainer> chunkData, int packetIndex, int totalPackets) {
+        if (packetIndex > totalPackets || this.recievedPackets.contains(packetIndex)) {
+            TTSMod.LOGGER.warn("Portal tile received packet not meant for it, or it's updating too quickly... ruh roh");
+            return;
+        } else recievedPackets.add(packetIndex);
 
-    chunkData.forEach(
-        container -> {
-          if (container.isIsTile()) {
-            BlockEntity entity =
-                BlockEntity.loadStatic(
-                    container.getPos(), container.getState(), container.getEntityTag());
-            blockEntities.put(container.getPos(), entity);
-            containers.remove(container);
-          }
+        chunkData.forEach(container -> {
+            if (container.isIsTile()) {
+                BlockEntity entity =
+                        BlockEntity.loadStatic(container.getPos(), container.getState(), container.getEntityTag());
+                blockEntities.put(container.getPos(), entity);
+                containers.remove(container);
+            }
         });
-    containers.addAll(chunkData);
+        containers.addAll(chunkData);
 
-    if (recievedPackets.size() >= totalPackets) { // If we've got all the packets
-      this.recievedPackets.clear();
-      this.MODEL_VBO = BOTIUtils.buildModelVBO(this.containers, this);
+        if (recievedPackets.size() >= totalPackets) { // If we've got all the packets
+            this.recievedPackets.clear();
+            this.MODEL_VBO = BOTIUtils.buildModelVBO(this.containers, this);
+        }
     }
-  }
 
-  public void setTargetLevel(
-      ResourceKey<Level> levelKey, BlockPos targetPos, float yRot, boolean markDirty) {
-    if (this.level == null) return;
-    this.targetLevel = levelKey;
-    this.targetPos = targetPos;
-    this.type = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionType();
-    this.dimensionTypeId =
-        ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionTypeId();
-    this.targetY = yRot;
+    public void setTargetLevel(ResourceKey<Level> levelKey, BlockPos targetPos, float yRot, boolean markDirty) {
+        if (this.level == null) return;
+        this.targetLevel = levelKey;
+        this.targetPos = targetPos;
+        this.type = ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionType();
+        this.dimensionTypeId =
+                ServerLifecycleHooks.getCurrentServer().getLevel(levelKey).dimensionTypeId();
+        this.targetY = yRot;
 
-    chunkModels.clear();
-    blockEntities.clear();
+        chunkModels.clear();
+        blockEntities.clear();
 
-    if (markDirty && !level.isClientSide()) {
-      setChanged();
-      level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-      Networking.INSTANCE.send(
-          PacketDistributor.DIMENSION.with(() -> this.level.dimension()),
-          new PortalSyncPacketS2C(
-              worldPosition, targetLevel, type, targetPos, dimensionTypeId, targetY));
+        if (markDirty && !level.isClientSide()) {
+            setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            Networking.INSTANCE.send(
+                    PacketDistributor.DIMENSION.with(() -> this.level.dimension()),
+                    new PortalSyncPacketS2C(worldPosition, targetLevel, type, targetPos, dimensionTypeId, targetY));
+        }
     }
-  }
 
-  @Override
-  public void tick() {
-    if (this.targetLevel != null) return;
-    assert this.level != null;
-    this.level
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(
-            cap ->
-                this.setTargetLevel(
-                    cap.GetCurrentLevel(),
-                    cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(),
-                    targetY,
-                    true));
-  }
+    @Override
+    public void tick() {
+        if (this.targetLevel != null) return;
+        assert this.level != null;
+        this.level
+                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                .ifPresent(cap -> this.setTargetLevel(
+                        cap.GetCurrentLevel(),
+                        cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(),
+                        targetY,
+                        true));
+    }
 }

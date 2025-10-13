@@ -16,38 +16,37 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @Setter
 @OnlyIn(Dist.CLIENT)
 public class TARDISClientData {
-  public final TARDISLevelCapability TARDIS;
-  public VortexRenderer vortex;
-  public AbstractJSONRenderer exteriorRenderer;
-  private Exterior exterior;
+    public final TARDISLevelCapability TARDIS;
+    public VortexRenderer vortex;
+    public AbstractJSONRenderer exteriorRenderer;
+    private Exterior exterior;
 
-  public TARDISClientData(TARDISLevelCapability cap) {
-    this.TARDIS = cap;
-    cap.UpdateClient(DataUpdateValues.RENDERING);
-  }
+    public TARDISClientData(TARDISLevelCapability cap) {
+        this.TARDIS = cap;
+        cap.UpdateClient(DataUpdateValues.RENDERING);
+    }
 
-  public VortexRenderer getVortex() {
-    if (vortex == null || vortex.TEXTURE_LOCATION.equals(new ResourceLocation("", ""))) {
-      TARDIS.UpdateClient(DataUpdateValues.RENDERING);
-      return this.vortex =
-          new VortexRenderer(
-              new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png"));
+    public VortexRenderer getVortex() {
+        if (vortex == null || vortex.TEXTURE_LOCATION.equals(new ResourceLocation("", ""))) {
+            TARDIS.UpdateClient(DataUpdateValues.RENDERING);
+            return this.vortex = new VortexRenderer(
+                    new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png"));
+        }
+        if (vortex.TEXTURE_LOCATION != TARDIS.GetData().getVortex()) {
+            TARDIS.UpdateClient(DataUpdateValues.RENDERING);
+            return this.vortex = new VortexRenderer(this.TARDIS.GetData().getVortex());
+        }
+        return vortex;
     }
-    if (vortex.TEXTURE_LOCATION != TARDIS.GetData().getVortex()) {
-      TARDIS.UpdateClient(DataUpdateValues.RENDERING);
-      return this.vortex = new VortexRenderer(this.TARDIS.GetData().getVortex());
-    }
-    return vortex;
-  }
 
-  public AbstractJSONRenderer getRenderer() {
-    if (this.exteriorRenderer == null
-        || !this.exterior.equals(TARDIS.GetData().getExteriorModel())) {
-      TARDIS.UpdateClient(DataUpdateValues.RENDERING);
-      this.exterior = TARDIS.GetData().getExteriorModel();
-      return this.exteriorRenderer =
-          new AbstractJSONRenderer(TARDIS.GetData().getExteriorModel().getModel());
+    public AbstractJSONRenderer getRenderer() {
+        if (this.exteriorRenderer == null
+                || !this.exterior.equals(TARDIS.GetData().getExteriorModel())) {
+            TARDIS.UpdateClient(DataUpdateValues.RENDERING);
+            this.exterior = TARDIS.GetData().getExteriorModel();
+            return this.exteriorRenderer =
+                    new AbstractJSONRenderer(TARDIS.GetData().getExteriorModel().getModel());
+        }
+        return this.exteriorRenderer;
     }
-    return this.exteriorRenderer;
-  }
 }

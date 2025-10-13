@@ -12,34 +12,31 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 /** Tells the server to sync the TARDIS cap with the client */
 public class TriggerSyncCapPacketC2S {
-  public static TriggerSyncCapPacketC2S decode(FriendlyByteBuf buffer) {
-    return new TriggerSyncCapPacketC2S(
-        buffer.readResourceKey(Registries.DIMENSION), buffer.readInt());
-  }
+    public static TriggerSyncCapPacketC2S decode(FriendlyByteBuf buffer) {
+        return new TriggerSyncCapPacketC2S(buffer.readResourceKey(Registries.DIMENSION), buffer.readInt());
+    }
 
-  public static void encode(TriggerSyncCapPacketC2S packet, FriendlyByteBuf buffer) {
-    buffer.writeResourceKey(packet.TARDISLevel);
-    buffer.writeInt(packet.toUpdate);
-  }
+    public static void encode(TriggerSyncCapPacketC2S packet, FriendlyByteBuf buffer) {
+        buffer.writeResourceKey(packet.TARDISLevel);
+        buffer.writeInt(packet.toUpdate);
+    }
 
-  public static void handle(
-      TriggerSyncCapPacketC2S packet, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
-    context.enqueueWork(
-        () -> {
-          ServerLifecycleHooks.getCurrentServer()
-              .getLevel(packet.TARDISLevel)
-              .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-              .ifPresent(cap -> cap.UpdateClient(packet.toUpdate));
+    public static void handle(TriggerSyncCapPacketC2S packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            ServerLifecycleHooks.getCurrentServer()
+                    .getLevel(packet.TARDISLevel)
+                    .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                    .ifPresent(cap -> cap.UpdateClient(packet.toUpdate));
         });
-    context.setPacketHandled(true);
-  }
+        context.setPacketHandled(true);
+    }
 
-  ResourceKey<Level> TARDISLevel;
-  int toUpdate;
+    ResourceKey<Level> TARDISLevel;
+    int toUpdate;
 
-  public TriggerSyncCapPacketC2S(ResourceKey<Level> TARDISLevel, int toUpdate) {
-    this.toUpdate = toUpdate;
-    this.TARDISLevel = TARDISLevel;
-  }
+    public TriggerSyncCapPacketC2S(ResourceKey<Level> TARDISLevel, int toUpdate) {
+        this.toUpdate = toUpdate;
+        this.TARDISLevel = TARDISLevel;
+    }
 }

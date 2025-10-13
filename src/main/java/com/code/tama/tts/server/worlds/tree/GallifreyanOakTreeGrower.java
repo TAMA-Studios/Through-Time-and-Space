@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GallifreyanOakTreeGrower extends AbstractTreeGrower {
-  @Nullable @Override
-  protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(
-      @NotNull RandomSource pRandom, boolean pHasFlowers) {
-    return MConfiguredFeatures.GALLIFREYAN_OAK_KEY;
-  }
+    @Nullable @Override
+    protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(
+            @NotNull RandomSource pRandom, boolean pHasFlowers) {
+        return MConfiguredFeatures.GALLIFREYAN_OAK_KEY;
+    }
 }

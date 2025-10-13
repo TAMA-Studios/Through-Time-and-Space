@@ -12,33 +12,29 @@ import org.jetbrains.annotations.NotNull;
 
 //                                                             \/ Replace with Tile Entity class
 public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
-  public static final int fullBright = LightTexture.pack(15, 15);
-  public final BlockEntityRendererProvider.Context context;
+    public static final int fullBright = LightTexture.pack(15, 15);
+    public final BlockEntityRendererProvider.Context context;
 
-  public ExampleRenderer(BlockEntityRendererProvider.Context context) {
-    this.context = context;
-  }
+    public ExampleRenderer(BlockEntityRendererProvider.Context context) {
+        this.context = context;
+    }
 
-  @Override
-  public void render(
-      @NotNull ExampleTileEntity example, // Make sure this is the Tile Entity class
-      float partialTicks,
-      @NotNull PoseStack poseStack,
-      @NotNull MultiBufferSource bufferSource,
-      int combinedLight,
-      int combinedOverlay) {
-    if (example.getLevel() == null) return;
+    @Override
+    public void render(
+            @NotNull ExampleTileEntity example, // Make sure this is the Tile Entity class
+            float partialTicks,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
+            int combinedLight,
+            int combinedOverlay) {
+        if (example.getLevel() == null) return;
 
-    // If the TARDIS level cap is present
-    example
-        .getLevel()
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(
-            cap -> {
-              // Do all of this ("cap" is the TARDIS level capability)
-              poseStack.pushPose();
+        // If the TARDIS level cap is present
+        example.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            // Do all of this ("cap" is the TARDIS level capability)
+            poseStack.pushPose();
 
-              poseStack.popPose();
-            });
-  }
+            poseStack.popPose();
+        });
+    }
 }

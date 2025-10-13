@@ -4,7 +4,7 @@ package com.code.tama.tts.server.tardis.terminationprotocol;
 import com.code.tama.tts.server.registries.FlightTerminationProtocolRegistry;
 
 public class PoliteTerminusProtocolHandler extends TerminationProtocolHandler {
-  public PoliteTerminusProtocolHandler() {
-    super(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
-  }
+    public PoliteTerminusProtocolHandler() {
+        super(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
+    }
 }

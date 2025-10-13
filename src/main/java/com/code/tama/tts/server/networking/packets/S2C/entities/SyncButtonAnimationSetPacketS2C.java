@@ -11,36 +11,33 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SyncButtonAnimationSetPacketS2C {
-  private final HashMap<Integer, Float> animationSet;
-  private final BlockPos pos;
+    private final HashMap<Integer, Float> animationSet;
+    private final BlockPos pos;
 
-  public static void encode(SyncButtonAnimationSetPacketS2C packet, FriendlyByteBuf buffer) {
-    buffer.writeBlockPos(packet.pos);
-    buffer.writeMap(packet.animationSet, FriendlyByteBuf::writeInt, FriendlyByteBuf::writeFloat);
-  }
+    public static void encode(SyncButtonAnimationSetPacketS2C packet, FriendlyByteBuf buffer) {
+        buffer.writeBlockPos(packet.pos);
+        buffer.writeMap(packet.animationSet, FriendlyByteBuf::writeInt, FriendlyByteBuf::writeFloat);
+    }
 
-  public static SyncButtonAnimationSetPacketS2C decode(FriendlyByteBuf buffer) {
-    BlockPos pos = buffer.readBlockPos();
-    Map<Integer, Float> map = buffer.readMap(FriendlyByteBuf::readInt, FriendlyByteBuf::readFloat);
-    return new SyncButtonAnimationSetPacketS2C(new HashMap<>(map), pos);
-  }
+    public static SyncButtonAnimationSetPacketS2C decode(FriendlyByteBuf buffer) {
+        BlockPos pos = buffer.readBlockPos();
+        Map<Integer, Float> map = buffer.readMap(FriendlyByteBuf::readInt, FriendlyByteBuf::readFloat);
+        return new SyncButtonAnimationSetPacketS2C(new HashMap<>(map), pos);
+    }
 
-  public static void handle(
-      SyncButtonAnimationSetPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
-    NetworkEvent.Context context = contextSupplier.get();
-    context.enqueueWork(
-        () -> {
-          Minecraft mc = Minecraft.getInstance();
-          if (mc.level != null
-              && mc.level.getBlockEntity(packet.pos) instanceof AbstractConsoleTile tile) {
-            tile.ControlAnimationMap = packet.animationSet;
-          }
+    public static void handle(SyncButtonAnimationSetPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.level != null && mc.level.getBlockEntity(packet.pos) instanceof AbstractConsoleTile tile) {
+                tile.ControlAnimationMap = packet.animationSet;
+            }
         });
-    context.setPacketHandled(true);
-  }
+        context.setPacketHandled(true);
+    }
 
-  public SyncButtonAnimationSetPacketS2C(HashMap<Integer, Float> animationSet, BlockPos pos) {
-    this.animationSet = animationSet;
-    this.pos = pos;
-  }
+    public SyncButtonAnimationSetPacketS2C(HashMap<Integer, Float> animationSet, BlockPos pos) {
+        this.animationSet = animationSet;
+        this.pos = pos;
+    }
 }

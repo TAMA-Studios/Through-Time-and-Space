@@ -13,23 +13,23 @@ import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class TTSJeiPlugin implements IModPlugin {
-  private static final ResourceLocation UID = new ResourceLocation("tts", "jei_plugin");
+    private static final ResourceLocation UID = new ResourceLocation("tts", "jei_plugin");
 
-  @Override
-  public @NotNull ResourceLocation getPluginUid() {
-    return UID;
-  }
+    @Override
+    public @NotNull ResourceLocation getPluginUid() {
+        return UID;
+    }
 
-  @Override
-  public void registerCategories(IRecipeCategoryRegistration registration) {
-    registration.addRecipeCategories(
-        new DataRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-  }
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(
+                new DataRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+    }
 
-  @Override
-  public void registerRecipes(IRecipeRegistration registration) {
-    List<DataRecipe> recipes = new java.util.ArrayList<>(List.of());
-    recipes.addAll(RecipeRegistry.RECIPES);
-    registration.addRecipes(DataRecipeCategory.TYPE, recipes);
-  }
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        List<DataRecipe> recipes = new java.util.ArrayList<>(List.of());
+        recipes.addAll(RecipeRegistry.RECIPES);
+        registration.addRecipes(DataRecipeCategory.TYPE, recipes);
+    }
 }

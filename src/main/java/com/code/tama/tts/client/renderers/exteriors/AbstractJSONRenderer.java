@@ -12,27 +12,26 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class AbstractJSONRenderer implements IUseJavaJSON, BlockEntityRenderer<ExteriorTile> {
-  public AbstractJSONRenderer(ResourceLocation model) {
-    this.registerJavaJSON(model);
-  }
-
-  @Override
-  public void render(
-      @NotNull ExteriorTile exteriorTile,
-      float v,
-      PoseStack poseStack,
-      @NotNull MultiBufferSource bufferSource,
-      int i,
-      int i1) {
-    poseStack.pushPose();
-    poseStack.translate(0.5f, 1.5f, 0.5f);
-    poseStack.mulPose(XP.rotationDegrees(180));
-
-    if (getModel() != null) {
-      getModel()
-          .renderToBuffer(
-              poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
+    public AbstractJSONRenderer(ResourceLocation model) {
+        this.registerJavaJSON(model);
     }
-    poseStack.popPose();
-  }
+
+    @Override
+    public void render(
+            @NotNull ExteriorTile exteriorTile,
+            float v,
+            PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
+            int i,
+            int i1) {
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 1.5f, 0.5f);
+        poseStack.mulPose(XP.rotationDegrees(180));
+
+        if (getModel() != null) {
+            getModel()
+                    .renderToBuffer(poseStack, bufferSource.getBuffer(getRenderType()), i, i1, 1, 1, 1, 1); // JavaJSON
+        }
+        poseStack.popPose();
+    }
 }

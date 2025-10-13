@@ -18,43 +18,40 @@ import org.jetbrains.annotations.NotNull;
 
 /** Renderer for the ConsoleTile BlockItem * */
 public class CompressedMultiblockItemRenderer extends BlockEntityWithoutLevelRenderer {
-  private final CompressedMultiblockTile CompressedMultiblockTile;
+    private final CompressedMultiblockTile CompressedMultiblockTile;
 
-  public CompressedMultiblockItemRenderer(BlockState state) {
-    super(
-        Minecraft.getInstance().getBlockEntityRenderDispatcher(),
-        Minecraft.getInstance().getEntityModels());
-    this.CompressedMultiblockTile =
-        TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get().create(BlockPos.ZERO, state);
-  }
-
-  @Override
-  public void renderByItem(
-      @NotNull ItemStack stack,
-      @NotNull ItemDisplayContext context,
-      @NotNull PoseStack poseStack,
-      @NotNull MultiBufferSource buffer,
-      int packedLight,
-      int packedOverlay) {
-
-    if (stack.getItem() instanceof CompressedMultiblockItem) {
-      this.CompressedMultiblockTile.load(BlockItem.getBlockEntityData(stack));
-
-      BlockEntityRenderer<CompressedMultiblockTile> renderer =
-          Minecraft.getInstance()
-              .getBlockEntityRenderDispatcher()
-              .getRenderer(this.CompressedMultiblockTile);
-
-      poseStack.pushPose();
-
-      poseStack.scale(0.5f, 0.5f, 0.5f);
-      poseStack.translate(0.5, 0.5, 0.5);
-
-      if (renderer != null)
-        renderer.render(
-            this.CompressedMultiblockTile, 0, poseStack, buffer, packedLight, packedOverlay);
-
-      poseStack.popPose();
+    public CompressedMultiblockItemRenderer(BlockState state) {
+        super(
+                Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+                Minecraft.getInstance().getEntityModels());
+        this.CompressedMultiblockTile =
+                TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get().create(BlockPos.ZERO, state);
     }
-  }
+
+    @Override
+    public void renderByItem(
+            @NotNull ItemStack stack,
+            @NotNull ItemDisplayContext context,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource buffer,
+            int packedLight,
+            int packedOverlay) {
+
+        if (stack.getItem() instanceof CompressedMultiblockItem) {
+            this.CompressedMultiblockTile.load(BlockItem.getBlockEntityData(stack));
+
+            BlockEntityRenderer<CompressedMultiblockTile> renderer =
+                    Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(this.CompressedMultiblockTile);
+
+            poseStack.pushPose();
+
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+            poseStack.translate(0.5, 0.5, 0.5);
+
+            if (renderer != null)
+                renderer.render(this.CompressedMultiblockTile, 0, poseStack, buffer, packedLight, packedOverlay);
+
+            poseStack.popPose();
+        }
+    }
 }

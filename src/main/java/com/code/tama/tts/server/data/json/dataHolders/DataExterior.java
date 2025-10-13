@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public record DataExterior(String name, ResourceLocation ModelName) {
-  @Override
-  public @NotNull String toString() {
-    return "DataExterior{" + "name='" + name + '\'' + ", modelname=" + ModelName + '}';
-  }
+    @Override
+    public @NotNull String toString() {
+        return "DataExterior{" + "name='" + name + '\'' + ", modelname=" + ModelName + '}';
+    }
 }

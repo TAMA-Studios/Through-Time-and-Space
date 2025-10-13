@@ -11,31 +11,31 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class HardLightBlock extends Block {
-  private boolean Destroy = false;
+    private boolean Destroy = false;
 
-  public HardLightBlock(Properties p_49795_) {
-    super(p_49795_);
-  }
+    public HardLightBlock(Properties p_49795_) {
+        super(p_49795_);
+    }
 
-  @Override
-  public void onPlace(
-      @NotNull BlockState blockState,
-      @NotNull Level level,
-      @NotNull BlockPos blockPos,
-      @NotNull BlockState blockState1,
-      boolean b) {
-    super.onPlace(blockState, level, blockPos, blockState1, b);
-    level.scheduleTick(blockPos, blockState.getBlock(), 1200);
-    Destroy = true;
-  }
+    @Override
+    public void onPlace(
+            @NotNull BlockState blockState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull BlockState blockState1,
+            boolean b) {
+        super.onPlace(blockState, level, blockPos, blockState1, b);
+        level.scheduleTick(blockPos, blockState.getBlock(), 1200);
+        Destroy = true;
+    }
 
-  @Override
-  public void tick(
-      @NotNull BlockState blockState,
-      @NotNull ServerLevel serverLevel,
-      @NotNull BlockPos blockPos,
-      @NotNull RandomSource randomSource) {
-    super.tick(blockState, serverLevel, blockPos, randomSource);
-    if (Destroy) serverLevel.removeBlock(blockPos, true);
-  }
+    @Override
+    public void tick(
+            @NotNull BlockState blockState,
+            @NotNull ServerLevel serverLevel,
+            @NotNull BlockPos blockPos,
+            @NotNull RandomSource randomSource) {
+        super.tick(blockState, serverLevel, blockPos, randomSource);
+        if (Destroy) serverLevel.removeBlock(blockPos, true);
+    }
 }

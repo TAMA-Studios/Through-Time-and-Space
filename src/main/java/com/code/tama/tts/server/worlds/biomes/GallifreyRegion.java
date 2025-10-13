@@ -12,14 +12,13 @@ import terrablender.api.Region;
 import terrablender.api.RegionType;
 
 public class GallifreyRegion extends Region {
-  public GallifreyRegion(ResourceLocation name, int weight) {
-    super(name, RegionType.OVERWORLD, weight);
-  }
+    public GallifreyRegion(ResourceLocation name, int weight) {
+        super(name, RegionType.OVERWORLD, weight);
+    }
 
-  @Override
-  public void addBiomes(
-      Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
-    this.addBiome(mapper, ParameterPoints.GallifreyPlains(), MBiomes.GALLIFREYAN_PLAINS);
-    this.addBiome(mapper, ParameterPoints.GallifreyDesert(), MBiomes.GALLIFREYAN_DESERT);
-  }
+    @Override
+    public void addBiomes(Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
+        this.addBiome(mapper, ParameterPoints.GallifreyPlains(), MBiomes.GALLIFREYAN_PLAINS);
+        this.addBiome(mapper, ParameterPoints.GallifreyDesert(), MBiomes.GALLIFREYAN_DESERT);
+    }
 }

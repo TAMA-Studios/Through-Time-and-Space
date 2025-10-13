@@ -5,20 +5,19 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.PhysicalStateManager;
 
 public class TakeOffThread extends Thread {
-  ITARDISLevel itardisLevel;
+    ITARDISLevel itardisLevel;
 
-  public TakeOffThread(ITARDISLevel itardisLevel) {
-    this.setName("Takeoff Thread");
-    this.itardisLevel = itardisLevel;
-  }
+    public TakeOffThread(ITARDISLevel itardisLevel) {
+        this.setName("Takeoff Thread");
+        this.itardisLevel = itardisLevel;
+    }
 
-  @Override
-  public void run() {
-    this.itardisLevel.GetFlightData().setPlayRotorAnimation(true);
-    this.itardisLevel.UpdateClient();
-    new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile())
-        .serverTakeOff();
+    @Override
+    public void run() {
+        this.itardisLevel.GetFlightData().setPlayRotorAnimation(true);
+        this.itardisLevel.UpdateClient();
+        new PhysicalStateManager(this.itardisLevel, this.itardisLevel.GetExteriorTile()).serverTakeOff();
 
-    super.run();
-  }
+        super.run();
+    }
 }

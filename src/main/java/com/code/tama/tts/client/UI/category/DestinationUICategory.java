@@ -13,73 +13,65 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 
 public class DestinationUICategory extends UICategory {
-  public DestinationUICategory() {
-    super();
-    this.overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay_large_title.png");
-  }
+    public DestinationUICategory() {
+        super();
+        this.overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay_large_title.png");
+    }
 
-  @Override
-  public void Render(
-      AbstractMonitorTile monitor,
-      PoseStack poseStack,
-      MultiBufferSource bufferSource,
-      int combinedLight) {
-    monitor
-        .getLevel()
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(
-            cap -> {
-              Font fontRenderer = Minecraft.getInstance().font;
+    @Override
+    public void Render(
+            AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight) {
+        monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            Font fontRenderer = Minecraft.getInstance().font;
 
-              String line1 =
-                  cap.GetCurrentLevel()
-                          .location()
-                          .getPath()
-                          .substring(0, 1)
-                          .toUpperCase(Locale.ROOT)
-                      + cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ");
+            String line1 = cap.GetCurrentLevel()
+                            .location()
+                            .getPath()
+                            .substring(0, 1)
+                            .toUpperCase(Locale.ROOT)
+                    + cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ");
 
-              String line3 = cap.GetNavigationalData().getDestination().ReadableStringShort();
+            String line3 = cap.GetNavigationalData().getDestination().ReadableStringShort();
 
-              int white = 0xFFFFFF;
+            int white = 0xFFFFFF;
 
-              RenderSystem.disableDepthTest();
+            RenderSystem.disableDepthTest();
 
-              fontRenderer.drawInBatch(
-                  "TARDISOS - 1.0",
-                  -40,
-                  5,
-                  white,
-                  false,
-                  poseStack.last().pose(),
-                  bufferSource,
-                  Font.DisplayMode.NORMAL,
-                  0,
-                  combinedLight);
+            fontRenderer.drawInBatch(
+                    "TARDISOS - 1.0",
+                    -40,
+                    5,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
 
-              fontRenderer.drawInBatch(
-                  "Destination",
-                  -27f,
-                  15,
-                  white,
-                  false,
-                  poseStack.last().pose(),
-                  bufferSource,
-                  Font.DisplayMode.NORMAL,
-                  0,
-                  combinedLight);
+            fontRenderer.drawInBatch(
+                    "Destination",
+                    -27f,
+                    15,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
 
-              fontRenderer.drawInBatch(
-                  line3,
-                  -40,
-                  25,
-                  white,
-                  false,
-                  poseStack.last().pose(),
-                  bufferSource,
-                  Font.DisplayMode.NORMAL,
-                  0,
-                  combinedLight);
-            });
-  }
+            fontRenderer.drawInBatch(
+                    line3,
+                    -40,
+                    25,
+                    white,
+                    false,
+                    poseStack.last().pose(),
+                    bufferSource,
+                    Font.DisplayMode.NORMAL,
+                    0,
+                    combinedLight);
+        });
+    }
 }

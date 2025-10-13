@@ -20,94 +20,83 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.jetbrains.annotations.NotNull;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
-  public final ModelPart MODEL;
-  FBOHelper helper = new FBOHelper();
+    public final ModelPart MODEL;
+    FBOHelper helper = new FBOHelper();
 
-  public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {
-    this.MODEL = context.bakeLayer(ColinRichmondInteriorDoors.LAYER_LOCATION);
-  }
+    public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {
+        this.MODEL = context.bakeLayer(ColinRichmondInteriorDoors.LAYER_LOCATION);
+    }
 
-  @Override
-  public void render(
-      @NotNull DoorTile doorTile,
-      float partialTicks,
-      @NotNull PoseStack poseStack,
-      @NotNull MultiBufferSource bufferSource,
-      int combinedLight,
-      int combinedOverlay) {
+    @Override
+    public void render(
+            @NotNull DoorTile doorTile,
+            float partialTicks,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
+            int combinedLight,
+            int combinedOverlay) {
 
-    assert doorTile.getLevel() != null;
+        assert doorTile.getLevel() != null;
 
-    poseStack.pushPose();
-    poseStack.mulPose(Axis.XP.rotationDegrees(180));
-    poseStack.translate(0.5, 0, 0);
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        poseStack.translate(0.5, 0, 0);
 
-    doorTile
-        .getLevel()
-        .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-        .ifPresent(
-            cap -> {
-              AbstractJSONRenderer renderer =
-                  new AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
-              JavaJSONParsed parsed = renderer.getJavaJSON();
+        doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+            AbstractJSONRenderer renderer =
+                    new AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
+            JavaJSONParsed parsed = renderer.getJavaJSON();
 
-              JavaJSONRenderer door = parsed.getPart("InteriorDoor");
-              JavaJSONRenderer boti = parsed.getPart("InteriorBOTI");
+            JavaJSONRenderer door = parsed.getPart("InteriorDoor");
+            JavaJSONRenderer boti = parsed.getPart("InteriorBOTI");
 
-              parsed.getPart("IntRightDoor").yRot =
-                  (float)
-                      (cap.GetData().getDoorData().getDoorsOpen() == 2
-                          ? -Math.toRadians(90)
-                          : Math.toRadians(0));
-              parsed.getPart("IntLeftDoor").yRot =
-                  (float)
-                      (cap.GetData().getDoorData().getDoorsOpen() >= 1
-                          ? Math.toRadians(90)
-                          : Math.toRadians(0));
+            parsed.getPart("IntRightDoor").yRot =
+                    (float) (cap.GetData().getDoorData().getDoorsOpen() == 2 ? -Math.toRadians(90) : Math.toRadians(0));
+            parsed.getPart("IntLeftDoor").yRot =
+                    (float) (cap.GetData().getDoorData().getDoorsOpen() >= 1 ? Math.toRadians(90) : Math.toRadians(0));
 
-              assert Minecraft.getInstance().level != null;
-              helper.Render(
-                  poseStack,
-                  (pose, buf) -> {
-                    boti.render(
-                        pose,
-                        buf.getBuffer(RenderType.solid()),
-                        0xf000f0,
-                        OverlayTexture.NO_OVERLAY,
-                        0,
-                        0,
-                        0,
-                        0);
-                    //          StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
-                  },
-                  (pose, buf) -> {},
-                  (pose, buf) -> {
-                    pose.pushPose();
-                    pose.mulPose(
-                        Axis.ZP.rotationDegrees(
-                            (float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
-                    pose.mulPose(Axis.YP.rotationDegrees(180));
-                    pose.translate(0, 0, 500);
-                    pose.scale(1.5f, 1.5f, 1.5f);
-                    cap.GetClientData().getVortex().renderVortex(pose);
-                    cap.GetClientData().getVortex().renderVortexLayer(pose, 1.5f);
-                    cap.GetClientData().getVortex().renderVortexLayer(pose, 2.5f);
-                    pose.popPose();
-                  });
+            assert Minecraft.getInstance().level != null;
+            helper.Render(
+                    poseStack,
+                    (pose, buf) -> {
+                        boti.render(
+                                pose,
+                                buf.getBuffer(RenderType.solid()),
+                                0xf000f0,
+                                OverlayTexture.NO_OVERLAY,
+                                0,
+                                0,
+                                0,
+                                0);
+                        //          StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
+                    },
+                    (pose, buf) -> {},
+                    (pose, buf) -> {
+                        pose.pushPose();
+                        pose.mulPose(Axis.ZP.rotationDegrees(
+                                (float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
+                        pose.mulPose(Axis.YP.rotationDegrees(180));
+                        pose.translate(0, 0, 500);
+                        pose.scale(1.5f, 1.5f, 1.5f);
+                        cap.GetClientData().getVortex().renderVortex(pose);
+                        cap.GetClientData().getVortex().renderVortexLayer(pose, 1.5f);
+                        cap.GetClientData().getVortex().renderVortexLayer(pose, 2.5f);
+                        pose.popPose();
+                    });
 
-              poseStack.translate(0, 0, -0.5);
+            poseStack.translate(0, 0, -0.5);
 
-              door.render(
-                  poseStack,
-                  bufferSource.getBuffer(renderer.getRenderType()),
-                  combinedLight,
-                  OverlayTexture.NO_OVERLAY,
-                  1,
-                  1,
-                  1,
-                  1);
-            });
+            door.render(
+                    poseStack,
+                    bufferSource.getBuffer(renderer.getRenderType()),
+                    combinedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    1,
+                    1,
+                    1,
+                    1);
+        });
 
-    poseStack.popPose();
-  }
+        poseStack.popPose();
+    }
 }

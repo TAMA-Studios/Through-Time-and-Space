@@ -14,18 +14,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PortalBlock extends Block implements EntityBlock {
-  public PortalBlock(Properties properties) {
-    super(properties);
-  }
+    public PortalBlock(Properties properties) {
+        super(properties);
+    }
 
-  @Override
-  public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-      Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-    return PortalTileEntity::tick;
-  }
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
+        return PortalTileEntity::tick;
+    }
 
-  @Override
-  public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-    return new PortalTileEntity(pos, state);
-  }
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new PortalTileEntity(pos, state);
+    }
 }

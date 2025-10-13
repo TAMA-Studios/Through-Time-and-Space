@@ -12,14 +12,13 @@ import org.jetbrains.annotations.Nullable;
 
 // The block Tile Entity class must implement EntityBlock
 public class ExampleTileBlock extends Block implements EntityBlock {
-  public ExampleTileBlock(Properties props) {
-    super(props);
-  }
+    public ExampleTileBlock(Properties props) {
+        super(props);
+    }
 
-  @Override
-  public @Nullable BlockEntity newBlockEntity(
-      @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-    // Set this to your tile entity RegistryObject
-    return TTSTileEntities.EXAMPLE_TILE.get().create(blockPos, blockState);
-  }
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        // Set this to your tile entity RegistryObject
+        return TTSTileEntities.EXAMPLE_TILE.get().create(blockPos, blockState);
+    }
 }

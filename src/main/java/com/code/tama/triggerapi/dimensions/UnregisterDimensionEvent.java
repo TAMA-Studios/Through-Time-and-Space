@@ -12,10 +12,10 @@ import net.minecraftforge.eventbus.api.Event;
  */
 @Getter
 public class UnregisterDimensionEvent extends Event {
-  /** The level that is about to be unregistered. */
-  private final ServerLevel level;
+    /** The level that is about to be unregistered. */
+    private final ServerLevel level;
 
-  public UnregisterDimensionEvent(ServerLevel level) {
-    this.level = level;
-  }
+    public UnregisterDimensionEvent(ServerLevel level) {
+        this.level = level;
+    }
 }

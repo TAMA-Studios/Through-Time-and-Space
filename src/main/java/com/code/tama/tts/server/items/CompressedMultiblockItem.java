@@ -9,18 +9,17 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class CompressedMultiblockItem extends BlockItem {
-  public CompressedMultiblockItem(Properties properties) {
-    super(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), properties);
-  }
+    public CompressedMultiblockItem(Properties properties) {
+        super(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), properties);
+    }
 
-  @Override
-  public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-    consumer.accept(
-        new IClientItemExtensions() {
-          @Override
-          public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return new CompressedMultiblockItemRenderer(getBlock().defaultBlockState());
-          }
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return new CompressedMultiblockItemRenderer(getBlock().defaultBlockState());
+            }
         });
-  }
+    }
 }

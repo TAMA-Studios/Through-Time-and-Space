@@ -20,44 +20,40 @@ import net.minecraftforge.network.NetworkEvent;
  * @param add If true, keys are to be added; if false, keys are to be removed
  */
 public record UpdateDimensionsPacket(Set<ResourceKey<Level>> keys, boolean add) {
-  public static UpdateDimensionsPacket decode(FriendlyByteBuf buffer) {
-    Set<ResourceKey<Level>> keys =
-        buffer.readCollection(
-            i -> new HashSet<>(),
-            buf -> ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation()));
-    boolean add = buffer.readBoolean();
+    public static UpdateDimensionsPacket decode(FriendlyByteBuf buffer) {
+        Set<ResourceKey<Level>> keys = buffer.readCollection(
+                i -> new HashSet<>(), buf -> ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation()));
+        boolean add = buffer.readBoolean();
 
-    return new UpdateDimensionsPacket(keys, add);
-  }
-
-  public void encode(FriendlyByteBuf buffer) {
-    buffer.writeCollection(this.keys(), (buf, key) -> buf.writeResourceLocation(key.location()));
-    buffer.writeBoolean(this.add());
-  }
-
-  public void handle(Supplier<NetworkEvent.Context> contextGetter) {
-    NetworkEvent.Context context = contextGetter.get();
-    if (FMLEnvironment.dist == Dist.CLIENT) {
-      context.enqueueWork(() -> ClientHandler.handle(this));
+        return new UpdateDimensionsPacket(keys, add);
     }
-    context.setPacketHandled(true);
-  }
 
-  private static
-  class ClientHandler // making client calls in the static class prevents classloading errors
-   {
-    private static void handle(UpdateDimensionsPacket packet) {
-      @SuppressWarnings("resource")
-      final LocalPlayer player = Minecraft.getInstance().player;
-      if (player == null) return;
-
-      final Set<ResourceKey<Level>> dimensionList = player.connection.levels();
-      if (dimensionList == null) return;
-
-      Consumer<ResourceKey<Level>> keyConsumer =
-          packet.add() ? dimensionList::add : dimensionList::remove;
-
-      packet.keys().forEach(keyConsumer);
+    public void encode(FriendlyByteBuf buffer) {
+        buffer.writeCollection(this.keys(), (buf, key) -> buf.writeResourceLocation(key.location()));
+        buffer.writeBoolean(this.add());
     }
-  }
+
+    public void handle(Supplier<NetworkEvent.Context> contextGetter) {
+        NetworkEvent.Context context = contextGetter.get();
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            context.enqueueWork(() -> ClientHandler.handle(this));
+        }
+        context.setPacketHandled(true);
+    }
+
+    private static class ClientHandler // making client calls in the static class prevents classloading errors
+     {
+        private static void handle(UpdateDimensionsPacket packet) {
+            @SuppressWarnings("resource")
+            final LocalPlayer player = Minecraft.getInstance().player;
+            if (player == null) return;
+
+            final Set<ResourceKey<Level>> dimensionList = player.connection.levels();
+            if (dimensionList == null) return;
+
+            Consumer<ResourceKey<Level>> keyConsumer = packet.add() ? dimensionList::add : dimensionList::remove;
+
+            packet.keys().forEach(keyConsumer);
+        }
+    }
 }

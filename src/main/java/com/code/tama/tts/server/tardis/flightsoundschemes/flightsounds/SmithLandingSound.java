@@ -5,11 +5,11 @@ import com.code.tama.tts.client.TTSSounds;
 import net.minecraft.sounds.SoundEvent;
 
 public class SmithLandingSound extends AbstractFlightSound {
-  public int GetLength() {
-    return 250;
-  }
+    public int GetLength() {
+        return 250;
+    }
 
-  public SoundEvent GetSound() {
-    return TTSSounds.TARDIS_LANDING.get();
-  }
+    public SoundEvent GetSound() {
+        return TTSSounds.TARDIS_LANDING.get();
+    }
 }

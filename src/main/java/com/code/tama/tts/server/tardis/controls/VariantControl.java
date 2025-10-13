@@ -11,36 +11,36 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 public class VariantControl extends AbstractControl {
-  @Override
-  public SoundEvent GetFailSound() {
-    return SoundEvents.DISPENSER_FAIL;
-  }
+    @Override
+    public SoundEvent GetFailSound() {
+        return SoundEvents.DISPENSER_FAIL;
+    }
 
-  @Override
-  public String GetName() {
-    return "variant_control";
-  }
+    @Override
+    public String GetName() {
+        return "variant_control";
+    }
 
-  @Override
-  public SoundEvent GetSuccessSound() {
-    return TTSSounds.BUTTON_CLICK_01.get();
-  }
+    @Override
+    public SoundEvent GetSuccessSound() {
+        return TTSSounds.BUTTON_CLICK_01.get();
+    }
 
-  @Override
-  public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-    itardisLevel
-        .GetData()
-        .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
-    itardisLevel.UpdateClient();
-    return InteractionResult.SUCCESS;
-  }
+    @Override
+    public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
+        itardisLevel
+                .GetData()
+                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
+        itardisLevel.UpdateClient();
+        return InteractionResult.SUCCESS;
+    }
 
-  @Override
-  public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-    itardisLevel
-        .GetData()
-        .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
-    itardisLevel.UpdateClient();
-    return InteractionResult.SUCCESS;
-  }
+    @Override
+    public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
+        itardisLevel
+                .GetData()
+                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
+        itardisLevel.UpdateClient();
+        return InteractionResult.SUCCESS;
+    }
 }

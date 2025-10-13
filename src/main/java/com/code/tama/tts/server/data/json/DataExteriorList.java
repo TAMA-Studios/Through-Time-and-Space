@@ -9,23 +9,24 @@ import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 
 public class DataExteriorList {
-  @Getter private static List<DataExterior> exteriorList;
+    @Getter
+    private static List<DataExterior> exteriorList;
 
-  public static void setExteriorList(List<DataExterior> list) {
-    exteriorList = list;
-    for (DataExterior ext : list) {
-      list.removeIf(r -> r != ext && r.toString().equals(ext.toString()));
+    public static void setExteriorList(List<DataExterior> list) {
+        exteriorList = list;
+        for (DataExterior ext : list) {
+            list.removeIf(r -> r != ext && r.toString().equals(ext.toString()));
+        }
+
+        for (DataExterior exterior : exteriorList) {
+            Exterior toAdd = new Exterior(exterior.ModelName(), exterior.name());
+            AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
+            ExistsOrNot.set(false);
+            for (Exterior existing : Exteriors.EXTERIORS) {
+                if (existing.getModel().equals(toAdd.getModel())) ExistsOrNot.set(true);
+            }
+
+            if (!ExistsOrNot.get()) Exteriors.EXTERIORS.add(toAdd);
+        }
     }
-
-    for (DataExterior exterior : exteriorList) {
-      Exterior toAdd = new Exterior(exterior.ModelName(), exterior.name());
-      AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
-      ExistsOrNot.set(false);
-      for (Exterior existing : Exteriors.EXTERIORS) {
-        if (existing.getModel().equals(toAdd.getModel())) ExistsOrNot.set(true);
-      }
-
-      if (!ExistsOrNot.get()) Exteriors.EXTERIORS.add(toAdd);
-    }
-  }
 }
