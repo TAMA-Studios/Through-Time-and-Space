@@ -56,36 +56,37 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
                     (float) (cap.GetData().getDoorData().getDoorsOpen() >= 1 ? Math.toRadians(90) : Math.toRadians(0));
 
             assert Minecraft.getInstance().level != null;
-            helper.Render(
-                    poseStack,
-                    (pose, buf) -> {
-                        boti.render(
-                                pose,
-                                buf.getBuffer(RenderType.solid()),
-                                0xf000f0,
-                                OverlayTexture.NO_OVERLAY,
-                                0,
-                                0,
-                                0,
-                                0);
-                        //          StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
-                    },
-                    (pose, buf) -> {},
-                    (pose, buf) -> {
-                        pose.pushPose();
-                        pose.mulPose(Axis.ZP.rotationDegrees(
-                                (float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
-                        pose.mulPose(Axis.YP.rotationDegrees(180));
-                        pose.translate(0, 0, 500);
-                        pose.scale(1.5f, 1.5f, 1.5f);
-                        cap.GetClientData().getVortex().renderVortex(pose);
-                        cap.GetClientData().getVortex().renderVortexLayer(pose, 1.5f);
-                        cap.GetClientData().getVortex().renderVortexLayer(pose, 2.5f);
-                        pose.popPose();
-                    });
+            if (cap.GetFlightData().isInFlight()) {
+                helper.Render(
+                        poseStack,
+                        (pose, buf) -> {
+                            boti.render(
+                                    pose,
+                                    buf.getBuffer(RenderType.solid()),
+                                    0xf000f0,
+                                    OverlayTexture.NO_OVERLAY,
+                                    0,
+                                    0,
+                                    0,
+                                    0);
+                            //          StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
+                        },
+                        (pose, buf) -> {},
+                        (pose, buf) -> {
+                            pose.pushPose();
+                            pose.mulPose(Axis.ZP.rotationDegrees(
+                                    (float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
+                            pose.mulPose(Axis.YP.rotationDegrees(180));
+                            pose.translate(0, 0, 500);
+                            pose.scale(1.5f, 1.5f, 1.5f);
+                            cap.GetClientData().getVortex().renderVortex(pose);
+                            cap.GetClientData().getVortex().renderVortexLayer(pose, 1.5f);
+                            cap.GetClientData().getVortex().renderVortexLayer(pose, 2.5f);
+                            pose.popPose();
+                        });
 
-            poseStack.translate(0, 0, -0.5);
-
+                poseStack.translate(0, 0, -0.5);
+            }
             door.render(
                     poseStack,
                     bufferSource.getBuffer(renderer.getRenderType()),

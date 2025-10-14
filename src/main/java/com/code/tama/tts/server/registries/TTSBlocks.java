@@ -206,7 +206,7 @@ public class TTSBlocks {
     public static RegistryObject<com.code.tama.tts.server.blocks.DoorBlock> DOOR_BLOCK = RegisterWithItemSpecial(
             "door_block",
             () -> new com.code.tama.tts.server.blocks.DoorBlock(
-                    BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.DOOR_TILE));
+                    BlockBehaviour.Properties.of().noOcclusion().noCollission(), TTSTileEntities.DOOR_TILE));
 
     public static final RegistryObject<Block> MONITOR_BLOCK = RegisterWithItem(
             "monitor_block",

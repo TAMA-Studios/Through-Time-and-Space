@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.triggerapi.MathUtils;
 import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
@@ -20,6 +22,10 @@ import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparency
 import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.tardis.data.DataUpdateValues;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -38,18 +44,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends AbstractPortalTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
@@ -204,7 +204,8 @@ public class ExteriorTile extends AbstractPortalTile {
      */
     public void UtterlyDestroy() {
         assert this.level != null;
-        if (this.GetBlock() != null) this.GetBlock().MarkForRemoval();
+        level.setBlockAndUpdate(this.getBlockPos(), Blocks.AIR.defaultBlockState());
+        level.removeBlockEntity(this.getBlockPos());
         this.setRemoved();
     }
 
@@ -232,14 +233,6 @@ public class ExteriorTile extends AbstractPortalTile {
         } else {
             this.ModelIndex = Exteriors.EXTERIORS.get(0).getModel();
         }
-        if (tag.contains("interior_path")) {
-            this.INTERIOR_DIMENSION = ResourceKey.create(
-                    Registries.DIMENSION, new ResourceLocation(MODID, tag.getString("interior_path")));
-            // if(this.getLevel() != null)
-            // if(this.GetBlock() != null) {
-            // this.GetBlock().SetInteriorKey(this.INTERIOR_DIMENSION);
-            // }
-        }
         if (tag.contains("model")) {
             this.Model = Exterior.CODEC
                     .parse(NbtOps.INSTANCE, tag.get("model"))
@@ -255,6 +248,7 @@ public class ExteriorTile extends AbstractPortalTile {
             this.INTERIOR_DIMENSION = ResourceKey.create(
                     Registries.DIMENSION, new ResourceLocation(MODID + "-tardis", tag.getString("interior")));
             this.targetLevel = this.INTERIOR_DIMENSION;
+            this.IsEmptyShell = false;
         }
 
         super.load(tag);

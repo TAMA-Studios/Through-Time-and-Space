@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
+
 import com.code.tama.tts.server.blocks.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -17,6 +19,7 @@ import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,8 +36,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
-
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     TARDISData data = new TARDISData(this);
@@ -142,14 +143,18 @@ public class TARDISLevelCapability implements ITARDISLevel {
     public ResourceKey<Level> GetCurrentLevel() {
         if (this.navigationalData.getLocation().getLevelKey() != null)
             return this.navigationalData.getLocation().getLevelKey();
-        if (this.level.isClientSide && this.navigationalData.getExteriorDimensionKey() == null) this.UpdateClient(DataUpdateValues.DATA);
+        if (this.level.isClientSide && this.navigationalData.getExteriorDimensionKey() == null)
+            this.UpdateClient(DataUpdateValues.DATA);
         if (this.navigationalData.getExteriorDimensionKey() == null) {
             if (this.GetExteriorTile() != null) {
-                this.navigationalData.setExteriorDimensionKey(
-                        this.GetExteriorTile().getLevel().dimension());
+                this.navigationalData.setExteriorDimensionKey(Objects.requireNonNull(
+                                Objects.requireNonNull(this.GetExteriorTile()).getLevel())
+                        .dimension());
             } else if (!this.level.isClientSide)
                 this.GetNavigationalData()
-                        .SetCurrentLevel(this.level.getServer().overworld().dimension());
+                        .SetCurrentLevel(Objects.requireNonNull(this.level.getServer())
+                                .overworld()
+                                .dimension());
         }
 
         return this.navigationalData.getExteriorDimensionKey() == null
@@ -194,6 +199,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     @Override
     public void SetExteriorTile(ExteriorTile exteriorTile) {
         this.exteriorTile = exteriorTile;
+        assert exteriorTile.getLevel() != null;
         this.navigationalData.setLocation(new SpaceTimeCoordinate(
                 exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension()));
         assert exteriorTile.getLevel() != null;
@@ -278,8 +284,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
         this.flightData.setInFlight(false);
         if (!this.GetLevel().isClientSide) {
 
-            ServerLevel CurrentLevel = this.GetLevel()
-                    .getServer()
+            ServerLevel CurrentLevel = Objects.requireNonNull(this.GetLevel().getServer())
                     .getLevel(this.GetNavigationalData().getDestination().getLevelKey());
             assert CurrentLevel != null;
 
@@ -288,8 +293,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
             BlockPos pos = BlockHelper.snapToGround(
                     this.GetLevel(), this.GetNavigationalData().getDestination().GetBlockPos());
 
-            //            this.GetFlightTerminationPolicy().GetProtocol().OnLand(this, pos,
-            // CurrentLevel);
+            //            this.GetFlightTerminationPolicy().GetProtocol().OnLand(this, pos, CurrentLevel);
             //            pos = this.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
 
             pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
@@ -352,7 +356,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
     /** TODO: ADD MORE HERE! */
     public void NullExteriorChecksAndFixes() {
         if (!this.level.isClientSide)
-            if (this.level.getServer().getLevel(this.GetCurrentLevel()) == null)
+            if (Objects.requireNonNull(this.level.getServer()).getLevel(this.GetCurrentLevel()) == null)
                 this.GetNavigationalData()
                         .SetCurrentLevel(this.level.getServer().overworld().dimension());
     }
@@ -368,10 +372,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
                     new SyncTARDISCapPacketS2C(this.data, this.navigationalData, this.flightData, toUpdate));
 
             if (this.GetExteriorTile() != null) {
-                this.GetExteriorTile().Model = this.data.getExteriorModel();
-                this.GetExteriorTile().setModelIndex(this.data.getExteriorModel().getModel());
-                this.GetExteriorTile().setChanged();
-                this.GetExteriorTile().NeedsClientUpdate();
+                Objects.requireNonNull(this.GetExteriorTile()).Model = this.data.getExteriorModel();
+                Objects.requireNonNull(this.GetExteriorTile())
+                        .setModelIndex(this.data.getExteriorModel().getModel());
+                Objects.requireNonNull(this.GetExteriorTile()).setChanged();
+                Objects.requireNonNull(this.GetExteriorTile()).NeedsClientUpdate();
             }
         }
     }
@@ -400,11 +405,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
     }
 
     public void ForceLoadExteriorChunk(boolean ForceLoad) {
-        this.GetNavigationalData()
-                .getDestination()
-                .getLevel()
-                .getServer()
-                .getLevel(this.navigationalData.getLocation().getLevelKey())
+        Objects.requireNonNull(this.GetNavigationalData()
+                        .getDestination()
+                        .getLevel()
+                        .getServer()
+                        .getLevel(this.navigationalData.getLocation().getLevelKey()))
                 .setChunkForced(
                         (int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
                         (int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16),
