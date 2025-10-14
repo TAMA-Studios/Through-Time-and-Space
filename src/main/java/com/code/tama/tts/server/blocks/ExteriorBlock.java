@@ -23,10 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -101,8 +98,8 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     public void TeleportToInterior(Entity EntityToTeleport, BlockPos pos) {
-        if (EntityToTeleport.level().getBlockEntity(pos) instanceof ExteriorTile exteriorTile)
-            exteriorTile.TeleportToInterior(EntityToTeleport);
+        if (EntityToTeleport.level().getBlockEntity(pos) instanceof ExteriorTile exteriorTile
+                && exteriorTile.DoorsOpen() > 0) exteriorTile.TeleportToInterior(EntityToTeleport);
     }
 
     @Override
@@ -176,7 +173,7 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
             @NotNull RandomSource randomSource) {
         if (this.IsMarkedForRemoval) {
             level.removeBlockEntity(pos);
-            level.removeBlock(pos, false);
+            level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             return;
         }
         super.tick(state, level, pos, randomSource);

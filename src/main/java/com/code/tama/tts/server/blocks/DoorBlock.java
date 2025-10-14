@@ -12,6 +12,7 @@ import com.code.tama.tts.server.tileentities.ExteriorTile;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 
+@Slf4j
 @SuppressWarnings("deprecation")
 public class DoorBlock extends Block implements EntityBlock {
     public static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(CreateShape());
@@ -100,8 +102,12 @@ public class DoorBlock extends Block implements EntityBlock {
             @NotNull Level level,
             net.minecraft.core.@NotNull BlockPos pos,
             net.minecraft.world.entity.@NotNull Entity entity) {
-        level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .ifPresent(cap -> this.TeleportToExterior(entity, level));
+        if (entity.getBoundingBox()
+                .intersects(state.getShape(level, pos).bounds().move(pos)))
+            level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+                if (entity.level().getBlockEntity(pos) instanceof DoorTile tile
+                        && cap.GetData().getDoorData().getDoorsOpen() > 0) this.TeleportToExterior(entity, level);
+            });
     }
 
     public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
