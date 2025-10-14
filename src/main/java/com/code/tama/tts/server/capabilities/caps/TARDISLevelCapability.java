@@ -369,8 +369,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
             if (this.GetExteriorTile() != null) {
                 this.GetExteriorTile().Model = this.data.getExteriorModel();
-                this.GetExteriorTile()
-                        .setModelIndex(this.data.getExteriorModel().getModel());
+                this.GetExteriorTile().setModelIndex(this.data.getExteriorModel().getModel());
                 this.GetExteriorTile().setChanged();
                 this.GetExteriorTile().NeedsClientUpdate();
             }
