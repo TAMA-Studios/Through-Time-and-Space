@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.tts.TTSConfig;
 import net.minecraftforge.eventbus.api.IEventBus;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class TriggerAPI {
     public static String MOD_ID = MODID;
@@ -19,13 +20,13 @@ public class TriggerAPI {
         }
         MOD_ID = modID;
         Logger.info("Trigger engine started for %s", MOD_ID);
-        ConfigHelper.register();
+        TTSConfig.register();
     }
 
     public TriggerAPI(IEventBus bus, String modid) {
         MOD_ID = modid;
         bus.register(JavaJSON.class);
         Logger.info("Trigger engine started for %s", MOD_ID);
-        ConfigHelper.register();
+        TTSConfig.register();
     }
 }

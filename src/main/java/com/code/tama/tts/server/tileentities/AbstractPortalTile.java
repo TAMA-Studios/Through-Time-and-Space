@@ -1,18 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.botiutils.BOTIUtils;
-import com.code.tama.triggerapi.rendering.FBOHelper;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
+import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.mojang.blaze3d.vertex.VertexBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -27,6 +24,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Other tiles implement this to get data for portals */
 @OnlyIn(Dist.CLIENT)
@@ -76,6 +78,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
     @OnlyIn(Dist.CLIENT)
     public void updateChunkDataFromServer(List<BotiChunkContainer> chunkData, int packetIndex, int totalPackets) {
+        if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
         if (packetIndex > totalPackets || this.recievedPackets.contains(packetIndex)) {
             TTSMod.LOGGER.warn("Portal tile received packet not meant for it, or it's updating too quickly... ruh roh");
             return;
@@ -121,8 +124,13 @@ public abstract class AbstractPortalTile extends TickingTile {
     @Override
     public void tick() {
         if (this.targetLevel != null) return;
-        assert this.level != null;
-        this.level
+
+        assert this.getLevel() != null;
+        if (this.getLevel().isClientSide) if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
+
+        else if (!TTSConfig.ServerConfig.BOTI_ENABLED.get()) return;
+
+        this.getLevel()
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
                 .ifPresent(cap -> this.setTargetLevel(
                         cap.GetCurrentLevel(),

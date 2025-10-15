@@ -1,16 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.misc.ARSStructure;
-import com.code.tama.tts.server.registries.ARSRegistry;
-import java.util.List;
+import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
+import com.code.tama.tts.server.registries.tardis.ARSRegistry;
 import lombok.Getter;
+
+import java.util.List;
 
 public class DataARSList {
     @Getter
-    private static List<ARSStructure> StructureList;
+    private static List<ARSStructureContainer> StructureList;
 
-    public static void setList(List<ARSStructure> list) {
+    public static void setList(List<ARSStructureContainer> list) {
         StructureList = list;
         ARSRegistry.STRUCTURES.clear();
         ARSRegistry.STRUCTURES.addAll(list);

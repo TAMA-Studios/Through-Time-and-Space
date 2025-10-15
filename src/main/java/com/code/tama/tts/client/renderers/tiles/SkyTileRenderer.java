@@ -18,7 +18,7 @@ public class SkyTileRenderer implements BlockEntityRenderer<SkyTile> {
     @Override
     public void render(
             SkyTile blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        if (!blockEntity.getBlockState().getValue(com.code.tama.tts.server.blocks.SkyBlock.ACTIVE)) return;
+        if (!blockEntity.getBlockState().getValue(com.code.tama.tts.server.blocks.cosmetic.SkyBlock.ACTIVE)) return;
         Matrix4f m4f = poseStack.last().pose();
         var renderType =
                 switch (blockEntity.getSkyType()) {

@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.compat.jei;
 
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
-import com.code.tama.tts.server.registries.RecipeRegistry;
+import com.code.tama.tts.server.registries.misc.RecipeRegistry;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;

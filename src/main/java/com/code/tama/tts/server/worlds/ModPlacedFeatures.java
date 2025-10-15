@@ -3,7 +3,7 @@ package com.code.tama.tts.server.worlds;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import java.util.List;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;

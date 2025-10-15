@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.items.core.NozzleItem;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import java.util.ArrayList;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;

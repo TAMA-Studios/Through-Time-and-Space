@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.loot;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
-import com.code.tama.tts.server.registries.TTSItems;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSItems;
 import java.util.Set;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;

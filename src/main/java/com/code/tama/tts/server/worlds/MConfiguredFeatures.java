@@ -3,7 +3,7 @@ package com.code.tama.tts.server.worlds;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanFoliagePlacer;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
 import java.util.List;

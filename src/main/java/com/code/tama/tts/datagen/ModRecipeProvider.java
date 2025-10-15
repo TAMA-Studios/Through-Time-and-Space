@@ -3,8 +3,8 @@ package com.code.tama.tts.datagen;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
-import com.code.tama.tts.server.registries.TTSItems;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSItems;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.data.PackOutput;

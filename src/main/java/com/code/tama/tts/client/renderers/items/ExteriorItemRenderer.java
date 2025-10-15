@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.items;
 
 import com.code.tama.tts.client.renderers.tiles.TardisExteriorRenderer;
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

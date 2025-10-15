@@ -3,7 +3,7 @@ package com.code.tama.tts.server.tileentities.monitors;
 
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.Getter;
 import lombok.Setter;

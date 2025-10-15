@@ -63,31 +63,21 @@ public class VortexRenderer {
     }
 
 
-    // Public render entry points
-
+    /** Renders the vortex **/
     public void renderVortex(PoseStack stack) {
-        renderLayer(stack, LayerType.BASE, 1f);
-    }
-
-    public void renderAll(PoseStack stack) {
         renderLayer(stack, LayerType.BASE, 1f);
         renderLayer(stack, LayerType.SECOND, 1.5f);
         renderLayer(stack, LayerType.THIRD, 2f);
     }
 
-    /**
-     * Renders the second/third layer.
-     */
-    public void renderVortexLayer(PoseStack stack, LayerType layer) {
-        float scaleFactor = layer.equals(LayerType.SECOND) ? 1.5f : 2f;
-        if (textureLayers.get(layer) != null) {
-            renderLayer(stack, layer, scaleFactor);
-        }
+
+    /** Renders the second/third layer. **/
+    private void renderVortexLayer(PoseStack stack, LayerType layer) {
+        if (textureLayers.get(layer) != null)
+            renderLayer(stack, layer, layer.equals(LayerType.SECOND) ? 1.5f : 2f);
     }
 
-
-    // Internal layer rendering (cached state)
-
+    /// Internal layer rendering (cached state)
     private void renderLayer(PoseStack stack, LayerType layerType, float scaleFactor) {
         ResourceLocation texture = textureLayers.get(layerType);
         if (texture == null) return;

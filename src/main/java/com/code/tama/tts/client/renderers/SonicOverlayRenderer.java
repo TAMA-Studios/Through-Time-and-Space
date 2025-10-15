@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
-import com.code.tama.triggerapi.RayTraceUtils;
-import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;

@@ -3,11 +3,12 @@ package com.code.tama.tts.server.tardis.terminationprotocol;
 
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.FlightTerminationProtocol;
-import java.util.Random;
+import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+
+import java.util.Random;
 
 @Getter
 public abstract class TerminationProtocolHandler {

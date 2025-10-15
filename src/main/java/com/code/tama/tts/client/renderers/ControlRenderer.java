@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers;
 
 import com.code.tama.tts.server.entities.controls.ModularControl;
-import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

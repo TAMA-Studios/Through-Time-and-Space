@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.AnimationState;

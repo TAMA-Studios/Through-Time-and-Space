@@ -3,7 +3,7 @@ package com.code.tama.tts.datagen;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import java.util.LinkedHashMap;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;

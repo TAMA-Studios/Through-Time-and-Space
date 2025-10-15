@@ -13,9 +13,9 @@ import com.code.tama.tts.client.renderers.tiles.*;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.TardisSkyEffects;
-import com.code.tama.tts.server.registries.TTSBlocks;
-import com.code.tama.tts.server.registries.TTSEntities;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -39,8 +39,8 @@ import org.lwjgl.glfw.GLFW;
 import java.io.IOException;
 
 import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {

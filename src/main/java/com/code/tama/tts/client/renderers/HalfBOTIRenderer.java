@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
-import com.code.tama.triggerapi.StencilUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;

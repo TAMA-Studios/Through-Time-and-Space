@@ -3,14 +3,15 @@ package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
 import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
-import com.code.tama.tts.server.tardis.data.TARDISData;
-import com.code.tama.tts.server.tardis.data.TARDISFlightData;
-import com.code.tama.tts.server.tardis.data.TARDISNavigationalData;
-import java.util.function.Supplier;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.TARDISData;
+import com.code.tama.tts.server.data.tardis.TARDISFlightData;
+import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /** Used to sync the TARDIS Cap data between the server and the client */
 public class SyncTARDISCapPacketS2C {

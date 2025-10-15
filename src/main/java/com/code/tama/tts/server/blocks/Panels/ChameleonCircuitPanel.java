@@ -1,22 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -44,6 +37,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements EntityBlock {
@@ -198,7 +199,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                 case MINUS:
                     tardisLevelCapability
                             .GetData()
-                            .setExteriorModel(Exteriors.CycleDown(
+                            .setExteriorModel(ExteriorsRegistry.CycleDown(
                                     tardisLevelCapability.GetData().getExteriorModel()));
 
                     tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
@@ -216,7 +217,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 
                         Networking.sendPacketToDimension(
                                 world.dimension(),
-                                new SyncCapVariantPacketS2C(Exteriors.GetOrdinal(
+                                new SyncCapVariantPacketS2C(ExteriorsRegistry.GetOrdinal(
                                         tardisLevelCapability.GetData().getExteriorModel())));
 
                         tardisLevelCapability.GetExteriorTile().setChanged();
@@ -229,7 +230,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
                 case POSITIVE:
                     tardisLevelCapability
                             .GetData()
-                            .setExteriorModel(Exteriors.Cycle(
+                            .setExteriorModel(ExteriorsRegistry.Cycle(
                                     tardisLevelCapability.GetData().getExteriorModel()));
 
                     tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);

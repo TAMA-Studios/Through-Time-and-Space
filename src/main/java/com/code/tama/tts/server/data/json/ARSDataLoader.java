@@ -1,15 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.misc.ARSStructure;
+import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,10 +14,16 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Getter
 public class ARSDataLoader implements ResourceManagerReloadListener {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private final List<ARSStructure> dataRoom = new ArrayList<>(); // List to store Data ars objects
+    private final List<ARSStructureContainer> dataRoom = new ArrayList<>(); // List to store Data ars objects
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -66,8 +67,8 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
                             if (!valuesObject.asMap().containsKey("yOffs")) heightOffs = 0;
                             else heightOffs = valuesObject.get("yOffs").getAsInt();
                             // Create Data ars rooms and add it to the list
-                            ARSStructure Structure =
-                                    new ARSStructure(structureLocation, Component.translatable(name), heightOffs);
+                            ARSStructureContainer Structure =
+                                    new ARSStructureContainer(structureLocation, Component.translatable(name), heightOffs);
                             if (!dataRoom.contains(Structure)) dataRoom.add(Structure);
                         } else {
                             LOGGER.warn("Invalid JSON structure in {}", rl);

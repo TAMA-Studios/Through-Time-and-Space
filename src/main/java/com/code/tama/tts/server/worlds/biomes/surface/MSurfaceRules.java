@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.biomes.surface;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.worlds.biomes.MBiomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

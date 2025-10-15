@@ -1,31 +1,27 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import com.code.tama.triggerapi.MathUtils;
-import com.code.tama.triggerapi.WorldHelper;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.tts.Exteriors;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
-import com.code.tama.tts.server.blocks.ExteriorBlock;
+import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
+import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
-import com.code.tama.tts.server.misc.Exterior;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
-import com.code.tama.tts.server.registries.TTSTileEntities;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -47,9 +43,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class ExteriorTile extends AbstractPortalTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
@@ -57,12 +61,12 @@ public class ExteriorTile extends AbstractPortalTile {
     public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
     public boolean ThreadWorking = false;
-    public Exterior Model;
+    public ExteriorModelContainer Model;
     int DoorState;
 
     @Getter
     @Setter
-    ResourceLocation ModelIndex = Exteriors.EXTERIORS.get(0).getModel();
+    ResourceLocation ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
 
     private ResourceKey<Level> INTERIOR_DIMENSION;
 
@@ -117,9 +121,9 @@ public class ExteriorTile extends AbstractPortalTile {
         return this.INTERIOR_DIMENSION;
     }
 
-    public Exterior GetVariant() {
+    public ExteriorModelContainer GetVariant() {
         this.UpdateVariant();
-        return this.Model == null ? Exteriors.Get(0) : this.Model;
+        return this.Model == null ? ExteriorsRegistry.Get(0) : this.Model;
     }
 
     public void NeedsClientUpdate() {
@@ -231,10 +235,10 @@ public class ExteriorTile extends AbstractPortalTile {
         if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
             this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
         } else {
-            this.ModelIndex = Exteriors.EXTERIORS.get(0).getModel();
+            this.ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
         }
         if (tag.contains("model")) {
-            this.Model = Exterior.CODEC
+            this.Model = ExteriorModelContainer.CODEC
                     .parse(NbtOps.INSTANCE, tag.get("model"))
                     .get()
                     .orThrow();
@@ -299,8 +303,8 @@ public class ExteriorTile extends AbstractPortalTile {
     }
 
     public void setModel(int model) {
-        if (model >= Exteriors.EXTERIORS.size()) model = 0;
-        this.Model = Exteriors.EXTERIORS.get(model);
+        if (model >= ExteriorsRegistry.EXTERIORS.size()) model = 0;
+        this.Model = ExteriorsRegistry.EXTERIORS.get(model);
         this.setChanged();
 
         if (this.level instanceof ServerLevel serverLevel) {
@@ -337,7 +341,7 @@ public class ExteriorTile extends AbstractPortalTile {
         tag.putString("modelPath", this.getModelIndex().getPath());
         tag.putString("modelNamespace", this.getModelIndex().getNamespace());
         tag.putFloat("Transparency", this.transparency);
-        Exterior.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
+        ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
         if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
             if (this.level
                     .getServer()
@@ -390,8 +394,14 @@ public class ExteriorTile extends AbstractPortalTile {
                                         + LocalDate.now()
                                         + "-by-"
                                         + this.Placer.getName().getString().toLowerCase()
+                                        + "-"
+                                        + this.Placer.getCapability(Capabilities.PLAYER_CAPABILITY).orElseGet((NonNullSupplier<? extends IPlayerCap>) new PlayerCapability(this.Placer)).GetOwnedTARDISes()
+                                        + "-"
                                         + "-uuid-"
                                         + UUID.randomUUID()));
+
+                this.Placer.getCapability(Capabilities.PLAYER_CAPABILITY).orElseGet((NonNullSupplier<? extends IPlayerCap>) new PlayerCapability(this.Placer)).AddOwnedTARDIS(resourceKey.location().getPath());
+
                 ServerLevel tardisLevel = DimensionAPI.get()
                         .getOrCreateLevel(
                                 level.getServer(),

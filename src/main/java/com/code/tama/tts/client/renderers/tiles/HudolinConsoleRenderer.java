@@ -1,9 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class HudolinConsoleRenderer<
                 T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>

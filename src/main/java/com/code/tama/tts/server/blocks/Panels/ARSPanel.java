@@ -1,18 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import com.code.tama.triggerapi.MathUtils;
-import com.code.tama.triggerapi.WorldHelper;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.misc.ARSStructure;
-import com.code.tama.tts.server.registries.ARSRegistry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
+import com.code.tama.tts.server.registries.tardis.ARSRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -42,6 +37,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
 @SuppressWarnings("deprecation")
 public class ARSPanel extends HorizontalDirectionalBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -49,7 +50,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
     public static VoxelRotatedShape SHAPE =
             new VoxelRotatedShape(createVoxelShape().optimize());
     public static List<Buttons> buttons = new ArrayList<>();
-    private ARSStructure StoredStruct = ARSRegistry.GetStructure(0);
+    private ARSStructureContainer StoredStruct = ARSRegistry.GetStructure(0);
 
     public static VoxelShape createVoxelShape() {
         return Stream.of(

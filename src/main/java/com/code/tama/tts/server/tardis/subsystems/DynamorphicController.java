@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.misc.NBTUtils;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;

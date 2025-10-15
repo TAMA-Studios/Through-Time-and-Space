@@ -1,22 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.dimensions.TARDISDimensionChunkGenerator;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.core.*;
 import net.minecraft.core.RegistryAccess.ImmutableRegistryAccess;
@@ -56,6 +51,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 /** DimensionAPI internal implementation */
 public final class DimensionManager implements DimensionAPI {
@@ -445,7 +447,7 @@ public final class DimensionManager implements DimensionAPI {
             server.markWorldsDirty();
 
             // notify client of the removed levels
-            QuietPacketDistributors.sendToAll(Networking.INSTANCE, new UpdateDimensionsPacket(removedLevelKeys, false));
+            QuietPacketDistributors.sendToAll(Networking.INSTANCE, new UpdateDimensionsS2C(removedLevelKeys, false));
         }
     }
 

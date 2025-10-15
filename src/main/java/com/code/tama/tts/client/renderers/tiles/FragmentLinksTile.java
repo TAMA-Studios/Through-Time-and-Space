@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;

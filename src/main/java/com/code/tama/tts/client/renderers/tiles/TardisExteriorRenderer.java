@@ -1,16 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.triggerapi.BlockUtils;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.StencilUtils;
-import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.server.blocks.ExteriorBlock;
+import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

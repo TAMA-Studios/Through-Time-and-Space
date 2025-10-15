@@ -21,6 +21,16 @@ public class JavaJSON {
         return getParsedJavaJSON(part).getModelInfo().getTexture();
     }
 
+    public static ResourceLocation getLightMap(IUseJavaJSON part) {
+        if (getParsedJavaJSON(part) == null) return null;
+        return getParsedJavaJSON(part).getModelInfo().getLightMap();
+    }
+
+    public static ResourceLocation getAlphaMap(IUseJavaJSON part) {
+        if (getParsedJavaJSON(part) == null) return null;
+        return getParsedJavaJSON(part).getModelInfo().getAlphaMap();
+    }
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(JavaJSONCache::init);

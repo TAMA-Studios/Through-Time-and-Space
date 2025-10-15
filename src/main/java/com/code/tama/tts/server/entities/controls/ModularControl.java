@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
-import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.enums.Controls;
-import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
-import com.code.tama.tts.server.registries.TTSEntities;
+import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.client.Minecraft;

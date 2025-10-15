@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.tts.Exteriors;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +31,7 @@ public class VariantControl extends AbstractControl {
     public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
         itardisLevel
                 .GetData()
-                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
+                .SetExteriorVariant(ExteriorsRegistry.Cycle(itardisLevel.GetData().getExteriorModel()));
         itardisLevel.UpdateClient(DataUpdateValues.RENDERING);
         return InteractionResult.SUCCESS;
     }
@@ -40,7 +40,7 @@ public class VariantControl extends AbstractControl {
     public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
         itardisLevel
                 .GetData()
-                .SetExteriorVariant(Exteriors.Cycle(itardisLevel.GetData().getExteriorModel()));
+                .SetExteriorVariant(ExteriorsRegistry.Cycle(itardisLevel.GetData().getExteriorModel()));
         itardisLevel.UpdateClient(DataUpdateValues.RENDERING);
         return InteractionResult.SUCCESS;
     }

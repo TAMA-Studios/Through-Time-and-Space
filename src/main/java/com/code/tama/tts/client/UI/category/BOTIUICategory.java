@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
-import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
-import com.code.tama.tts.Exteriors;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
@@ -25,7 +25,7 @@ public class SyncCapVariantPacketS2C {
                 Minecraft.getInstance()
                         .level
                         .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                        .ifPresent(cap -> cap.GetData().SetExteriorVariant(Exteriors.Get(packet.variant)));
+                        .ifPresent(cap -> cap.GetData().SetExteriorVariant(ExteriorsRegistry.Get(packet.variant)));
             }
         });
         context.setPacketHandled(true);

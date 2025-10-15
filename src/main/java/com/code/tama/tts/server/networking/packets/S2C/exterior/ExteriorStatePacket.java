@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
-import com.code.tama.tts.server.misc.PhysicalStateManager;
+import com.code.tama.tts.server.misc.containers.PhysicalStateManager;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class ExteriorStatePacket {
     public enum State {

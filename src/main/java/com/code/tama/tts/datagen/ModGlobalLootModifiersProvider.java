@@ -4,7 +4,7 @@ package com.code.tama.tts.datagen;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.server.loots.AddItemModifier;
-import com.code.tama.tts.server.registries.TTSItems;
+import com.code.tama.tts.server.registries.forge.TTSItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;

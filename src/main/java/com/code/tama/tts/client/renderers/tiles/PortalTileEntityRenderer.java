@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.triggerapi.StencilUtils;
-import com.code.tama.triggerapi.botiutils.BOTIUtils;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,17 +22,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("deprecation")
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
-    private final BlockEntityRendererProvider.Context context;
-    private float lastRenderTick = -1;
     private final Minecraft mc = Minecraft.getInstance();
 
-    public boolean mode = true; // 0 - Fast but Innacurate (VBO) 1 - Slow but accurate (Native)
+    public boolean mode = true; // 0 - Fast but Inaccurate (VBO) 1 - Slow but accurate (Native)
 
-    public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
-    }
+    public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(
@@ -47,6 +43,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
         }
 
         stack.pushPose();
+        if(!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
         portal.getFBOContainer()
                 .Render(
                         stack,
@@ -84,6 +81,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                                             mc.getEntityRenderDispatcher(),
                                             mc.getBlockEntityRenderDispatcher(),
                                             mc.renderBuffers());
+                                    assert mc.player != null;
                                     ClientLevel level = new ClientLevel(
                                             mc.player.connection,
                                             mc.level.getLevelData(),
@@ -98,6 +96,8 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                                     renderer.setLevel(level);
 
                                     mc.level = level;
+                                    assert Minecraft.getInstance()
+                                            .level != null;
                                     portal.SkyColor = Minecraft.getInstance()
                                             .level
                                             .getSkyColor(
@@ -106,7 +106,11 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                                                             .getTimer()
                                                             .partialTick);
                                     mc.level = oldLevel;
-                                } else
+                                } else {
+                                    assert Minecraft.getInstance()
+                                            .player != null;
+                                    assert Minecraft.getInstance()
+                                            .level != null;
                                     portal.SkyColor = Minecraft.getInstance()
                                             .level
                                             .getSkyColor(
@@ -116,6 +120,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                                                     ((IMinecraftAccessor) Minecraft.getInstance())
                                                             .getTimer()
                                                             .partialTick);
+                                }
                             }
                             StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
                             botiSource.endBatch();
@@ -127,12 +132,5 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                             pose.popPose();
                         });
         stack.popPose();
-
-        //        });
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(@NotNull PortalTileEntity tileEntity) {
-        return true;
     }
 }

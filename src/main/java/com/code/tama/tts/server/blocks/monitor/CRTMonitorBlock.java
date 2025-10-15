@@ -3,9 +3,9 @@ package com.code.tama.tts.server.blocks.monitor;
 
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.registries.TTSTileEntities;
-import com.code.tama.tts.server.registries.UICategoryRegistry;
-import com.code.tama.tts.server.registries.UIComponentRegistry;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
+import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
+import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.math.Axis;
 import java.util.stream.Stream;

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.core;
 
-import com.code.tama.tts.server.registries.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Optional;

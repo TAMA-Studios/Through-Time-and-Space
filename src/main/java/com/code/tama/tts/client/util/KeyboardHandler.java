@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.util;
 
-import com.code.tama.tts.server.items.SonicItem;
+import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.platform.InputConstants;
 import cpw.mods.util.Lazy;
 import net.minecraft.client.KeyMapping;

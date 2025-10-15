@@ -1,0 +1,44 @@
+/* (C) TAMA Studios 2025 */
+package com.code.tama.tts;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec;
+
+public class TTSConfig {
+    @OnlyIn(Dist.CLIENT)
+    public static class ClientConfig {
+        public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
+        public static ForgeConfigSpec.BooleanValue BOTI_ENABLED;
+
+        private static void setupClientConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Through Time and Space - A Config");
+            builder.push("BOTI Related Configs");
+
+            builder.comment("BOTI Render Distance (minimum 0, max 16, default 6)");
+            BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
+            builder.comment("Is BOTI Enabled");
+            BOTI_ENABLED = builder.define("boti_enabled", true);
+
+            builder.pop();
+        }
+    }
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    public static class ServerConfig {
+        public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
+        public static ForgeConfigSpec.BooleanValue BOTI_ENABLED;
+
+        private static void setupClientConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Through Time and Space - A Config");
+            builder.push("BOTI Related Configs");
+
+            builder.comment("BOTI Render Distance (minimum 0, max 16, default 6)");
+            BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
+            builder.comment("Is BOTI Enabled");
+            BOTI_ENABLED = builder.define("boti_enabled", true);
+
+            builder.pop();
+        }
+    }
+}

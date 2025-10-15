@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.dimensions;
 
-import com.code.tama.tts.Exteriors;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -31,7 +31,7 @@ public class TriggerSyncCapVariantPacketC2S {
                 .ifPresent(cap -> Networking.sendPacketToDimension(
                         packet.TARDISLevel,
                         new SyncCapVariantPacketS2C(
-                                Exteriors.GetOrdinal(cap.GetData().getExteriorModel())))));
+                                ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel())))));
 
         context.setPacketHandled(true);
     }

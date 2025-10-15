@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import com.code.tama.triggerapi.FileHelper;
+import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
 import com.code.tama.tts.server.misc.NBTUtils;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerCapability implements IPlayerCap {
     String ViewedTARDIS = "";

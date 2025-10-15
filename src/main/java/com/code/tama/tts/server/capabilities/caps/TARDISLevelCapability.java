@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.ExteriorBlock.FACING;
-
-import com.code.tama.tts.server.blocks.ExteriorBlock;
+import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.tardis.*;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
@@ -12,14 +11,12 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
-import com.code.tama.tts.server.registries.LandingTypeRegistry;
-import com.code.tama.tts.server.registries.TTSBlocks;
-import com.code.tama.tts.server.tardis.data.*;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +33,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
     TARDISData data = new TARDISData(this);

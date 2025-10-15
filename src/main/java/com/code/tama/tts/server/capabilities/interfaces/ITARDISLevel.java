@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
-import com.code.tama.tts.server.tardis.data.TARDISClientData;
-import com.code.tama.tts.server.tardis.data.TARDISData;
-import com.code.tama.tts.server.tardis.data.TARDISFlightData;
-import com.code.tama.tts.server.tardis.data.TARDISNavigationalData;
+import com.code.tama.tts.server.data.tardis.TARDISClientData;
+import com.code.tama.tts.server.data.tardis.TARDISData;
+import com.code.tama.tts.server.data.tardis.TARDISFlightData;
+import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;

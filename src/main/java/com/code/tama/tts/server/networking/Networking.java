@@ -1,9 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import com.code.tama.triggerapi.dimensions.UpdateDimensionsPacket;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
@@ -15,7 +14,6 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
-import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncDimensionsS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
@@ -24,10 +22,6 @@ import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVari
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -44,6 +38,13 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class Networking {
     public static final String NET_VERSION = "1.0";
@@ -106,10 +107,10 @@ public class Networking {
                 SyncDimensionsS2C::decode,
                 SyncDimensionsS2C::handle);
         register(
-                UpdateDimensionsPacket.class,
-                UpdateDimensionsPacket::encode,
-                UpdateDimensionsPacket::decode,
-                UpdateDimensionsPacket::handle);
+                UpdateDimensionsS2C.class,
+                UpdateDimensionsS2C::encode,
+                UpdateDimensionsS2C::decode,
+                UpdateDimensionsS2C::handle);
         register(
                 SyncCapLightLevelPacketS2C.class,
                 SyncCapLightLevelPacketS2C::encode,

@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.tts.server.items.CompressedMultiblockItem;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.CompressedMultiblockTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

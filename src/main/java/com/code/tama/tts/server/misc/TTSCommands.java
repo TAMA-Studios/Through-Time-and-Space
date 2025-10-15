@@ -3,7 +3,7 @@ package com.code.tama.tts.server.misc;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.registries.SubsystemsRegistry;
+import com.code.tama.tts.server.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

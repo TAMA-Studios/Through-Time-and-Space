@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.core;
 
-import com.code.tama.triggerapi.BlockUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import net.minecraft.core.BlockPos;

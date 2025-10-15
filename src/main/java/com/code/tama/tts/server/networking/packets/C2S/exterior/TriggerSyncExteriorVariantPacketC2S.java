@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.exterior;
 
-import com.code.tama.tts.Exteriors;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -40,7 +40,7 @@ public class TriggerSyncExteriorVariantPacketC2S {
                         packet.level,
                         new SyncExteriorVariantPacketS2C(
                                 exteriorTile.getModelIndex(),
-                                Exteriors.GetOrdinal(exteriorTile.GetVariant()),
+                                ExteriorsRegistry.GetOrdinal(exteriorTile.GetVariant()),
                                 exteriorTile.targetLevel,
                                 exteriorTile.targetY,
                                 exteriorTile.targetPos,

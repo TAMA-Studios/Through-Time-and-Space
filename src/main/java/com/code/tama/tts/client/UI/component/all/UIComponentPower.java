@@ -5,7 +5,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.UI.component.core.ComponentTypes;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
-import com.code.tama.tts.server.registries.UICategoryRegistry;
+import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

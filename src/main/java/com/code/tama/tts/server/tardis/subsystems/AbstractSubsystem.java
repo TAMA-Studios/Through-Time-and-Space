@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
-import com.code.tama.tts.server.blocks.FragmentLinksBlock;
+import com.code.tama.tts.server.blocks.tardis.FragmentLinksBlock;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;

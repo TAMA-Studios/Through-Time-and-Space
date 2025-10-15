@@ -2,8 +2,8 @@
 package com.code.tama.tts.server.threads;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.PhysicalStateManager;
-import com.code.tama.tts.server.tardis.data.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.misc.containers.PhysicalStateManager;
 
 public class TakeOffThread extends Thread {
     ITARDISLevel itardisLevel;

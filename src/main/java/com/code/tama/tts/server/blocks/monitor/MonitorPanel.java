@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.blocks.monitor;
 
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.registries.TTSTileEntities;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
