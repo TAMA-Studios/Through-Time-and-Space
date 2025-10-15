@@ -2,6 +2,7 @@
 package com.code.tama.triggerapi.boti;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.networking.Networking;
@@ -25,6 +26,7 @@ public class ChunkGatheringThread extends Thread {
     BlockPos targetPos;
     AbstractPortalTile portalTile;
     ServerLevel level;
+    int chunks;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -39,7 +41,7 @@ public class ChunkGatheringThread extends Thread {
             ArrayList<BotiChunkContainer> containers = new ArrayList<>();
             ArrayList<List<BotiChunkContainer>> containerLists = new ArrayList<>();
             boolean isSquare = true;
-            int chunksToRender = 8;
+            int chunksToRender = Math.min(this.chunks, TTSConfig.ServerConfig.BOTI_RENDER_DISTANCE.get()); // Use either client render distance, or server render distance, whichever's smaller
             int uMax; // = (axis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
             int uMin; // = (axis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
             int vMax; // = (axis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);

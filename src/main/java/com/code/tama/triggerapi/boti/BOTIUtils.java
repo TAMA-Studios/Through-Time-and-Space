@@ -168,7 +168,7 @@ public class BOTIUtils {
 
         if (tileEntity.targetLevel != null)
             Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
-                    tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos()));
+                    tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos(), TTSConfig.ClientConfig.BOTI_RENDER_DISTANCE.get()));
 
         tileEntity.lastRequestTime = currentTime;
     }
@@ -265,10 +265,10 @@ public class BOTIUtils {
         }
     }
 
-    public static void GatherChunkData(AbstractPortalTile portalTile, Level level) {
+    public static void GatherChunkData(AbstractPortalTile portalTile, Level level, int chunks) {
         if(!TTSConfig.ServerConfig.BOTI_ENABLED.get()) return;
         BlockPos targetPos = portalTile.getTargetPos();
-        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level).start();
+        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level, chunks).start();
     }
 
     public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {
