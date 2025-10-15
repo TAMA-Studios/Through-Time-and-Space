@@ -13,10 +13,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
@@ -39,6 +35,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
@@ -127,9 +128,9 @@ public class BOTIUtils {
                 float brightness = (float) (container.getLight() / 0xf000f0);
 
                 // Apply brightness to base RGB values
-                float rLit = r *= brightness;
-                float gLit = g *= brightness;
-                float bLit = b *= brightness;
+                float rLit = r;// *= brightness;
+                float gLit = g;// *= brightness;
+                float bLit = b;// *= brightness;
 
                 buffer.putBulkData(
                         stack.last(),
@@ -262,7 +263,7 @@ public class BOTIUtils {
 
     public static void GatherChunkData(AbstractPortalTile portalTile, Level level) {
         BlockPos targetPos = portalTile.getTargetPos();
-        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level);
+        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level).start();
     }
 
     public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {

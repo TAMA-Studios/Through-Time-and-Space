@@ -12,12 +12,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Locale;
-
 import static com.code.tama.tts.TTSMod.MODID;
 
-public class LocationUICategory extends UICategory {
-    public LocationUICategory() {
+public class FlightStatusUICategory extends UICategory {
+    public FlightStatusUICategory() {
         super();
         this.overlay = new ResourceLocation(MODID, "textures/gui/overlay_large_title.png");
     }
@@ -37,20 +35,14 @@ public class LocationUICategory extends UICategory {
             ResourceLocation STANDARD_GALACTIC = new ResourceLocation("alt");
             Style STYLE = Style.EMPTY.withFont(DEFAULT);
 
-            Component line1 = Component.literal(cap.GetCurrentLevel()
-                            .location()
-                            .getPath()
-                            .substring(0, 1)
-                            .toUpperCase(Locale.ROOT)
-                            + cap.GetCurrentLevel()
-                            .location()
-                            .getPath()
-                            .substring(1)
-                            .replace("_", " "))
-                    .setStyle(STYLE);
+            String flightState;
+            long flightTicks = cap.GetFlightData().getTicksInFlight();
+            long destTicks = cap.GetFlightData().getTicksTillDestination();
 
-            Component line2 = Component.literal(
-                    cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
+            if(cap.GetFlightData().IsTakingOff()) flightState = "Taking Off";
+            else if(cap.GetFlightData().isInFlight()) flightState = "In Flight";
+            else if(!cap.GetFlightData().isInFlight() && !cap.GetFlightData().IsTakingOff()) flightState = "Landed";
+            else flightState = "N/A";
 
             fontRenderer.drawInBatch(
                     OS_VER.copy().setStyle(STYLE),
@@ -65,7 +57,7 @@ public class LocationUICategory extends UICategory {
                     combinedLight);
 
             fontRenderer.drawInBatch(
-                    Component.literal("Location").withStyle(STYLE),
+                    Component.literal("Flight Status").withStyle(STYLE),
                     -22.5f,
                     15,
                     white,
@@ -76,30 +68,15 @@ public class LocationUICategory extends UICategory {
                     0,
                     combinedLight);
 
-            fontRenderer.drawInBatch(
-                    line1,
-                    -40,
-                    25,
-                    white,
-                    false,
-                    poseStack.last().pose(),
-                    bufferSource,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    combinedLight);
-
-            fontRenderer.drawInBatch(
-                    line2,
-                    -40,
-                    35,
-                    white,
-                    false,
-                    poseStack.last().pose(),
-                    bufferSource,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    combinedLight);
+            RenderText(String.format("Flight Status: %s", flightState), poseStack, bufferSource, -40, 25);
+            if(!flightState.equals("Landed")) {
+                RenderText(String.format("Time in Flight: %s T | %s S | %s M", flightTicks, flightTicks / 60, (flightTicks / 60) / 60), poseStack, bufferSource, -40, 35);
+                RenderText(String.format("Time until Destination reached: %s T | %s S | %s M", destTicks, destTicks / 60, (destTicks / 60) / 60), poseStack, bufferSource, -40, 45);
+            }
         });
     }
 
+    public void RenderText(String text, PoseStack stack, MultiBufferSource builder, int x, int y) {
+        Minecraft.getInstance().font.drawInBatch(text, x, y, 0xFFFFFF, false, stack.last().pose(), builder, Font.DisplayMode.NORMAL, 0, 0xf000f0);
+    }
 }

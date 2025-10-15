@@ -7,6 +7,7 @@ import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtoco
 import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocolHandler;
 import com.code.tama.tts.server.tardis.terminationprotocol.UrgentStopProtocolHandler;
 import com.mojang.serialization.Codec;
+
 import java.util.ArrayList;
 
 public class FlightTerminationProtocolRegistry {
@@ -17,8 +18,8 @@ public class FlightTerminationProtocolRegistry {
 
     public static final FlightTerminationProtocol POLITE_TERMINUS = AddProtocol(FlightTerminationProtocol.builder()
             .name("polite_terminus")
-            .LandShakeAmount(0.1f)
-            .TakeoffShakeAmount(0.1f)
+            .LandShakeAmount(0.3f)
+            .TakeoffShakeAmount(0.3f)
             .Accuracy(0.8f)
             .Speed(0.5f)
             .Selectable(true)
@@ -34,7 +35,7 @@ public class FlightTerminationProtocolRegistry {
 
     public static final FlightTerminationProtocol QUICK_STOP = AddProtocol(FlightTerminationProtocol.builder()
             .name("quick_stop")
-            .LandShakeAmount(0.2f)
+            .LandShakeAmount(0.9f)
             .TakeoffShakeAmount(0.7f)
             .Accuracy(0.7f)
             .Speed(0.7f)
@@ -44,7 +45,7 @@ public class FlightTerminationProtocolRegistry {
 
     public static final FlightTerminationProtocol URGENT_STOP = AddProtocol(FlightTerminationProtocol.builder()
             .name("urgent_stop")
-            .LandShakeAmount(0.2f)
+            .LandShakeAmount(0.7f)
             .TakeoffShakeAmount(1.0f)
             .Accuracy(1.0f)
             .Speed(0.9f)

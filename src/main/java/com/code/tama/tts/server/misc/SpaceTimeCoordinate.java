@@ -3,7 +3,6 @@ package com.code.tama.tts.server.misc;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  * Holds four doubles, X, Y, Z, and Time Can be NBT serialized/deserialized (unlike {@link
  * net.minecraft.core.BlockPos}) Can be created using a {@link net.minecraft.core.BlockPos}
  */
-@AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,12 +32,6 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
                     Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(SpaceTimeCoordinate::getLevelKey))
             .apply(instance, SpaceTimeCoordinate::new));
 
-    public static SpaceTimeCoordinate of(CompoundTag tag) {
-        SpaceTimeCoordinate SpaceTimeCoordinates = new SpaceTimeCoordinate();
-        SpaceTimeCoordinates.deserializeNBT(tag);
-        return SpaceTimeCoordinates;
-    }
-
     double Time = 0, X = 0, Y = 0, Z = 0;
     ResourceKey<Level> level = Level.OVERWORLD;
 
@@ -47,6 +39,27 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
         this.X = pos.getX();
         this.Y = pos.getY();
         this.Z = pos.getZ();
+    }
+
+    public SpaceTimeCoordinate(double x, double y, double z) {
+        X = x;
+        Y = y;
+        Z = z;
+    }
+
+    public SpaceTimeCoordinate(double x, double y, double z, double time) {
+        X = x;
+        Y = y;
+        Z = z;
+        Time = time;
+    }
+
+    public SpaceTimeCoordinate(double x, double y, double z, double time, ResourceKey<Level> level) {
+        X = x;
+        Y = y;
+        Z = z;
+        Time = time;
+        this.level = level;
     }
 
     public SpaceTimeCoordinate(BlockPos pos, ResourceKey<Level> level) {
@@ -100,7 +113,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     }
 
     public String ReadableString() {
-        return "X - " + Double.toString(this.X) + " Y - " + Double.toString(this.Y) + " Z - " + Double.toString(this.Z);
+        return "X | " + Double.toString(this.X) + " Y | " + Double.toString(this.Y) + " Z | " + Double.toString(this.Z);
     }
 
     public String ReadableStringShort() {
@@ -142,6 +155,6 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
     }
 
     public SpaceTimeCoordinate copy() {
-        return new SpaceTimeCoordinate(Time, X, Y, Z, level);
+        return new SpaceTimeCoordinate(X, Y, Z, Time, level);
     }
 }

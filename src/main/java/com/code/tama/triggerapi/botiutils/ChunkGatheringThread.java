@@ -7,8 +7,6 @@ import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +16,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 public class ChunkGatheringThread extends Thread {
@@ -29,10 +30,10 @@ public class ChunkGatheringThread extends Thread {
     @SuppressWarnings("unchecked")
     public void run() {
         this.setName("BOTIChunkGatheringThread");
-
+        System.out.println("Gathering chunks for BOTI");
         //        Direction axis = Direction.fromYRot(portalTile.targetY);
         BlockPos portalPos = portalTile.getBlockPos();
-        int maxBlocks = 80000;
+        int maxBlocks = 50000;
 
         try {
             ArrayList<BotiChunkContainer> containers = new ArrayList<>();
@@ -57,22 +58,34 @@ public class ChunkGatheringThread extends Thread {
                             new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
                     level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
                     LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
-                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
+                    LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
+                    LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 
                     BlockPos relTargetPos =
-                            new BlockPos(targetPos.getX() % 16, targetPos.getY() % 16, targetPos.getZ() % 16);
+                            new BlockPos(targetPos.getX() % 16, (targetPos.getY() - 16) % 16, targetPos.getZ() % 16);
+
+                    BlockPos relTargetPosAbove =
+                            new BlockPos(targetPos.getX() % 16, (targetPos.getY()) % 16, targetPos.getZ() % 16);
 
                     for (int y = 0; y < 16; y++) {
                         for (int x = 0; x < 16; x++) {
                             for (int z = 0; z < 16; z++) {
                                 BlockState state = section.getBlockState(x, y, z);
+                                BlockState stateAbove = sectionAbove.getBlockState(x, y, z);
                                 FluidState fluidState = section.getFluidState(x, y, z);
+                                FluidState fluidStateAbove = sectionAbove.getFluidState(x, y, z);
 
                                 if (!state.isAir()) {
                                     BlockPos pos = new BlockPos(
                                             x + (u * 16) - relTargetPos.getX(),
-                                            y - relTargetPos.getY(),
+                                            y - relTargetPos.getY() - 16,
                                             z + (v * 16) - relTargetPos.getZ());
+
+
+                                    BlockPos posAbove = new BlockPos(
+                                            x + (u * 16) - relTargetPosAbove.getX(),
+                                            y - relTargetPosAbove.getY(),
+                                            z + (v * 16) - relTargetPosAbove.getZ());
 
                                     //
                                     // if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos, exteriorAxis))
@@ -115,8 +128,28 @@ public class ChunkGatheringThread extends Thread {
                                                         level,
                                                         BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
                                                                 .atY(targetPos.getY()))));
+
+                                    if (fluidStateAbove.isEmpty())
+                                        containers.add(new BotiChunkContainer(
+                                                level,
+                                                stateAbove,
+                                                posAbove,
+                                                BlockUtils.getPackedLight(
+                                                        level,
+                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
+                                                                .atY(targetPos.getY()))));
+                                    else
+                                        containers.add(new BotiChunkContainer(
+                                                level,
+                                                stateAbove,
+                                                fluidState,
+                                                posAbove,
+                                                BlockUtils.getPackedLight(
+                                                        level,
+                                                        BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
+                                                                .atY(targetPos.getY()))));
                                 }
-                                if (containers.size() >= maxBlocks) {
+                                if (containers.size() >= maxBlocks - 1) {
                                     containerLists.add((List<BotiChunkContainer>) containers.clone());
                                     containers.clear();
                                 }
@@ -130,6 +163,7 @@ public class ChunkGatheringThread extends Thread {
                 containers.clear();
             }
 
+            System.out.println("Sending packets for BOTI");
             for (int i = 0; i < containerLists.size(); i++) {
                 Networking.INSTANCE.send(
                         PacketDistributor.DIMENSION.with(() -> {

@@ -27,14 +27,10 @@ public class TARDISClientData {
     }
 
     public VortexRenderer getVortex() {
-        if (vortex == null || vortex.TEXTURE_LOCATION.equals(new ResourceLocation("", ""))) {
+        if (vortex == null || vortex.textureLayers.get(VortexRenderer.LayerType.BASE).equals(new ResourceLocation("minecraft", "")) || vortex.textureLayers.get(VortexRenderer.LayerType.BASE) != TARDIS.GetData().getVortex()) {
             TARDIS.UpdateClient(DataUpdateValues.RENDERING);
             return this.vortex = new VortexRenderer(
                     new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png"));
-        }
-        if (vortex.TEXTURE_LOCATION != TARDIS.GetData().getVortex()) {
-            TARDIS.UpdateClient(DataUpdateValues.RENDERING);
-            return this.vortex = new VortexRenderer(this.TARDIS.GetData().getVortex());
         }
         return vortex;
     }

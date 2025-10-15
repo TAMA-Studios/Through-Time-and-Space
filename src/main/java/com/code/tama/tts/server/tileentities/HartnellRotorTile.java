@@ -3,16 +3,16 @@ package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.TTSTileEntities;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+
+@Getter
 public class HartnellRotorTile extends TickingTile {
     private final AnimationState RotorAnimationState = new AnimationState();
-
-    public AnimationState getRotorAnimationState() {
-        return this.RotorAnimationState;
-    }
 
     public HartnellRotorTile(BlockPos pos, BlockState state) {
         super(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
@@ -24,7 +24,7 @@ public class HartnellRotorTile extends TickingTile {
         level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
             if (level.isClientSide)
                 this.getRotorAnimationState()
-                        .animateWhen(cap.GetFlightData().isPlayRotorAnimation(), (int) level.getGameTime());
+                        .animateWhen(cap.GetFlightData().isPlayRotorAnimation() || this.getBlockState().getValue(POWERED), (int) level.getGameTime());
             if (cap.GetFlightData().isPlayRotorAnimation()) {
                 cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayIfFinished(level, this.worldPosition);
             } else cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);

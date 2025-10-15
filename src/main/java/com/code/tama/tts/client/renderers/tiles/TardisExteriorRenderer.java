@@ -218,13 +218,16 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                 pose.popPose();
                                 pose.pushPose();
                                 pose.translate(-0.5, -0.5, -0.5);
+                                pose.mulPose(Axis.XP.rotationDegrees(180));
                                 BOTIUtils.RenderScene(pose, exteriorTile);
                                 pose.popPose();
                             });
             stack.popPose();
         }
 
-        parsed.renderToBuffer(
+        stack.translate(0, 1.5, 0);
+
+        parsed.getPart("baseRoot").render(
                 stack,
                 bufferSource.getBuffer(ext.getRenderType()),
                 combinedLight,

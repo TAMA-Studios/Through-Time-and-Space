@@ -14,10 +14,6 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -65,7 +66,7 @@ public class TARDISData {
     ProtocolData ProtocolsData = new ProtocolData();
     private long ticks = 0;
     SpaceTimeCoordinate doorBlock = new SpaceTimeCoordinate();
-    ResourceLocation Vortex = new ResourceLocation("", "");
+    ResourceLocation Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness");
 
     public TARDISData(TARDISLevelCapability TARDIS) {
         this.TARDIS = TARDIS;

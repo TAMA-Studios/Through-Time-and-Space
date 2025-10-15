@@ -197,7 +197,9 @@ shadowJar {
 	}
 
 	// Relocate TerraBlender package
-	relocate 'terrablender', 'com.code.tama.shadow.terrablender'
+//	relocate 'terrablender', 'com.code.tama.shadow.terrablender'
+
+	relocate 'patchouli', 'com.code.tama.shadow.patchouli'
 
 	archiveClassifier.set('') // No -all
 

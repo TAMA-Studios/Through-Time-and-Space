@@ -4,6 +4,7 @@ package com.code.tama.tts.client.renderers.tiles;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.triggerapi.rendering.FBOHelper;
+import com.code.tama.triggerapi.rendering.VortexRenderer;
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -80,8 +81,8 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
                             pose.translate(0, 0, 500);
                             pose.scale(1.5f, 1.5f, 1.5f);
                             cap.GetClientData().getVortex().renderVortex(pose);
-                            cap.GetClientData().getVortex().renderVortexLayer(pose, 1.5f);
-                            cap.GetClientData().getVortex().renderVortexLayer(pose, 2.5f);
+                            cap.GetClientData().getVortex().renderVortexLayer(pose, VortexRenderer.LayerType.SECOND);
+                            cap.GetClientData().getVortex().renderVortexLayer(pose, VortexRenderer.LayerType.THIRD);
                             pose.popPose();
                         });
 

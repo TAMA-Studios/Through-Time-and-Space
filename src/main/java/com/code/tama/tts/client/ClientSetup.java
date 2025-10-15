@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
-
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
@@ -23,7 +19,6 @@ import com.code.tama.tts.server.registries.TTSTileEntities;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import java.io.IOException;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -40,6 +35,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+
+import java.io.IOException;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
@@ -84,9 +85,9 @@ public class ClientSetup {
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_BLOCK.get(), RenderType.cutout());
 
         // Rotors
-        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COPPER_ROTOR.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.AMETHYST_ROTOR.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BLUE_ROTOR.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COPPER_ROTOR.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.AMETHYST_ROTOR.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BLUE_ROTOR.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), RenderType.cutout());
     }
 
