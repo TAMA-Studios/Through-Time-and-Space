@@ -8,10 +8,17 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class TTSConfig {
     @OnlyIn(Dist.CLIENT)
     public static class ClientConfig {
+        public static final ForgeConfigSpec SPEC;
+
+        static {
+            ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
+            setupConfig(configBuilder);
+            SPEC = configBuilder.build();
+        }
         public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
         public static ForgeConfigSpec.BooleanValue BOTI_ENABLED;
 
-        private static void setupClientConfig(ForgeConfigSpec.Builder builder) {
+        private static void setupConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Through Time and Space - A Config");
             builder.push("BOTI Related Configs");
 
@@ -26,10 +33,17 @@ public class TTSConfig {
 
     @OnlyIn(Dist.DEDICATED_SERVER)
     public static class ServerConfig {
+        public static final ForgeConfigSpec SPEC;
+
+        static {
+            ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
+            setupConfig(configBuilder);
+            SPEC = configBuilder.build();
+        }
         public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
         public static ForgeConfigSpec.BooleanValue BOTI_ENABLED;
 
-        private static void setupClientConfig(ForgeConfigSpec.Builder builder) {
+        private static void setupConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Through Time and Space - A Config");
             builder.push("BOTI Related Configs");
 

@@ -33,7 +33,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -75,6 +77,9 @@ public class TTSMod {
         });
 
         triggerAPI = new TriggerAPI(modEventBus, MODID);
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TTSConfig.ClientConfig.SPEC, "through_time_and_space_config.toml"));
+        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TTSConfig.ServerConfig.SPEC, "through_time_and_space_config.toml"));
 
         FileHelper.createStoredFile(
                 "last_time_launched",
@@ -118,9 +123,6 @@ public class TTSMod {
         Biomes.BIOME_MODIFIERS.register(modEventBus);
 
         Biomes.CHUNK_GENERATORS.register(modEventBus);
-
-        // TODO: Finish the config and find a use for it
-        // ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         ModCompat.Run();
     }

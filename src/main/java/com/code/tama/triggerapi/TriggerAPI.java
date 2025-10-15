@@ -27,6 +27,5 @@ public class TriggerAPI {
         MOD_ID = modid;
         bus.register(JavaJSON.class);
         Logger.info("Trigger engine started for %s", MOD_ID);
-        TTSConfig.register();
     }
 }
