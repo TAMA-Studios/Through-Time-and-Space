@@ -126,9 +126,11 @@ public abstract class AbstractPortalTile extends TickingTile {
         if (this.targetLevel != null) return;
 
         assert this.getLevel() != null;
-        if (this.getLevel().isClientSide) if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
+        if (this.getLevel().isClientSide) {
+            if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
+        }
 
-        else if (!TTSConfig.ServerConfig.BOTI_ENABLED.get()) return;
+        if(!this.getLevel().isClientSide && !TTSConfig.ServerConfig.BOTI_ENABLED.get()) return;
 
         this.getLevel()
                 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)

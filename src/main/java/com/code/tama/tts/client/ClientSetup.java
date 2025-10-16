@@ -5,16 +5,30 @@ import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.NESSConsoleModel;
+import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
-import com.code.tama.tts.client.renderers.tiles.*;
+import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
+import com.code.tama.tts.client.renderers.tiles.ChromiumBlockEntityRenderer;
+import com.code.tama.tts.client.renderers.tiles.ExampleRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.HartnellDoorRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
+import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
+import com.code.tama.tts.client.renderers.tiles.gadgets.SonicConfiguratorRenderer;
+import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
+import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.TardisSkyEffects;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
+import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -44,6 +58,11 @@ import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_T
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
+
+    @SubscribeEvent
+    public static void registerFactories(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(TTSParticles.ELECTRIC_SPARK.get(), (sprites) -> new ElectricSparkParticle.Provider(sprites));
+    }
 
     public static final Lazy<KeyMapping> EXTERIOR_VIEW = Lazy.of(() -> new KeyMapping(
             "tts.keybinds.exterior_view_cancel", // Will be localized using this translation

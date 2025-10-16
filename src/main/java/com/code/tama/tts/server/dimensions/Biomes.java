@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.dimensions;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +11,8 @@ import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class Biomes {
     public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS =
@@ -27,5 +27,5 @@ public class Biomes {
             ResourceKey.create(Registries.BIOME, new ResourceLocation("tts", "tardis"));
 
     public static final RegistryObject<Codec<? extends ChunkGenerator>> TARDIS_CHUNK_GENERATOR =
-            CHUNK_GENERATORS.register(MODID, () -> TARDISDimensionChunkGenerator.CODEC);
+            CHUNK_GENERATORS.register(MODID, () -> TARDISNaturalDimensionChunkGenerator.CODEC);
 }

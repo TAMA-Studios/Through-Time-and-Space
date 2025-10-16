@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.tardis;
 
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import net.minecraft.core.BlockPos;

@@ -15,6 +15,7 @@ import com.code.tama.tts.server.loots.ModLootModifiers;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.registries.forge.TTSCreativeTabs;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
+import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
@@ -72,14 +73,12 @@ public class TTSMod {
         modEventBus.addListener(this::commonSetup);
         CustomLevelRenderer.Register();
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
-        });
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class));
 
         triggerAPI = new TriggerAPI(modEventBus, MODID);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TTSConfig.ClientConfig.SPEC, "through_time_and_space_config.toml"));
-        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TTSConfig.ServerConfig.SPEC, "through_time_and_space_config.toml"));
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TTSConfig.ClientConfig.SPEC, "through_time_and_space-client-config.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TTSConfig.ServerConfig.SPEC, "through_time_and_space-server-config.toml");
 
         FileHelper.createStoredFile(
                 "last_time_launched",
@@ -89,6 +88,8 @@ public class TTSMod {
         // Register Blocks, Items, Dimensions etc...
 
         SonicModeRegistry.register(modEventBus);
+
+        TTSParticles.PARTICLES.register(modEventBus);
 
         BLOCKS.register(modEventBus);
 

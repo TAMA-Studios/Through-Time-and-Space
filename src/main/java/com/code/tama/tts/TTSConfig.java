@@ -1,12 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class TTSConfig {
-    @OnlyIn(Dist.CLIENT)
     public static class ClientConfig {
         public static final ForgeConfigSpec SPEC;
 
@@ -31,7 +28,6 @@ public class TTSConfig {
         }
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static class ServerConfig {
         public static final ForgeConfigSpec SPEC;
 

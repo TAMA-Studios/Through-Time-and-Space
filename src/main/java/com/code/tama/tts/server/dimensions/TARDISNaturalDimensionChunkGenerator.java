@@ -3,10 +3,6 @@ package com.code.tama.tts.server.dimensions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -29,20 +25,32 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class TARDISDimensionChunkGenerator extends ChunkGenerator {
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-    public static final Codec<TARDISDimensionChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
+public class TARDISNaturalDimensionChunkGenerator extends ChunkGenerator {
+
+    public static final Codec<TARDISNaturalDimensionChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
-                    .apply(instance, TARDISDimensionChunkGenerator::new));
+                    .apply(instance, TARDISNaturalDimensionChunkGenerator::new));
 
     public final HolderLookup.RegistryLookup<Biome> biomeReg;
     public final RandomSource random;
 
-    public TARDISDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
+    public TARDISNaturalDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
         super(new FixedBiomeSource(biomeReg.getOrThrow(Biomes.TARDIS_BIOME)));
         this.biomeReg = biomeReg;
+        this.random = new SingleThreadedRandomSource(0);
+    }
+
+    public TARDISNaturalDimensionChunkGenerator() {
+        super(new FixedBiomeSource(ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME).asLookup().getOrThrow(Biomes.TARDIS_BIOME)));
+        this.biomeReg = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME).asLookup();
         this.random = new SingleThreadedRandomSource(0);
     }
 
@@ -66,7 +74,7 @@ public class TARDISDimensionChunkGenerator extends ChunkGenerator {
             WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_, ChunkAccess p_223053_) {}
 
     @Override
-    public @NotNull Codec<TARDISDimensionChunkGenerator> codec() {
+    public @NotNull Codec<TARDISNaturalDimensionChunkGenerator> codec() {
         return CODEC;
     }
 
@@ -80,6 +88,7 @@ public class TARDISDimensionChunkGenerator extends ChunkGenerator {
             RandomState randomState,
             StructureManager structureManager,
             ChunkAccess chunk) {
+
 
         BlockState stone = Blocks.STONE.defaultBlockState();
         int minY = this.getMinY();

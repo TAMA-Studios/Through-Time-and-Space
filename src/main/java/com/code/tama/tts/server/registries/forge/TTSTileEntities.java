@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSBlocks.*;
-
-import com.code.tama.tts.client.renderers.tiles.FragmentLinksTile;
+import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
@@ -15,6 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSBlocks.*;
 
 public class TTSTileEntities {
 

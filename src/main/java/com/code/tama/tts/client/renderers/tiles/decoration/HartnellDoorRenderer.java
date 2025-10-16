@@ -1,7 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
-
-import static com.code.tama.tts.TTSMod.MODID;
+package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import com.code.tama.triggerapi.JavaInJSON.IUseJavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
@@ -15,6 +13,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class HartnellDoorRenderer implements BlockEntityRenderer<HartnellDoorTile>, IUseJavaJSON {
     double Frame = 0;

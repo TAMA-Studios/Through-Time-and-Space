@@ -32,6 +32,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -341,6 +342,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
         if (!this.flightData.isInFlight()) return;
         MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.START));
         this.flightData.setInFlight(false);
+        this.data.setSparking(true);
+        this.data.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
         new CrashThread(this).start();
         this.NullExteriorChecksAndFixes();
     }

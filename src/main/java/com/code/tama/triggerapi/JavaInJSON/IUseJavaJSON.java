@@ -18,6 +18,10 @@ public interface IUseJavaJSON {
         return this.getModel().renderType(this.getTexture());
     }
 
+    default RenderType getRenderType(ResourceLocation texture) {
+        return this.getModel().renderType(texture);
+    }
+
     default RenderType getEmmisiveRenderType() {
         return this.getModel().renderType(this.getLightMap());
     }

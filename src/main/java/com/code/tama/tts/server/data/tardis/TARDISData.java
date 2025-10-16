@@ -40,10 +40,12 @@ public class TARDISData {
                             .xmap(opt -> opt.orElse(null), Optional::ofNullable)
                             .forGetter(TARDISData::getOwnerUUID),
                     ExteriorModelContainer.CODEC
-                            .optionalFieldOf("exteriorModelID", ExteriorsRegistry.Get(0))
+                            .optionalFieldOf("exteriorModelContainer", ExteriorsRegistry.Get(0))
                             .forGetter(TARDISData::getExteriorModel),
                     Codec.BOOL.fieldOf("isPowered").forGetter(TARDISData::isPowered),
                     Codec.BOOL.fieldOf("isDiscoMode").forGetter(TARDISData::isIsDiscoMode),
+                    Codec.BOOL.fieldOf("isSparking").forGetter(TARDISData::isSparking),
+                    Codec.BOOL.fieldOf("alarms").forGetter(TARDISData::isAlarmsState),
                     DoorData.CODEC.fieldOf("interiorDoorData").forGetter(TARDISData::getInteriorDoorData),
                     SubsystemsData.CODEC.fieldOf("subsystemsData").forGetter(TARDISData::getSubSystemsData),
                     ControlParameters.CODEC.fieldOf("controlData").forGetter(TARDISData::getControlData),
@@ -58,7 +60,7 @@ public class TARDISData {
     Map<UUID, PlayerPosition> ViewingPlayerMap = new HashMap<>();
     UUID OwnerUUID;
     ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
-    boolean Powered, IsDiscoMode;
+    boolean Powered, IsDiscoMode, Sparking, AlarmsState;
     DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
     SubsystemsData SubSystemsData = new SubsystemsData();
     ControlParameters ControlData = new ControlParameters();
@@ -78,6 +80,8 @@ public class TARDISData {
             ExteriorModelContainer exteriorModelID,
             boolean powered,
             boolean isDiscoMode,
+            boolean isSparking,
+            boolean alarms,
             DoorData interiorDoorData,
             SubsystemsData subSystemsData,
             ControlParameters controlData,
@@ -90,6 +94,8 @@ public class TARDISData {
         OwnerUUID = ownerUUID;
         ExteriorModel = exteriorModelID;
         Powered = powered;
+        AlarmsState = alarms;
+        Sparking = isSparking;
         this.doorBlock = doorBlock;
         IsDiscoMode = isDiscoMode;
         InteriorDoorData = interiorDoorData;

@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.server.tileentities.SkyTile;

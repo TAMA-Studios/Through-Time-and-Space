@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
+
+import static com.code.tama.tts.server.tardis.controls.AbstractControl.Spark;
 
 public class ControlRenderer extends EntityRenderer<ModularControl> {
     public ControlRenderer(EntityRendererProvider.Context p_174008_) {
@@ -38,6 +41,16 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
                     || Minecraft.getInstance().player.getOffhandItem().getItem() instanceof SonicItem)
                 this.renderNameTag(Entity, Entity.TranslationKey(), PoseStack, Buffer, PackedLight);
         }
+
+        Entity.GetControl().GetControl().RenderFlightEvent(PoseStack, Buffer, Entity);
+
+        Entity.level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+
+            if(cap.GetData())
+            if (Entity.level().random.nextInt(100000) <= 5) {
+                Spark(Entity.level(), Entity.position());
+            }
+        });
     }
 
     @Override

@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.registries.tardis;
 
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,9 +32,9 @@ public class ExteriorsRegistry {
         return EXTERIORS.get(Variant);
     }
 
-    public static ExteriorModelContainer GetByName(ResourceLocation Name) {
+    public static ExteriorModelContainer GetByName(String Name) {
         return EXTERIORS.stream()
-                .filter(ext -> ext.getModel().equals(Name))
+                .filter(ext -> ext.getName().equals(Name))
                 .toList()
                 .get(0);
     }

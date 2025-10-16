@@ -2,7 +2,6 @@
 package com.code.tama.triggerapi;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.tts.TTSConfig;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import static com.code.tama.tts.TTSMod.MODID;
@@ -20,7 +19,6 @@ public class TriggerAPI {
         }
         MOD_ID = modID;
         Logger.info("Trigger engine started for %s", MOD_ID);
-        TTSConfig.register();
     }
 
     public TriggerAPI(IEventBus bus, String modid) {

@@ -55,13 +55,14 @@ import java.util.UUID;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+@SuppressWarnings("unchecked")
 public class ExteriorTile extends AbstractPortalTile {
     public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
     public LivingEntity Placer;
     public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
-
+    boolean isArtificial = false;
     public boolean ThreadWorking = false;
-    public ExteriorModelContainer Model;
+    public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
     int DoorState;
 
     @Getter
@@ -402,11 +403,20 @@ public class ExteriorTile extends AbstractPortalTile {
 
                 this.Placer.getCapability(Capabilities.PLAYER_CAPABILITY).orElseGet((NonNullSupplier<? extends IPlayerCap>) new PlayerCapability(this.Placer)).AddOwnedTARDIS(resourceKey.location().getPath());
 
-                ServerLevel tardisLevel = DimensionAPI.get()
-                        .getOrCreateLevel(
-                                level.getServer(),
-                                resourceKey,
-                                () -> DimensionManager.CreateTARDISLevelStem(level.getServer()));
+                ServerLevel tardisLevel;
+
+                if(isArtificial) tardisLevel = DimensionAPI.get()
+                            .getOrCreateLevel(
+                                    level.getServer(),
+                                    resourceKey,
+                                    () -> DimensionManager.CreateArtificialTARDISLevelStem(level.getServer()));
+
+                else tardisLevel = DimensionAPI.get()
+                            .getOrCreateLevel(
+                                    level.getServer(),
+                                    resourceKey,
+                                    () -> DimensionManager.CreateNaturalTARDISLevelStem(level.getServer()));
+
 
                 ((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
 

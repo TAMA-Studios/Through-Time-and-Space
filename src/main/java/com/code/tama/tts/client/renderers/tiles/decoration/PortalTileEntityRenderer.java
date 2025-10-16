@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
@@ -122,7 +122,8 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
                                                             .partialTick);
                                 }
                             }
-                            StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
+//                            StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
+                            BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()), 0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y, (float) portal.SkyColor.z, 1f);
                             botiSource.endBatch();
                             pose.popPose();
                             pose.pushPose();

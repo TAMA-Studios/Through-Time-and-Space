@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.tardis;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
@@ -68,7 +68,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
             else { // BOTI!!
 
             }
-            renderDoor(door, poseStack, bufferSource.getBuffer(renderer.getRenderType()), combinedLight);
+            renderDoor(door, poseStack, bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())), combinedLight);
         });
 
         poseStack.popPose();

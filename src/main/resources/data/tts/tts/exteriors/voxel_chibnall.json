@@ -1,6 +1,8 @@
 {
   "values" : {
     "modelname" : "tts:models/exterior/voxel_chibnall.json",
-    "name" : "Voxel Chibnall"
+    "name" : "Voxel Chibnall",
+    "texture" : "tts:exteriors/voxel/chibnall",
+    "lightmap" : "tts:exteriors/voxel/_lightmap"
   }
 }

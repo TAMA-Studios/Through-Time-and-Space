@@ -5,11 +5,6 @@ import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -17,6 +12,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ExteriorDataLoader implements ResourceManagerReloadListener {
@@ -60,11 +61,14 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
                             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
                             String name = valuesObject.get("name").getAsString();
                             String modelname = valuesObject.get("modelname").getAsString();
+                            String texture = valuesObject.get("texture").getAsString();
+                            String light = valuesObject.get("lightmap").getAsString();
                             ResourceLocation modelLocation = new ResourceLocation(modelname);
+                            ResourceLocation lightmapLoc = new ResourceLocation(light);
+                            ResourceLocation textureLoc = new ResourceLocation(texture);
 
                             // Create DataExterior and add it to the list
-                            DataExterior dataExterior = new DataExterior(name, modelLocation);
-                            if (!dataExteriorList.contains(dataExterior)) dataExteriorList.add(dataExterior);
+                            if (!dataExteriorList.contains(new DataExterior(name, modelLocation, textureLoc, lightmapLoc))) dataExteriorList.add(new DataExterior(name, modelLocation, textureLoc, lightmapLoc));
 
                             //                            LOGGER.info("Loaded DataExterior from {}: {}", location,
                             // dataExterior);
@@ -86,8 +90,8 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
         if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
             JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
-            // Validate name and texture fields
-            if (valuesObject.has("name") && valuesObject.has("modelname")) {
+            // Validate name and model fields
+            if (valuesObject.has("name") && valuesObject.has("modelname")  && valuesObject.has("texture")  && valuesObject.has("lightmap")) {
                 String name = valuesObject.get("name").getAsString();
                 String modelName = valuesObject.get("modelname").getAsString();
 
@@ -97,11 +101,11 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
                     return false;
                 }
 
-                // Validate texture as ResourceLocation
+                // Validate model as ResourceLocation
                 try {
-                    ResourceLocation.parse(modelName); // Will throw exception if invalid
+                    new ResourceLocation(modelName); // Will throw exception if invalid
                 } catch (IllegalArgumentException e) {
-                    LOGGER.warn("Invalid texture ResourceLocation: {}", modelName);
+                    LOGGER.warn("Invalid model ResourceLocation: {}", modelName);
                     return false;
                 }
 

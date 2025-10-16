@@ -13,14 +13,20 @@ public class ExteriorModelContainer {
     public static Codec<ExteriorModelContainer> CODEC = RecordCodecBuilder.create(exteriorInstance -> exteriorInstance
             .group(
                     ResourceLocation.CODEC.fieldOf("model").forGetter(ExteriorModelContainer::getModel),
+                    ResourceLocation.CODEC.fieldOf("texture").forGetter(ExteriorModelContainer::getModel),
+                    ResourceLocation.CODEC.fieldOf("lightmap").forGetter(ExteriorModelContainer::getModel),
                     Codec.STRING.fieldOf("name").forGetter(ExteriorModelContainer::getName))
             .apply(exteriorInstance, ExteriorModelContainer::new));
 
     private ResourceLocation Model;
+    private ResourceLocation Texture;
+    private ResourceLocation LightMap;
     private String Name;
 
-    public ExteriorModelContainer(ResourceLocation model, String name) {
-        Model = model;
-        Name = name;
+    public ExteriorModelContainer(ResourceLocation model, ResourceLocation texture, ResourceLocation lightMap, String name) {
+        this.Model = model;
+        this.Name = name;
+        this.Texture = texture;
+        this.LightMap = lightMap;
     }
 }

@@ -1,8 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.tts.client.renderers.tiles.TardisExteriorRenderer;
+import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -33,6 +34,7 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
         BlockState dummyState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
         ExteriorTile dummyBlockEntity = new ExteriorTile(BlockPos.ZERO, dummyState);
         dummyBlockEntity.ShouldMakeDimOnNextTick = false;
+        dummyBlockEntity.Model = ExteriorsRegistry.Get(0);
 
         TardisExteriorRenderer<ExteriorTile> renderer = (TardisExteriorRenderer<ExteriorTile>)
                 Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);

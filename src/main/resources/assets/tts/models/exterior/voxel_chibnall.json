@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
-	"texture": "chibnall",
-	"lightmap": "_lightmap",
+	"texture" : "tts:exteriors/voxel/chibnall",
+	"lightmap" : "tts:exteriors/voxel/_lightmap",
 	"texture_width": 256,
 	"texture_height": 256,
 	"scale": 1,

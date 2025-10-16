@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.tardis;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
@@ -88,15 +88,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
             stack.mulPose(Axis.ZN.rotationDegrees(180));
         }
 
-        //                TardisBotiRenderer.render(
-        //                        exteriorTile.getLevel(),
-        //                        exteriorTile,
-        //                        poseStack,
-        //                        bufferSource,
-        //                        partialTicks,
-        //                        combinedLight,
-        //                        combinedOverlay);
-
         AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 
         JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
@@ -106,12 +97,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
         ModelPart boti = parsed.getPart("BOTI").modelPart;
         ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
-
-        //        parsed.getPart("baseRoot").render(stack, bufferSource.getBuffer(ext.getRenderType()),
-        // combinedLight,
-        // OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-        //        ext.render(exteriorTile, 0, stack, bufferSource, combinedLight,
-        // OverlayTexture.NO_OVERLAY);
 
         if (false) // TODO: CONFIG FOR END PORTAL/GREEN SCREEN BOTI
         HalfBOTIRenderer.render(
@@ -142,7 +127,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                         0,
                                         0);
                                 if (true) // TODO: CONFIG FOR PARTIAL BOTI!
-                                partialBOTI.render(
+                                    partialBOTI.render(
                                             stack,
                                             botiSource.getBuffer(RenderType.solid()),
                                             0xf000f0,
@@ -180,6 +165,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                                 mc.getEntityRenderDispatcher(),
                                                 mc.getBlockEntityRenderDispatcher(),
                                                 mc.renderBuffers());
+                                        assert mc.player != null;
                                         ClientLevel level = new ClientLevel(
                                                 mc.player.connection,
                                                 mc.level.getLevelData(),
@@ -194,6 +180,8 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                         renderer.setLevel(level);
 
                                         mc.level = level;
+                                        assert Minecraft.getInstance()
+                                                .level != null;
                                         exteriorTile.SkyColor = Minecraft.getInstance()
                                                 .level
                                                 .getSkyColor(
@@ -202,7 +190,11 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                                                 .getTimer()
                                                                 .partialTick);
                                         mc.level = oldLevel;
-                                    } else
+                                    } else {
+                                        assert Minecraft.getInstance()
+                                                .player != null;
+                                        assert Minecraft.getInstance()
+                                                .level != null;
                                         exteriorTile.SkyColor = Minecraft.getInstance()
                                                 .level
                                                 .getSkyColor(
@@ -212,6 +204,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
                                                         ((IMinecraftAccessor) Minecraft.getInstance())
                                                                 .getTimer()
                                                                 .partialTick);
+                                    }
                                 }
                                 StencilUtils.drawColoredCube(stack, 1, exteriorTile.SkyColor);
                                 botiSource.endBatch();
@@ -229,7 +222,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
         parsed.getPart("baseRoot").render(
                 stack,
-                bufferSource.getBuffer(ext.getRenderType()),
+                bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
                 combinedLight,
                 OverlayTexture.NO_OVERLAY,
                 1.0f,

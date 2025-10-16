@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles;
+package com.code.tama.tts.client.renderers.tiles.gadgets;
 
 import com.code.tama.tts.server.tileentities.SonicConfiguratorTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
