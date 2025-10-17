@@ -1,8 +1,8 @@
 TODO:
 ~~Valkyrian Skies compat!!~~ (DONE!)
-TODO: Figure out all these damn disconnected errors
-TODO: FIX FLIGHT/LAND MECHANIC
-Compressed Multiblocks
+TODO: Figure out all these damn disconnected errors (Maybe fixed?)
+~~FIX FLIGHT/LAND MECHANIC~~ DONE
+~~Compressed Multiblocks~~ DONE
 
 IMPLEMENT DYNAMOS!
 Fault Locator
@@ -12,19 +12,18 @@ Add more subsystems
 Flight Speed
 
 Temporal Drift (Flying for long periods of time adds "Drift", more drift = landing farther off course) And a way to compensate
-Temporal Anchor (Keeps the TARDIS from taking off)
-Fix the Portal Block hologram
+Temporal Anchor (Keeps any TARDIS within range from taking off)
 Brakes (turning off brakes makes the screech sound go away)
 Emergency Jump, dumps all power (FE/AU) and insta-travels to a "Safe" spot, either the farthest waypoint, the gallifrey citadel (if unlocked) or spawn at the overworld.
-Emergency Program One: https://tardis.fandom.com/wiki/Emergency_Program_One
+~~Emergency Program One: https://tardis.fandom.com/wiki/Emergency_Program_One~~ DONE! TODO: System to change EP1 coords
 
 Difficulty Modes
-    Casual Mode:
+    Simple Mode: (Blue Boringers)
         Very simple travel, auto-flight, no damage or drift, just set coords, take off, land, profit.
     Normal Mode:
         Full controls, but with UI prompts.
     Expert/Manual Mode:
-        No help — figure out proper lever combos and diagnostics solo. Great for roleplayers and hardcore fans.
+        No help — figure out proper lever combos and diagnostics solo.
 
 Flight Events
 
@@ -34,13 +33,21 @@ Example Flight Procedure:
     Enable the Coordinate Lock-In Switch
     Disable Temporal Anchors
     Set Artron Frequency Controller Modifier
-    (Optional) Enable APC
-    (Optional) Toggle Stabilizers
+    (Optional) Enable APC (don't use if yw a rough flight/break outta tractor beam)
+    (Optional) Toggle Stabilizers (not doing this will result in flight events)
     (Optional) Set Flight Termination Protocol (if unset, will default to Polite Terminus)
-    Release Handbrake
+    Release Engine Brake
     Pull Demat Lever
+
     Monitor Diagnostic Screens
-    Adjust Temporal Vectors mid-flight to compensate for temporal drift (optional)
-    Engage Brakes
-    Once flight speed = 0: Pull Materialization Lever
+
+    TODO: Add flight events
+
+    Once reached destination, you will achieve "Vortex limbo" (TODO: Make original name)
+    once in limbo you may safely disable the coordinate lock-in, re-input coordinates, and loop back to doing flight events
+    you may also optionally park in the vortex (Drop temporal anchors so you don't drift too far), or land
+
+    Adjust Temporal Vectors in limbo to compensate for temporal drift (optional)
+    Engage Landing Brakes (TODO: Better name for this, think flaps on an airplane, smth designed to slow down the TARDIS before full rematerialization to ensure non-15th doctor landing)
+    Once flight speed = 0: Pull Materialization Lever / Engine Brake
     Wait for Landing Confirmation

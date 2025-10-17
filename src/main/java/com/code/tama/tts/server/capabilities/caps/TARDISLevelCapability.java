@@ -417,6 +417,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
                 .setChunkForced(
                         (int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
                         (int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16),
-                        false);
+                        ForceLoad);
     }
 }
