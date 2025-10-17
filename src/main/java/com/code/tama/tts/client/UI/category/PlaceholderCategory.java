@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class PlaceholderCategory extends UICategory {
-    final int id = 0;
+	final int id = 0;
 
-    public PlaceholderCategory() {
-        this.ID = 0;
-    }
+	public PlaceholderCategory() {
+		this.ID = 0;
+	}
 }

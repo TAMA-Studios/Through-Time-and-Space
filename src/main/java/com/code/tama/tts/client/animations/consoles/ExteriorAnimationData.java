@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class ExteriorAnimationData {
-    public float FrameLeft;
-    public float FrameRight;
-    public float FrameTimeO;
+	public float FrameLeft;
+	public float FrameRight;
+	public float FrameTimeO;
 }

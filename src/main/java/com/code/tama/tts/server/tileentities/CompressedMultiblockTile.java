@@ -1,11 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.tts.server.misc.NBTUtils;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.code.tama.tts.server.misc.NBTUtils;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -15,63 +19,65 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CompressedMultiblockTile extends BlockEntity {
-    /** When adding to this always assume the "Multiblock Compression core" is 0 0 0 * */
-    public Map<BlockPos, BlockState> stateMap = new HashMap<>();
+	/**
+	 * When adding to this always assume the "Multiblock Compression core" is 0 0 0
+	 * *
+	 */
+	public Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
-    public CompressedMultiblockTile(BlockPos pos, BlockState state, Map<BlockPos, BlockState> map) {
-        this(pos, state);
-        this.stateMap = map;
-    }
+	public CompressedMultiblockTile(BlockPos pos, BlockState state) {
+		super(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(), pos, state);
+	}
 
-    public CompressedMultiblockTile(BlockPos pos, BlockState state) {
-        super(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(), pos, state);
-    }
+	public CompressedMultiblockTile(BlockPos pos, BlockState state, Map<BlockPos, BlockState> map) {
+		this(pos, state);
+		this.stateMap = map;
+	}
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        AtomicInteger i = new AtomicInteger();
-        stateMap.forEach((pos, state) -> {
-            NBTUtils.WriteBlockPos("pos_" + i.get(), pos, nbt);
-            nbt.put("state_" + i.get(), NbtUtils.writeBlockState(state));
-            i.getAndIncrement();
-        });
-        nbt.putInt("size", i.get());
-        super.saveAdditional(nbt);
-    }
+	@Override
+	public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void load(CompoundTag nbt) {
-        if (nbt == null) return;
-        int size = nbt.getInt("size");
+	@Override
+	public @NotNull CompoundTag getUpdateTag() {
+		return this.saveWithoutMetadata();
+	}
 
-        for (int i = 0; i < size; i++) {
-            BlockState state =
-                    NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("state_" + i));
-            BlockPos pos = NBTUtils.ReadBlockPos("pos_" + i, nbt);
-            stateMap.put(pos, state);
-        }
+	@Override
+	public void handleUpdateTag(CompoundTag tag) {
+		this.load(tag);
+		super.handleUpdateTag(tag);
+	}
 
-        super.load(nbt);
-    }
+	@Override
+	@SuppressWarnings("deprecation")
+	public void load(CompoundTag nbt) {
+		if (nbt == null)
+			return;
+		int size = nbt.getInt("size");
 
-    @Override
-    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
+		for (int i = 0; i < size; i++) {
+			BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
+					nbt.getCompound("state_" + i));
+			BlockPos pos = NBTUtils.ReadBlockPos("pos_" + i, nbt);
+			stateMap.put(pos, state);
+		}
 
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
-    }
+		super.load(nbt);
+	}
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        this.load(tag);
-        super.handleUpdateTag(tag);
-    }
+	@Override
+	protected void saveAdditional(CompoundTag nbt) {
+		AtomicInteger i = new AtomicInteger();
+		stateMap.forEach((pos, state) -> {
+			NBTUtils.WriteBlockPos("pos_" + i.get(), pos, nbt);
+			nbt.put("state_" + i.get(), NbtUtils.writeBlockState(state));
+			i.getAndIncrement();
+		});
+		nbt.putInt("size", i.get());
+		super.saveAdditional(nbt);
+	}
 }

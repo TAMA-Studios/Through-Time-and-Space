@@ -18,46 +18,40 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TARDISFlightData {
-    public static final Codec<TARDISFlightData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
-                    Codec.INT.fieldOf("ticksTillDestination").forGetter(TARDISFlightData::getTicksTillDestination),
-                    FlightTerminationProtocolRegistry.CODEC
-                            .fieldOf("flightTerminationProtocol")
-                            .forGetter(TARDISFlightData::getFlightTerminationProtocol),
-                    FlightSoundSchemesRegistry.CODEC
-                            .fieldOf("flightSoundScheme")
-                            .forGetter(TARDISFlightData::getFlightSoundScheme),
-                    Codec.BOOL.fieldOf("isInFlight").forGetter(TARDISFlightData::isInFlight),
-                    Codec.BOOL.fieldOf("shouldPlayRotorAnimation").forGetter(TARDISFlightData::isPlayRotorAnimation))
-            .apply(instance, TARDISFlightData::new));
+	public static final Codec<TARDISFlightData> CODEC = RecordCodecBuilder.create(instance -> instance
+			.group(Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
+					Codec.INT.fieldOf("ticksTillDestination").forGetter(TARDISFlightData::getTicksTillDestination),
+					FlightTerminationProtocolRegistry.CODEC.fieldOf("flightTerminationProtocol")
+							.forGetter(TARDISFlightData::getFlightTerminationProtocol),
+					FlightSoundSchemesRegistry.CODEC.fieldOf("flightSoundScheme")
+							.forGetter(TARDISFlightData::getFlightSoundScheme),
+					Codec.BOOL.fieldOf("isInFlight").forGetter(TARDISFlightData::isInFlight),
+					Codec.BOOL.fieldOf("shouldPlayRotorAnimation").forGetter(TARDISFlightData::isPlayRotorAnimation))
+			.apply(instance, TARDISFlightData::new));
 
-    ITARDISLevel TARDIS;
+	AbstractSoundScheme FlightSoundScheme = new SmithSoundScheme();
 
-    int TicksInFlight, TicksTillDestination;
-    FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
-    AbstractSoundScheme FlightSoundScheme = new SmithSoundScheme();
-    boolean inFlight, PlayRotorAnimation;
+	ITARDISLevel TARDIS;
+	int TicksInFlight, TicksTillDestination;
+	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
+	boolean inFlight, PlayRotorAnimation;
 
-    public TARDISFlightData(TARDISLevelCapability TARDIS) {
-        this.TARDIS = TARDIS;
-    }
+	public TARDISFlightData(TARDISLevelCapability TARDIS) {
+		this.TARDIS = TARDIS;
+	}
 
-    public TARDISFlightData(
-            int ticksInFlight,
-            int ticksTillDestination,
-            FlightTerminationProtocol flightTerminationProtocol,
-            AbstractSoundScheme flightSoundScheme,
-            boolean inFlight,
-            boolean playRotorAnimation) {
-        TicksInFlight = ticksInFlight;
-        TicksTillDestination = ticksTillDestination;
-        this.flightTerminationProtocol = flightTerminationProtocol;
-        FlightSoundScheme = flightSoundScheme;
-        this.inFlight = inFlight;
-        PlayRotorAnimation = playRotorAnimation;
-    }
+	public TARDISFlightData(int ticksInFlight, int ticksTillDestination,
+			FlightTerminationProtocol flightTerminationProtocol, AbstractSoundScheme flightSoundScheme,
+			boolean inFlight, boolean playRotorAnimation) {
+		TicksInFlight = ticksInFlight;
+		TicksTillDestination = ticksTillDestination;
+		this.flightTerminationProtocol = flightTerminationProtocol;
+		FlightSoundScheme = flightSoundScheme;
+		this.inFlight = inFlight;
+		PlayRotorAnimation = playRotorAnimation;
+	}
 
-    public boolean IsTakingOff() {
-        return this.PlayRotorAnimation && !this.inFlight;
-    }
+	public boolean IsTakingOff() {
+		return this.PlayRotorAnimation && !this.inFlight;
+	}
 }

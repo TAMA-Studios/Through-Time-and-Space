@@ -7,30 +7,30 @@ import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.SmithLand
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.SmithTakeoffSound;
 
 public class SmithSoundScheme extends AbstractSoundScheme {
-    private final SmithLandingSound landSound;
-    private final SmithFlightLoopSound loopSound;
-    private final SmithTakeoffSound takeoffSound;
+	private final SmithLandingSound landSound;
+	private final SmithFlightLoopSound loopSound;
+	private final SmithTakeoffSound takeoffSound;
 
-    public SmithSoundScheme() {
-        this.takeoffSound = new SmithTakeoffSound();
-        this.loopSound = new SmithFlightLoopSound();
-        this.landSound = new SmithLandingSound();
-    }
+	public SmithSoundScheme() {
+		this.takeoffSound = new SmithTakeoffSound();
+		this.loopSound = new SmithFlightLoopSound();
+		this.landSound = new SmithLandingSound();
+	}
 
-    public AbstractFlightSound GetFlightLoop() {
-        return this.loopSound;
-    }
+	public AbstractFlightSound GetFlightLoop() {
+		return this.loopSound;
+	}
 
-    public AbstractFlightSound GetLanding() {
-        return this.landSound;
-    }
+	public AbstractFlightSound GetLanding() {
+		return this.landSound;
+	}
 
-    public AbstractFlightSound GetTakeoff() {
-        return this.takeoffSound;
-    }
+	@Override
+	public String GetName() {
+		return "smith";
+	}
 
-    @Override
-    public String GetName() {
-        return "smith";
-    }
+	public AbstractFlightSound GetTakeoff() {
+		return this.takeoffSound;
+	}
 }

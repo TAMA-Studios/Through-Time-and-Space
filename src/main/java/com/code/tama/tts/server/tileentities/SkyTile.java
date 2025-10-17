@@ -1,8 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import java.util.Arrays;
+
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,58 +14,52 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SkyTile extends BlockEntity {
 
-    public enum SkyType {
-        Overworld,
-        Void,
-    }
+	private final Boolean[] shouldRender = new Boolean[6];
 
-    public SkyTile(BlockPos blockPos, BlockState blockState) {
-        super(TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
-    }
+	private SkyType skyType = SkyType.Overworld;
 
-    public SkyTile(SkyType skyType, BlockPos pos, BlockState state) {
-        this(pos, state);
-        this.skyType = skyType;
-    }
+	public SkyTile(BlockPos blockPos, BlockState blockState) {
+		super(TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
+	}
 
-    private SkyType skyType = SkyType.Overworld;
+	public SkyTile(SkyType skyType, BlockPos pos, BlockState state) {
+		this(pos, state);
+		this.skyType = skyType;
+	}
 
-    public SkyType getSkyType() {
-        return skyType;
-    }
+	public SkyType getSkyType() {
+		return skyType;
+	}
 
-    @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
-        compoundTag.putString("skyType", this.skyType.name());
-    }
+	@Override
+	public void load(CompoundTag compoundTag) {
+		if (!compoundTag.contains("skyType")) {
+			return;
+		}
+		this.skyType = SkyType.valueOf(compoundTag.getString("skyType"));
+	}
 
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (!compoundTag.contains("skyType")) {
-            return;
-        }
-        this.skyType = SkyType.valueOf(compoundTag.getString("skyType"));
-    }
+	public void neighborChanged() {
+		Arrays.fill(shouldRender, null);
+	}
 
-    private final Boolean[] shouldRender = new Boolean[6];
+	public boolean shouldRenderFace(Direction direction) {
+		int index = direction.ordinal();
 
-    public boolean shouldRenderFace(Direction direction) {
-        int index = direction.ordinal();
+		if (shouldRender[index] == null) {
+			shouldRender[index] = level == null || Block.shouldRenderFace(getBlockState(), level, getBlockPos(),
+					direction, getBlockPos().relative(direction));
+		}
 
-        if (shouldRender[index] == null) {
-            shouldRender[index] = level == null
-                    || Block.shouldRenderFace(
-                            getBlockState(),
-                            level,
-                            getBlockPos(),
-                            direction,
-                            getBlockPos().relative(direction));
-        }
+		return shouldRender[index];
+	}
 
-        return shouldRender[index];
-    }
+	@Override
+	protected void saveAdditional(CompoundTag compoundTag) {
+		compoundTag.putString("skyType", this.skyType.name());
+	}
 
-    public void neighborChanged() {
-        Arrays.fill(shouldRender, null);
-    }
+	public enum SkyType {
+		Overworld, Void,
+	}
 }

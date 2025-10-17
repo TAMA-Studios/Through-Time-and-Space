@@ -3,10 +3,14 @@ package com.code.tama.tts.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -16,97 +20,95 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class BotiChunkContainer {
-    final Level level;
-    final BlockState state;
-    FluidState fluidState;
-    final BlockPos pos;
-    final int light;
-    boolean IsTile;
-    boolean IsFluid;
-    CompoundTag entityTag;
+	boolean IsFluid;
+	boolean IsTile;
+	CompoundTag entityTag;
+	FluidState fluidState;
+	final Level level;
+	final int light;
+	final BlockPos pos;
+	final BlockState state;
 
-    public BotiChunkContainer(Level level, BlockState state, FluidState fluidState, BlockPos pos, int light) {
-        this.state = state;
-        this.fluidState = fluidState;
-        this.pos = pos;
-        this.light = light;
-        this.IsFluid = true;
-        this.level = level;
-    }
+	public BotiChunkContainer(Level level, BlockState state, BlockPos pos, int light, boolean IsTile,
+			CompoundTag tileTag) {
+		this.state = state;
+		this.IsTile = IsTile;
+		this.entityTag = tileTag;
+		this.pos = pos;
+		this.light = light;
+		this.level = level;
+	}
 
-    public BotiChunkContainer(
-            Level level, BlockState state, BlockPos pos, int light, boolean IsTile, CompoundTag tileTag) {
-        this.state = state;
-        this.IsTile = IsTile;
-        this.entityTag = tileTag;
-        this.pos = pos;
-        this.light = light;
-        this.level = level;
-    }
+	public BotiChunkContainer(Level level, BlockState state, FluidState fluidState, BlockPos pos, int light) {
+		this.state = state;
+		this.fluidState = fluidState;
+		this.pos = pos;
+		this.light = light;
+		this.IsFluid = true;
+		this.level = level;
+	}
 
-    public void encode(@NotNull FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
+	@Contract("_ -> new")
+	@SuppressWarnings("deprecation")
+	public static @NotNull BotiChunkContainer decode(@NotNull FriendlyByteBuf buf) {
+		BlockPos pos = buf.readBlockPos();
 
-        // Write BlockState as raw ID (includes properties!)
-        int stateId = Block.BLOCK_STATE_REGISTRY.getId(state);
-        buf.writeVarInt(stateId);
-        buf.writeVarInt(light);
-        buf.writeBoolean(IsFluid);
-        buf.writeBoolean(IsTile);
+		// Read BlockState
+		BlockState state = Block.BLOCK_STATE_REGISTRY.byId(buf.readVarInt());
 
-        if (IsFluid) {
-            int fluidStateId = Fluid.FLUID_STATE_REGISTRY.getId(fluidState);
-            buf.writeVarInt(fluidStateId);
-        }
+		int light = buf.readVarInt();
+		boolean IsFluid = buf.readBoolean();
+		boolean IsTile = buf.readBoolean();
+		if (IsFluid) {
+			int id = buf.readVarInt();
+			FluidState fluid = Fluid.FLUID_STATE_REGISTRY.byId(id);
+			return new BotiChunkContainer(Minecraft.getInstance().level, state, fluid, pos, light);
+		}
+		if (IsTile) {
+			return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
+		}
+		return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light);
+	}
 
-        if (IsTile) {
-            buf.writeNbt(level.getBlockEntity(pos).saveWithFullMetadata());
-        }
-    }
+	public static List<BotiChunkContainer> decodeList(FriendlyByteBuf buf) {
+		int size = buf.readVarInt();
+		List<BotiChunkContainer> list = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			list.add(BotiChunkContainer.decode(buf));
+		}
+		return list;
+	}
 
-    @Contract("_ -> new")
-    @SuppressWarnings("deprecation")
-    public static @NotNull BotiChunkContainer decode(@NotNull FriendlyByteBuf buf) {
-        BlockPos pos = buf.readBlockPos();
+	public static void encodeList(List<BotiChunkContainer> list, FriendlyByteBuf buf) {
+		buf.writeVarInt(list.size());
+		for (BotiChunkContainer container : list) {
+			container.encode(buf);
+		}
+	}
 
-        // Read BlockState
-        BlockState state = Block.BLOCK_STATE_REGISTRY.byId(buf.readVarInt());
+	public void encode(@NotNull FriendlyByteBuf buf) {
+		buf.writeBlockPos(pos);
 
-        int light = buf.readVarInt();
-        boolean IsFluid = buf.readBoolean();
-        boolean IsTile = buf.readBoolean();
-        if (IsFluid) {
-            int id = buf.readVarInt();
-            FluidState fluid = Fluid.FLUID_STATE_REGISTRY.byId(id);
-            return new BotiChunkContainer(Minecraft.getInstance().level, state, fluid, pos, light);
-        }
-        if (IsTile) {
-            return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
-        }
-        return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light);
-    }
+		// Write BlockState as raw ID (includes properties!)
+		int stateId = Block.BLOCK_STATE_REGISTRY.getId(state);
+		buf.writeVarInt(stateId);
+		buf.writeVarInt(light);
+		buf.writeBoolean(IsFluid);
+		buf.writeBoolean(IsTile);
 
-    public static void encodeList(List<BotiChunkContainer> list, FriendlyByteBuf buf) {
-        buf.writeVarInt(list.size());
-        for (BotiChunkContainer container : list) {
-            container.encode(buf);
-        }
-    }
+		if (IsFluid) {
+			int fluidStateId = Fluid.FLUID_STATE_REGISTRY.getId(fluidState);
+			buf.writeVarInt(fluidStateId);
+		}
 
-    public static List<BotiChunkContainer> decodeList(FriendlyByteBuf buf) {
-        int size = buf.readVarInt();
-        List<BotiChunkContainer> list = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            list.add(BotiChunkContainer.decode(buf));
-        }
-        return list;
-    }
+		if (IsTile) {
+			buf.writeNbt(level.getBlockEntity(pos).saveWithFullMetadata());
+		}
+	}
 }

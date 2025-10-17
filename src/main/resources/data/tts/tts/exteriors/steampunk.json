@@ -1,8 +1,8 @@
 {
   "values" : {
+    "lightmap" : "tts:exteriors/voxel/steampunk/_lightmap",
     "modelname" : "tts:models/exterior/steampunk.json",
     "name" : "Steampunk",
-    "texture" : "tts:exteriors/voxel/steampunk",
-    "lightmap" : "tts:exteriors/voxel/steampunk/_lightmap"
+    "texture" : "tts:exteriors/voxel/steampunk"
   }
 }

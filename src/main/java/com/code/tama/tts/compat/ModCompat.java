@@ -1,44 +1,45 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.compat;
 
+import java.util.ArrayList;
+
 import com.code.tama.tts.server.worlds.biomes.MTerrablender;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraftforge.fml.ModList;
 
-import java.util.ArrayList;
-
 public class ModCompat {
-    private static final ArrayList<CompatThingy> compatList = new ArrayList<>();
-    private static int ID = 0;
+	private static int ID = 0;
+	private static final ArrayList<CompatThingy> compatList = new ArrayList<>();
 
-    public static void RegisterCompats() {
-        RegisterCompat("terrablender", new MTerrablender());
-    }
+	public static void RegisterCompats() {
+		RegisterCompat("terrablender", new MTerrablender());
+	}
 
-    private static void RegisterCompat(String modid, CompatClass clazz) {
-        compatList.add(ID++, new CompatThingy(modid, clazz));
-    }
+	public static void Run() {
+		RegisterCompats();
 
-    public static void Run() {
-        RegisterCompats();
+		for (CompatThingy thingy : compatList) {
+			if (ModList.get().isLoaded(thingy.modid)) {
+				thingy.aClass.runCompat();
+			}
+		}
+	}
 
-        for (CompatThingy thingy : compatList) {
-            if (ModList.get().isLoaded(thingy.modid)) {
-                thingy.aClass.runCompat();
-            }
-        }
-    }
+	private static void RegisterCompat(String modid, CompatClass clazz) {
+		compatList.add(ID++, new CompatThingy(modid, clazz));
+	}
 
-    @Getter
-    @Setter
-    public static class CompatThingy {
-        public CompatClass aClass;
-        public String modid;
+	@Getter
+	@Setter
+	public static class CompatThingy {
+		public CompatClass aClass;
+		public String modid;
 
-        public CompatThingy(String modid, CompatClass compatClass) {
-            this.aClass = compatClass;
-            this.modid = modid;
-        }
-    }
+		public CompatThingy(String modid, CompatClass compatClass) {
+			this.aClass = compatClass;
+			this.modid = modid;
+		}
+	}
 }

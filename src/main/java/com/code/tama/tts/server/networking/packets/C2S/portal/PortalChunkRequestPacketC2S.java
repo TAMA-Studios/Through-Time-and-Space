@@ -1,8 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.portal;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,52 +14,52 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.boti.BOTIUtils;
 
 public class PortalChunkRequestPacketC2S {
-    public static PortalChunkRequestPacketC2S decode(FriendlyByteBuf buf) {
-        return new PortalChunkRequestPacketC2S(
-                buf.readBlockPos(),
-                ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation()),
-                buf.readBlockPos(),
-                buf.readInt());
-    }
+	private final int chunks;
 
-    public static void encode(PortalChunkRequestPacketC2S msg, FriendlyByteBuf buf) {
-        buf.writeBlockPos(msg.portalPos);
-        buf.writeResourceLocation(msg.targetLevel.location());
-        buf.writeBlockPos(msg.targetPos);
-        buf.writeInt(msg.chunks);
-    }
+	private final BlockPos portalPos;
 
-    public static void handle(PortalChunkRequestPacketC2S msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
-            if (player != null) {
-                ServerLevel level = player.server.getLevel(msg.targetLevel);
-                if (level != null) {
-                    BOTIUtils.GatherChunkData(
-                            (AbstractPortalTile) ctx.get().getSender().level().getBlockEntity(msg.portalPos), level, msg.chunks);
-                } else {
-                    System.out.println("Target level not loaded: " + msg.targetLevel.location());
-                }
-            }
-        });
-        ctx.get().setPacketHandled(true);
-    }
+	private final ResourceKey<Level> targetLevel;
 
-    private final BlockPos portalPos;
+	private final BlockPos targetPos;
 
-    private final ResourceKey<Level> targetLevel;
+	public PortalChunkRequestPacketC2S(BlockPos portalPos, ResourceKey<Level> targetLevel, BlockPos targetPos,
+			int chunks) {
+		this.portalPos = portalPos;
+		this.targetLevel = targetLevel;
+		this.targetPos = targetPos;
+		this.chunks = chunks;
+	}
 
-    private final BlockPos targetPos;
+	public static PortalChunkRequestPacketC2S decode(FriendlyByteBuf buf) {
+		return new PortalChunkRequestPacketC2S(buf.readBlockPos(),
+				ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation()), buf.readBlockPos(),
+				buf.readInt());
+	}
 
-    private final int chunks;
+	public static void encode(PortalChunkRequestPacketC2S msg, FriendlyByteBuf buf) {
+		buf.writeBlockPos(msg.portalPos);
+		buf.writeResourceLocation(msg.targetLevel.location());
+		buf.writeBlockPos(msg.targetPos);
+		buf.writeInt(msg.chunks);
+	}
 
-    public PortalChunkRequestPacketC2S(BlockPos portalPos, ResourceKey<Level> targetLevel, BlockPos targetPos, int chunks) {
-        this.portalPos = portalPos;
-        this.targetLevel = targetLevel;
-        this.targetPos = targetPos;
-        this.chunks = chunks;
-    }
+	public static void handle(PortalChunkRequestPacketC2S msg, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			ServerPlayer player = ctx.get().getSender();
+			if (player != null) {
+				ServerLevel level = player.server.getLevel(msg.targetLevel);
+				if (level != null) {
+					BOTIUtils.GatherChunkData(
+							(AbstractPortalTile) ctx.get().getSender().level().getBlockEntity(msg.portalPos), level,
+							msg.chunks);
+				} else {
+					System.out.println("Target level not loaded: " + msg.targetLevel.location());
+				}
+			}
+		});
+		ctx.get().setPacketHandled(true);
+	}
 }

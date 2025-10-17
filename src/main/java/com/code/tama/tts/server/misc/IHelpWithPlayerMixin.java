@@ -2,11 +2,11 @@
 package com.code.tama.tts.server.misc;
 
 public interface IHelpWithPlayerMixin {
-    String GetViewedTARDIS();
+	PlayerPosition GetLastPosition();
 
-    void SetViewedTARDIS(String tardis);
+	String GetViewedTARDIS();
 
-    PlayerPosition GetLastPosition();
+	void SetLastPlayerPosition(PlayerPosition playerPosition);
 
-    void SetLastPlayerPosition(PlayerPosition playerPosition);
+	void SetViewedTARDIS(String tardis);
 }

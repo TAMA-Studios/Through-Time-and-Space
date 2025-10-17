@@ -1,88 +1,77 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
-    public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {}
+	public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {
+	}
 
-    @Override
-    public void render(
-            @NotNull DoorTile doorTile,
-            float partialTicks,
-            @NotNull PoseStack poseStack,
-            @NotNull MultiBufferSource bufferSource,
-            int combinedLight,
-            int combinedOverlay) {
+	private static void renderDoor(JavaJSONRenderer door, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
+			int combinedLight) {
+		door.render(poseStack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+	}
 
-        assert doorTile.getLevel() != null;
+	@Override
+	public void render(@NotNull DoorTile doorTile, float partialTicks, @NotNull PoseStack poseStack,
+			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 
-        poseStack.pushPose();
-        poseStack.mulPose(Axis.XP.rotationDegrees(180));
-        poseStack.translate(0.5, 0, 0);
+		assert doorTile.getLevel() != null;
 
-        doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            AbstractJSONRenderer renderer = cap.GetClientData().getExteriorRenderer();
+		poseStack.pushPose();
+		poseStack.mulPose(Axis.XP.rotationDegrees(180));
+		poseStack.translate(0.5, 0, 0);
 
-            JavaJSONRenderer door = cap.GetClientData().getInteriorDoor();
-            JavaJSONRenderer boti = cap.GetClientData().getInteriorBOTI();
+		doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+			AbstractJSONRenderer renderer = cap.GetClientData().getExteriorRenderer();
 
-            cap.GetClientData().setupInteriorDoorPose();
+			JavaJSONRenderer door = cap.GetClientData().getInteriorDoor();
+			JavaJSONRenderer boti = cap.GetClientData().getInteriorBOTI();
 
-            assert Minecraft.getInstance().level != null;
+			cap.GetClientData().setupInteriorDoorPose();
 
-            if (cap.GetFlightData().isInFlight()) {
-                doorTile.getFBOContainer().Render(
-                        poseStack,
-                        (pose, buf) -> {
-                            renderDoor(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
-                            //          StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
-                        },
-                        (pose, buf) -> {},
-                        (pose, buf) -> {
-                            pose.pushPose();
-                            pose.mulPose(Axis.ZP.rotationDegrees(
-                                    (float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
-                            pose.mulPose(Axis.YP.rotationDegrees(180));
-                            pose.translate(0, 0, 500);
-                            pose.scale(1.5f, 1.5f, 1.5f);
-                            cap.GetClientData().getVortex().renderVortex(pose);
-                            pose.popPose();
-                        });
+			assert Minecraft.getInstance().level != null;
 
-                poseStack.translate(0, 0, -0.5);
-            }
-            else { // BOTI!!
+			if (cap.GetFlightData().isInFlight()) {
+				doorTile.getFBOContainer().Render(poseStack, (pose, buf) -> {
+					renderDoor(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
+					// StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
+				}, (pose, buf) -> {
+				}, (pose, buf) -> {
+					pose.pushPose();
+					pose.mulPose(
+							Axis.ZP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
+					pose.mulPose(Axis.YP.rotationDegrees(180));
+					pose.translate(0, 0, 500);
+					pose.scale(1.5f, 1.5f, 1.5f);
+					cap.GetClientData().getVortex().renderVortex(pose);
+					pose.popPose();
+				});
 
-            }
-            renderDoor(door, poseStack, bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())), combinedLight);
-        });
+				poseStack.translate(0, 0, -0.5);
+			} else { // BOTI!!
 
-        poseStack.popPose();
-    }
+			}
+			renderDoor(door, poseStack,
+					bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())),
+					combinedLight);
+		});
 
-    private static void renderDoor(JavaJSONRenderer door, @NotNull PoseStack poseStack, VertexConsumer bufferSource, int combinedLight) {
-        door.render(
-                poseStack,
-                bufferSource,
-                combinedLight,
-                OverlayTexture.NO_OVERLAY,
-                1,
-                1,
-                1,
-                1);
-    }
+		poseStack.popPose();
+	}
 }

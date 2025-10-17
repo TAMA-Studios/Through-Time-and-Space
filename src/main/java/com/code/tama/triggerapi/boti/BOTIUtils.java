@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -14,6 +18,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.GameRenderer;
@@ -37,253 +42,234 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
 public class BOTIUtils {
-    public static List<BakedQuad> getModelFromBlock(
-            BlockState state, BlockPos pos, RandomSource rand, Map<BlockPos, BotiChunkContainer> map) {
-        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        Direction[] directions = Direction.values();
-        BakedModel model = blockRenderer.getBlockModel(state);
-        List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
-        // render only non-occluded faces
-        for (Direction dir : directions) {
-            BlockPos neighbourPos = pos.relative(dir);
-            BotiChunkContainer neighborContainer = map.get(neighbourPos);
-            if (neighborContainer != null) {
-                if (BOTIUtils.shouldRenderFace(
-                        state, neighborContainer.getState(), Minecraft.getInstance().level, pos, dir, neighbourPos))
-                    quads.addAll(model.getQuads(state, dir, rand));
-            } else quads.addAll(model.getQuads(state, dir, rand));
-        }
-        return quads;
-    }
+	public static void GatherChunkData(AbstractPortalTile portalTile, Level level, int chunks) {
+		if (!TTSConfig.ServerConfig.BOTI_ENABLED.get())
+			return;
+		BlockPos targetPos = portalTile.getTargetPos();
+		new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level, chunks).start();
+	}
 
-    public static Map<BlockPos, BotiChunkContainer> getMapFromContainerList(List<BotiChunkContainer> list) {
-        Map<BlockPos, BotiChunkContainer> map = new HashMap<>(list.size());
-        for (BotiChunkContainer container : list) {
-            map.put(container.getPos(), container);
-        }
-        return map;
-    }
+	public static void RenderMinimal(PoseStack pose, AbstractPortalTile portal) {
+		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
+			return;
+		Minecraft mc = Minecraft.getInstance();
+		assert mc.level != null;
+		mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+			pose.pushPose();
+			portal.getFBOContainer().Render(pose, (stack, botiSource) -> StencilUtils.drawFrame(stack, 1, 2),
+					(stack, buff) -> {
+					}, (stack, botiSource) -> BOTIUtils.RenderScene(stack, portal));
+			pose.popPose();
+		});
+	}
 
-    public static VertexBuffer buildModelVBO(List<BotiChunkContainer> containers, AbstractPortalTile tile) {
-        Minecraft mc = Minecraft.getInstance();
+	public static void RenderScene(PoseStack pose, AbstractPortalTile portal) {
+		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
+			return;
+		RenderSystem.enableDepthTest();
+		Minecraft minecraft = Minecraft.getInstance();
 
-        int ChunksToRender = 8;
+		assert minecraft.level != null;
+		long currentTime = minecraft.level.getGameTime();
 
-        BufferBuilder buffer = new BufferBuilder((int) (ChunksToRender * Math.pow(16, 3)));
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
+		if (currentTime - portal.lastUpdateTime >= 1200) { // update model every 1200 ticks, or a minute TODO: make
+															// configurable! also make
+			// only on
+			// chunk update!
+			BOTIUtils.updateChunkModel(portal);
+			portal.lastUpdateTime = currentTime;
+		}
 
-        // Dump all quads into the buffer
-        PoseStack stack = new PoseStack();
+		if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
+			portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
+			BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
+		} else {
+			pose.pushPose();
 
-        Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(containers);
+			minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+				pose.translate(-0.5, 2, 0);
+				pose.scale(0.2f, 0.2f, 0.2f);
+				pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
+			});
 
-        chunkMap.forEach((pos, container) -> {
-            BlockColors colors = mc.getBlockColors();
-            int color = colors.getColor(container.getState(), Minecraft.getInstance().level, container.getPos(), 0);
+			RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
 
-            // Extract RGB components (normalize to 0-1 range)
-            float r = ((color >> 16) & 0xFF) / 255.0f;
-            float g = ((color >> 8) & 0xFF) / 255.0f;
-            float b = (color & 0xFF) / 255.0f;
+			portal.MODEL_VBO.bind();
+			portal.MODEL_VBO.drawWithShader(pose.last().pose(), RenderSystem.getProjectionMatrix(),
+					Objects.requireNonNull(RenderSystem.getShader()));
+			VertexBuffer.unbind();
 
-            RandomSource rand = RandomSource.create(pos.asLong());
-            stack.pushPose();
-            stack.translate(pos.getX(), pos.getY(), pos.getZ());
+			pose.popPose();
+		}
+	}
 
-            if (container.isIsFluid()) {
-                FluidState fluidState = container.getFluidState();
-                if (!fluidState.isEmpty()) {
-                    FluidQuadCollector fluidCollector = new FluidQuadCollector();
+	public static VertexBuffer buildModelVBO(List<BotiChunkContainer> containers, AbstractPortalTile tile) {
+		Minecraft mc = Minecraft.getInstance();
 
-                    assert Minecraft.getInstance().level != null;
-                    Minecraft.getInstance()
-                            .getBlockRenderer()
-                            .renderLiquid(
-                                    pos,
-                                    Minecraft.getInstance().level,
-                                    fluidCollector,
-                                    container.getState(),
-                                    fluidState);
+		int ChunksToRender = 8;
 
-                    // Now feed collector.getVertices() into VBO
-                    for (FluidQuadCollector.FluidVertex v : fluidCollector.getVertices()) {
-                        buffer.vertex(v.x, v.y, v.z)
-                                .color(v.r, v.g, v.b, v.a)
-                                .uv(v.u, v.v)
-                                .uv2(container.getLight())
-                                .endVertex();
-                    }
-                }
-            }
+		BufferBuilder buffer = new BufferBuilder((int) (ChunksToRender * Math.pow(16, 3)));
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
 
-            for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
-                // Convert packed light into brightness factor (0.0–1.0)
-                float brightness = (float) (container.getLight() / 0xf000f0);
+		// Dump all quads into the buffer
+		PoseStack stack = new PoseStack();
 
-                // Apply brightness to base RGB values
-                float rLit = r;// *= brightness;
-                float gLit = g;// *= brightness;
-                float bLit = b;// *= brightness;
+		Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(containers);
 
-                buffer.putBulkData(
-                        stack.last(),
-                        quad,
-                        rLit,
-                        gLit,
-                        bLit,
-                        1.0F,
-                        container.getLight(),
-                        OverlayTexture.NO_OVERLAY,
-                        true);
-            }
+		chunkMap.forEach((pos, container) -> {
+			BlockColors colors = mc.getBlockColors();
+			int color = colors.getColor(container.getState(), Minecraft.getInstance().level, container.getPos(), 0);
 
-            stack.popPose();
-        });
-        BufferBuilder.RenderedBuffer rendered = buffer.end();
+			// Extract RGB components (normalize to 0-1 range)
+			float r = ((color >> 16) & 0xFF) / 255.0f;
+			float g = ((color >> 8) & 0xFF) / 255.0f;
+			float b = (color & 0xFF) / 255.0f;
 
-        VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
-        vbo.bind();
-        vbo.upload(rendered);
-        VertexBuffer.unbind();
+			RandomSource rand = RandomSource.create(pos.asLong());
+			stack.pushPose();
+			stack.translate(pos.getX(), pos.getY(), pos.getZ());
 
-        return vbo;
-    }
+			if (container.isIsFluid()) {
+				FluidState fluidState = container.getFluidState();
+				if (!fluidState.isEmpty()) {
+					FluidQuadCollector fluidCollector = new FluidQuadCollector();
 
-    public static void updateChunkModel(AbstractPortalTile tileEntity) {
-        if(!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
-        assert Minecraft.getInstance().level != null;
-        if (!Minecraft.getInstance().level.isClientSide()) return;
-        tileEntity.containers.clear();
-        tileEntity.blockEntities.clear();
+					assert Minecraft.getInstance().level != null;
+					Minecraft.getInstance().getBlockRenderer().renderLiquid(pos, Minecraft.getInstance().level,
+							fluidCollector, container.getState(), fluidState);
 
-        long currentTime = Minecraft.getInstance().level.getGameTime();
+					// Now feed collector.getVertices() into VBO
+					for (FluidQuadCollector.FluidVertex v : fluidCollector.getVertices()) {
+						buffer.vertex(v.x, v.y, v.z).color(v.r, v.g, v.b, v.a).uv(v.u, v.v).uv2(container.getLight())
+								.endVertex();
+					}
+				}
+			}
 
-        if (tileEntity.targetLevel != null)
-            Networking.INSTANCE.sendToServer(new PortalChunkRequestPacketC2S(
-                    tileEntity.getBlockPos(), tileEntity.getTargetLevel(), tileEntity.getTargetPos(), TTSConfig.ClientConfig.BOTI_RENDER_DISTANCE.get()));
+			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
+				// Convert packed light into brightness factor (0.0–1.0)
+				float brightness = (float) (container.getLight() / 0xf000f0);
 
-        tileEntity.lastRequestTime = currentTime;
-    }
+				// Apply brightness to base RGB values
+				float rLit = r; // *= brightness;
+				float gLit = g; // *= brightness;
+				float bLit = b; // *= brightness;
 
-    public static boolean shouldRenderFace(
-            BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos, Direction dir, BlockPos secondPos) {
-        if (state.skipRendering(neighbor, dir)) {
-            return false;
-        } else if (state.supportsExternalFaceHiding()
-                && neighbor.hidesNeighborFace(level, secondPos, state, dir.getOpposite())) {
-            return false;
-        } else if (neighbor.canOcclude()) {
-            Block.BlockStatePairKey block$blockstatepairkey = new Block.BlockStatePairKey(state, neighbor, dir);
-            Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap =
-                    BlockAccessor.getOcclusionCache().get();
-            byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(block$blockstatepairkey);
-            if (b0 != 127) {
-                return b0 != 0;
-            } else {
-                VoxelShape voxelshape = state.getFaceOcclusionShape(level, pos, dir);
-                if (voxelshape.isEmpty()) {
-                    return true;
-                } else {
-                    VoxelShape voxelshape1 = neighbor.getFaceOcclusionShape(level, secondPos, dir.getOpposite());
-                    boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
-                    if (object2bytelinkedopenhashmap.size() == 2048) {
-                        object2bytelinkedopenhashmap.removeLastByte();
-                    }
+				buffer.putBulkData(stack.last(), quad, rLit, gLit, bLit, 1.0F, container.getLight(),
+						OverlayTexture.NO_OVERLAY, true);
+			}
 
-                    object2bytelinkedopenhashmap.putAndMoveToFirst(block$blockstatepairkey, (byte) (flag ? 1 : 0));
-                    return flag;
-                }
-            }
-        } else {
-            return true;
-        }
-    }
+			stack.popPose();
+		});
+		BufferBuilder.RenderedBuffer rendered = buffer.end();
 
-    public static void RenderMinimal(PoseStack pose, AbstractPortalTile portal) {
-        if(!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
-        Minecraft mc = Minecraft.getInstance();
-        assert mc.level != null;
-        mc.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-            pose.pushPose();
-            portal.getFBOContainer()
-                    .Render(
-                            pose,
-                            (stack, botiSource) -> StencilUtils.drawFrame(stack, 1, 2),
-                            (stack, buff) -> {},
-                            (stack, botiSource) -> BOTIUtils.RenderScene(stack, portal));
-            pose.popPose();
-        });
-    }
+		VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
+		vbo.bind();
+		vbo.upload(rendered);
+		VertexBuffer.unbind();
 
-    public static void RenderScene(PoseStack pose, AbstractPortalTile portal) {
-        if(!TTSConfig.ClientConfig.BOTI_ENABLED.get()) return;
-        RenderSystem.enableDepthTest();
-        Minecraft minecraft = Minecraft.getInstance();
+		return vbo;
+	}
 
-        assert minecraft.level != null;
-        long currentTime = minecraft.level.getGameTime();
+	public static Map<BlockPos, BotiChunkContainer> getMapFromContainerList(List<BotiChunkContainer> list) {
+		Map<BlockPos, BotiChunkContainer> map = new HashMap<>(list.size());
+		for (BotiChunkContainer container : list) {
+			map.put(container.getPos(), container);
+		}
+		return map;
+	}
 
-        if (currentTime - portal.lastUpdateTime
-                >= 1200) { // update model every 1200 ticks, or a minute TODO: make configurable! also make
-            // only on
-            // chunk update!
-            BOTIUtils.updateChunkModel(portal);
-            portal.lastUpdateTime = currentTime;
-        }
+	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
+			Map<BlockPos, BotiChunkContainer> map) {
+		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		Direction[] directions = Direction.values();
+		BakedModel model = blockRenderer.getBlockModel(state);
+		List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
+		// render only non-occluded faces
+		for (Direction dir : directions) {
+			BlockPos neighbourPos = pos.relative(dir);
+			BotiChunkContainer neighborContainer = map.get(neighbourPos);
+			if (neighborContainer != null) {
+				if (BOTIUtils.shouldRenderFace(state, neighborContainer.getState(), Minecraft.getInstance().level, pos,
+						dir, neighbourPos))
+					quads.addAll(model.getQuads(state, dir, rand));
+			} else
+				quads.addAll(model.getQuads(state, dir, rand));
+		}
+		return quads;
+	}
 
-        if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
-            portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
-            BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
-        } else {
-            pose.pushPose();
+	public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {
+		// Get center points for both blocks
+		Vec3 fromCenter = new Vec3(from.getX() + 0.5, from.getY() + 0.5, from.getZ() + 0.5);
+		Vec3 toCenter = new Vec3(to.getX() + 0.5, to.getY() + 0.5, to.getZ() + 0.5);
 
-            minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-                pose.translate(-0.5, 2, 0);
-                pose.scale(0.2f, 0.2f, 0.2f);
-                pose.mulPose(Axis.YP.rotationDegrees(
-                        cap.GetNavigationalData().getFacing().toYRot()));
-            });
+		// Vector from target to source
+		Vec3 toFrom = fromCenter.subtract(toCenter).normalize();
 
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+		// Direction vector of the face
+		Vec3 faceNormal = new Vec3(side.getStepX(), side.getStepY(), side.getStepZ());
 
-            portal.MODEL_VBO.bind();
-            portal.MODEL_VBO.drawWithShader(
-                    pose.last().pose(),
-                    RenderSystem.getProjectionMatrix(),
-                    Objects.requireNonNull(RenderSystem.getShader()));
-            VertexBuffer.unbind();
+		// Dot product < 0 means the face is pointing toward the source
+		double dot = toFrom.dot(faceNormal);
+		return dot < 0;
+	}
 
-            pose.popPose();
-        }
-    }
+	public static boolean shouldRenderFace(BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos,
+			Direction dir, BlockPos secondPos) {
+		if (state.skipRendering(neighbor, dir)) {
+			return false;
+		} else if (state.supportsExternalFaceHiding()
+				&& neighbor.hidesNeighborFace(level, secondPos, state, dir.getOpposite())) {
+			return false;
+		} else if (neighbor.canOcclude()) {
+			Block.BlockStatePairKey block$blockstatepairkey = new Block.BlockStatePairKey(state, neighbor, dir);
+			Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> object2bytelinkedopenhashmap = BlockAccessor
+					.getOcclusionCache().get();
+			byte b0 = object2bytelinkedopenhashmap.getAndMoveToFirst(block$blockstatepairkey);
+			if (b0 != 127) {
+				return b0 != 0;
+			} else {
+				VoxelShape voxelshape = state.getFaceOcclusionShape(level, pos, dir);
+				if (voxelshape.isEmpty()) {
+					return true;
+				} else {
+					VoxelShape voxelshape1 = neighbor.getFaceOcclusionShape(level, secondPos, dir.getOpposite());
+					boolean flag = Shapes.joinIsNotEmpty(voxelshape, voxelshape1, BooleanOp.ONLY_FIRST);
+					if (object2bytelinkedopenhashmap.size() == 2048) {
+						object2bytelinkedopenhashmap.removeLastByte();
+					}
 
-    public static void GatherChunkData(AbstractPortalTile portalTile, Level level, int chunks) {
-        if(!TTSConfig.ServerConfig.BOTI_ENABLED.get()) return;
-        BlockPos targetPos = portalTile.getTargetPos();
-        new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level, chunks).start();
-    }
+					object2bytelinkedopenhashmap.putAndMoveToFirst(block$blockstatepairkey, (byte) (flag ? 1 : 0));
+					return flag;
+				}
+			}
+		} else {
+			return true;
+		}
+	}
 
-    public static boolean isSideVisibleFrom(BlockPos from, BlockPos to, Direction side) {
-        // Get center points for both blocks
-        Vec3 fromCenter = new Vec3(from.getX() + 0.5, from.getY() + 0.5, from.getZ() + 0.5);
-        Vec3 toCenter = new Vec3(to.getX() + 0.5, to.getY() + 0.5, to.getZ() + 0.5);
+	public static void updateChunkModel(AbstractPortalTile tileEntity) {
+		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
+			return;
+		assert Minecraft.getInstance().level != null;
+		if (!Minecraft.getInstance().level.isClientSide())
+			return;
+		tileEntity.containers.clear();
+		tileEntity.blockEntities.clear();
 
-        // Vector from target to source
-        Vec3 toFrom = fromCenter.subtract(toCenter).normalize();
+		long currentTime = Minecraft.getInstance().level.getGameTime();
 
-        // Direction vector of the face
-        Vec3 faceNormal = new Vec3(side.getStepX(), side.getStepY(), side.getStepZ());
+		if (tileEntity.targetLevel != null)
+			Networking.INSTANCE
+					.sendToServer(new PortalChunkRequestPacketC2S(tileEntity.getBlockPos(), tileEntity.getTargetLevel(),
+							tileEntity.getTargetPos(), TTSConfig.ClientConfig.BOTI_RENDER_DISTANCE.get()));
 
-        // Dot product < 0 means the face is pointing toward the source
-        double dot = toFrom.dot(faceNormal);
-        return dot < 0;
-    }
+		tileEntity.lastRequestTime = currentTime;
+	}
 }

@@ -2,5 +2,6 @@
 package com.code.tama.tts.compat;
 
 public abstract class CompatClass {
-    void runCompat() {}
+	void runCompat() {
+	}
 }

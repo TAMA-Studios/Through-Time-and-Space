@@ -6,41 +6,42 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public interface IUseJavaJSON {
-    default JavaJSONParsed getJavaJSON() {
-        return JavaJSON.getParsedJavaJSON(this);
-    }
+	default ResourceLocation getAlphaMap() {
+		return JavaJSON.getAlphaMap(this);
+	}
 
-    default Model getModel() {
-        return JavaJSON.getModel(this);
-    }
+	default RenderType getEmmisiveRenderType() {
+		return this.getModel().renderType(this.getLightMap());
+	}
 
-    default RenderType getRenderType() {
-        return this.getModel().renderType(this.getTexture());
-    }
+	default JavaJSONParsed getJavaJSON() {
+		return JavaJSON.getParsedJavaJSON(this);
+	}
 
-    default RenderType getRenderType(ResourceLocation texture) {
-        return this.getModel().renderType(texture);
-    }
+	default ResourceLocation getLightMap() {
+		return JavaJSON.getLightMap(this);
+	}
 
-    default RenderType getEmmisiveRenderType() {
-        return this.getModel().renderType(this.getLightMap());
-    }
+	default Model getModel() {
+		return JavaJSON.getModel(this);
+	}
 
-    default ResourceLocation getTexture() {
-        return JavaJSON.getTexture(this);
-    }
+	default RenderType getRenderType() {
+		return this.getModel().renderType(this.getTexture());
+	}
 
-    default ResourceLocation getLightMap() {
-        return JavaJSON.getLightMap(this);
-    }
+	default RenderType getRenderType(ResourceLocation texture) {
+		return this.getModel().renderType(texture);
+	}
 
-    default ResourceLocation getAlphaMap() {
-        return JavaJSON.getAlphaMap(this);
-    }
+	default ResourceLocation getTexture() {
+		return JavaJSON.getTexture(this);
+	}
 
-    default void registerJavaJSON(ResourceLocation modelPath) {
-        JavaJSONCache.register(this, modelPath);
-    }
+	default void registerJavaJSON(ResourceLocation modelPath) {
+		JavaJSONCache.register(this, modelPath);
+	}
 
-    default void reload() {}
+	default void reload() {
+	}
 }

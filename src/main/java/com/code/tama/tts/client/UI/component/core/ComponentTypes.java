@@ -2,8 +2,5 @@
 package com.code.tama.tts.client.UI.component.core;
 
 public enum ComponentTypes {
-    BUTTON,
-    CHECK,
-    RADIO,
-    TOGGLE;
+	BUTTON, CHECK, RADIO, TOGGLE;
 }

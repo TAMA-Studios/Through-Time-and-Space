@@ -12,20 +12,22 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class DoorData {
-    public static Codec<DoorData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.FLOAT.fieldOf("yrot").forGetter(DoorData::getYRot),
-                    SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(DoorData::getLocation),
-                    Codec.INT.fieldOf("openDoors").forGetter(DoorData::getDoorsOpen))
-            .apply(instance, DoorData::new));
+	public static Codec<DoorData> CODEC = RecordCodecBuilder
+			.create(instance -> instance
+					.group(Codec.FLOAT.fieldOf("yrot").forGetter(DoorData::getYRot),
+							SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(DoorData::getLocation),
+							Codec.INT.fieldOf("openDoors").forGetter(DoorData::getDoorsOpen))
+					.apply(instance, DoorData::new));
 
-    float YRot;
-    SpaceTimeCoordinate location;
-    int DoorsOpen = 0;
+	int DoorsOpen = 0;
+	float YRot;
+	SpaceTimeCoordinate location;
 
-    public int CycleDoor() {
-        return this.DoorsOpen = switch (this.DoorsOpen) {
-            case 0 -> 1;
-            case 1 -> 2;
-            default -> 0;};
-    }
+	public int CycleDoor() {
+		return this.DoorsOpen = switch (this.DoorsOpen) {
+			case 0 -> 1;
+			case 1 -> 2;
+			default -> 0;
+		};
+	}
 }

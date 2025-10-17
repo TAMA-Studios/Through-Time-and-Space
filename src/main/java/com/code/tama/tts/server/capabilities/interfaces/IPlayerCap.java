@@ -5,11 +5,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IPlayerCap extends INBTSerializable<CompoundTag> {
-    String GetViewingTARDIS();
+	void AddOwnedTARDIS(String uuid);
 
-    void SetViewingTARDIS(String tardis);
+	int GetOwnedTARDISes();
 
-    void AddOwnedTARDIS(String uuid);
+	String GetViewingTARDIS();
 
-    int GetOwnedTARDISes();
+	void SetViewingTARDIS(String tardis);
 }

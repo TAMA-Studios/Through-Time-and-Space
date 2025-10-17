@@ -8,156 +8,145 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 
 public class SkyBlock {
-    private static ShaderInstance skyShader;
-    private static int skyWidth = -1;
-    private static int skyHeight = -1;
-    private static TextureTarget skyRenderTarget;
-    public static boolean updateSky = false;
-    private static boolean isRenderingSky = false;
+	public static final RenderType SKY_RENDER_TYPE = RenderType.create("sky", DefaultVertexFormat.POSITION,
+			VertexFormat.Mode.QUADS, 256, false, false,
+			RenderType.CompositeState.builder()
+					.setShaderState(new RenderStateShard.ShaderStateShard(SkyBlock::getSkyShader))
+					.setTextureState(new RenderStateShard.EmptyTextureStateShard(SkyBlock::setSkyTexture, () -> {
+					})).createCompositeState(false));
+	public static boolean updateSky = false;
+	private static boolean isRenderingSky = false;
+	private static int skyHeight = -1;
+	private static TextureTarget skyRenderTarget;
+	private static ShaderInstance skyShader;
 
-    public static final RenderType SKY_RENDER_TYPE = RenderType.create(
-            "sky",
-            DefaultVertexFormat.POSITION,
-            VertexFormat.Mode.QUADS,
-            256,
-            false,
-            false,
-            RenderType.CompositeState.builder()
-                    .setShaderState(new RenderStateShard.ShaderStateShard(SkyBlock::getSkyShader))
-                    .setTextureState(new RenderStateShard.EmptyTextureStateShard(SkyBlock::setSkyTexture, () -> {}))
-                    .createCompositeState(false));
+	private static int skyWidth = -1;
 
-    public static void init() {}
+	public static ShaderInstance getSkyShader() {
+		return skyShader;
+	}
 
-    public static ShaderInstance getSkyShader() {
-        return skyShader;
-    }
+	public static void init() {
+	}
 
-    public static void setSkyShader(ShaderInstance shader) {
-        skyShader = shader;
-    }
+	public static void renderActualSky(Minecraft mc, RenderData renderData) {
+		if (mc == null || mc.level == null || mc.player == null) {
+			return;
+		}
 
-    private static void setSkyTexture() {
-        if (skyRenderTarget != null) {
-            RenderSystem.setShaderTexture(0, skyRenderTarget.getColorTextureId());
-        } else {
-            RenderSystem.setShaderTexture(0, 0);
-        }
-    }
+		PoseStack poseStack = renderData.poseStack();
+		final float delta = renderData.partialTick();
+		Matrix4f projectionMatrix = renderData.projectionMatrix();
+		LevelRenderer levelRenderer = mc.levelRenderer;
+		IHelpWithLevelRenderer IHelpWithLevelRenderer = (IHelpWithLevelRenderer) levelRenderer;
+		GameRenderer gameRenderer = mc.gameRenderer;
+		final Camera camera = gameRenderer.getMainCamera();
+		Vec3 cameraPos = camera.getPosition();
+		LightTexture lightTexture = gameRenderer.lightTexture();
 
-    public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {}
+		FogRenderer.setupColor(camera, delta, mc.level, mc.options.getEffectiveRenderDistance(),
+				gameRenderer.getDarkenWorldAmount(delta));
+		FogRenderer.levelFogColor();
+		RenderSystem.clear(16640, Minecraft.ON_OSX);
+		final float renderDistance = gameRenderer.getRenderDistance();
+		final boolean hasSpecialFog = mc.level.effects().isFoggyAt(Mth.floor(cameraPos.x), Mth.floor(cameraPos.z))
+				|| mc.gui.getBossOverlay().shouldCreateWorldFog();
+		FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta);
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		levelRenderer.renderSky(poseStack, projectionMatrix, delta, camera, false,
+				() -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta));
 
-    public static void renderSky(RenderData renderData) {
-        if (isRenderingSky) {
-            return;
-        }
+		PoseStack modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushPose();
+		modelViewStack.mulPoseMatrix(poseStack.last().pose());
+		RenderSystem.applyModelViewMatrix();
 
-        Minecraft mc = Minecraft.getInstance();
-        Window window = mc.getWindow();
-        int ww = window.getWidth();
-        int wh = window.getHeight();
+		if (mc.options.getCloudsType() != CloudStatus.OFF) {
+			RenderSystem.setShader(GameRenderer::getPositionTexColorNormalShader);
+			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+			levelRenderer.renderClouds(poseStack, projectionMatrix, delta, cameraPos.x, cameraPos.y, cameraPos.z);
+		}
 
-        if (ww <= 0 || wh <= 0) {
-            return;
-        }
+		RenderSystem.depthMask(false);
+		IHelpWithLevelRenderer.TTS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
 
-        boolean update = false;
+		RenderSystem.depthMask(true);
+		RenderSystem.disableBlend();
+		modelViewStack.popPose();
+		RenderSystem.applyModelViewMatrix();
+		FogRenderer.setupNoFog();
+	}
 
-        if (skyRenderTarget == null || skyWidth != ww || skyHeight != wh) {
-            update = true;
-            skyWidth = ww;
-            skyHeight = wh;
-        }
+	public static void renderSky(RenderData renderData) {
+		if (isRenderingSky) {
+			return;
+		}
 
-        if (update) {
-            if (skyRenderTarget != null) {
-                skyRenderTarget.destroyBuffers();
-            }
+		Minecraft mc = Minecraft.getInstance();
+		Window window = mc.getWindow();
+		int ww = window.getWidth();
+		int wh = window.getHeight();
 
-            skyRenderTarget = new TextureTarget(skyWidth, skyHeight, true, Minecraft.ON_OSX);
-        }
+		if (ww <= 0 || wh <= 0) {
+			return;
+		}
 
-        //        if (irisLoaded) IrisCompat.preRender(mc.levelRenderer);
-        mc.gameRenderer.setRenderBlockOutline(false);
-        mc.levelRenderer.graphicsChanged();
-        skyRenderTarget.bindWrite(true);
+		boolean update = false;
 
-        isRenderingSky = true;
-        RenderTarget mainRenderTarget = mc.getMainRenderTarget();
-        renderActualSky(mc, renderData);
-        isRenderingSky = false;
+		if (skyRenderTarget == null || skyWidth != ww || skyHeight != wh) {
+			update = true;
+			skyWidth = ww;
+			skyHeight = wh;
+		}
 
-        mc.gameRenderer.setRenderBlockOutline(true);
-        skyRenderTarget.unbindRead();
-        skyRenderTarget.unbindWrite();
-        mc.levelRenderer.graphicsChanged();
-        mainRenderTarget.bindWrite(true);
-        //        if (irisLoaded) IrisCompat.postRender(mc.levelRenderer);
-    }
+		if (update) {
+			if (skyRenderTarget != null) {
+				skyRenderTarget.destroyBuffers();
+			}
 
-    public static void renderActualSky(Minecraft mc, RenderData renderData) {
-        if (mc == null || mc.level == null || mc.player == null) {
-            return;
-        }
+			skyRenderTarget = new TextureTarget(skyWidth, skyHeight, true, Minecraft.ON_OSX);
+		}
 
-        PoseStack poseStack = renderData.poseStack();
-        final float delta = renderData.partialTick();
-        Matrix4f projectionMatrix = renderData.projectionMatrix();
-        LevelRenderer levelRenderer = mc.levelRenderer;
-        IHelpWithLevelRenderer IHelpWithLevelRenderer = (IHelpWithLevelRenderer) levelRenderer;
-        GameRenderer gameRenderer = mc.gameRenderer;
-        final Camera camera = gameRenderer.getMainCamera();
-        Vec3 cameraPos = camera.getPosition();
-        LightTexture lightTexture = gameRenderer.lightTexture();
+		// if (irisLoaded) IrisCompat.preRender(mc.levelRenderer);
+		mc.gameRenderer.setRenderBlockOutline(false);
+		mc.levelRenderer.graphicsChanged();
+		skyRenderTarget.bindWrite(true);
 
-        FogRenderer.setupColor(
-                camera,
-                delta,
-                mc.level,
-                mc.options.getEffectiveRenderDistance(),
-                gameRenderer.getDarkenWorldAmount(delta));
-        FogRenderer.levelFogColor();
-        RenderSystem.clear(16640, Minecraft.ON_OSX);
-        final float renderDistance = gameRenderer.getRenderDistance();
-        final boolean hasSpecialFog = mc.level.effects().isFoggyAt(Mth.floor(cameraPos.x), Mth.floor(cameraPos.z))
-                || mc.gui.getBossOverlay().shouldCreateWorldFog();
-        FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta);
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        levelRenderer.renderSky(
-                poseStack,
-                projectionMatrix,
-                delta,
-                camera,
-                false,
-                () -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, renderDistance, hasSpecialFog, delta));
+		isRenderingSky = true;
+		RenderTarget mainRenderTarget = mc.getMainRenderTarget();
+		renderActualSky(mc, renderData);
+		isRenderingSky = false;
 
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.mulPoseMatrix(poseStack.last().pose());
-        RenderSystem.applyModelViewMatrix();
+		mc.gameRenderer.setRenderBlockOutline(true);
+		skyRenderTarget.unbindRead();
+		skyRenderTarget.unbindWrite();
+		mc.levelRenderer.graphicsChanged();
+		mainRenderTarget.bindWrite(true);
+		// if (irisLoaded) IrisCompat.postRender(mc.levelRenderer);
+	}
 
-        if (mc.options.getCloudsType() != CloudStatus.OFF) {
-            RenderSystem.setShader(GameRenderer::getPositionTexColorNormalShader);
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-            levelRenderer.renderClouds(poseStack, projectionMatrix, delta, cameraPos.x, cameraPos.y, cameraPos.z);
-        }
+	public static void setSkyShader(ShaderInstance shader) {
+		skyShader = shader;
+	}
 
-        RenderSystem.depthMask(false);
-        IHelpWithLevelRenderer.TTS$renderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
+	private static void setSkyTexture() {
+		if (skyRenderTarget != null) {
+			RenderSystem.setShaderTexture(0, skyRenderTarget.getColorTextureId());
+		} else {
+			RenderSystem.setShaderTexture(0, 0);
+		}
+	}
 
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        FogRenderer.setupNoFog();
-    }
+	public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {
+	}
 }

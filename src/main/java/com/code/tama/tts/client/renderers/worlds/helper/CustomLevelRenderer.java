@@ -3,6 +3,8 @@ package com.code.tama.tts.client.renderers.worlds.helper;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import java.util.ArrayList;
+
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
@@ -12,7 +14,11 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector4i;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -20,364 +26,250 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector4i;
 
 public class CustomLevelRenderer {
-    public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
-    static boolean InittedSkyboxThread;
-    static long Ticks;
-    private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
+	public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
+	static boolean InittedSkyboxThread;
+	static long Ticks;
+	private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
 
-    public static void AddRenderer(AbstractLevelRenderer renderer) {
-        CustomLevelRenderer.Renderers.add(renderer);
-    }
+	public static void AddRenderer(AbstractLevelRenderer renderer) {
+		CustomLevelRenderer.Renderers.add(renderer);
+	}
 
-    /** Adds all the renderers to the renderer array */
-    public static void Register() {
-        AddRenderer(new GallifreySkyRenderer());
-        AddRenderer(new TardisSkyRenderer());
-    }
+	/** Adds all the renderers to the renderer array */
+	public static void Register() {
+		AddRenderer(new GallifreySkyRenderer());
+		AddRenderer(new TardisSkyRenderer());
+	}
 
-    public static void applyFogEffect(float ambientLight) {
-        float fogDensity = Math.max(0.1f, 1.0f - ambientLight); // Inverse relationship with ambient light
-        // Random RGB values for disco mode
-        assert Minecraft.getInstance().level != null;
-        RenderSystem.setShaderFogColor(fogDensity, fogDensity, fogDensity);
-    }
+	public static void applyFogEffect(float ambientLight) {
+		float fogDensity = Math.max(0.1f, 1.0f - ambientLight); // Inverse relationship with ambient light
+		// Random RGB values for disco mode
+		assert Minecraft.getInstance().level != null;
+		RenderSystem.setShaderFogColor(fogDensity, fogDensity, fogDensity);
+	}
 
-    public static void applyLighting(float ambientLight, boolean Disco) {
-        ambientLight = Math.max(0.0f, Math.min(ambientLight, 1.5f));
+	public static void applyLighting(float ambientLight, boolean Disco) {
+		ambientLight = Math.max(0.0f, Math.min(ambientLight, 1.5f));
 
-        // Apply a non-linear scaling to preserve light sources
-        float adjustedLight = (float) Math.pow(ambientLight, 1.05f);
+		// Apply a non-linear scaling to preserve light sources
+		float adjustedLight = (float) Math.pow(ambientLight, 1.05f);
 
-        float rgb[] = getCyclingRGB(
-                Minecraft.getInstance().level.getGameTime()
-                        + Minecraft.getInstance().getPartialTick(),
-                0.01f);
+		float rgb[] = getCyclingRGB(
+				Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getPartialTick(), 0.01f);
 
-        //        RenderSystem.setShaderFogColor(r, g, b);
-        if (Disco) RenderSystem.setShaderColor(rgb[0] + 0.5f, rgb[1] + 0.5f, rgb[2] + 0.5f, 1.0f);
-        else RenderSystem.setShaderColor(adjustedLight, adjustedLight, adjustedLight, 1.0f);
-    }
+		// RenderSystem.setShaderFogColor(r, g, b);
+		if (Disco)
+			RenderSystem.setShaderColor(rgb[0] + 0.5f, rgb[1] + 0.5f, rgb[2] + 0.5f, 1.0f);
+		else
+			RenderSystem.setShaderColor(adjustedLight, adjustedLight, adjustedLight, 1.0f);
+	}
 
-    // Returns an array: [r, g, b], each in 0..1
-    public static float[] getCyclingRGB(float time, float speed) {
-        float hue = (time * speed) % 1.0f; // cycles from 0 to 1
-        int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);
-        float r = ((rgb >> 16) & 0xFF) / 255.0f;
-        float g = ((rgb >> 8) & 0xFF) / 255.0f;
-        float b = (rgb & 0xFF) / 255.0f;
-        return new float[] {r, g, b};
-    }
+	public static BufferBuilder.RenderedBuffer drawPlanet(BufferBuilder buffer, float size) {
+		Matrix4f matrix = new Matrix4f(); // poseStack.last().pose();
+		float BaseSize = 20.0F;
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
 
-    // This method will handle the rendering event
-    @SubscribeEvent
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
-            SkyBlock.renderSky(
-                    new SkyBlock.RenderData(event.getPoseStack(), event.getPartialTick(), event.getProjectionMatrix()));
+		// Top
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(0, 0).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(1, 0).endVertex();
 
-        Ticks = Minecraft.getInstance().level.getGameTime();
+		// East
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(0, 0).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
 
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
-            // Get each renderer
-            CustomLevelRenderer.Renderers.forEach(renderer -> {
-                // Run the Render code in each renderer
-                renderer.Render(
-                        event.getCamera(),
-                        event.getProjectionMatrix(),
-                        event.getPoseStack(),
-                        event.getFrustum(),
-                        event.getPartialTick());
-            });
-        }
+		// West
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(1, 0).endVertex();
 
-        // Calculate the light level from the cap if it exists
-        float ambientLight = Minecraft.getInstance()
-                .level
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .map(ITARDISLevel::GetLightLevel)
-                .orElse(1.0f);
+		// SOUTH
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
 
-        boolean Disco = Minecraft.getInstance()
-                .level
-                .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                .map(level -> level.GetData().isIsDiscoMode())
-                .orElse(false); // Default value
+		// Down
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
+		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 1).endVertex();
+		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
 
-        // Apply the calculated lighting
-        CustomLevelRenderer.applyLighting(ambientLight, Disco);
-        CustomLevelRenderer.applyFogEffect(ambientLight);
-    }
+		return buffer.end();
+	}
 
-    @SubscribeEvent
-    public static void onRenderGUI(RenderGuiEvent event) {
-        SonicOverlayRenderer.Render(
-                event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
-    }
+	// Returns an array: [r, g, b], each in 0..1
+	public static float[] getCyclingRGB(float time, float speed) {
+		float hue = (time * speed) % 1.0f; // cycles from 0 to 1
+		int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);
+		float r = ((rgb >> 16) & 0xFF) / 255.0f;
+		float g = ((rgb >> 8) & 0xFF) / 255.0f;
+		float b = (rgb & 0xFF) / 255.0f;
+		return new float[]{r, g, b};
+	}
 
-    public static void renderImageSky(PoseStack poseStack, ResourceLocation resourceLocation, Vector4i Colors) {
-        if (true) return; // Disabled but just doing `return` throws unreachable
+	@SubscribeEvent
+	public static void onRenderGUI(RenderGuiEvent event) {
+		SonicOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
+	}
 
-        poseStack.pushPose();
+	// This method will handle the rendering event
+	@SubscribeEvent
+	public static void onRenderLevel(RenderLevelStageEvent event) {
+		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
+			SkyBlock.renderSky(
+					new SkyBlock.RenderData(event.getPoseStack(), event.getPartialTick(), event.getProjectionMatrix()));
 
-        // Disable depth testing and culling for skybox
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+		Ticks = Minecraft.getInstance().level.getGameTime();
 
-        RenderSystem.disableCull(); // Disable back face culling to ensure inner faces are visible
+		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
+			// Get each renderer
+			CustomLevelRenderer.Renderers.forEach(renderer -> {
+				// Run the Render code in each renderer
+				renderer.Render(event.getCamera(), event.getProjectionMatrix(), event.getPoseStack(),
+						event.getFrustum(), event.getPartialTick());
+			});
+		}
 
-        // --- Render Panorama (Inside Cube) ---
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, resourceLocation);
+		// Calculate the light level from the cap if it exists
+		float ambientLight = Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+				.map(ITARDISLevel::GetLightLevel).orElse(1.0f);
 
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        if (bufferBuilder.building()) return;
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        float panoramaSize = 200.0f;
+		boolean Disco = Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+				.map(level -> level.GetData().isIsDiscoMode()).orElse(false); // Default value
 
-        poseStack.translate(-panoramaSize + panoramaSize, 0, 0);
+		// Apply the calculated lighting
+		CustomLevelRenderer.applyLighting(ambientLight, Disco);
+		CustomLevelRenderer.applyFogEffect(ambientLight);
+	}
 
-        // Reverse vertex order (clockwise) to face inward
-        // Front face (North)
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
+	public static void renderImageSky(PoseStack poseStack, ResourceLocation resourceLocation, Vector4i Colors) {
+		if (true)
+			return; // Disabled but just doing `return` throws unreachable
 
-        // Back face (South)
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180)); // Flip the face upside down
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        poseStack.mulPose(Axis.ZN.rotationDegrees(180)); // Restore the matrix so all the other faces aren't affected
+		poseStack.pushPose();
 
-        // Left face
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
+		// Disable depth testing and culling for skybox
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
 
-        // Right face
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
+		RenderSystem.disableCull(); // Disable back face culling to ensure inner faces are visible
 
-        // Top face
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
+		// --- Render Panorama (Inside Cube) ---
+		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+		RenderSystem.setShaderTexture(0, resourceLocation);
 
-        // Bottom face
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize)
-                .uv(0.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(0.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize)
-                .uv(1.0f, 1.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
-        bufferBuilder
-                .vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize)
-                .uv(1.0f, 0.0f)
-                .color(Colors.x, Colors.y, Colors.z, Colors.w)
-                .endVertex();
+		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+		if (bufferBuilder.building())
+			return;
+		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		float panoramaSize = 200.0f;
 
-        BufferUploader.drawWithShader(bufferBuilder.end());
+		poseStack.translate(-panoramaSize + panoramaSize, 0, 0);
 
-        // Restore render state
+		// Reverse vertex order (clockwise) to face inward
+		// Front face (North)
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
 
-        RenderSystem.enableCull();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
-        poseStack.popPose();
-    }
+		// Back face (South)
+		poseStack.mulPose(Axis.ZP.rotationDegrees(180)); // Flip the face upside down
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		poseStack.mulPose(Axis.ZN.rotationDegrees(180)); // Restore the matrix so all the other faces aren't affected
 
-    public static void renderPlanet(
-            @NotNull PoseStack poseStack,
-            @NotNull Vec3 position,
-            Quaternionf rotation,
-            Vec3 PivotPoint,
-            float size,
-            String name) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/" + name + ".png"));
+		// Left face
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
 
-        poseStack.pushPose();
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
-        poseStack.translate(position.x, position.y, position.z);
-        poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
-        poseStack.scale(30.0F, 30.0F, 30.0F);
+		// Right face
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
 
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        BufferUploader.drawWithShader(drawPlanet(buffer, size));
+		// Top face
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, -panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, panoramaSize, panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, panoramaSize, -panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-        poseStack.popPose();
-    }
+		// Bottom face
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, panoramaSize).uv(0.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), -panoramaSize, -panoramaSize, -panoramaSize).uv(0.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, -panoramaSize).uv(1.0f, 1.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
+		bufferBuilder.vertex(poseStack.last().pose(), panoramaSize, -panoramaSize, panoramaSize).uv(1.0f, 0.0f)
+				.color(Colors.x, Colors.y, Colors.z, Colors.w).endVertex();
 
-    public static BufferBuilder.RenderedBuffer drawPlanet(BufferBuilder buffer, float size) {
-        Matrix4f matrix = new Matrix4f(); // poseStack.last().pose();
-        float BaseSize = 20.0F;
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
-                .uv(0, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
+		BufferUploader.drawWithShader(bufferBuilder.end());
 
-        // Top
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
-                .uv(0, 0)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
-                .uv(0, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
-                .uv(1, 0)
-                .endVertex();
+		// Restore render state
 
-        // East
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(0, 0).endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
-                .uv(0, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
+		RenderSystem.enableCull();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+		RenderSystem.disableBlend();
+		poseStack.popPose();
+	}
 
-        // West
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize)
-                .uv(0, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
-                .uv(1, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size)
-                .uv(1, 0)
-                .endVertex();
+	public static void renderPlanet(@NotNull PoseStack poseStack, @NotNull Vec3 position, Quaternionf rotation,
+			Vec3 PivotPoint, float size, String name) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/" + name + ".png"));
 
-        // SOUTH
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size)
-                .uv(0, 0)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size)
-                .uv(0, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size)
-                .uv(1, 1)
-                .endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
+		poseStack.pushPose();
+		RenderSystem.disableBlend();
+		RenderSystem.enableDepthTest();
+		poseStack.translate(position.x, position.y, position.z);
+		poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
+		poseStack.scale(30.0F, 30.0F, 30.0F);
 
-        // Down
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
-        buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 1).endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 1).endVertex();
-        buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size)
-                .uv(0, 0)
-                .endVertex();
+		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		BufferUploader.drawWithShader(drawPlanet(buffer, size));
 
-        return buffer.end();
-    }
+		RenderSystem.disableDepthTest();
+		RenderSystem.enableBlend();
+		poseStack.popPose();
+	}
 }

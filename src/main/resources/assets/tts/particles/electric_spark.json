@@ -1,5 +1,3 @@
 {
-  "textures": [
-    "tts:electric_spark"
-  ]
+  "textures" : [ "tts:electric_spark" ]
 }

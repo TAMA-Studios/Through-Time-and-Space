@@ -302,8 +302,19 @@ spotless {
 
 		trimTrailingWhitespace()
 
-		palantirJavaFormat()
-
+		eclipse()
+		// Optional: Enable the Sort Members feature globally. (default: false)
+				.sortMembersEnabled(true)
+		// Optional: Specify the sort order of the member categories. (default: T,SF,SI,SM,F,I,C,M)
+		//   SF,F,SI,I,C,SM,M,T = Static Fields, Fields, Static Initializers, Initializers, Constructors, Static Methods, Methods, (Nested) Types
+				.sortMembersOrder("SF,F,SI,I,C,SM,M,T")
+		// Optional: Enable the reordering of fields, enum constants, and initializers. (default: true)
+				.sortMembersDoNotSortFields(false)
+		// Optional: Enable reordering of members of the same category by the visibility within the category. (default: false)
+				.sortMembersVisibilityOrderEnabled(true)
+		// Optional: Specify the ordering of members of the same category by the visibility within the category. (default: B,V,R,D)
+		//   B,R,D,V = Public, Protected, Package, Private
+				.sortMembersVisibilityOrder("B,R,D,V")
 		formatAnnotations()
 		// make sure every file has the following copyright header.
 		// optionally, Spotless can set copyright years by digging
