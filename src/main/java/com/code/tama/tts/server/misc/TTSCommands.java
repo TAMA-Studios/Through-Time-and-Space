@@ -44,9 +44,8 @@ public class TTSCommands {
 				return SharedSuggestionProvider.suggest(systems, builder);
 			}).executes(ctx -> placeSystem(ctx.getSource(), StringArgumentType.getString(ctx, "subsystem"))));
 
-	LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
-	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug")
-			.then(subsystem);
+	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
+	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem);
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
 		AbstractSubsystem subsystem = SubsystemsRegistry.subsystems.stream().filter(sub -> sub.name().equals(system))
@@ -111,6 +110,6 @@ public class TTSCommands {
 	}
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		dispatcher.register(Commands.literal("tardis-tts").then(interior).then(debug));
+		dispatcher.register(BASE.then(interior).then(debug));
 	}
 }

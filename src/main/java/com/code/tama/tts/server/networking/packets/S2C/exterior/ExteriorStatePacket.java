@@ -11,16 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class ExteriorStatePacket {
-	private final BlockPos pos;
-
-	private final long startTick;
-	private final State state;
-	public ExteriorStatePacket(BlockPos pos, State state, long startTick) {
-		this.pos = pos;
-		this.state = state;
-		this.startTick = startTick;
-	}
+public record ExteriorStatePacket(BlockPos pos,
+		com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket.State state, long startTick) {
 
 	public static ExteriorStatePacket decode(FriendlyByteBuf buf) {
 		BlockPos pos = buf.readBlockPos();
@@ -41,24 +33,12 @@ public class ExteriorStatePacket {
 			if (mc.level == null)
 				return;
 			var be = mc.level.getBlockEntity(msg.pos);
-			if (be instanceof com.code.tama.tts.server.tileentities.ExteriorTile exterior) {
+			if (be instanceof ExteriorTile exterior) {
 				// Create a client-side PhysicalStateManager
-				new Thread(msg.startTick, exterior, msg.state);
+				new StateThread(msg.startTick, exterior, msg.state);
 			}
 		});
 		ctx.get().setPacketHandled(true);
-	}
-
-	public BlockPos getPos() {
-		return pos;
-	}
-
-	public long getStartTick() {
-		return startTick;
-	}
-
-	public State getState() {
-		return state;
 	}
 
 	public enum State {
@@ -66,7 +46,7 @@ public class ExteriorStatePacket {
 	}
 
 	@AllArgsConstructor
-	public static class Thread extends java.lang.Thread {
+	public static class StateThread extends Thread {
 		long StartTick;
 		ExteriorTile exteriorTile;
 		ExteriorStatePacket.State state;

@@ -4,18 +4,16 @@ package com.code.tama.tts.mixin.client;
 import com.code.tama.tts.client.renderers.worlds.IHelpWithLevelRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Matrix4f;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin
@@ -23,9 +21,6 @@ public abstract class LevelRendererMixin
 			ResourceManagerReloadListener,
 			AutoCloseable,
 			IHelpWithLevelRenderer {
-	@Shadow(remap = false)
-	protected abstract void renderSnowAndRain(LightTexture p_109704_, float p_109705_, double p_109706_,
-			double p_109707_, double p_109708_);
 
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch(Lnet/minecraft/client/renderer/RenderType;)V", ordinal = 6, shift = At.Shift.AFTER))
 	private void renderLevel(PoseStack poseStack, float delta, long time, boolean blockOutlines, Camera camera,
@@ -36,6 +31,6 @@ public abstract class LevelRendererMixin
 	@Override
 	public void TTS$renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY,
 			double cameraZ) {
-		this.renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
+		((ILevelRendererAccessor) this).renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
 	}
 }
