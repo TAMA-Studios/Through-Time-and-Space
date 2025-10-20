@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.compat.jei;
 
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -9,15 +10,14 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class DataRecipeCategory implements IRecipeCategory<DataRecipe> {
-	public static final RecipeType<DataRecipe> TYPE = new RecipeType<>(DataRecipeCategory.UID, DataRecipe.class);
-	public static final ResourceLocation UID = new ResourceLocation("tts", "data_recipe");
+	public static final ResourceLocation UID = new ResourceLocation(TTSMod.MODID, "data_recipe");
+	public static final RecipeType<DataRecipe> TYPE = new RecipeType<>(UID, DataRecipe.class);
 
 	private final IDrawable background;
 	private final IDrawable icon;
