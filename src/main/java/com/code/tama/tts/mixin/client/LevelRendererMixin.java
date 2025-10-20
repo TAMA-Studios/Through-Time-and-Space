@@ -23,12 +23,6 @@ public abstract class LevelRendererMixin
 			ResourceManagerReloadListener,
 			AutoCloseable,
 			IHelpWithLevelRenderer {
-	@Override
-	public void TTS$renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY,
-			double cameraZ) {
-		this.renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
-	}
-
 	@Shadow(remap = false)
 	protected abstract void renderSnowAndRain(LightTexture p_109704_, float p_109705_, double p_109706_,
 			double p_109707_, double p_109708_);
@@ -37,5 +31,11 @@ public abstract class LevelRendererMixin
 	private void renderLevel(PoseStack poseStack, float delta, long time, boolean blockOutlines, Camera camera,
 			GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix, CallbackInfo ci) {
 		((ILevelRendererAccessor) this).getRenderBuffers().bufferSource().endBatch(SkyBlock.SKY_RENDER_TYPE);
+	}
+
+	@Override
+	public void TTS$renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY,
+			double cameraZ) {
+		this.renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
 	}
 }

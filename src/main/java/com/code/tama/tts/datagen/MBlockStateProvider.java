@@ -22,6 +22,71 @@ public class MBlockStateProvider extends BlockStateProvider {
 		super(output, MODID, exFileHelper);
 	}
 
+	///////////////////////////////////// HERE!
+	@Override
+	protected void registerStatesAndModels() {
+		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
+			try {
+				if (block.getId().toString().contains("roundel"))
+					Roundel(block);
+				blockWithItem(block);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void Roundel(RegistryObject<Block> registryObject) {
+		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
+				blockTexture(registryObject.get()));
+		simpleBlock(registryObject.get(), modelBuilder);
+	}
+
+	private void SpecialBlockItem(RegistryObject<? extends Block> blockRegistryObject) {
+		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
+				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
+	}
+
+	private void blockItem(RegistryObject<Block> blockRegistryObject) {
+		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
+				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
+	}
+
+	private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
+		try {
+			simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
+			TTSMod.LOGGER.info(this.blockTexture(blockRegistryObject.get()));
+			TTSMod.LOGGER.info(cubeAll(blockRegistryObject.get()).getLocation());
+		} catch (Exception e) {
+			TTSMod.LOGGER.info(e.getMessage());
+		}
+	}
+
+	private ResourceLocation key(Block block) {
+		return ForgeRegistries.BLOCKS.getKey(block);
+	}
+
+	private void leavesBlock(RegistryObject<Block> blockRegistryObject) {
+		simpleBlockWithItem(blockRegistryObject.get(),
+				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
+						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
+						.renderType("cutout"));
+	}
+
+	private String name(Block block) {
+		return key(block).getPath();
+	}
+
+	private void saplingBlock(RegistryObject<Block> blockRegistryObject) {
+		try {
+			simpleBlock(blockRegistryObject.get(),
+					models().cross(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
+							blockTexture(blockRegistryObject.get())).renderType("cutout"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void axisBlock(RotatedPillarBlock block, ResourceLocation side, ResourceLocation end) {
 		try {
@@ -152,72 +217,6 @@ public class MBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	@Override
-	public void wallBlock(WallBlock block, ResourceLocation texture) {
-		try {
-			wallBlock(block, models().wallPost(key(block).toString() + "_post", texture),
-					models().wallSide(key(block).toString() + "_side", texture),
-					models().wallSideTall(key(block).toString() + "_side_tall", texture));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	///////////////////////////////////// HERE!
-	@Override
-	protected void registerStatesAndModels() {
-		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
-			try {
-				if (block.getId().toString().contains("roundel"))
-					Roundel(block);
-				blockWithItem(block);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void Roundel(RegistryObject<Block> registryObject) {
-		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
-				blockTexture(registryObject.get()));
-		simpleBlock(registryObject.get(), modelBuilder);
-	}
-
-	private void SpecialBlockItem(RegistryObject<? extends Block> blockRegistryObject) {
-		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
-				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
-	}
-
-	private void blockItem(RegistryObject<Block> blockRegistryObject) {
-		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
-				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
-	}
-
-	private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
-		try {
-			simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
-			TTSMod.LOGGER.info(this.blockTexture(blockRegistryObject.get()));
-			TTSMod.LOGGER.info(cubeAll(blockRegistryObject.get()).getLocation());
-		} catch (Exception e) {
-			TTSMod.LOGGER.info(e.getMessage());
-		}
-	}
-
-	private ResourceLocation key(Block block) {
-		return ForgeRegistries.BLOCKS.getKey(block);
-	}
-
-	private void leavesBlock(RegistryObject<Block> blockRegistryObject) {
-		simpleBlockWithItem(blockRegistryObject.get(),
-				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
-						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
-						.renderType("cutout"));
-	}
-
-	private String name(Block block) {
-		return key(block).getPath();
-	}
-
 	// public void makeStrawberryCrop(CropBlock block, String modelName, String
 	// textureName) {
 	// Function<BlockState, ConfiguredModel[]> function = state ->
@@ -258,11 +257,12 @@ public class MBlockStateProvider extends BlockStateProvider {
 	// return models;
 	// }
 
-	private void saplingBlock(RegistryObject<Block> blockRegistryObject) {
+	@Override
+	public void wallBlock(WallBlock block, ResourceLocation texture) {
 		try {
-			simpleBlock(blockRegistryObject.get(),
-					models().cross(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
-							blockTexture(blockRegistryObject.get())).renderType("cutout"));
+			wallBlock(block, models().wallPost(key(block).toString() + "_post", texture),
+					models().wallSide(key(block).toString() + "_side", texture),
+					models().wallSideTall(key(block).toString() + "_side_tall", texture));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 @Getter
 public abstract class TerminationProtocolHandler {
 
-	public BlockPos landPos;
 	FlightTerminationProtocol protocol;
+	public BlockPos landPos;
 
 	public TerminationProtocolHandler(FlightTerminationProtocol protocol) {
 		this.protocol = protocol;

@@ -5,9 +5,9 @@ import com.code.tama.tts.server.misc.containers.LandingType;
 import com.code.tama.tts.server.misc.containers.LandingTypeUP;
 
 public class LandingTypeRegistry {
-	public static final LandingType UP;
+    public static final LandingType UP;
 
-	static {
-		UP = new LandingTypeUP();
-	}
+    static {
+        UP = new LandingTypeUP();
+    }
 }

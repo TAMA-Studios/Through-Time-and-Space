@@ -25,9 +25,9 @@ import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.rendering.BotiPortalModel;
 
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
-	public boolean mode = true; // 0 - Fast but Inaccurate (VBO) 1 - Slow but accurate (Native)
-
 	private final Minecraft mc = Minecraft.getInstance();
+
+	public boolean mode = true; // 0 - Fast but Inaccurate (VBO) 1 - Slow but accurate (Native)
 
 	public PortalTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 	}

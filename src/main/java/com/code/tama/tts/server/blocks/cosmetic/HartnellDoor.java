@@ -41,6 +41,41 @@ public class HartnellDoor extends Block implements EntityBlock {
 		this.tile = factory;
 	}
 
+	@Override
+	protected boolean isAir(@NotNull BlockState state) {
+		return false;
+	}
+
+	private boolean placeMultiblockStructure(ServerLevel level, BlockPos pos) {
+		BlockState blockToPlace = TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get().defaultBlockState(); // Use the same block
+		// for all parts
+
+		// Check if space is clear
+		for (int y = 0; y < 3; y++) { // Height (3)
+			for (int x = 0; x < 2; x++) { // Width (2)
+				BlockPos placePos = pos.offset(x, y, 0);
+				if (placePos != pos)
+					if (!level.getBlockState(placePos).isAir()) { // Prevent placing over existing blocks
+						return false;
+					}
+			}
+		}
+
+		// Place blocks in a 2x3 structure
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 2; x++) {
+				BlockPos placePos = pos.offset(x, y, 0);
+				if (placePos != pos) {
+					level.setBlockAndUpdate(placePos, blockToPlace);
+					((HartnellDoorMultiBlock) blockToPlace.getBlock()).SetController(pos);
+					((HartnellDoorTilePlaceholder) level.getBlockEntity(placePos)).Master = pos;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	public boolean IsOpen() {
 		return this.IsOpen;
 	}
@@ -116,40 +151,5 @@ public class HartnellDoor extends Block implements EntityBlock {
 
 		level.sendBlockUpdated(blockPos, blockState, blockState, UPDATE_ALL);
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	protected boolean isAir(@NotNull BlockState state) {
-		return false;
-	}
-
-	private boolean placeMultiblockStructure(ServerLevel level, BlockPos pos) {
-		BlockState blockToPlace = TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get().defaultBlockState(); // Use the same block
-		// for all parts
-
-		// Check if space is clear
-		for (int y = 0; y < 3; y++) { // Height (3)
-			for (int x = 0; x < 2; x++) { // Width (2)
-				BlockPos placePos = pos.offset(x, y, 0);
-				if (placePos != pos)
-					if (!level.getBlockState(placePos).isAir()) { // Prevent placing over existing blocks
-						return false;
-					}
-			}
-		}
-
-		// Place blocks in a 2x3 structure
-		for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 2; x++) {
-				BlockPos placePos = pos.offset(x, y, 0);
-				if (placePos != pos) {
-					level.setBlockAndUpdate(placePos, blockToPlace);
-					((HartnellDoorMultiBlock) blockToPlace.getBlock()).SetController(pos);
-					((HartnellDoorTilePlaceholder) level.getBlockEntity(placePos)).Master = pos;
-				}
-			}
-		}
-
-		return true;
 	}
 }

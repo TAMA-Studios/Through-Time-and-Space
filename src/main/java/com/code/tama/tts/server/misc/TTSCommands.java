@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.tardis.SubsystemsRegistry;
@@ -13,7 +9,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -30,9 +25,12 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TTSCommands {
-	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem);
 
 	public static LiteralArgumentBuilder<CommandSourceStack> interior = Commands.literal("interior")
 			.then(Commands.argument("dimension", ResourceLocationArgument.id())
@@ -47,15 +45,8 @@ public class TTSCommands {
 			}).executes(ctx -> placeSystem(ctx.getSource(), StringArgumentType.getString(ctx, "subsystem"))));
 
 	LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
-	@SubscribeEvent
-	public static void onRegisterCommands(RegisterCommandsEvent event) {
-		register(event.getDispatcher());
-	}
-
-	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		dispatcher.register(Commands.literal("tardis-tts").then(interior).then(debug));
-	}
-
+	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug")
+			.then(subsystem);
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
 		AbstractSubsystem subsystem = SubsystemsRegistry.subsystems.stream().filter(sub -> sub.name().equals(system))
@@ -112,5 +103,14 @@ public class TTSCommands {
 		player.teleportTo(targetLevel, 0, 128, 0, player.getYRot(), player.getXRot());
 		source.sendSuccess(() -> Component.literal("Teleported to " + dimension), true);
 		return Command.SINGLE_SUCCESS;
+	}
+
+	@SubscribeEvent
+	public static void onRegisterCommands(RegisterCommandsEvent event) {
+		register(event.getDispatcher());
+	}
+
+	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+		dispatcher.register(Commands.literal("tardis-tts").then(interior).then(debug));
 	}
 }

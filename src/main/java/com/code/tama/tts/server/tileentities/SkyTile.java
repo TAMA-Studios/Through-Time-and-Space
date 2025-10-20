@@ -27,6 +27,11 @@ public class SkyTile extends BlockEntity {
 		this.skyType = skyType;
 	}
 
+	@Override
+	protected void saveAdditional(CompoundTag compoundTag) {
+		compoundTag.putString("skyType", this.skyType.name());
+	}
+
 	public SkyType getSkyType() {
 		return skyType;
 	}
@@ -52,11 +57,6 @@ public class SkyTile extends BlockEntity {
 		}
 
 		return shouldRender[index];
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag compoundTag) {
-		compoundTag.putString("skyType", this.skyType.name());
 	}
 
 	public enum SkyType {

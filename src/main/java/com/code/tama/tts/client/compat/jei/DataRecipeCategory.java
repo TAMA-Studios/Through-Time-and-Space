@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class DataRecipeCategory implements IRecipeCategory<DataRecipe> {
-	public static final RecipeType<DataRecipe> TYPE = new RecipeType<>(UID, DataRecipe.class);
+	public static final RecipeType<DataRecipe> TYPE = new RecipeType<>(DataRecipeCategory.UID, DataRecipe.class);
 	public static final ResourceLocation UID = new ResourceLocation("tts", "data_recipe");
 
 	private final IDrawable background;

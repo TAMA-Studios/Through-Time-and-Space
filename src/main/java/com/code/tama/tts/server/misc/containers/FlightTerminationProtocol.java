@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class FlightTerminationProtocol {
+	private final TerminationProtocolHandler terminationProtocolHandler;
 	// The probability of the TARDIS landing off course
 	public final float Accuracy;
 	// How much the floaterior shakes during remat
@@ -19,5 +20,4 @@ public class FlightTerminationProtocol {
 	// How much the exterior shakes during demat
 	public final float TakeoffShakeAmount;
 	public final String name;
-	private final TerminationProtocolHandler terminationProtocolHandler;
 }

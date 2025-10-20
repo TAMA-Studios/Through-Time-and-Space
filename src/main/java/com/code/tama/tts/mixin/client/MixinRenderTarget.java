@@ -26,20 +26,6 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
 
 	@Unique private boolean tts$isStencilEnabled = false;
 
-	@Override
-	public boolean tts$IsStencilBufferEnabled() {
-		return tts$isStencilEnabled;
-	}
-
-	@Override
-	public void tts$SetStencilBufferEnabled(boolean cond) {
-		if (tts$isStencilEnabled != cond) {
-			tts$isStencilEnabled = cond;
-			((RenderTarget) (Object) this).resize(((RenderTarget) (Object) this).width,
-					((RenderTarget) (Object) this).height, Minecraft.ON_OSX);
-		}
-	}
-
 	@Redirect(method = "createBuffers(IIZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glFramebufferTexture2D(IIIII)V"))
 	private void redirectFBOTex(int target, int attachment, int textureTarget, int texture, int level) {
 		if (attachment == GL30C.GL_DEPTH_ATTACHMENT && tts$isStencilEnabled)
@@ -62,5 +48,19 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
 					pixels);
 		else
 			GlStateManager._texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+	}
+
+	@Override
+	public boolean tts$IsStencilBufferEnabled() {
+		return tts$isStencilEnabled;
+	}
+
+	@Override
+	public void tts$SetStencilBufferEnabled(boolean cond) {
+		if (tts$isStencilEnabled != cond) {
+			tts$isStencilEnabled = cond;
+			((RenderTarget) (Object) this).resize(((RenderTarget) (Object) this).width,
+					((RenderTarget) (Object) this).height, Minecraft.ON_OSX);
+		}
 	}
 }

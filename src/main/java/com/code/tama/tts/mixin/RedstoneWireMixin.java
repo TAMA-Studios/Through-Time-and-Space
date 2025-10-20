@@ -25,15 +25,6 @@ public abstract class RedstoneWireMixin extends Block {
 		super(p_49795_);
 	}
 
-	@Inject(method = "getSignal", at = @At("HEAD"), cancellable = true)
-	public void getSignal(BlockState state, BlockGetter blockGetter, BlockPos pos, Direction direction,
-			CallbackInfoReturnable<Integer> cir) {
-		if (state.getValue(SONICD)) {
-			cir.setReturnValue(15);
-			cir.cancel();
-		}
-	}
-
 	@Inject(method = "createBlockStateDefinition", at = @At("TAIL"))
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state, CallbackInfo ci) {
 		state.add(SONICD);
@@ -45,5 +36,14 @@ public abstract class RedstoneWireMixin extends Block {
 				.setValue(RedStoneWireBlock.EAST, RedstoneSide.NONE)
 				.setValue(RedStoneWireBlock.SOUTH, RedstoneSide.NONE)
 				.setValue(RedStoneWireBlock.WEST, RedstoneSide.NONE).setValue(POWER, 0).setValue(SONICD, false));
+	}
+
+	@Inject(method = "getSignal", at = @At("HEAD"), cancellable = true)
+	public void getSignal(BlockState state, BlockGetter blockGetter, BlockPos pos, Direction direction,
+			CallbackInfoReturnable<Integer> cir) {
+		if (state.getValue(SONICD)) {
+			cir.setReturnValue(15);
+			cir.cancel();
+		}
 	}
 }

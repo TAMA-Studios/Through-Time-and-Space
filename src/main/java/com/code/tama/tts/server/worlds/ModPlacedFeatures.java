@@ -29,6 +29,15 @@ public class ModPlacedFeatures {
 
 	public static final ResourceKey<PlacedFeature> ZEITON_ORE_PLACED_KEY = registerKey("zeiton_ore_placed");
 
+	private static void register(BootstapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key,
+			Holder<ConfiguredFeature<?, ?>> configuration, List<PlacementModifier> modifiers) {
+		context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
+	}
+
+	private static ResourceKey<PlacedFeature> registerKey(String name) {
+		return ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(MODID, name));
+	}
+
 	public static void bootstrap(BootstapContext<PlacedFeature> context) {
 		HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
@@ -49,14 +58,5 @@ public class ModPlacedFeatures {
 		register(context, GALLIFREYAN_OAK_PLACED_KEY,
 				configuredFeatures.getOrThrow(MConfiguredFeatures.GALLIFREYAN_OAK_KEY), VegetationPlacements
 						.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2), TTSBlocks.GALLIFREYAN_SAPLING.get()));
-	}
-
-	private static void register(BootstapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key,
-			Holder<ConfiguredFeature<?, ?>> configuration, List<PlacementModifier> modifiers) {
-		context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
-	}
-
-	private static ResourceKey<PlacedFeature> registerKey(String name) {
-		return ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(MODID, name));
 	}
 }

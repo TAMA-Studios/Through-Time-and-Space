@@ -12,13 +12,13 @@ import net.minecraft.world.level.Level;
 
 public class FlightSoundThread extends Thread {
 	static Map<BlockPos, Level> lockedIn = new HashMap<>();
-	BlockPos blockPos;
-	Level level;
-	AbstractFlightSound sound;
 	private long OTicks = 0;
 	private int id = 0;
 	private boolean jumpstarted = false;
 	private boolean run = true;
+	BlockPos blockPos;
+	Level level;
+	AbstractFlightSound sound;
 
 	public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound) {
 		this.setName("Flight Sound Thread");

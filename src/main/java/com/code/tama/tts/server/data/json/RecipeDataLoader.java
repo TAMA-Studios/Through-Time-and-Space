@@ -26,6 +26,53 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private final List<DataRecipe> dataRecipes = new ArrayList<>(); // List to store Data recipe objects
 
+	@SuppressWarnings("deprecation")
+	private boolean isValidJson(JsonObject jsonObject) {
+		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
+			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+
+			// Validate name and texture fields
+			if (valuesObject.has("nozzle") && valuesObject.has("result") && valuesObject.has("1")
+					&& valuesObject.has("time")) {
+				String nozzle = valuesObject.get("nozzle").getAsString();
+				String result = valuesObject.get("result").getAsString();
+
+				// Validate nozzle as ResourceLocation
+				try {
+					BuiltInRegistries.ITEM.get(ResourceLocation.parse(nozzle)); // Will throw exception if invalid
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("Invalid nozzle ResourceLocation: {}", result);
+					return false;
+				}
+
+				// Validate result as ResourceLocation
+				try {
+					BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)); // Will throw exception if invalid
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("Invalid result ResourceLocation: {}", result);
+					return false;
+				}
+
+				try {
+					for (int i = 1; i <= 6; i++) {
+						String itemKey = String.valueOf(i);
+						if (valuesObject.has(itemKey)) {
+							String itemValue = valuesObject.get(itemKey).getAsString();
+							BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemValue)); // Will throw exception if
+																							// invalid
+						}
+					}
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("Invalid item ResourceLocation: {}", result);
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		dataRecipes.clear(); // Reset the list of Data recipe objects
@@ -90,52 +137,5 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 
 		// Store the list of Data recipe room objects in the Data recipe Array
 		DataRecipeList.setList(dataRecipes);
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean isValidJson(JsonObject jsonObject) {
-		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
-			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-
-			// Validate name and texture fields
-			if (valuesObject.has("nozzle") && valuesObject.has("result") && valuesObject.has("1")
-					&& valuesObject.has("time")) {
-				String nozzle = valuesObject.get("nozzle").getAsString();
-				String result = valuesObject.get("result").getAsString();
-
-				// Validate nozzle as ResourceLocation
-				try {
-					BuiltInRegistries.ITEM.get(ResourceLocation.parse(nozzle)); // Will throw exception if invalid
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("Invalid nozzle ResourceLocation: {}", result);
-					return false;
-				}
-
-				// Validate result as ResourceLocation
-				try {
-					BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)); // Will throw exception if invalid
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("Invalid result ResourceLocation: {}", result);
-					return false;
-				}
-
-				try {
-					for (int i = 1; i <= 6; i++) {
-						String itemKey = String.valueOf(i);
-						if (valuesObject.has(itemKey)) {
-							String itemValue = valuesObject.get(itemKey).getAsString();
-							BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemValue)); // Will throw exception if
-																							// invalid
-						}
-					}
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("Invalid item ResourceLocation: {}", result);
-					return false;
-				}
-
-				return true;
-			}
-		}
-		return false;
 	}
 }

@@ -29,6 +29,10 @@ public class UIComponent extends AbstractUIComponent {
 		this.category = category;
 	}
 
+	public UIComponent(Float[] x, Float[] y, ComponentTypes type, UICategory category, ResourceLocation location) {
+		this(category, location, type, x, y);
+	}
+
 	@Override
 	public ResourceLocation GetIcon() {
 		return this.icon;

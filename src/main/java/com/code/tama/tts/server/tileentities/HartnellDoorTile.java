@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HartnellDoorTile extends BlockEntity {
-	public boolean IsOpen = false;
 	private boolean formed = false;
+	public boolean IsOpen = false;
 
 	public HartnellDoorTile(BlockPos pos, BlockState state) {
 		super(TTSTileEntities.HARTNELL_DOOR.get(), pos, state);

@@ -30,13 +30,13 @@ import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class AbstractConsoleTile extends BlockEntity {
 
-	public HashMap<Integer, Float> ControlAnimationMap = new HashMap<>();
+	private boolean IsDestroyed = false;
 
-	public HashMap<Vec3, UUID> ControlMap = new HashMap<>();
+	private final AnimationState RotorAnimationState = new AnimationState();
 	int AnimationMapSize = 0;
 	int ControlSize = 0;
-	private boolean IsDestroyed = false;
-	private final AnimationState RotorAnimationState = new AnimationState();
+	public HashMap<Integer, Float> ControlAnimationMap = new HashMap<>();
+	public HashMap<Vec3, UUID> ControlMap = new HashMap<>();
 
 	public AbstractConsoleTile(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 		super(p_155228_, p_155229_, p_155230_);
@@ -59,6 +59,45 @@ public class AbstractConsoleTile extends BlockEntity {
 					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);
 			});
 		}
+	}
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag) {
+		this.ControlSize = 0;
+		this.ControlMap.forEach((pos, uuid) -> {
+			this.ControlSize++;
+			tag.putDouble("x_" + this.ControlSize, pos.x);
+			tag.putDouble("y_" + this.ControlSize, pos.y);
+			tag.putDouble("z_" + this.ControlSize, pos.z);
+			tag.putUUID("control_" + this.ControlSize, uuid);
+		});
+		// for (UUID uuid1 : this.ControlUUIDList) {
+		// this.ControlSize++;
+		// tag.putUUID("control_" + this.ControlSize, uuid1);
+		// }
+		tag.putInt("ControlSize", this.ControlSize);
+		super.saveAdditional(tag);
+	}
+
+	private void summonButtons(Level level) {
+		BlockPos blockPos = this.getBlockPos();
+		Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+		this.GetControlList().getPositionSizeMap().forEach((record) -> {
+			assert this.getLevel() != null;
+			float offs;
+			if (this.getLevel().getBlockState(this.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
+				offs = 1;
+			else
+				offs = BlockUtils.getReverseHeightModifier(this.getLevel().getBlockState(this.getBlockPos().below()));
+			Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY() - offs, record.minZ()));
+			ModularControl entity = new ModularControl(level, this, record);
+			entity.setPos(summonPos);
+			level.addFreshEntity(entity);
+			this.ControlSize++;
+			this.ControlAnimationMap.put(record.ID(), 0.0f);
+			this.ControlMap.put(summonPos, entity.getUUID());
+			level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
+		});
 	}
 
 	public void Destroy() {
@@ -151,44 +190,5 @@ public class AbstractConsoleTile extends BlockEntity {
 		}));
 		this.ControlMap = new HashMap<>();
 		this.ControlSize = 0;
-	}
-
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag) {
-		this.ControlSize = 0;
-		this.ControlMap.forEach((pos, uuid) -> {
-			this.ControlSize++;
-			tag.putDouble("x_" + this.ControlSize, pos.x);
-			tag.putDouble("y_" + this.ControlSize, pos.y);
-			tag.putDouble("z_" + this.ControlSize, pos.z);
-			tag.putUUID("control_" + this.ControlSize, uuid);
-		});
-		// for (UUID uuid1 : this.ControlUUIDList) {
-		// this.ControlSize++;
-		// tag.putUUID("control_" + this.ControlSize, uuid1);
-		// }
-		tag.putInt("ControlSize", this.ControlSize);
-		super.saveAdditional(tag);
-	}
-
-	private void summonButtons(Level level) {
-		BlockPos blockPos = this.getBlockPos();
-		Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
-		this.GetControlList().getPositionSizeMap().forEach((record) -> {
-			assert this.getLevel() != null;
-			float offs;
-			if (this.getLevel().getBlockState(this.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
-				offs = 1;
-			else
-				offs = BlockUtils.getReverseHeightModifier(this.getLevel().getBlockState(this.getBlockPos().below()));
-			Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY() - offs, record.minZ()));
-			ModularControl entity = new ModularControl(level, this, record);
-			entity.setPos(summonPos);
-			level.addFreshEntity(entity);
-			this.ControlSize++;
-			this.ControlAnimationMap.put(record.ID(), 0.0f);
-			this.ControlMap.put(summonPos, entity.getUUID());
-			level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
-		});
 	}
 }

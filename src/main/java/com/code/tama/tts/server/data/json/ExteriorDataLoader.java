@@ -25,6 +25,36 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private final List<DataExterior> dataExteriorList = new ArrayList<>(); // List to store DataExterior objects
 
+	private boolean isValidJson(JsonObject jsonObject) {
+		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
+			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+
+			// Validate name and model fields
+			if (valuesObject.has("name") && valuesObject.has("modelname") && valuesObject.has("texture")
+					&& valuesObject.has("lightmap")) {
+				String name = valuesObject.get("name").getAsString();
+				String modelName = valuesObject.get("modelname").getAsString();
+
+				// Check for non-empty name
+				if (name.isEmpty()) {
+					LOGGER.warn("Empty name field");
+					return false;
+				}
+
+				// Validate model as ResourceLocation
+				try {
+					new ResourceLocation(modelName); // Will throw exception if invalid
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("Invalid model ResourceLocation: {}", modelName);
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		dataExteriorList.clear(); // Reset the list of DataExterior objects
@@ -87,35 +117,5 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 
 		// Store the list of DataExterior objects in the DataExteriorArray
 		DataExteriorList.setExteriorList(dataExteriorList);
-	}
-
-	private boolean isValidJson(JsonObject jsonObject) {
-		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
-			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-
-			// Validate name and model fields
-			if (valuesObject.has("name") && valuesObject.has("modelname") && valuesObject.has("texture")
-					&& valuesObject.has("lightmap")) {
-				String name = valuesObject.get("name").getAsString();
-				String modelName = valuesObject.get("modelname").getAsString();
-
-				// Check for non-empty name
-				if (name.isEmpty()) {
-					LOGGER.warn("Empty name field");
-					return false;
-				}
-
-				// Validate model as ResourceLocation
-				try {
-					new ResourceLocation(modelName); // Will throw exception if invalid
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("Invalid model ResourceLocation: {}", modelName);
-					return false;
-				}
-
-				return true;
-			}
-		}
-		return false;
 	}
 }

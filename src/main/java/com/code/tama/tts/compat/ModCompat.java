@@ -13,6 +13,10 @@ public class ModCompat {
 	private static int ID = 0;
 	private static final ArrayList<CompatThingy> compatList = new ArrayList<>();
 
+	private static void RegisterCompat(String modid, CompatClass clazz) {
+		compatList.add(ID++, new CompatThingy(modid, clazz));
+	}
+
 	public static void RegisterCompats() {
 		RegisterCompat("terrablender", new MTerrablender());
 	}
@@ -25,10 +29,6 @@ public class ModCompat {
 				thingy.aClass.runCompat();
 			}
 		}
-	}
-
-	private static void RegisterCompat(String modid, CompatClass clazz) {
-		compatList.add(ID++, new CompatThingy(modid, clazz));
 	}
 
 	@Getter

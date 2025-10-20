@@ -16,11 +16,13 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class FragmentLinksTile extends BlockEntity {
 
-	private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energyStorage);
+	private final LazyOptional<IEnergyStorage> energyCap;
 
-	private final EnergyStorage energyStorage = new EnergyStorage(10000, 1000); // maxEnergy, maxReceive
+	private final EnergyStorage energyStorage;
 	public FragmentLinksTile(BlockPos blockPos, BlockState blockState) {
 		super(TTSTileEntities.FRAGMENT_LINKS_TILE.get(), blockPos, blockState);
+		this.energyStorage = new EnergyStorage(10000, 1000); // maxEnergy, maxReceive
+		this.energyCap = LazyOptional.of(() -> energyStorage);
 	}
 
 	@Override

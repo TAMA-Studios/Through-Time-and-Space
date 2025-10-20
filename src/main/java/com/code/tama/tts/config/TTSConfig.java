@@ -12,10 +12,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(modid = TTSMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TTSConfig {
-	public static int example;
-
-	static final ForgeConfigSpec SPEC = BUILDER.build();
-
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
 	private static final ForgeConfigSpec.IntValue EXAMPLE_BUILDER = BUILDER.comment("example comment").defineInRange(
@@ -23,6 +19,15 @@ public class TTSConfig {
 			0, // Minimum
 			Integer.MAX_VALUE // Maximum
 	);
+
+	static final ForgeConfigSpec SPEC = BUILDER.build();
+
+	public static int example;
+
+	private static boolean validateItemName(final Object obj) {
+		return obj instanceof final String itemName
+				&& ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
+	}
 
 	@SubscribeEvent
 	static void onLoad(final ModConfigEvent event) {
@@ -32,10 +37,5 @@ public class TTSConfig {
 		// items = ITEM_STRINGS.get().stream().map(itemName ->
 		// ForgeRegistries.ITEMS.getValue(new
 		// ResourceLocation(itemName))).collect(Collectors.toSet());
-	}
-
-	private static boolean validateItemName(final Object obj) {
-		return obj instanceof final String itemName
-				&& ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
 	}
 }

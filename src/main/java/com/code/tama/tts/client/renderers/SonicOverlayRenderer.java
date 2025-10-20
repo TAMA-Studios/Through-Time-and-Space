@@ -12,12 +12,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
@@ -95,11 +95,11 @@ public class SonicOverlayRenderer {
 
 			stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
 
-			BlockPos hit = RayTraceUtils.getLookingAtBlock(10);
+			BlockHitResult hit = RayTraceUtils.getLookingAtBlock(10);
 			assert Minecraft.getInstance().level != null;
 			if (hit != null)
-				if (Minecraft.getInstance().level.getBlockState(hit) != null) {
-					BlockEntity ent = Minecraft.getInstance().level.getBlockEntity(hit);
+				if (Minecraft.getInstance().level.getBlockState(hit.getBlockPos()) != null) {
+					BlockEntity ent = Minecraft.getInstance().level.getBlockEntity(hit.getBlockPos());
 					if (ent != null && ent.getCapability(ForgeCapabilities.ENERGY).isPresent())
 						Minecraft.getInstance().font
 								.drawInBatch(
@@ -109,6 +109,14 @@ public class SonicOverlayRenderer {
 												.withStyle(ChatFormatting.WHITE),
 										0, -15, white, false, stack.last().pose(), bufferSource,
 										Font.DisplayMode.NORMAL, 0, light);
+
+					// stack.translate(0, 5, 0);
+
+					Minecraft.getInstance().getItemRenderer().renderStatic(
+							Minecraft.getInstance().level.getBlockState(hit.getBlockPos()).getBlock().asItem()
+									.getDefaultInstance(),
+							ItemDisplayContext.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY, stack, bufferSource,
+							Minecraft.getInstance().level, 0);
 				}
 
 			stack.popPose();

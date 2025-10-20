@@ -30,6 +30,33 @@ public class HartnellRotor extends Block implements EntityBlock {
 	}
 
 	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(BlockStateProperties.POWERED);
+	}
+
+	private boolean getNeighborSignal(SignalGetter signalGetter, BlockPos pos) {
+		for (Direction direction : Direction.values()) {
+			if (signalGetter.hasSignal(pos.relative(direction), direction)) {
+				return true;
+			}
+		}
+
+		if (signalGetter.hasSignal(pos, Direction.DOWN)) {
+			return true;
+		} else {
+			BlockPos blockpos = pos.above();
+
+			for (Direction direction1 : Direction.values()) {
+				if (direction1 != Direction.DOWN && signalGetter.hasSignal(blockpos.relative(direction1), direction1)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level p_153212_,
 			@NotNull BlockState p_153213_, @NotNull BlockEntityType<T> p_153214_) {
 		return HartnellRotorTile::tick;
@@ -65,33 +92,6 @@ public class HartnellRotor extends Block implements EntityBlock {
 		if (!level.isClientSide) {
 			level.setBlockAndUpdate(pos,
 					state.setValue(BlockStateProperties.POWERED, this.getNeighborSignal(level, pos)));
-		}
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(BlockStateProperties.POWERED);
-	}
-
-	private boolean getNeighborSignal(SignalGetter signalGetter, BlockPos pos) {
-		for (Direction direction : Direction.values()) {
-			if (signalGetter.hasSignal(pos.relative(direction), direction)) {
-				return true;
-			}
-		}
-
-		if (signalGetter.hasSignal(pos, Direction.DOWN)) {
-			return true;
-		} else {
-			BlockPos blockpos = pos.above();
-
-			for (Direction direction1 : Direction.values()) {
-				if (direction1 != Direction.DOWN && signalGetter.hasSignal(blockpos.relative(direction1), direction1)) {
-					return true;
-				}
-			}
-
-			return false;
 		}
 	}
 }

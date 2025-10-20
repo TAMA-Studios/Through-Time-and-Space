@@ -28,6 +28,13 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 		super(p_155228_, p_155229_, p_155230_);
 	}
 
+	@Override
+	protected void saveAdditional(CompoundTag tag) {
+		tag.putBoolean("powered", isPowered());
+		tag.putInt("categoryID", getCategoryID());
+		super.saveAdditional(tag);
+	}
+
 	public AbstractMonitorBlock GetBlock() {
 		return ((AbstractMonitorBlock) this.getBlockState().getBlock());
 	}
@@ -65,12 +72,5 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 				.ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 		super.onLoad();
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		tag.putBoolean("powered", isPowered());
-		tag.putInt("categoryID", getCategoryID());
-		super.saveAdditional(tag);
 	}
 }

@@ -19,10 +19,10 @@ import com.code.tama.triggerapi.rendering.VortexRenderer;
 @Setter
 @OnlyIn(Dist.CLIENT)
 public class TARDISClientData {
+	private ExteriorModelContainer exterior;
 	public final TARDISLevelCapability TARDIS;
 	public AbstractJSONRenderer exteriorRenderer;
 	public VortexRenderer vortex;
-	private ExteriorModelContainer exterior;
 
 	public TARDISClientData(TARDISLevelCapability cap) {
 		this.TARDIS = cap;

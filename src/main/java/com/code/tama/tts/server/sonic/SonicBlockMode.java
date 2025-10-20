@@ -20,7 +20,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class SonicBlockMode extends SonicMode {
 	public Item getIcon() {
@@ -33,7 +36,9 @@ public class SonicBlockMode extends SonicMode {
 
 	public void onUse(UseOnContext context) {
 		Player player = context.getPlayer();
-		BlockPos usedPos = context.getClickedPos();
+		BlockHitResult hitResult = RayTraceUtils.getLookingAtBlock(25);
+		assert hitResult != null;
+		BlockPos usedPos = hitResult.getBlockPos(); // context.getClickedPos();
 		assert player != null;
 		BlockState state = player.level().getBlockState(usedPos);
 		Level level = player.level();
@@ -100,5 +105,8 @@ public class SonicBlockMode extends SonicMode {
 		// }
 		//
 		// return InteractionResult.PASS;
+
+		assert context.getPlayer() != null;
+		state.use(context.getLevel(), context.getPlayer(), context.getHand(), hitResult);
 	}
 }

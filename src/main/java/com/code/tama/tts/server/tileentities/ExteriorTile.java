@@ -1,10 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -22,6 +25,9 @@ import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -42,40 +48,67 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 @SuppressWarnings("unchecked")
 public class ExteriorTile extends AbstractPortalTile {
-	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
-	public LivingEntity Placer;
-	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
-	public boolean ThreadWorking = false;
-	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
+	private ResourceKey<Level> INTERIOR_DIMENSION;
+	@Getter
+	private float transparency = 1.0f; // Default fully visible
+	@Getter
+	private int transparencyInt; // Default fully visible
 	int DoorState;
 	@Getter
 	@Setter
 	ResourceLocation ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
-
 	boolean isArtificial = false;
+	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
 
-	private ResourceKey<Level> INTERIOR_DIMENSION;
+	public LivingEntity Placer;
 
-	@Getter
-	private float transparency = 1.0f; // Default fully visible
+	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
 
-	@Getter
-	private int transparencyInt; // Default fully visible
+	public boolean ThreadWorking = false;
+
+	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
 	public ExteriorTile(BlockPos pos, BlockState state) {
 		super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);
+	}
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag) {
+		tag.putInt("TransparencyInt", this.transparencyInt);
+		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
+
+		if (this.INTERIOR_DIMENSION != null)
+			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
+					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
+						if (cap.GetExteriorTile() == this) {
+							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+							this.Model = cap.GetData().getExteriorModel();
+						}
+					});
+		tag.putString("modelPath", this.getModelIndex().getPath());
+		tag.putString("modelNamespace", this.getModelIndex().getNamespace());
+		tag.putFloat("Transparency", this.transparency);
+		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
+		if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
+			if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
+					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
+				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
+						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+						.ifPresent(cap -> tag.putInt("doors", cap.GetData().getDoorData().getDoorsOpen()));
+			else
+				tag.putInt("doors", this.DoorState);
+		if (this.INTERIOR_DIMENSION != null)
+			tag.putString("interior", this.INTERIOR_DIMENSION.location().getPath());
+
+		super.saveAdditional(tag);
 	}
 
 	public int CycleDoors() {
@@ -244,8 +277,8 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	@Override
 	public void onChunkUnloaded() {
-        assert this.level != null;
-        if (!this.level.isClientSide) {
+		assert this.level != null;
+		if (!this.level.isClientSide) {
 			Capabilities
 					.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
 							ServerLifecycleHooks.getCurrentServer().getLevel(this.INTERIOR_DIMENSION))
@@ -328,8 +361,8 @@ public class ExteriorTile extends AbstractPortalTile {
 			this.IsEmptyShell = false;
 
 		if (this.ShouldMakeDimOnNextTick) {
-            assert level != null;
-            if (level.isClientSide || level.getServer() == null)
+			assert level != null;
+			if (level.isClientSide || level.getServer() == null)
 				return;
 			level.getServer().execute(() -> {
 				ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
@@ -383,36 +416,5 @@ public class ExteriorTile extends AbstractPortalTile {
 									cap.GetData().getDoorData().getYRot(), true);
 					});
 		}
-	}
-
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag) {
-		tag.putInt("TransparencyInt", this.transparencyInt);
-		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
-
-		if (this.INTERIOR_DIMENSION != null)
-			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
-					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
-						if (cap.GetExteriorTile() == this) {
-							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
-							this.Model = cap.GetData().getExteriorModel();
-						}
-					});
-		tag.putString("modelPath", this.getModelIndex().getPath());
-		tag.putString("modelNamespace", this.getModelIndex().getNamespace());
-		tag.putFloat("Transparency", this.transparency);
-		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
-		if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
-			if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
-					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
-				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
-						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-						.ifPresent(cap -> tag.putInt("doors", cap.GetData().getDoorData().getDoorsOpen()));
-			else
-				tag.putInt("doors", this.DoorState);
-		if (this.INTERIOR_DIMENSION != null)
-			tag.putString("interior", this.INTERIOR_DIMENSION.location().getPath());
-
-		super.saveAdditional(tag);
 	}
 }

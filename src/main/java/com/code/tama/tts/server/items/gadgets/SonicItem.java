@@ -42,15 +42,22 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
 
 public class SonicItem extends IAmAttunable {
+	private final int Variants;
+
 	@Getter
 	@Setter
 	public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
-	private final int Variants;
-
 	public SonicItem(Properties properties, int variants) {
 		super(properties.durability(1000));
 		this.Variants = variants;
+	}
+
+	@SuppressWarnings("deprecation")
+	private @NotNull HitResult calculateHitResult(LivingEntity livingEntity) {
+		final double MAX_BRUSH_DISTANCE = Math.sqrt(ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) - 1.0;
+		return ProjectileUtil.getHitResultOnViewVector(livingEntity,
+				entity -> !entity.isSpectator() && entity.isPickable(), MAX_BRUSH_DISTANCE);
 	}
 
 	public void CycleVariant(ItemStack stack) {
@@ -236,12 +243,5 @@ public class SonicItem extends IAmAttunable {
 
 		this.InteractionType.onUse(useOnContext);
 		return InteractionResult.SUCCESS;
-	}
-
-	@SuppressWarnings("deprecation")
-	private @NotNull HitResult calculateHitResult(LivingEntity livingEntity) {
-		final double MAX_BRUSH_DISTANCE = Math.sqrt(ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) - 1.0;
-		return ProjectileUtil.getHitResultOnViewVector(livingEntity,
-				entity -> !entity.isSpectator() && entity.isPickable(), MAX_BRUSH_DISTANCE);
 	}
 }

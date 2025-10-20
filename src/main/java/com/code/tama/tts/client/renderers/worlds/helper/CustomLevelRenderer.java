@@ -28,10 +28,10 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CustomLevelRenderer {
-	public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
+	private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
 	static boolean InittedSkyboxThread;
 	static long Ticks;
-	private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
+	public static ArrayList<AbstractLevelRenderer> Renderers = new ArrayList<>();
 
 	public static void AddRenderer(AbstractLevelRenderer renderer) {
 		CustomLevelRenderer.Renderers.add(renderer);

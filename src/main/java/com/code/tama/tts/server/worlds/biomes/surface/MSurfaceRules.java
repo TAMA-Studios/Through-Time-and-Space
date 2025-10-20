@@ -16,6 +16,10 @@ public class MSurfaceRules {
 	private static final SurfaceRules.RuleSource STONE = makeStateRule(Blocks.STONE);
 	private static final SurfaceRules.RuleSource ZEITON = makeStateRule(TTSBlocks.ZEITON_BLOCK.get());
 
+	private static SurfaceRules.RuleSource makeStateRule(Block block) {
+		return SurfaceRules.state(block.defaultBlockState());
+	}
+
 	public static SurfaceRules.RuleSource makeRules() {
 		SurfaceRules.ConditionSource isAtOrAboveWaterLevel = SurfaceRules.waterBlockCheck(-1, 0);
 
@@ -37,9 +41,5 @@ public class MSurfaceRules {
 
 						// Default to a grass and dirt surface
 						SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, grassSurface));
-	}
-
-	private static SurfaceRules.RuleSource makeStateRule(Block block) {
-		return SurfaceRules.state(block.defaultBlockState());
 	}
 }

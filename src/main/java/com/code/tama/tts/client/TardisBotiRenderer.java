@@ -15,6 +15,19 @@ import net.minecraft.world.level.Level;
 /** Basic stencil + black quad test */
 public class TardisBotiRenderer {
 
+	/** draws a solid black quad using vertex colours */
+	private static void drawBlackQuad(PoseStack poseStack) {
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		BufferBuilder builder = Tesselator.getInstance().getBuilder();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		Matrix4f mat = poseStack.last().pose();
+		builder.vertex(mat, 0, 0, 0).color(1f, 1f, 1f, 1f).endVertex();
+		builder.vertex(mat, 0, 1, 0).color(1f, 1f, 1f, 1f).endVertex();
+		builder.vertex(mat, 1, 1, 0).color(1f, 1f, 1f, 1f).endVertex();
+		builder.vertex(mat, 1, 0, 0).color(1f, 1f, 1f, 1f).endVertex();
+		Tesselator.getInstance().end();
+	}
+
 	/** draws the stencil mask rectangle */
 	public static void drawFrame(PoseStack poseStack, float width, float height) {
 		RenderSystem.setShader(GameRenderer::getPositionShader);
@@ -73,18 +86,5 @@ public class TardisBotiRenderer {
 		pose.popPose();
 
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
-	}
-
-	/** draws a solid black quad using vertex colours */
-	private static void drawBlackQuad(PoseStack poseStack) {
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		BufferBuilder builder = Tesselator.getInstance().getBuilder();
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-		Matrix4f mat = poseStack.last().pose();
-		builder.vertex(mat, 0, 0, 0).color(1f, 1f, 1f, 1f).endVertex();
-		builder.vertex(mat, 0, 1, 0).color(1f, 1f, 1f, 1f).endVertex();
-		builder.vertex(mat, 1, 1, 0).color(1f, 1f, 1f, 1f).endVertex();
-		builder.vertex(mat, 1, 0, 0).color(1f, 1f, 1f, 1f).endVertex();
-		Tesselator.getInstance().end();
 	}
 }

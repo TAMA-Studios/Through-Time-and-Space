@@ -23,14 +23,14 @@ import com.code.tama.triggerapi.ReflectionBuddy;
 
 public class JavaJSONRenderer {
 
+	private final List<JavaJSONRenderer> children = new ArrayList<>();
+
 	public JavaJSONModel model;
 
 	public ModelPart modelPart;
 
 	public float x, y, z;
-
 	public float xRot, yRot, zRot;
-	private final List<JavaJSONRenderer> children = new ArrayList<>();
 
 	public JavaJSONRenderer() {
 		this.model = new JavaJSONModel();

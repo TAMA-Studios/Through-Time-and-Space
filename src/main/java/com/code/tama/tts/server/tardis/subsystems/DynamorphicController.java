@@ -19,7 +19,7 @@ public class DynamorphicController extends AbstractSubsystem {
 	private static Map<BlockPos, BlockState> Map = null;
 
 	public DynamorphicController(BlockPos blockPos, boolean Activated) {
-		super(blockPos, Activated);
+		super(Activated, blockPos);
 	}
 
 	@Override

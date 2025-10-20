@@ -24,6 +24,13 @@ public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.Wea
 
 	BiMap<RegistryObject<Block>, RegistryObject<Block>> PREVIOUS_BY_BLOCK = NEXT_BY_BLOCK.inverse();
 
+	@Nullable private static RegistryObject<Block> RegFromBlock(Block block) {
+		RegistryObject<Block> reg = RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
+		return reg.get() == Blocks.AIR
+				? null
+				: RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
+	}
+
 	static Block getFirst(Block block) {
 		Block prev;
 		while ((prev = getPrevious(block)) != null) {
@@ -66,13 +73,6 @@ public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.Wea
 
 	static boolean prevExists(@NotNull Block block) {
 		return Optional.ofNullable(PREVIOUS_BY_BLOCK.get(RegFromBlock(block))).isPresent();
-	}
-
-	@Nullable private static RegistryObject<Block> RegFromBlock(Block block) {
-		RegistryObject<Block> reg = RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
-		return reg.get() == Blocks.AIR
-				? null
-				: RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
 	}
 
 	default float getChanceModifier() {

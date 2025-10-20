@@ -28,10 +28,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HartnellDoorMultiBlock extends Block implements EntityBlock {
-	public boolean IsOpen;
 	private BlockPos Controller;
-
 	private final Supplier<? extends BlockEntityType<? extends HartnellDoorTilePlaceholder>> tile;
+
+	public boolean IsOpen;
 
 	public HartnellDoorMultiBlock(Supplier<? extends BlockEntityType<? extends HartnellDoorTilePlaceholder>> factory) {
 		super(Properties.of().strength(3.0F).requiresCorrectToolForDrops());

@@ -29,6 +29,11 @@ public class SkyBlock extends BaseEntityBlock {
 	}
 
 	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(ACTIVE);
+	}
+
+	@Override
 	@SuppressWarnings("deprecation")
 	public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
 		return 0;
@@ -86,11 +91,6 @@ public class SkyBlock extends BaseEntityBlock {
 		}
 
 		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(ACTIVE);
 	}
 
 	public static class VoidBlock extends SkyBlock {

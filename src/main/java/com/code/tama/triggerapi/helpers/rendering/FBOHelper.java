@@ -368,12 +368,17 @@ public class FBOHelper {
 
 	@OnlyIn(Dist.CLIENT)
 	public static class StencilBufferStorage extends RenderBuffers {
+		private final Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> typeBufferBuilder = Util
+				.make(new Object2ObjectLinkedOpenHashMap<>(), map -> put(map, getRenderType()));
+
 		@Getter
 		public final MultiBufferSource.BufferSource consumer = MultiBufferSource.immediateWithBuffers(typeBufferBuilder,
 				new BufferBuilder(256));
 
-		private final Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> typeBufferBuilder = Util
-				.make(new Object2ObjectLinkedOpenHashMap<>(), map -> put(map, getRenderType()));
+		private static void put(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> builderStorage,
+				RenderType layer) {
+			builderStorage.put(layer, new BufferBuilder(layer.bufferSize()));
+		}
 
 		public static RenderType getRenderType() {
 			RenderType.CompositeState parameters = RenderType.CompositeState.builder()
@@ -382,11 +387,6 @@ public class FBOHelper {
 					.setLayeringState(RenderStateShardAccessor.getNO_LAYERING()).createCompositeState(false);
 			return RenderType.create("boti", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, QUADS, 256, false, true,
 					parameters);
-		}
-
-		private static void put(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> builderStorage,
-				RenderType layer) {
-			builderStorage.put(layer, new BufferBuilder(layer.bufferSize()));
 		}
 	}
 }

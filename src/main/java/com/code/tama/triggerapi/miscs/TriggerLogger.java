@@ -15,8 +15,8 @@ import java.util.List;
 /** Trigger API Logger V1.0 (Don't use this it's old) * */
 @Deprecated
 public class TriggerLogger {
-	public static final double Version = 1.0;
 	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	public static final double Version = 1.0;
 
 	private final int bufferSize; // Max entries before flushing
 
@@ -48,6 +48,20 @@ public class TriggerLogger {
 		TriggerLogger logger = new TriggerLogger("log.txt");
 		logger.log("Trigger Logger V{} Started for mod {}", Version, MODID);
 		logger.flush(); // Force write to file
+	}
+
+	// Private method to write buffer to file
+	private void flushToFile() {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))) {
+			for (String entry : logBuffer) {
+				writer.write(entry);
+				writer.newLine();
+			}
+			logBuffer.clear();
+		} catch (IOException e) {
+			System.err.println("Failed to write to log file: " + e.getMessage());
+			// Keep buffer intact to retry later if desired
+		}
 	}
 
 	// Flush buffer to file manually (e.g., on mod disable)
@@ -86,20 +100,6 @@ public class TriggerLogger {
 			if (logBuffer.size() >= bufferSize) {
 				flushToFile();
 			}
-		}
-	}
-
-	// Private method to write buffer to file
-	private void flushToFile() {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))) {
-			for (String entry : logBuffer) {
-				writer.write(entry);
-				writer.newLine();
-			}
-			logBuffer.clear();
-		} catch (IOException e) {
-			System.err.println("Failed to write to log file: " + e.getMessage());
-			// Keep buffer intact to retry later if desired
 		}
 	}
 }

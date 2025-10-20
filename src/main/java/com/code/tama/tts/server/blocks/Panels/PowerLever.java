@@ -49,6 +49,16 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 				0.0, 0.0, 0.0);
 	}
 
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state) {
+		state.add(FACE, FACING, POWERED);
+	}
+
+	private void updateNeighbours(BlockState p_54681_, Level p_54682_, BlockPos p_54683_) {
+		p_54682_.updateNeighborsAt(p_54683_, this);
+		p_54682_.updateNeighborsAt(p_54683_.relative(getConnectedDirection(p_54681_).getOpposite()), this);
+	}
+
 	public VoxelShape createShapeON() {
 		return Block.box(2, -0.5000000000000001, 0, 14, 2.4999999999999996, 16);
 	}
@@ -110,15 +120,5 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 					blockstate1.getValue(POWERED) ? GameEvent.BLOCK_ACTIVATE : GameEvent.BLOCK_DEACTIVATE, blockPos);
 			return InteractionResult.CONSUME;
 		}
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state) {
-		state.add(FACE, FACING, POWERED);
-	}
-
-	private void updateNeighbours(BlockState p_54681_, Level p_54682_, BlockPos p_54683_) {
-		p_54682_.updateNeighborsAt(p_54683_, this);
-		p_54682_.updateNeighborsAt(p_54683_.relative(getConnectedDirection(p_54681_).getOpposite()), this);
 	}
 }

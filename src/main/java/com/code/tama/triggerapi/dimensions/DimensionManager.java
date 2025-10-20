@@ -65,46 +65,16 @@ import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 
 /** DimensionAPI internal implementation */
 public final class DimensionManager implements DimensionAPI {
-	/** singleton impl instance -- prefer calling {@link DimensionAPI#get} */
-	public static final DimensionManager INSTANCE = new DimensionManager();
-
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final Set<ResourceKey<Level>> VANILLA_LEVELS = Set.of(Level.OVERWORLD, Level.NETHER, Level.END);
 
+	/** singleton impl instance -- prefer calling {@link DimensionAPI#get} */
+	public static final DimensionManager INSTANCE = new DimensionManager();
+
 	private Set<ResourceKey<Level>> levelsPendingUnregistration = new HashSet<>();
 
 	private DimensionManager() {
-	}
-
-	public static LevelStem CreateArtificialTARDISLevelStem(MinecraftServer server) {
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISArtificalDimensionChunkGenerator());
-	}
-
-	public static LevelStem CreateNaturalTARDISLevelStem(MinecraftServer server) {
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
-	}
-
-	public static void PrepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {
-		TTSMod.LOGGER.info("Preparing dynamic dimension");
-		chunkProgress.updateSpawnPos(new ChunkPos(level.getSharedSpawnPos()));
-		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11,
-				Unit.INSTANCE);
-	}
-
-	public static LevelStem createLevel(MinecraftServer server) {
-		ServerLevel oldLevel = server.overworld();
-		DynamicOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, server.registryAccess());
-		ChunkGenerator oldChunkGenerator = oldLevel.getChunkSource().getGenerator();
-		ChunkGenerator newChunkGenerator = ChunkGenerator.CODEC.encodeStart(ops, oldChunkGenerator)
-				.flatMap(nbt -> ChunkGenerator.CODEC.parse(ops, nbt)).getOrThrow(false, s -> {
-					throw new CommandRuntimeException(
-							Component.literal(String.format("Error copying dimension: %s", s)));
-				});
-		Holder<DimensionType> typeHolder = oldLevel.dimensionTypeRegistration();
-		return new LevelStem(typeHolder, newChunkGenerator);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -192,90 +162,34 @@ public final class DimensionManager implements DimensionAPI {
 		return newLevel;
 	}
 
-	/**
-	 * @return An immutable copy of the dimensions that will be unregistered at the
-	 *         end of the current server tick. (returns an empty set if called while
-	 *         no server is running)
-	 */
-	public Set<ResourceKey<Level>> getLevelsPendingUnregistration() {
-		return ImmutableSet.copyOf(levelsPendingUnregistration);
+	public static LevelStem CreateArtificialTARDISLevelStem(MinecraftServer server) {
+		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISArtificalDimensionChunkGenerator());
 	}
 
-	/**
-	 * Gets a level, dynamically creating and registering one if it doesn't
-	 * exist.<br>
-	 * The dimension registry is stored in the server's level file, all previously
-	 * registered dimensions are loaded and recreated and reregistered whenever the
-	 * server starts.<br>
-	 * This can be used for making dynamic dimensions at runtime; static dimensions
-	 * should be defined in json instead.<br>
-	 *
-	 * @param server
-	 *            a MinecraftServer instance (you can get this from a
-	 *            ServerPlayerEntity or ServerWorld)
-	 * @param levelKey
-	 *            A ResourceKey for your level
-	 * @param dimensionFactory
-	 *            A function that produces a new LevelStem (dimension) instance if
-	 *            necessary<br>
-	 *            If this factory is used, it should be assumed that intended
-	 *            dimension has not been created or registered yet, so making the
-	 *            factory attempt to get this dimension from the server's dimension
-	 *            registry will fail
-	 * @return Returns a ServerLevel, creating and registering a world and dimension
-	 *         for it if the world does not already exist
-	 */
-	public ServerLevel getOrCreateLevel(final MinecraftServer server, final ResourceKey<Level> levelKey,
-			final Supplier<LevelStem> dimensionFactory) {
-		// This is marked as deprecated, but it's not called from anywhere, and IDK how
-		// old it is
-		@SuppressWarnings("deprecation")
-		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
-		@Nullable ServerLevel existingLevel = map.get(levelKey);
-
-		// If the world already exists, return it
-		return existingLevel == null ? createAndRegisterLevel(server, map, levelKey, dimensionFactory) : existingLevel;
+	public static LevelStem CreateNaturalTARDISLevelStem(MinecraftServer server) {
+		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
 	}
 
-	/**
-	 * Schedules a non-vanilla level/dimension to be unregistered and removed at the
-	 * end of the current server tick.<br>
-	 * This will have the following effects:<br>
-	 *
-	 * <ul>
-	 * <li>Unregistered levels will stop ticking.
-	 * <li>Unregistered dimensions will not be loaded on server startup unless and
-	 * until they are registered again (via
-	 * {@link DimensionManager#getOrCreateLevel}.
-	 * <li>Players still present in the given level will, when the level is removed,
-	 * be ejected to their spawn points.
-	 * <li>Players who have respawn points in levels being unloaded will have their
-	 * spawn points reset to the overworld and respawned there.
-	 * </ul>
-	 *
-	 * Unregistering a level does not delete the region files or other persistent
-	 * data associated with the level.<br>
-	 * If a level is re-registered after unregistering it, the level will retain all
-	 * prior data (unless manually deleted by a server admin.)<br>
-	 * This has no effect on the vanilla dimensions (The Overworld, The Nether, and
-	 * The End); this is because vanilla will automatically reconstitute these
-	 * anyway if we try to remove them, so we disallow their removal to avoid
-	 * strangeness.<br>
-	 *
-	 * @param server
-	 *            The server to remove the dimension from
-	 * @param levelToRemove
-	 *            The resource key for the level to be unregistered
-	 */
-	public void markDimensionForUnregistration(final MinecraftServer server, final ResourceKey<Level> levelToRemove) {
-		if (!VANILLA_LEVELS.contains(levelToRemove)) {
-			levelsPendingUnregistration.add(levelToRemove);
-		}
+	public static void PrepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {
+		TTSMod.LOGGER.info("Preparing dynamic dimension");
+		chunkProgress.updateSpawnPos(new ChunkPos(level.getSharedSpawnPos()));
+		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11,
+				Unit.INSTANCE);
 	}
 
-	ServerLevel createDimension(MinecraftServer server, ResourceLocation location) {
-		return DimensionAPI.get().getOrCreateLevel(server, ResourceKey.create(Registries.DIMENSION, location),
-				() -> createLevel(server));
+	public static LevelStem createLevel(MinecraftServer server) {
+		ServerLevel oldLevel = server.overworld();
+		DynamicOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, server.registryAccess());
+		ChunkGenerator oldChunkGenerator = oldLevel.getChunkSource().getGenerator();
+		ChunkGenerator newChunkGenerator = ChunkGenerator.CODEC.encodeStart(ops, oldChunkGenerator)
+				.flatMap(nbt -> ChunkGenerator.CODEC.parse(ops, nbt)).getOrThrow(false, s -> {
+					throw new CommandRuntimeException(
+							Component.literal(String.format("Error copying dimension: %s", s)));
+				});
+		Holder<DimensionType> typeHolder = oldLevel.dimensionTypeRegistration();
+		return new LevelStem(typeHolder, newChunkGenerator);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -444,6 +358,92 @@ public final class DimensionManager implements DimensionAPI {
 
 			// notify client of the removed levels
 			QuietPacketDistributors.sendToAll(Networking.INSTANCE, new UpdateDimensionsS2C(removedLevelKeys, false));
+		}
+	}
+
+	ServerLevel createDimension(MinecraftServer server, ResourceLocation location) {
+		return DimensionAPI.get().getOrCreateLevel(server, ResourceKey.create(Registries.DIMENSION, location),
+				() -> createLevel(server));
+	}
+
+	/**
+	 * @return An immutable copy of the dimensions that will be unregistered at the
+	 *         end of the current server tick. (returns an empty set if called while
+	 *         no server is running)
+	 */
+	public Set<ResourceKey<Level>> getLevelsPendingUnregistration() {
+		return ImmutableSet.copyOf(levelsPendingUnregistration);
+	}
+
+	/**
+	 * Gets a level, dynamically creating and registering one if it doesn't
+	 * exist.<br>
+	 * The dimension registry is stored in the server's level file, all previously
+	 * registered dimensions are loaded and recreated and reregistered whenever the
+	 * server starts.<br>
+	 * This can be used for making dynamic dimensions at runtime; static dimensions
+	 * should be defined in json instead.<br>
+	 *
+	 * @param server
+	 *            a MinecraftServer instance (you can get this from a
+	 *            ServerPlayerEntity or ServerWorld)
+	 * @param levelKey
+	 *            A ResourceKey for your level
+	 * @param dimensionFactory
+	 *            A function that produces a new LevelStem (dimension) instance if
+	 *            necessary<br>
+	 *            If this factory is used, it should be assumed that intended
+	 *            dimension has not been created or registered yet, so making the
+	 *            factory attempt to get this dimension from the server's dimension
+	 *            registry will fail
+	 * @return Returns a ServerLevel, creating and registering a world and dimension
+	 *         for it if the world does not already exist
+	 */
+	public ServerLevel getOrCreateLevel(final MinecraftServer server, final ResourceKey<Level> levelKey,
+			final Supplier<LevelStem> dimensionFactory) {
+		// This is marked as deprecated, but it's not called from anywhere, and IDK how
+		// old it is
+		@SuppressWarnings("deprecation")
+		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
+		@Nullable ServerLevel existingLevel = map.get(levelKey);
+
+		// If the world already exists, return it
+		return existingLevel == null ? createAndRegisterLevel(server, map, levelKey, dimensionFactory) : existingLevel;
+	}
+
+	/**
+	 * Schedules a non-vanilla level/dimension to be unregistered and removed at the
+	 * end of the current server tick.<br>
+	 * This will have the following effects:<br>
+	 *
+	 * <ul>
+	 * <li>Unregistered levels will stop ticking.
+	 * <li>Unregistered dimensions will not be loaded on server startup unless and
+	 * until they are registered again (via
+	 * {@link DimensionManager#getOrCreateLevel}.
+	 * <li>Players still present in the given level will, when the level is removed,
+	 * be ejected to their spawn points.
+	 * <li>Players who have respawn points in levels being unloaded will have their
+	 * spawn points reset to the overworld and respawned there.
+	 * </ul>
+	 *
+	 * Unregistering a level does not delete the region files or other persistent
+	 * data associated with the level.<br>
+	 * If a level is re-registered after unregistering it, the level will retain all
+	 * prior data (unless manually deleted by a server admin.)<br>
+	 * This has no effect on the vanilla dimensions (The Overworld, The Nether, and
+	 * The End); this is because vanilla will automatically reconstitute these
+	 * anyway if we try to remove them, so we disallow their removal to avoid
+	 * strangeness.<br>
+	 *
+	 * @param server
+	 *            The server to remove the dimension from
+	 * @param levelToRemove
+	 *            The resource key for the level to be unregistered
+	 */
+	public void markDimensionForUnregistration(final MinecraftServer server, final ResourceKey<Level> levelToRemove) {
+		if (!VANILLA_LEVELS.contains(levelToRemove)) {
+			levelsPendingUnregistration.add(levelToRemove);
 		}
 	}
 

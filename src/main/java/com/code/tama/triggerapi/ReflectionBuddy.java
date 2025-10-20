@@ -27,6 +27,19 @@ import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ReflectionBuddy {
+	@SuppressWarnings("unchecked")
+	// throws ClassCastException if the types are wrong, the returned function can
+	// also throw RuntimeException
+	private static <FIELDHOLDER, FIELDTYPE> Function<FIELDHOLDER, FIELDTYPE> getInstanceFieldGetter(Field field) {
+		return instance -> {
+			try {
+				return (FIELDTYPE) (field.get(instance));
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		};
+	}
+
 	public static <FIELDHOLDER, FIELDTYPE> MutableInstanceField<FIELDHOLDER, FIELDTYPE> getInstanceField(
 			Class<FIELDHOLDER> fieldHolderClass, String fieldName) {
 		return new MutableInstanceField<>(fieldHolderClass, fieldName);
@@ -51,19 +64,6 @@ public class ReflectionBuddy {
 		// forge's ORH is needed to reflect into vanilla minecraft java
 		Field field = ObfuscationReflectionHelper.findField(fieldHolderClass, fieldName);
 		return getInstanceFieldGetter(field);
-	}
-
-	@SuppressWarnings("unchecked")
-	// throws ClassCastException if the types are wrong, the returned function can
-	// also throw RuntimeException
-	private static <FIELDHOLDER, FIELDTYPE> Function<FIELDHOLDER, FIELDTYPE> getInstanceFieldGetter(Field field) {
-		return instance -> {
-			try {
-				return (FIELDTYPE) (field.get(instance));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		};
 	}
 
 	public static class BlockAccess {

@@ -21,6 +21,10 @@ public class JavaJSONCache extends SimplePreparableReloadListener<Void> {
 	protected static Map<IUseJavaJSON, ResourceLocation> reloadableModels = new HashMap<>();
 	protected static List<ResourceLocation> unbakedCache = new ArrayList<>();
 
+	protected static void init() {
+		// Handled in event
+	}
+
 	public static void register(IUseJavaJSON part, ResourceLocation model) {
 		JavaJSONCache.reloadableModels.put(part, model);
 		part.reload();
@@ -29,10 +33,6 @@ public class JavaJSONCache extends SimplePreparableReloadListener<Void> {
 	@SubscribeEvent
 	public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
 		event.registerReloadListener(new JavaJSONCache());
-	}
-
-	protected static void init() {
-		// Handled in event
 	}
 
 	@Override

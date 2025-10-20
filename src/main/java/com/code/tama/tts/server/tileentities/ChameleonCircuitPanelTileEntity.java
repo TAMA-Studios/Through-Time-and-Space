@@ -15,12 +15,12 @@ public class ChameleonCircuitPanelTileEntity extends BlockEntity {
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 	}
 }

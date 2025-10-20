@@ -43,7 +43,7 @@ public class ExteriorStatePacket {
 			var be = mc.level.getBlockEntity(msg.pos);
 			if (be instanceof com.code.tama.tts.server.tileentities.ExteriorTile exterior) {
 				// Create a client-side PhysicalStateManager
-				new Thread(exterior, msg.state, msg.startTick);
+				new Thread(msg.startTick, exterior, msg.state);
 			}
 		});
 		ctx.get().setPacketHandled(true);

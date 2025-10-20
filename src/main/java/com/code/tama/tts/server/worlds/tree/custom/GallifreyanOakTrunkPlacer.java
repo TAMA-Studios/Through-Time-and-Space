@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.code.tama.tts.server.worlds.tree.ModTrunkPlacerTypes;
+import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -29,6 +29,11 @@ public class GallifreyanOakTrunkPlacer extends TrunkPlacer {
 
 	public GallifreyanOakTrunkPlacer(int pBaseHeight, int pHeightRandA, int pHeightRandB) {
 		super(pBaseHeight, pHeightRandA, pHeightRandB);
+	}
+
+	@Override
+	protected @NotNull TrunkPlacerType<?> type() {
+		return TTSTrunkPlacerTypes.GALLIFREYAN_OAK_TRUNK_PLACER.get();
 	}
 
 	@Override
@@ -87,10 +92,5 @@ public class GallifreyanOakTrunkPlacer extends TrunkPlacer {
 		}
 
 		return ImmutableList.of(new FoliagePlacer.FoliageAttachment(pPos.above(height), 0, false));
-	}
-
-	@Override
-	protected @NotNull TrunkPlacerType<?> type() {
-		return ModTrunkPlacerTypes.GALLIFREYAN_OAK_TRUNK_PLACER.get();
 	}
 }

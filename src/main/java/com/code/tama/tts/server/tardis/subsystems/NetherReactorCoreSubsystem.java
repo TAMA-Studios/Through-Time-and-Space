@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NoArgsConstructor
 public class NetherReactorCoreSubsystem extends AbstractSubsystem {
 	public NetherReactorCoreSubsystem(BlockPos blockPos, boolean Activated) {
-		super(blockPos, Activated);
+		super(Activated, blockPos);
 	}
 
 	/**

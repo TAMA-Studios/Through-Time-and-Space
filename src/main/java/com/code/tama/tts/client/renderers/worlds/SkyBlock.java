@@ -18,19 +18,27 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class SkyBlock {
+	private static boolean isRenderingSky = false;
+	private static int skyHeight = -1;
+	private static TextureTarget skyRenderTarget;
+	private static ShaderInstance skyShader;
+	private static int skyWidth = -1;
 	public static final RenderType SKY_RENDER_TYPE = RenderType.create("sky", DefaultVertexFormat.POSITION,
 			VertexFormat.Mode.QUADS, 256, false, false,
 			RenderType.CompositeState.builder()
 					.setShaderState(new RenderStateShard.ShaderStateShard(SkyBlock::getSkyShader))
 					.setTextureState(new RenderStateShard.EmptyTextureStateShard(SkyBlock::setSkyTexture, () -> {
 					})).createCompositeState(false));
-	public static boolean updateSky = false;
-	private static boolean isRenderingSky = false;
-	private static int skyHeight = -1;
-	private static TextureTarget skyRenderTarget;
-	private static ShaderInstance skyShader;
 
-	private static int skyWidth = -1;
+	public static boolean updateSky = false;
+
+	private static void setSkyTexture() {
+		if (skyRenderTarget != null) {
+			RenderSystem.setShaderTexture(0, skyRenderTarget.getColorTextureId());
+		} else {
+			RenderSystem.setShaderTexture(0, 0);
+		}
+	}
 
 	public static ShaderInstance getSkyShader() {
 		return skyShader;
@@ -137,14 +145,6 @@ public class SkyBlock {
 
 	public static void setSkyShader(ShaderInstance shader) {
 		skyShader = shader;
-	}
-
-	private static void setSkyTexture() {
-		if (skyRenderTarget != null) {
-			RenderSystem.setShaderTexture(0, skyRenderTarget.getColorTextureId());
-		} else {
-			RenderSystem.setShaderTexture(0, 0);
-		}
 	}
 
 	public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {

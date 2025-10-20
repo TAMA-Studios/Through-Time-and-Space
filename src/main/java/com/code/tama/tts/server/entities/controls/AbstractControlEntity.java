@@ -31,6 +31,11 @@ public abstract class AbstractControlEntity extends Entity {
 		this.setNoGravity(true); // Prevent it from falling
 	}
 
+	@Override
+	protected @NotNull AABB makeBoundingBox() {
+		return this.getAABB() != null ? this.getAABB().move(this.position()) : super.makeBoundingBox();
+	}
+
 	/** Called when this control is clicked (Right Click) * */
 	public abstract void OnControlClicked(ITARDISLevel capability, Player player);
 
@@ -86,10 +91,5 @@ public abstract class AbstractControlEntity extends Entity {
 	@Override
 	public boolean isPickable() {
 		return true;
-	}
-
-	@Override
-	protected @NotNull AABB makeBoundingBox() {
-		return this.getAABB() != null ? this.getAABB().move(this.position()) : super.makeBoundingBox();
 	}
 }

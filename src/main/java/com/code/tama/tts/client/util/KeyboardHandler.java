@@ -14,6 +14,10 @@ public class KeyboardHandler {
 	public static final Lazy<KeyMapping> SONIC_MODE = Lazy.of(() -> new KeyMapping("tts.keybinds.sonic_mode",
 			InputConstants.Type.KEYSYM, InputConstants.KEY_G, "tts.keybinds.catagory"));
 
+	private void keybindSetup(RegisterKeyMappingsEvent event) {
+		event.register(SONIC_MODE.get());
+	}
+
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			while (SONIC_MODE.get().consumeClick()) {
@@ -31,9 +35,5 @@ public class KeyboardHandler {
 				}
 			}
 		}
-	}
-
-	private void keybindSetup(RegisterKeyMappingsEvent event) {
-		event.register(SONIC_MODE.get());
 	}
 }

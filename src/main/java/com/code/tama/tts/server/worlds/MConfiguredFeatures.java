@@ -34,6 +34,12 @@ public class MConfiguredFeatures {
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ZEITON_ORE_KEY = registerKey("zeiton_ore");
 
+	private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(
+			BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> key, F feature,
+			FC configuration) {
+		context.register(key, new ConfiguredFeature<>(feature, configuration));
+	}
+
 	public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
 		RuleTest stoneReplaceable = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
 		RuleTest deepslateReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
@@ -73,11 +79,5 @@ public class MConfiguredFeatures {
 
 	public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
 		return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(MODID, name));
-	}
-
-	private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(
-			BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> key, F feature,
-			FC configuration) {
-		context.register(key, new ConfiguredFeature<>(feature, configuration));
 	}
 }

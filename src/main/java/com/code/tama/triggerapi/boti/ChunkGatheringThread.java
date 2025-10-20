@@ -117,10 +117,11 @@ public class ChunkGatheringThread extends Thread {
 									// }
 
 									if (fluidState.isEmpty())
-										containers.add(new BotiChunkContainer(level, state, pos,
+										containers.add(new BotiChunkContainer(level,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY()))));
+																.atY(targetPos.getY())),
+												pos, state));
 									else
 										containers.add(new BotiChunkContainer(level, state, fluidState, pos,
 												BlockUtils.getPackedLight(level,
@@ -128,10 +129,11 @@ public class ChunkGatheringThread extends Thread {
 																.atY(targetPos.getY()))));
 
 									if (fluidStateAbove.isEmpty())
-										containers.add(new BotiChunkContainer(level, stateAbove, posAbove,
+										containers.add(new BotiChunkContainer(level,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY()))));
+																.atY(targetPos.getY())),
+												posAbove, stateAbove));
 									else
 										containers.add(new BotiChunkContainer(level, stateAbove, fluidState, posAbove,
 												BlockUtils.getPackedLight(level,

@@ -22,8 +22,47 @@ import net.minecraft.server.packs.resources.Resource;
 
 public class JavaJSONParser {
 
-	public static final JavaJSONRenderer NULL_PART = new JavaJSONRenderer();
 	private static final Gson GSON = new Gson();
+	public static final JavaJSONRenderer NULL_PART = new JavaJSONRenderer();
+
+	private static void addChildren(JavaJSONModel model, JavaJSONFile.Group parentGroup, JavaJSONRenderer parsedModel,
+			int texWidth, int texHeight) {
+		if (parentGroup.children != null && !parentGroup.children.isEmpty()) {
+			for (JavaJSONFile.Group group : parentGroup.children) {
+				List<ModelPart.Cube> cubes = new ArrayList<>();
+				CubeListBuilder cubeList = CubeListBuilder.create();
+				if (group.cubes != null) {
+					for (JavaJSONFile.Cube cube : group.cubes) {
+						ModelPart.Cube modelCube = new ModelPart.Cube(cube.uv[0], cube.uv[1], cube.origin[0],
+								cube.origin[1], cube.origin[2], cube.size[0], cube.size[1], cube.size[2], cube.inflate,
+								cube.inflate, cube.inflate, cube.mirror, texWidth, texHeight,
+								Set.of(Direction.values()));
+						cubes.add(modelCube);
+
+						cubeList.texOffs(cube.uv[0], cube.uv[1]).addBox(cube.origin[0], cube.origin[1], cube.origin[2],
+								cube.size[0], cube.size[1], cube.size[2], new CubeDeformation(cube.inflate));
+						if (cube.mirror)
+							cubeList.mirror();
+					}
+				}
+
+				ModelPart modelPart = new ModelPart(cubes, new HashMap<>());
+				modelPart.setPos(0, 0, 0);
+
+				JavaJSONRenderer renderer = new JavaJSONRenderer(model, modelPart);
+				// Set child group pivot
+				renderer.setPosition(group.pivot[0], group.pivot[1], group.pivot[2]);
+				// Set rotations in radians
+				renderer.setRotation((float) Math.toRadians(-group.getRotation().x),
+						(float) Math.toRadians(-group.getRotation().y), (float) Math.toRadians(-group.getRotation().z));
+
+				addChildren(model, group, renderer, texWidth, texHeight);
+
+				parsedModel.addChild(renderer);
+				model.partsList.put(group.name, renderer);
+			}
+		}
+	}
 
 	public static JavaJSONParsed.ModelInformation getModelInfo(ResourceLocation location) {
 		try {
@@ -105,44 +144,5 @@ public class JavaJSONParser {
 		JavaJSONParsed newModel = new JavaJSONParsed(location).load();
 		JavaJSONCache.bakedCache.put(location, newModel);
 		return newModel;
-	}
-
-	private static void addChildren(JavaJSONModel model, JavaJSONFile.Group parentGroup, JavaJSONRenderer parsedModel,
-			int texWidth, int texHeight) {
-		if (parentGroup.children != null && !parentGroup.children.isEmpty()) {
-			for (JavaJSONFile.Group group : parentGroup.children) {
-				List<ModelPart.Cube> cubes = new ArrayList<>();
-				CubeListBuilder cubeList = CubeListBuilder.create();
-				if (group.cubes != null) {
-					for (JavaJSONFile.Cube cube : group.cubes) {
-						ModelPart.Cube modelCube = new ModelPart.Cube(cube.uv[0], cube.uv[1], cube.origin[0],
-								cube.origin[1], cube.origin[2], cube.size[0], cube.size[1], cube.size[2], cube.inflate,
-								cube.inflate, cube.inflate, cube.mirror, texWidth, texHeight,
-								Set.of(Direction.values()));
-						cubes.add(modelCube);
-
-						cubeList.texOffs(cube.uv[0], cube.uv[1]).addBox(cube.origin[0], cube.origin[1], cube.origin[2],
-								cube.size[0], cube.size[1], cube.size[2], new CubeDeformation(cube.inflate));
-						if (cube.mirror)
-							cubeList.mirror();
-					}
-				}
-
-				ModelPart modelPart = new ModelPart(cubes, new HashMap<>());
-				modelPart.setPos(0, 0, 0);
-
-				JavaJSONRenderer renderer = new JavaJSONRenderer(model, modelPart);
-				// Set child group pivot
-				renderer.setPosition(group.pivot[0], group.pivot[1], group.pivot[2]);
-				// Set rotations in radians
-				renderer.setRotation((float) Math.toRadians(-group.getRotation().x),
-						(float) Math.toRadians(-group.getRotation().y), (float) Math.toRadians(-group.getRotation().z));
-
-				addChildren(model, group, renderer, texWidth, texHeight);
-
-				parsedModel.addChild(renderer);
-				model.partsList.put(group.name, renderer);
-			}
-		}
 	}
 }

@@ -18,18 +18,18 @@ import com.code.tama.triggerapi.codec.Codecs;
 @Builder
 @Getter
 public class PlayerPosition {
-	public static Codec<PlayerPosition> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("yrot").forGetter(PlayerPosition::getYRot),
-					Codec.FLOAT.fieldOf("xrot").forGetter(PlayerPosition::getXrot),
-					Codecs.VEC3.fieldOf("pos").forGetter(PlayerPosition::getPos),
-					Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(PlayerPosition::getLevelKey))
-			.apply(instance, PlayerPosition::new));
+	public static Codec<PlayerPosition> CODEC = RecordCodecBuilder
+			.create(instance -> instance
+					.group(Codec.FLOAT.fieldOf("yrot").forGetter(PlayerPosition::getYRot),
+							Codec.FLOAT.fieldOf("xrot").forGetter(PlayerPosition::getXrot),
+							Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(PlayerPosition::getLevelKey),
+							Codecs.VEC3.fieldOf("pos").forGetter(PlayerPosition::getPos))
+					.apply(instance, PlayerPosition::new));
 
 	public final float Xrot;
 	public final float YRot;
 	@Builder.Default
 	public ResourceKey<Level> levelKey = Level.OVERWORLD;
-
 	public final Vec3 pos;
 
 	public static PlayerPosition fromString(String position) {
@@ -46,6 +46,6 @@ public class PlayerPosition {
 
 	@Override
 	public String toString() {
-		return String.format("%s/%s/%s/%s/%s/%s", YRot, Xrot, pos.x, pos.y, pos.z, levelKey.location().toString());
+		return String.format("%s/%s/%s/%s/%s/%s", YRot, Xrot, pos.x, pos.y, pos.z, levelKey.location());
 	}
 }

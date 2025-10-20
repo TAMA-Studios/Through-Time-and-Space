@@ -52,7 +52,7 @@ public class Networking {
 	public static int ID = 0;
 
 	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"),
-			() -> NET_VERSION, NET_VERSION::equals, NET_VERSION::equals);
+			() -> Networking.NET_VERSION, Networking.NET_VERSION::equals, Networking.NET_VERSION::equals);
 	public static final String NET_VERSION = "1.0";
 
 	public static int id() {

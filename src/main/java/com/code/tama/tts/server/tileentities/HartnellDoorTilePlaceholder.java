@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HartnellDoorTilePlaceholder extends BlockEntity {
-	public BlockPos Master = BlockPos.ZERO;
 	private boolean IsOpen = false;
+	public BlockPos Master = BlockPos.ZERO;
 
 	public HartnellDoorTilePlaceholder(BlockPos pos, BlockState state) {
 		super(TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER.get(), pos, state);

@@ -2,7 +2,6 @@
 package com.code.tama.triggerapi.helpers.world;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
@@ -11,7 +10,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class RayTraceUtils {
-	public static BlockPos getLookingAtBlock(double reachDistance) {
+	public static BlockHitResult getLookingAtBlock(double reachDistance) {
 		Minecraft mc = Minecraft.getInstance();
 
 		if (mc.player == null || mc.level == null) {
@@ -31,7 +30,7 @@ public class RayTraceUtils {
 		));
 
 		if (rayTrace.getType() == HitResult.Type.BLOCK) {
-			return rayTrace.getBlockPos();
+			return rayTrace;
 		}
 
 		return null;

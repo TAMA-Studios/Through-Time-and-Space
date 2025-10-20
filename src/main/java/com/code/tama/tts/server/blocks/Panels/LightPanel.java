@@ -59,6 +59,13 @@ public class LightPanel extends HorizontalDirectionalBlock {
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 	}
 
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
+		super.createBlockStateDefinition(StateDefinition);
+		StateDefinition.add(FACING);
+		StateDefinition.add(PRESSED_BUTTON);
+	}
+
 	public Buttons getButton(double mouseX, double mouseZ, Direction facing) {
 
 		for (Buttons button : buttons) {
@@ -171,13 +178,6 @@ public class LightPanel extends HorizontalDirectionalBlock {
 
 		// }
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
-		super.createBlockStateDefinition(StateDefinition);
-		StateDefinition.add(FACING);
-		StateDefinition.add(PRESSED_BUTTON);
 	}
 
 	public enum Buttons {

@@ -5,13 +5,11 @@ import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class ControlParameters {
@@ -25,10 +23,30 @@ public class ControlParameters {
 							.forGetter(ControlParameters::getFlightTerminationProtocol))
 			.apply(instance, ControlParameters::new));
 
+	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 	public boolean APCState, Brakes, SimpleMode;
 	public int ArtronPacketOutput;
 	public float HelmicRegulator;
-	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
+
+	public ControlParameters(FlightTerminationProtocol flightTerminationProtocol, boolean APCState, boolean brakes,
+			boolean simpleMode, int artronPacketOutput, float helmicRegulator) {
+		this.flightTerminationProtocol = flightTerminationProtocol;
+		this.APCState = APCState;
+		Brakes = brakes;
+		SimpleMode = simpleMode;
+		ArtronPacketOutput = artronPacketOutput;
+		HelmicRegulator = helmicRegulator;
+	}
+
+	public ControlParameters(Float helmicRegulator, Boolean apcState, Boolean brakes, Boolean simpleMode,
+			Integer artronPacketOutput, FlightTerminationProtocol flightTerminationProtocol) {
+		this.flightTerminationProtocol = flightTerminationProtocol;
+		this.APCState = apcState;
+		Brakes = brakes;
+		SimpleMode = simpleMode;
+		ArtronPacketOutput = artronPacketOutput;
+		HelmicRegulator = helmicRegulator;
+	}
 
 	// TODO: Implement Automatic Power Cue
 	/**

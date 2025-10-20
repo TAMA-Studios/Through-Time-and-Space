@@ -1,17 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
-import com.code.tama.tts.server.registries.misc.ControlsRegistry;
+import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,8 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.RegistryObject;
-
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
 	private static final EntityDataAccessor<Integer> CONTROL = SynchedEntityData.defineId(ModularControl.class,
@@ -71,6 +69,75 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		this.SetDimensions(EntityDimensions.scalable(record.maxX(), (float) Y));
 		this.consoleTile = consoleTile;
 		this.SetIdentifier(record.ID());
+	}
+
+	@Override
+	protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
+		Tag.putDouble("aabb_min_x", this.size.minX);
+		Tag.putDouble("aabb_min_y", this.size.minY);
+		Tag.putDouble("aabb_min_z", this.size.minZ);
+		Tag.putDouble("aabb_max_x", this.size.maxX);
+		Tag.putDouble("aabb_max_y", this.size.maxY);
+		Tag.putDouble("aabb_max_z", this.size.maxZ);
+
+		Tag.putDouble("pos_x", this.Position.x);
+		Tag.putDouble("pos_y", this.Position.y);
+		Tag.putDouble("pos_z", this.Position.z);
+
+		Tag.putInt("control", ControlsRegistry.getOrdinal(this.GetControl()));
+
+		if (this.consoleTile != null) {
+			Tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
+			Tag.putInt("console_y", this.consoleTile.getBlockPos().getY());
+			Tag.putInt("console_z", this.consoleTile.getBlockPos().getZ());
+		}
+		Tag.putDouble("vec_x", this.Position.x);
+		Tag.putDouble("vec_y", this.Position.y);
+		Tag.putDouble("vec_z", this.Position.z);
+		Tag.putInt("identifier", this.Identifier());
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		this.entityData.define(CONTROL, -1);
+		this.entityData.define(IDENTIFIER, -1);
+	}
+
+	@Override
+	protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
+		this.SetControl(ControlsRegistry.getFromOrdinal(Tag.getInt("control")));
+
+		double minX = Tag.getDouble("aabb_min_x");
+		double minY = Tag.getDouble("aabb_min_y");
+		double minZ = Tag.getDouble("aabb_min_z");
+		double maxX = Tag.getDouble("aabb_max_x");
+		double maxY = Tag.getDouble("aabb_max_y");
+		double maxZ = Tag.getDouble("aabb_max_z");
+
+		this.size = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+
+		this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
+
+		if (this.level().getServer() != null) {
+			if (this.level().getServer().getLevel(this.level().dimension()).getBlockEntity(
+					new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z"))) != null)
+				this.consoleTile = (AbstractConsoleTile) this.level().getServer().getLevel(this.level().dimension())
+						.getBlockEntity(new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"),
+								Tag.getInt("console_z")));
+		}
+		this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
+
+		this.SetIdentifier(Tag.getInt("identifier"));
+
+		this.GetControl().SetNeedsUpdate(true);
+	}
+
+	void CycleControlBackward() {
+		this.SetControl(ControlsRegistry.CycleBackwards(this.GetControl()));
+	}
+
+	void CycleControlForward() {
+		this.SetControl(ControlsRegistry.Cycle(this.GetControl()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -197,74 +264,5 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		if (this.GetControl() != null)
 			buf.writeInt(ControlsRegistry.getOrdinal(this.GetControl()));
 		buf.writeInt(this.Identifier());
-	}
-
-	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
-		Tag.putDouble("aabb_min_x", this.size.minX);
-		Tag.putDouble("aabb_min_y", this.size.minY);
-		Tag.putDouble("aabb_min_z", this.size.minZ);
-		Tag.putDouble("aabb_max_x", this.size.maxX);
-		Tag.putDouble("aabb_max_y", this.size.maxY);
-		Tag.putDouble("aabb_max_z", this.size.maxZ);
-
-		Tag.putDouble("pos_x", this.Position.x);
-		Tag.putDouble("pos_y", this.Position.y);
-		Tag.putDouble("pos_z", this.Position.z);
-
-		Tag.putInt("control", ControlsRegistry.getOrdinal(this.GetControl()));
-
-		if (this.consoleTile != null) {
-			Tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
-			Tag.putInt("console_y", this.consoleTile.getBlockPos().getY());
-			Tag.putInt("console_z", this.consoleTile.getBlockPos().getZ());
-		}
-		Tag.putDouble("vec_x", this.Position.x);
-		Tag.putDouble("vec_y", this.Position.y);
-		Tag.putDouble("vec_z", this.Position.z);
-		Tag.putInt("identifier", this.Identifier());
-	}
-
-	@Override
-	protected void defineSynchedData() {
-		this.entityData.define(CONTROL, -1);
-		this.entityData.define(IDENTIFIER, -1);
-	}
-
-	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
-		this.SetControl(ControlsRegistry.getFromOrdinal(Tag.getInt("control")));
-
-		double minX = Tag.getDouble("aabb_min_x");
-		double minY = Tag.getDouble("aabb_min_y");
-		double minZ = Tag.getDouble("aabb_min_z");
-		double maxX = Tag.getDouble("aabb_max_x");
-		double maxY = Tag.getDouble("aabb_max_y");
-		double maxZ = Tag.getDouble("aabb_max_z");
-
-		this.size = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-
-		this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
-
-		if (this.level().getServer() != null) {
-			if (this.level().getServer().getLevel(this.level().dimension()).getBlockEntity(
-					new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z"))) != null)
-				this.consoleTile = (AbstractConsoleTile) this.level().getServer().getLevel(this.level().dimension())
-						.getBlockEntity(new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"),
-								Tag.getInt("console_z")));
-		}
-		this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
-
-		this.SetIdentifier(Tag.getInt("identifier"));
-
-		this.GetControl().SetNeedsUpdate(true);
-	}
-
-	void CycleControlBackward() {
-		this.SetControl(ControlsRegistry.CycleBackwards(this.GetControl()));
-	}
-
-	void CycleControlForward() {
-		this.SetControl(ControlsRegistry.Cycle(this.GetControl()));
 	}
 }

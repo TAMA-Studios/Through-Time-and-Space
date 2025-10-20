@@ -22,6 +22,10 @@ public class MBiomeModifiers {
 
 	public static final ResourceKey<BiomeModifier> ADD_ZEITON_ORE = registerKey("add_zeiton_ore");
 
+	private static ResourceKey<BiomeModifier> registerKey(String name) {
+		return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(MODID, name));
+	}
+
 	public static void bootstrap(BootstapContext<BiomeModifier> context) {
 		var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
 		var biomes = context.lookup(Registries.BIOME);
@@ -51,9 +55,5 @@ public class MBiomeModifiers {
 				new ForgeBiomeModifiers.AddFeaturesBiomeModifier(biomes.getOrThrow(Tags.Biomes.IS_PLAINS),
 						HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.GALLIFREYAN_OAK_PLACED_KEY)),
 						GenerationStep.Decoration.VEGETAL_DECORATION));
-	}
-
-	private static ResourceKey<BiomeModifier> registerKey(String name) {
-		return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(MODID, name));
 	}
 }

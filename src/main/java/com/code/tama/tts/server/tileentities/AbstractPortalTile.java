@@ -36,6 +36,11 @@ import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
 	@OnlyIn(Dist.CLIENT)
+	private FBOHelper FBOContainer;
+
+	private final List<Integer> recievedPackets = new ArrayList<>();
+
+	@OnlyIn(Dist.CLIENT)
 	public VertexBuffer MODEL_VBO;
 
 	public Vec3 SkyColor = Vec3.ZERO;
@@ -64,11 +69,6 @@ public abstract class AbstractPortalTile extends TickingTile {
 	public float targetY = 0;
 
 	public DimensionType type;
-
-	@OnlyIn(Dist.CLIENT)
-	private FBOHelper FBOContainer;
-
-	private final List<Integer> recievedPackets = new ArrayList<>();
 
 	public AbstractPortalTile(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 		super(p_155228_, p_155229_, p_155230_);

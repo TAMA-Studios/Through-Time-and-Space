@@ -71,6 +71,13 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 	}
 
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
+		super.createBlockStateDefinition(StateDefinition);
+		StateDefinition.add(FACING);
+		StateDefinition.add(PRESSED_BUTTON);
+	}
+
 	public ChameleonCircuitButtons getButton(double mouseX, double mouseZ, Direction facing) {
 
 		for (ChameleonCircuitButtons button : buttons) {
@@ -217,13 +224,6 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 
 		// }
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
-		super.createBlockStateDefinition(StateDefinition);
-		StateDefinition.add(FACING);
-		StateDefinition.add(PRESSED_BUTTON);
 	}
 
 	public enum ChameleonCircuitButtons {

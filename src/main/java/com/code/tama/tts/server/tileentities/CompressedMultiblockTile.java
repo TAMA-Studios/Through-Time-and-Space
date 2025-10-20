@@ -37,6 +37,18 @@ public class CompressedMultiblockTile extends BlockEntity {
 	}
 
 	@Override
+	protected void saveAdditional(CompoundTag nbt) {
+		AtomicInteger i = new AtomicInteger();
+		stateMap.forEach((pos, state) -> {
+			NBTUtils.WriteBlockPos("pos_" + i.get(), pos, nbt);
+			nbt.put("state_" + i.get(), NbtUtils.writeBlockState(state));
+			i.getAndIncrement();
+		});
+		nbt.putInt("size", i.get());
+		super.saveAdditional(nbt);
+	}
+
+	@Override
 	public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
@@ -67,17 +79,5 @@ public class CompressedMultiblockTile extends BlockEntity {
 		}
 
 		super.load(nbt);
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag nbt) {
-		AtomicInteger i = new AtomicInteger();
-		stateMap.forEach((pos, state) -> {
-			NBTUtils.WriteBlockPos("pos_" + i.get(), pos, nbt);
-			nbt.put("state_" + i.get(), NbtUtils.writeBlockState(state));
-			i.getAndIncrement();
-		});
-		nbt.putInt("size", i.get());
-		super.saveAdditional(nbt);
 	}
 }

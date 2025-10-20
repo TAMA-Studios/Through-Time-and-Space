@@ -26,6 +26,35 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private final List<ARSStructureContainer> dataRoom = new ArrayList<>(); // List to store Data ars objects
 
+	private boolean isValidJson(JsonObject jsonObject) {
+		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
+			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+
+			// Validate name and structure fields
+			if (valuesObject.has("name") && valuesObject.has("location")) {
+				String name = valuesObject.get("name").getAsString();
+				String location = valuesObject.get("location").getAsString();
+
+				// Check for non-empty name
+				if (name.isEmpty()) {
+					LOGGER.warn("Empty name field");
+					return false;
+				}
+
+				// Validate structure as ResourceLocation
+				try {
+					ResourceLocation.parse(location); // Will throw exception if invalid
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("Invalid structure ResourceLocation: {}", location);
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		dataRoom.clear(); // Reset the list of Data ars objects
@@ -86,34 +115,5 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 
 		// Store the list of Data ars room objects in the Data ars Array
 		DataARSList.setList(dataRoom);
-	}
-
-	private boolean isValidJson(JsonObject jsonObject) {
-		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
-			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-
-			// Validate name and structure fields
-			if (valuesObject.has("name") && valuesObject.has("location")) {
-				String name = valuesObject.get("name").getAsString();
-				String location = valuesObject.get("location").getAsString();
-
-				// Check for non-empty name
-				if (name.isEmpty()) {
-					LOGGER.warn("Empty name field");
-					return false;
-				}
-
-				// Validate structure as ResourceLocation
-				try {
-					ResourceLocation.parse(location); // Will throw exception if invalid
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn("Invalid structure ResourceLocation: {}", location);
-					return false;
-				}
-
-				return true;
-			}
-		}
-		return false;
 	}
 }

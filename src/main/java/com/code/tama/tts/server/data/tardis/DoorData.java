@@ -23,6 +23,18 @@ public class DoorData {
 	float YRot;
 	SpaceTimeCoordinate location;
 
+	public DoorData(Float rot, SpaceTimeCoordinate spaceTimeCoordinate, Integer doorsOpen) {
+		this.DoorsOpen = doorsOpen;
+		this.location = spaceTimeCoordinate;
+		this.YRot = rot;
+	}
+
+	public DoorData(int doorsOpen, SpaceTimeCoordinate spaceTimeCoordinate, float rot) {
+		this.DoorsOpen = doorsOpen;
+		this.location = spaceTimeCoordinate;
+		this.YRot = rot;
+	}
+
 	public int CycleDoor() {
 		return this.DoorsOpen = switch (this.DoorsOpen) {
 			case 0 -> 1;

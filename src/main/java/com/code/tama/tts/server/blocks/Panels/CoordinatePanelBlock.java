@@ -64,6 +64,13 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 		return Shapes.join(shape, Block.box(2.5, 1, 6.25, 3.75, 2, 9.75), BooleanOp.OR);
 	}
 
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
+		super.createBlockStateDefinition(StateDefinition);
+		StateDefinition.add(FACING);
+		StateDefinition.add(PRESSED_BUTTON);
+	}
+
 	public CoordinatePanelButtons getButton(double mouseX, double mouseZ, Direction facing) {
 
 		for (CoordinatePanelButtons button : buttons) {
@@ -191,13 +198,6 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 				});
 		}
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
-		super.createBlockStateDefinition(StateDefinition);
-		StateDefinition.add(FACING);
-		StateDefinition.add(PRESSED_BUTTON);
 	}
 
 	public enum CoordinatePanelButtons {

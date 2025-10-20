@@ -39,42 +39,6 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		this.targetType = targetType;
 	}
 
-	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f matrix4f, @NotNull Vec3 position,
-			Quaternionf rotation, Vec3 PivotPoint, float size) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
-
-		poseStack.pushPose();
-
-		RenderSystem.disableBlend();
-		RenderSystem.enableDepthTest();
-		poseStack.translate(position.x, position.y, position.z);
-		poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
-
-		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-
-		if (SunVBO == null || SunVBO.isInvalid()) {
-			buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			SunVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
-			SunVBO.bind();
-			SunVBO.upload(drawPlanet(buffer, size));
-			VertexBuffer.unbind();
-		}
-
-		if (!SunVBO.isInvalid()) {
-			SunVBO.bind();
-			SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
-			VertexBuffer.unbind();
-		}
-
-		SunVBO.close();
-
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableBlend();
-		poseStack.popPose();
-	}
-
 	private static void RenderStars(@NotNull PoseStack poseStack, Matrix4f matrix4f) {
 		poseStack.pushPose();
 
@@ -141,6 +105,42 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		VertexBuffer.unbind();
 		RenderSystem.enableDepthTest();
 
+		poseStack.popPose();
+	}
+
+	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f matrix4f, @NotNull Vec3 position,
+			Quaternionf rotation, Vec3 PivotPoint, float size) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
+
+		poseStack.pushPose();
+
+		RenderSystem.disableBlend();
+		RenderSystem.enableDepthTest();
+		poseStack.translate(position.x, position.y, position.z);
+		poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
+
+		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+
+		if (SunVBO == null || SunVBO.isInvalid()) {
+			buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+			SunVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
+			SunVBO.bind();
+			SunVBO.upload(drawPlanet(buffer, size));
+			VertexBuffer.unbind();
+		}
+
+		if (!SunVBO.isInvalid()) {
+			SunVBO.bind();
+			SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+			VertexBuffer.unbind();
+		}
+
+		SunVBO.close();
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.enableBlend();
 		poseStack.popPose();
 	}
 

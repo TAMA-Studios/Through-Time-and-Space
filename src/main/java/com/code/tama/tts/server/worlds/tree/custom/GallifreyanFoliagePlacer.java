@@ -25,11 +25,6 @@ public class GallifreyanFoliagePlacer extends FoliagePlacer {
 	}
 
 	@Override
-	public int foliageHeight(RandomSource pRandom, int pHeight, TreeConfiguration pConfig) {
-		return this.height;
-	}
-
-	@Override
 	protected void createFoliage(LevelSimulatedReader pLevel, FoliageSetter pBlockSetter, RandomSource pRandom,
 			TreeConfiguration pConfig, int pMaxFreeTreeHeight, FoliageAttachment pAttachment, int pFoliageHeight,
 			int pFoliageRadius, int pOffset) {
@@ -50,5 +45,10 @@ public class GallifreyanFoliagePlacer extends FoliagePlacer {
 	@Override
 	protected FoliagePlacerType<?> type() {
 		return ModFoliagePlacers.GALLIFREYAN_OAK_PLACER.get();
+	}
+
+	@Override
+	public int foliageHeight(RandomSource pRandom, int pHeight, TreeConfiguration pConfig) {
+		return this.height;
 	}
 }

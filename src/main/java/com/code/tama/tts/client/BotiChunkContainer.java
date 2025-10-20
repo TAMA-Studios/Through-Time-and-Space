@@ -73,7 +73,7 @@ public class BotiChunkContainer {
 		if (IsTile) {
 			return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
 		}
-		return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light);
+		return new BotiChunkContainer(Minecraft.getInstance().level, light, pos, state);
 	}
 
 	public static List<BotiChunkContainer> decodeList(FriendlyByteBuf buf) {

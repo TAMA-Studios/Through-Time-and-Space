@@ -51,7 +51,7 @@ public class BOTIUtils {
 		if (!TTSConfig.ServerConfig.BOTI_ENABLED.get())
 			return;
 		BlockPos targetPos = portalTile.getTargetPos();
-		new ChunkGatheringThread(targetPos, portalTile, (ServerLevel) level, chunks).start();
+		new ChunkGatheringThread(chunks, (ServerLevel) level, portalTile, targetPos).start();
 	}
 
 	public static void RenderMinimal(PoseStack pose, AbstractPortalTile portal) {

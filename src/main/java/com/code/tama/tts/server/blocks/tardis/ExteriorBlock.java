@@ -48,11 +48,11 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 	public static final VoxelRotatedShape SHAPE_CLOSED = new VoxelRotatedShape(createShapeClosed().optimize());
 	public static final VoxelRotatedShape SHAPE_OPEN = new VoxelRotatedShape(createShape().optimize());
 
-	public boolean IsMarkedForRemoval = false;
-
 	private ResourceKey<Level> LevelKey;
 
 	private final Supplier<? extends BlockEntityType<? extends ExteriorTile>> exteriorType;
+
+	public boolean IsMarkedForRemoval = false;
 
 	public ExteriorBlock(Properties p_49795_, Supplier<? extends BlockEntityType<? extends ExteriorTile>> factory) {
 		super(p_49795_);
@@ -76,8 +76,10 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 	}
 
-	public void MarkForRemoval() {
-		this.IsMarkedForRemoval = true;
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
+		super.createBlockStateDefinition(StateDefinition);
+		StateDefinition.add(FACING);
 	}
 
 	// @Override
@@ -86,6 +88,10 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 	//
 	// super.onPlace(State, level, Pos, State2, p_60570_);
 	// }
+
+	public void MarkForRemoval() {
+		this.IsMarkedForRemoval = true;
+	}
 
 	public void SetInteriorKey(ResourceKey<Level> levelKey) {
 		this.LevelKey = levelKey;
@@ -177,11 +183,5 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 			exteriorTile.CycleDoors();
 		}
 		return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
-	}
-
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
-		super.createBlockStateDefinition(StateDefinition);
-		StateDefinition.add(FACING);
 	}
 }

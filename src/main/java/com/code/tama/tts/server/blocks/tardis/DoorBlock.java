@@ -85,7 +85,7 @@ public class DoorBlock extends Block implements EntityBlock {
 			// default -> 0;
 			// };
 			cap.GetData().setInteriorDoorData(
-					new DoorData(direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, -1)), 0));
+					new DoorData(0, direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, 1))));
 		});
 
 		super.onPlace(state, level, blockPos, blockState, p_60570_);

@@ -19,11 +19,11 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PortalChunkDataPacketS2C {
-	public List<BotiChunkContainer> containersL = new ArrayList<>();
+	private final BlockPos portalPos;
 
 	int index;
 	int totalPackets;
-	private final BlockPos portalPos;
+	public List<BotiChunkContainer> containersL = new ArrayList<>();
 
 	public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiChunkContainer> containers, int index,
 			int totalPackets) {

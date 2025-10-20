@@ -29,4 +29,11 @@ public class SubsystemsData {
 	public DematerializationCircuit DematerializationCircuit = new DematerializationCircuit();
 	public DynamorphicController DynamorphicController = new DynamorphicController();
 	public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = new NetherReactorCoreSubsystem();
+
+	public SubsystemsData(DematerializationCircuit dematerializationCircuit,
+			NetherReactorCoreSubsystem netherReactorCoreSubsystem, DynamorphicController dynamorphicController) {
+		this.DematerializationCircuit = dematerializationCircuit;
+		this.NetherReactorCoreSubsystem = netherReactorCoreSubsystem;
+		this.DynamorphicController = dynamorphicController;
+	}
 }

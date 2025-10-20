@@ -458,6 +458,28 @@ public class UtilityGL11Debug {
 			new GLproperty(GL11.GL_FEEDBACK_BUFFER_TYPE, "GL_FEEDBACK_BUFFER_TYPE", "Type of feedback buffer",
 					"feedback", "glGetIntegerv()"),};
 
+	private static String getPropertyAsString(int propertyListIndex) {
+		int gLconstant = instance.propertyList[propertyListIndex].gLconstant;
+		if (instance.propertyList[propertyListIndex].fetchCommand.equals("glIsEnabled()")) {
+			return "" + GL11.glIsEnabled(gLconstant);
+		}
+
+		if (instance.propertyList[propertyListIndex].fetchCommand == "glGetBooleanv()") {
+
+			ByteBuffer params = BufferUtils.createByteBuffer(16);
+
+			GL11.glGetBoolean(gLconstant);
+			String out = "";
+			for (int i = 0; i < params.capacity(); ++i) {
+
+				out += (i == 0 ? "" : ", ") + params.get(i);
+			}
+			return out;
+		}
+
+		return "";
+	}
+
 	public static void dumpAllIsEnabled() {
 		for (int i = 0; i < instance.propertyList.length; ++i) {
 
@@ -484,28 +506,6 @@ public class UtilityGL11Debug {
 	}
 
 	public static void dumpOpenGLstate() {
-	}
-
-	private static String getPropertyAsString(int propertyListIndex) {
-		int gLconstant = instance.propertyList[propertyListIndex].gLconstant;
-		if (instance.propertyList[propertyListIndex].fetchCommand.equals("glIsEnabled()")) {
-			return "" + GL11.glIsEnabled(gLconstant);
-		}
-
-		if (instance.propertyList[propertyListIndex].fetchCommand == "glGetBooleanv()") {
-
-			ByteBuffer params = BufferUtils.createByteBuffer(16);
-
-			GL11.glGetBoolean(gLconstant);
-			String out = "";
-			for (int i = 0; i < params.capacity(); ++i) {
-
-				out += (i == 0 ? "" : ", ") + params.get(i);
-			}
-			return out;
-		}
-
-		return "";
 	}
 
 	public class GLproperty {

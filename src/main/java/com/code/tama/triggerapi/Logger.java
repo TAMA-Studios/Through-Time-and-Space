@@ -26,26 +26,6 @@ public class Logger {
 		setupFileLogging();
 	}
 
-	public static void debug(String message, Object... args) {
-		LOGGER.debug(String.format(message, args));
-		TTSMod.LOGGER_SLF4J.error(message, args);
-	}
-
-	public static void error(String message, Object... args) {
-		LOGGER.error(String.format(message, args));
-		TTSMod.LOGGER_SLF4J.error(message, args);
-	}
-
-	public static void info(String message, Object... args) {
-		LOGGER.info(String.format(message, args));
-		TTSMod.LOGGER_SLF4J.info(message, args);
-	}
-
-	public static void warn(String message, Object... args) {
-		LOGGER.warn(String.format(message, args));
-		TTSMod.LOGGER_SLF4J.warn(message, args);
-	}
-
 	private static void setupFileLogging() {
 
 		String FileTimestamp = LocalDateTime.now().format(DATE_FORMAT_FILE);
@@ -72,5 +52,25 @@ public class Logger {
 		fileAppender.start();
 		config.addLoggerAppender((org.apache.logging.log4j.core.Logger) LOGGER, fileAppender);
 		context.updateLoggers();
+	}
+
+	public static void debug(String message, Object... args) {
+		LOGGER.debug(String.format(message, args));
+		TTSMod.LOGGER_SLF4J.error(message, args);
+	}
+
+	public static void error(String message, Object... args) {
+		LOGGER.error(String.format(message, args));
+		TTSMod.LOGGER_SLF4J.error(message, args);
+	}
+
+	public static void info(String message, Object... args) {
+		LOGGER.info(String.format(message, args));
+		TTSMod.LOGGER_SLF4J.info(message, args);
+	}
+
+	public static void warn(String message, Object... args) {
+		LOGGER.warn(String.format(message, args));
+		TTSMod.LOGGER_SLF4J.warn(message, args);
 	}
 }

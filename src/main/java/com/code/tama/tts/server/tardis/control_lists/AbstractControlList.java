@@ -7,10 +7,10 @@ import lombok.Getter;
 import org.joml.Vector3f;
 
 public abstract class AbstractControlList {
+	private int ID = 0;
+
 	@Getter
 	public ArrayList<ControlEntityRecord> PositionSizeMap = new ArrayList<>();
-
-	private int ID = 0;
 
 	public AbstractControlList() {
 	}

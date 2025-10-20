@@ -9,10 +9,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractFlightSound {
-	boolean Finished;
 	private boolean Started;
 	private FlightSoundThread flightSoundThread;
 	private long startedTime = 0;
+	boolean Finished;
 
 	public abstract int GetLength();
 

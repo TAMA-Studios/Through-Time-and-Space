@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class DematerializationCircuit extends AbstractSubsystem {
 
 	public DematerializationCircuit(BlockPos blockPos, boolean Activated) {
-		super(blockPos, Activated);
+		super(Activated, blockPos);
 	}
 
 	@Override

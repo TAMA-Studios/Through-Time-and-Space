@@ -18,42 +18,6 @@ public class PhysicalStateManager {
 
 	/* ==================== SERVER METHODS ==================== */
 
-	public void clientLand(long startTick) {
-		landAnimation(startTick, false);
-	}
-
-	public void clientTakeOff(long startTick) {
-		takeOffAnimation(startTick, false);
-	}
-
-	/* ==================== CLIENT ENTRY POINTS ==================== */
-
-	public void serverLand() {
-		itardisLevel.Land();
-		long tick = this.itardisLevel.GetLevel().getGameTime();
-		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetLanding().PlayIfFinished(player.level(), player.blockPosition()));
-		Networking.sendPacketToDimension(
-				new ExteriorStatePacket(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
-						ExteriorStatePacket.State.LAND, tick),
-				this.itardisLevel.GetLevel());
-		landAnimation(tick, true);
-	}
-
-	public void serverTakeOff() {
-		long tick = exteriorTile.getLevel().getGameTime();
-		// send packet to everyone in the dimension
-		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));
-		Networking.sendPacketToDimension(
-				new ExteriorStatePacket(exteriorTile.getBlockPos(), ExteriorStatePacket.State.TAKEOFF, tick),
-				exteriorTile.getLevel());
-		// run the animation server-side with authority
-		takeOffAnimation(tick, true);
-	}
-
-	/* ==================== ANIMATION CORE ==================== */
-
 	private void landAnimation(long startTick, boolean server) {
 		float base = 1.0f;
 		float initialAmp = 1.0f;
@@ -98,5 +62,41 @@ public class PhysicalStateManager {
 				}
 			}
 		}
+	}
+
+	/* ==================== CLIENT ENTRY POINTS ==================== */
+
+	public void clientLand(long startTick) {
+		landAnimation(startTick, false);
+	}
+
+	public void clientTakeOff(long startTick) {
+		takeOffAnimation(startTick, false);
+	}
+
+	/* ==================== ANIMATION CORE ==================== */
+
+	public void serverLand() {
+		itardisLevel.Land();
+		long tick = this.itardisLevel.GetLevel().getGameTime();
+		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
+				.getFlightSoundScheme().GetLanding().PlayIfFinished(player.level(), player.blockPosition()));
+		Networking.sendPacketToDimension(
+				new ExteriorStatePacket(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
+						ExteriorStatePacket.State.LAND, tick),
+				this.itardisLevel.GetLevel());
+		landAnimation(tick, true);
+	}
+
+	public void serverTakeOff() {
+		long tick = exteriorTile.getLevel().getGameTime();
+		// send packet to everyone in the dimension
+		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
+				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));
+		Networking.sendPacketToDimension(
+				new ExteriorStatePacket(exteriorTile.getBlockPos(), ExteriorStatePacket.State.TAKEOFF, tick),
+				exteriorTile.getLevel());
+		// run the animation server-side with authority
+		takeOffAnimation(tick, true);
 	}
 }

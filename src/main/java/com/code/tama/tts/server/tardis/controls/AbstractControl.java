@@ -23,10 +23,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public abstract class AbstractControl {
-	public long animationStartTime = Long.MAX_VALUE;
 	private float AnimationState = 0.0f;
-
 	private boolean NeedsUpdate;
+
+	public long animationStartTime = Long.MAX_VALUE;
 
 	public static void Spark(Level level, Vec3 pos) {
 		if (!level.isClientSide)

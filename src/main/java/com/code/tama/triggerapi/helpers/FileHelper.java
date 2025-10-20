@@ -10,6 +10,10 @@ import com.code.tama.triggerapi.Logger;
 import com.code.tama.triggerapi.TriggerAPI;
 
 public class FileHelper {
+	private static String getBaseDir() {
+		return "TriggerAPI/" + TriggerAPI.MOD_ID + "/stored";
+	}
+
 	public static boolean appendToStoredFile(String fileName, String content) {
 		Path dirPath = FMLPaths.GAMEDIR.get().resolve(getBaseDir());
 		File directory = dirPath.toFile();
@@ -96,9 +100,5 @@ public class FileHelper {
 	public static boolean storedFileExists(String fileName) {
 		Path filePath = FMLPaths.GAMEDIR.get().resolve(getBaseDir()).resolve(fileName + ".txt");
 		return filePath.toFile().exists();
-	}
-
-	private static String getBaseDir() {
-		return "TriggerAPI/" + TriggerAPI.MOD_ID + "/stored";
 	}
 }

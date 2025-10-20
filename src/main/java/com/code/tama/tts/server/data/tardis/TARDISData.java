@@ -53,6 +53,7 @@ public class TARDISData {
 					ResourceLocation.CODEC.fieldOf("vortex").forGetter(TARDISData::getVortex))
 			.apply(instance, TARDISData::new));
 
+	private long ticks = 0;
 	ControlParameters ControlData = new ControlParameters();
 	ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
 	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
@@ -65,7 +66,6 @@ public class TARDISData {
 	Map<UUID, PlayerPosition> ViewingPlayerMap = new HashMap<>();
 	ResourceLocation Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness");
 	SpaceTimeCoordinate doorBlock = new SpaceTimeCoordinate();
-	private long ticks = 0;
 
 	public TARDISData(TARDISLevelCapability TARDIS) {
 		this.TARDIS = TARDIS;
@@ -93,6 +93,13 @@ public class TARDISData {
 			this.Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png");
 		else
 			this.Vortex = vortex;
+	}
+
+	@Nullable Player GetOwner() {
+		if (this.TARDIS.GetLevel().isClientSide)
+			return null;
+		// return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
+		return this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID());
 	}
 
 	public void CycleVariant() {
@@ -142,12 +149,5 @@ public class TARDISData {
 			return ExteriorsRegistry.EXTERIORS.get(0);
 		}
 		return this.ExteriorModel;
-	}
-
-	@Nullable Player GetOwner() {
-		if (this.TARDIS.GetLevel().isClientSide)
-			return null;
-		// return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
-		return this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID());
 	}
 }
