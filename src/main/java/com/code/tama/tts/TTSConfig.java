@@ -20,10 +20,10 @@ public class TTSConfig {
 			builder.comment("Through Time and Space - A Config");
 			builder.push("BOTI Related Configs");
 
-			builder.comment("BOTI Render Distance (minimum 0, max 16, default 6)");
+			builder.comment("BOTI Render Distance (Default 6)");
 			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
-			builder.comment("Is BOTI Enabled");
-			BOTI_ENABLED = builder.define("boti_enabled", true);
+			builder.comment("Is BOTI Enabled (values: true/false. Default false)");
+			BOTI_ENABLED = builder.define("boti_enabled", false);
 
 			builder.pop();
 		}
@@ -45,9 +45,9 @@ public class TTSConfig {
 			builder.comment("Through Time and Space - A Config");
 			builder.push("BOTI Related Configs");
 
-			builder.comment("BOTI Render Distance (minimum 0, max 16, default 6)");
+			builder.comment("BOTI Render Distance (Default 6)");
 			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
-			builder.comment("Is BOTI Enabled");
+			builder.comment("Is BOTI Enabled (Values: true/false. Default true)");
 			BOTI_ENABLED = builder.define("boti_enabled", true);
 
 			builder.pop();

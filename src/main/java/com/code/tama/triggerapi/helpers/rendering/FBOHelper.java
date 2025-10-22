@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.rendering;
 
-import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
-
-import java.util.function.BiConsumer;
-
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.IHelpWithFBOs;
+import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
@@ -21,9 +20,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -39,10 +35,12 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.IHelpWithFBOs;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import java.util.function.BiConsumer;
+
+import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
@@ -241,10 +239,6 @@ public class FBOHelper {
 			BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawFrame,
 			BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawScene) {
 		RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
-
-		if (ModList.get().isLoaded("immersive_portals")) {
-			return; // Don't even risk it
-		}
 
 		if (!((IHelpWithFBOs) mainTarget).tts$IsStencilBufferEnabled())
 			((IHelpWithFBOs) mainTarget).tts$SetStencilBufferEnabled(true);

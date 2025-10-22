@@ -12,7 +12,7 @@ public abstract class TickingTile extends BlockEntity {
 		super(p_155228_, p_155229_, p_155230_);
 	}
 
-	public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState state, T tile) {
+	public static <T extends BlockEntity> void tick(Level ignoredLevel, BlockPos ignoredblockPos, BlockState ignoredState, T tile) {
 		((TickingTile) tile).tick();
 	}
 
