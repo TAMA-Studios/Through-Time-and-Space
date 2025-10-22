@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.biomes;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.compat.CompatClass;
 import com.code.tama.tts.server.worlds.biomes.surface.MSurfaceRules;
-import net.minecraftforge.fml.ModList;
 import terrablender.api.SurfaceRuleManager;
 
-import static com.code.tama.tts.TTSMod.MODID;
+import net.minecraftforge.fml.ModList;
 
 public class MTerrablender extends CompatClass {
 	@Override

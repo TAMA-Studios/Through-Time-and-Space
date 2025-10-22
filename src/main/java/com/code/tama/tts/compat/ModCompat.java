@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.compat;
 
+import java.util.ArrayList;
+
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.worlds.biomes.MTerrablender;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-import java.util.ArrayList;
 
 public class ModCompat {
 	private static int ID = 0;
@@ -26,7 +27,8 @@ public class ModCompat {
 		RegisterCompats();
 
 		compatList.forEach(container -> {
-			if (ModList.get().isLoaded(container.modid)) container.aClass.runCompat();
+			if (ModList.get().isLoaded(container.modid))
+				container.aClass.runCompat();
 		});
 	}
 
@@ -34,7 +36,8 @@ public class ModCompat {
 		Networking.registerPackets();
 		event.enqueueWork(() -> {
 			compatList.forEach(container -> {
-				if(ModList.get().isLoaded(container.modid)) container.aClass.runCommonSetup();
+				if (ModList.get().isLoaded(container.modid))
+					container.aClass.runCommonSetup();
 			});
 		});
 	}

@@ -1,9 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.dimensions.TARDISArtificalDimensionChunkGenerator;
 import com.code.tama.tts.server.dimensions.TARDISNaturalDimensionChunkGenerator;
@@ -13,6 +18,8 @@ import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -48,14 +55,10 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 
 /** DimensionAPI internal implementation */
 @SuppressWarnings("deprecation")
@@ -67,15 +70,14 @@ public final class DimensionManager implements DimensionAPI {
 
 	private Set<ResourceKey<Level>> levelsPendingUnregistration = new HashSet<>();
 
-	private DimensionManager() {}
+	private DimensionManager() {
+	}
 
 	/** ======================== Core Dimension Creation ======================== */
 
 	@SuppressWarnings("deprecation")
-	private static ServerLevel createAndRegisterLevel(MinecraftServer server,
-													  Map<ResourceKey<Level>, ServerLevel> map,
-													  ResourceKey<Level> levelKey,
-													  Supplier<LevelStem> dimensionFactory) {
+	private static ServerLevel createAndRegisterLevel(MinecraftServer server, Map<ResourceKey<Level>, ServerLevel> map,
+			ResourceKey<Level> levelKey, Supplier<LevelStem> dimensionFactory) {
 
 		ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 		LevelStem dimension = dimensionFactory.get();
@@ -85,7 +87,8 @@ public final class DimensionManager implements DimensionAPI {
 				.apply(server).create(11);
 		Executor executor = ReflectionBuddy.MinecraftServerAccess.executor.apply(server);
 		var storageAccess = ReflectionBuddy.MinecraftServerAccess.storageSource.apply(server);
-		DerivedLevelData derivedData = new DerivedLevelData(server.getWorldData(), server.getWorldData().overworldData());
+		DerivedLevelData derivedData = new DerivedLevelData(server.getWorldData(),
+				server.getWorldData().overworldData());
 
 		// Register dimension
 		var dimensionRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
@@ -96,13 +99,12 @@ public final class DimensionManager implements DimensionAPI {
 			throw new IllegalStateException("Dimension registry not writable: " + dimensionKey.location());
 		}
 
-		ServerLevel newLevel = new ServerLevel(server, executor, storageAccess, derivedData,
-				levelKey, dimension, progressListener,
-				server.getWorldData().isDebugWorld(),
-				overworld.getSeed(), List.of(), false, null);
+		ServerLevel newLevel = new ServerLevel(server, executor, storageAccess, derivedData, levelKey, dimension,
+				progressListener, server.getWorldData().isDebugWorld(), overworld.getSeed(), List.of(), false, null);
 
 		// Add world border listener
-		overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
+		overworld.getWorldBorder()
+				.addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 
 		// Register level
 		map.put(levelKey, newLevel);
@@ -131,15 +133,17 @@ public final class DimensionManager implements DimensionAPI {
 	public static void prepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {
 		LOGGER.info("Preparing dynamic dimension: {}", level.dimension().location());
 		chunkProgress.updateSpawnPos(new ChunkPos(level.getSharedSpawnPos()));
-		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11, Unit.INSTANCE);
+		level.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(level.getSharedSpawnPos()), 11,
+				Unit.INSTANCE);
 	}
 
 	public static LevelStem createLevelCopy(MinecraftServer server) {
 		ServerLevel oldLevel = server.overworld();
 		DynamicOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, server.registryAccess());
 		ChunkGenerator newGen = ChunkGenerator.CODEC.encodeStart(ops, oldLevel.getChunkSource().getGenerator())
-				.flatMap(nbt -> ChunkGenerator.CODEC.parse(ops, nbt))
-				.getOrThrow(false, s -> { throw new CommandRuntimeException(Component.literal("Error copying dimension: " + s)); });
+				.flatMap(nbt -> ChunkGenerator.CODEC.parse(ops, nbt)).getOrThrow(false, s -> {
+					throw new CommandRuntimeException(Component.literal("Error copying dimension: " + s));
+				});
 		return new LevelStem(oldLevel.dimensionTypeRegistration(), newGen);
 	}
 
@@ -147,7 +151,8 @@ public final class DimensionManager implements DimensionAPI {
 
 	@SuppressWarnings("deprecation")
 	private void unregisterScheduledDimensions(MinecraftServer server) {
-		if (levelsPendingUnregistration.isEmpty()) return;
+		if (levelsPendingUnregistration.isEmpty())
+			return;
 
 		Set<ResourceKey<Level>> keysToRemove = levelsPendingUnregistration;
 		levelsPendingUnregistration = new HashSet<>();
@@ -156,29 +161,36 @@ public final class DimensionManager implements DimensionAPI {
 		ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
 		var oldRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
-		if (!(oldRegistry instanceof MappedRegistry<LevelStem> oldMappedRegistry)) return;
+		if (!(oldRegistry instanceof MappedRegistry<LevelStem> oldMappedRegistry))
+			return;
 
 		var layeredRegistryAccess = ReflectionBuddy.MinecraftServerAccess.registries.apply(server);
 		var composite = ReflectionBuddy.LayeredRegistryAccessAccess.composite.apply(layeredRegistryAccess);
-		if (!(composite instanceof ImmutableRegistryAccess)) return;
+		if (!(composite instanceof ImmutableRegistryAccess))
+			return;
 
 		for (ResourceKey<Level> levelKey : keysToRemove) {
 			@Nullable ServerLevel level = server.getLevel(levelKey);
-			if (level == null) continue;
+			if (level == null)
+				continue;
 
 			UnregisterDimensionEvent event = new UnregisterDimensionEvent(level);
-			if (MinecraftForge.EVENT_BUS.post(event)) continue;
+			if (MinecraftForge.EVENT_BUS.post(event))
+				continue;
 
 			@Nullable ServerLevel removedLevel = server.forgeGetWorldMap().remove(levelKey);
-			if (removedLevel == null) continue;
+			if (removedLevel == null)
+				continue;
 
 			// Eject players
 			for (ServerPlayer player : Lists.newArrayList(removedLevel.players())) {
 				ResourceKey<Level> respawn = player.getRespawnDimension();
-				if (keysToRemove.contains(respawn)) respawn = Level.OVERWORLD;
+				if (keysToRemove.contains(respawn))
+					respawn = Level.OVERWORLD;
 				ServerLevel dest = server.getLevel(respawn != null ? respawn : Level.OVERWORLD);
 				BlockPos pos = player.getRespawnPosition();
-				if (pos == null) pos = dest.getSharedSpawnPos();
+				if (pos == null)
+					pos = dest.getSharedSpawnPos();
 				player.teleportTo(dest, pos.getX(), pos.getY(), pos.getZ(), player.getRespawnAngle(), 0f);
 			}
 
@@ -186,32 +198,33 @@ public final class DimensionManager implements DimensionAPI {
 			MinecraftForge.EVENT_BUS.post(new LevelEvent.Unload(removedLevel));
 
 			// Remove border listener
-			overworld.getWorldBorder().removeListener(
-					ReflectionBuddy.WorldBorderAccess.listeners.apply(overworld.getWorldBorder())
-							.stream()
-							.filter(l -> l instanceof BorderChangeListener.DelegateBorderChangeListener delegate &&
-									ReflectionBuddy.DelegateBorderChangeListenerAccess.worldBorder.apply(delegate) == removedLevel.getWorldBorder())
-							.findFirst()
-							.orElse(null)
-			);
+			overworld.getWorldBorder().removeListener(ReflectionBuddy.WorldBorderAccess.listeners
+					.apply(overworld.getWorldBorder()).stream()
+					.filter(l -> l instanceof BorderChangeListener.DelegateBorderChangeListener delegate
+							&& ReflectionBuddy.DelegateBorderChangeListenerAccess.worldBorder
+									.apply(delegate) == removedLevel.getWorldBorder())
+					.findFirst().orElse(null));
 
 			removedKeys.add(levelKey);
 		}
 
 		if (!removedKeys.isEmpty()) {
 			// Rebuild registry with remaining dimensions
-			MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM, oldMappedRegistry.registryLifecycle());
+			MappedRegistry<LevelStem> newRegistry = new MappedRegistry<>(Registries.LEVEL_STEM,
+					oldMappedRegistry.registryLifecycle());
 			oldRegistry.entrySet().forEach(entry -> {
 				ResourceKey<LevelStem> key = entry.getKey();
 				ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, key.location());
-				if (!removedKeys.contains(levelKey)) newRegistry.register(key, entry.getValue(), oldRegistry.lifecycle(entry.getValue()));
+				if (!removedKeys.contains(levelKey))
+					newRegistry.register(key, entry.getValue(), oldRegistry.lifecycle(entry.getValue()));
 			});
 
 			// Update layered registries
 			List<RegistryAccess.Frozen> newRegistryAccessList = new ArrayList<>();
 			for (RegistryLayer layer : RegistryLayer.values()) {
 				if (layer == RegistryLayer.DIMENSIONS) {
-					newRegistryAccessList.add(new RegistryAccess.ImmutableRegistryAccess(List.of(newRegistry)).freeze());
+					newRegistryAccessList
+							.add(new RegistryAccess.ImmutableRegistryAccess(List.of(newRegistry)).freeze());
 				} else {
 					newRegistryAccessList.add(layeredRegistryAccess.getLayer(layer));
 				}
@@ -220,7 +233,8 @@ public final class DimensionManager implements DimensionAPI {
 			Map<ResourceKey<? extends Registry<?>>, Registry<?>> newMap = new HashMap<>();
 			newRegistryAccessList.forEach(r -> r.registries().toList().forEach(e -> newMap.put(e.key(), e.value())));
 
-			ReflectionBuddy.LayeredRegistryAccessAccess.values.set(layeredRegistryAccess, List.copyOf(newRegistryAccessList));
+			ReflectionBuddy.LayeredRegistryAccessAccess.values.set(layeredRegistryAccess,
+					List.copyOf(newRegistryAccessList));
 			ReflectionBuddy.ImmutableRegistryAccessAccess.registries.set((ImmutableRegistryAccess) composite, newMap);
 
 			server.markWorldsDirty();
@@ -230,13 +244,15 @@ public final class DimensionManager implements DimensionAPI {
 
 	/** ======================== Public API ======================== */
 
-	public ServerLevel getOrCreateLevel(MinecraftServer server, ResourceKey<Level> levelKey, Supplier<LevelStem> factory) {
+	public ServerLevel getOrCreateLevel(MinecraftServer server, ResourceKey<Level> levelKey,
+			Supplier<LevelStem> factory) {
 		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
 		return map.getOrDefault(levelKey, createAndRegisterLevel(server, map, levelKey, factory));
 	}
 
 	public void markDimensionForUnregistration(MinecraftServer server, ResourceKey<Level> level) {
-		if (!VANILLA_LEVELS.contains(level)) levelsPendingUnregistration.add(level);
+		if (!VANILLA_LEVELS.contains(level))
+			levelsPendingUnregistration.add(level);
 	}
 
 	public Set<ResourceKey<Level>> getLevelsPendingUnregistration() {
@@ -244,7 +260,8 @@ public final class DimensionManager implements DimensionAPI {
 	}
 
 	ServerLevel createDimension(MinecraftServer server, ResourceLocation location) {
-		return getOrCreateLevel(server, ResourceKey.create(Registries.DIMENSION, location), () -> createLevelCopy(server));
+		return getOrCreateLevel(server, ResourceKey.create(Registries.DIMENSION, location),
+				() -> createLevelCopy(server));
 	}
 
 	/** ======================== Forge Event Handler ======================== */
@@ -254,11 +271,11 @@ public final class DimensionManager implements DimensionAPI {
 		@SubscribeEvent
 		public static void onServerAboutToStart(ServerAboutToStartEvent event) {
 			MinecraftServer server = event.getServer();
-			if (server.overworld() == null) return;
+			if (server.overworld() == null)
+				return;
 
 			Registry<LevelStem> reg = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
-			reg.entrySet().stream()
-					.filter(e -> e.getKey().location().getNamespace().equals(MODID))
+			reg.entrySet().stream().filter(e -> e.getKey().location().getNamespace().equals(MODID))
 					.forEach(e -> DimensionManager.INSTANCE.getOrCreateLevel(server,
 							ResourceKey.create(Registries.DIMENSION, e.getKey().location()), () -> e.getValue()));
 		}
@@ -272,7 +289,8 @@ public final class DimensionManager implements DimensionAPI {
 		public static void onServerTick(ServerTickEvent event) {
 			if (event.phase == TickEvent.Phase.END) {
 				MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-				if (server != null) DimensionManager.INSTANCE.unregisterScheduledDimensions(server);
+				if (server != null)
+					DimensionManager.INSTANCE.unregisterScheduledDimensions(server);
 			}
 		}
 	}

@@ -1,10 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -22,6 +25,9 @@ import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -42,15 +48,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 @SuppressWarnings("unchecked")
 public class ExteriorTile extends AbstractPortalTile {
@@ -129,8 +131,8 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	@Nullable public ExteriorBlock GetBlock() {
-        assert this.level != null;
-        if (this.level.getServer() != null) {
+		assert this.level != null;
+		if (this.level.getServer() != null) {
 			assert this.level != null;
 			Block block = this.level.getServer().getLevel(this.level.dimension()).getBlockState(this.getBlockPos())
 					.getBlock();
@@ -158,8 +160,8 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void PlaceInterior(Structures structure) {
-        assert this.getLevel() != null;
-        if (this.getLevel().isClientSide)
+		assert this.getLevel() != null;
+		if (this.getLevel().isClientSide)
 			return;
 		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
 				new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),

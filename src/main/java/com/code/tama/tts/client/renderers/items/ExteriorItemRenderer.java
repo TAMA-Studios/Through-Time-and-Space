@@ -1,15 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -18,13 +16,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
-	ExteriorTile dummyBlockEntity;
-	BlockState dummyState;
-	TardisExteriorRenderer<ExteriorTile> renderer;
 	ExteriorModelContainer exteriorModelContainer;
 	JavaJSONModel model;
 	public ExteriorItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
@@ -34,20 +30,22 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 	@Override
 	public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext context,
 			@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
-//		if(dummyState == null)
-//			dummyState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
-//		if(dummyBlockEntity == null) {
-//			dummyBlockEntity = new ExteriorTile(BlockPos.ZERO, dummyState);
-//			dummyBlockEntity.ShouldMakeDimOnNextTick = false;
-//			dummyBlockEntity.setTransparency(1);
-//			dummyBlockEntity.Model = ExteriorsRegistry.Get(0);
-//		}
-//
-//		if(renderer == null) renderer = (TardisExteriorRenderer<ExteriorTile>) Minecraft.getInstance()
-//				.getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);
-		if(exteriorModelContainer == null) {
+		// if(dummyState == null)
+		// dummyState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
+		// if(dummyBlockEntity == null) {
+		// dummyBlockEntity = new ExteriorTile(BlockPos.ZERO, dummyState);
+		// dummyBlockEntity.ShouldMakeDimOnNextTick = false;
+		// dummyBlockEntity.setTransparency(1);
+		// dummyBlockEntity.Model = ExteriorsRegistry.Get(0);
+		// }
+		//
+		// if(renderer == null) renderer = (TardisExteriorRenderer<ExteriorTile>)
+		// Minecraft.getInstance()
+		// .getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);
+		if (exteriorModelContainer == null) {
 			exteriorModelContainer = ExteriorsRegistry.Get(0);
-            model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel())).getModelInfo().getModel();
+			model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))
+					.getModelInfo().getModel();
 		}
 		poseStack.pushPose();
 
@@ -67,8 +65,9 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 			poseStack.scale(0.3f, 0.3f, 0.3f);
 		}
 
-		if(model != null) {
-			model.renderToBuffer(poseStack, buffer.getBuffer(model.renderType(exteriorModelContainer.getTexture())), 0xf000f0, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+		if (model != null) {
+			model.renderToBuffer(poseStack, buffer.getBuffer(model.renderType(exteriorModelContainer.getTexture())),
+					0xf000f0, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 		}
 
 		poseStack.popPose();

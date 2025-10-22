@@ -37,7 +37,8 @@ public class SonicBlockMode extends SonicMode {
 	public void onUse(UseOnContext context) {
 		Player player = context.getPlayer();
 		BlockHitResult hitResult = RayTraceUtils.getLookingAtBlock(25);
-		assert hitResult != null;
+		if (hitResult == null)
+			return;
 		BlockPos usedPos = hitResult.getBlockPos(); // context.getClickedPos();
 		assert player != null;
 		BlockState state = player.level().getBlockState(usedPos);

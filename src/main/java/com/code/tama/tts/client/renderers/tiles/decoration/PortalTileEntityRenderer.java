@@ -1,14 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.decoration;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -20,7 +19,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.rendering.BotiPortalModel;
 
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
 	private final Minecraft mc = Minecraft.getInstance();
@@ -38,14 +39,13 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 			return;
 		}
 
-		stack.pushPose();
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) // || ModList.get().isLoaded("immersive_portals")
 			return;
+		stack.pushPose();
 
 		portal.getFBOContainer().Render(stack, (pose, botiSource) -> {
 			pose.pushPose();
-			StencilUtils.drawColoredFrame(pose, 1, 2, portal.SkyColor);
-			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
+			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.solid()),
 					0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 			pose.popPose();
 		}, (pose, botiSource) -> {

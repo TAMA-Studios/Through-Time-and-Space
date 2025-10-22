@@ -3,6 +3,8 @@ package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -12,10 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 
 public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
 	public static final int fullBright = 0xF000F0; // LightTexture.pack(15, 15);
@@ -23,6 +27,9 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 	public final BlockEntityRendererProvider.Context context;
 	public AbstractJSONRenderer json;
 	public String modelName = "";
+
+	ExteriorModelContainer exteriorModelContainer;
+	JavaJSONModel model;
 
 	public ChameleonCircuitRenderer(BlockEntityRendererProvider.Context context) {
 		this.context = context;
@@ -54,19 +61,32 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			float g = 1.0f - (blueTintFactor / 2);
 			float b = 1.0f;
 
-			if (this.json == null || this.MODEL == null
-					|| !this.modelName.equals(cap.GetData().getExteriorModel().getName())) {
-				this.json = new AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
-				this.MODEL = json.getModel();
-				this.modelName = cap.GetData().getExteriorModel().getName();
-			}
+			// if (this.json == null || this.MODEL == null
+			// || !this.modelName.equals(cap.GetData().getExteriorModel().getName())) {
+			// this.json = new
+			// AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
+			// this.MODEL = json.getModel();
+			// this.modelName = cap.GetData().getExteriorModel().getName();
+			// }
 
 			poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
 
-			this.MODEL.renderToBuffer(poseStack,
-					bufferSource.getBuffer(RenderType.entityTranslucent(json.getTexture())), fullBright,
-					OverlayTexture.NO_OVERLAY, r, g, b, flicker);
+			// this.MODEL.renderToBuffer(poseStack,
+			// bufferSource.getBuffer(RenderType.entityTranslucent(json.getTexture())),
+			// fullBright,
+			// OverlayTexture.NO_OVERLAY, r, g, b, flicker);
 
+			if (exteriorModelContainer == null) {
+				exteriorModelContainer = ExteriorsRegistry.Get(0);
+				model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))
+						.getModelInfo().getModel();
+			}
+
+			if (model != null) {
+				model.renderToBuffer(poseStack,
+						bufferSource.getBuffer(model.renderType(exteriorModelContainer.getTexture())), 0xf000f0,
+						OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+			}
 			poseStack.popPose();
 
 			poseStack.pushPose();
