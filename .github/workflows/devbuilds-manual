@@ -1,0 +1,127 @@
+name: Manual — Donator Builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      gradle_tasks:
+        description: 'Gradle tasks to run'
+        required: false
+        default: 'clean build'
+      triggerapi_repo:
+        description: 'Optional: Git URL to TriggerAPI (leave blank to skip)'
+        required: false
+        default: ''
+      triggerapi_ref:
+        description: 'Optional: Branch/Tag/SHA for TriggerAPI (ignored if repo blank)'
+        required: false
+        default: 'main'
+      jdk:
+        description: 'Java version'
+        required: false
+        default: '17'
+      beta_flag:
+        description: 'Set BETA=1 to exclude assets for dev/beta builds'
+        required: false
+        default: '0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      BETA: ${{ inputs.beta_flag }}
+
+    steps:
+      - name: Checkout source (full, submodules, LFS)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          lfs: true
+
+      - name: Java ${{ inputs.jdk }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.jdk }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.10.2
+
+      - name: Show Git info
+        run: |
+          git status
+          git submodule status || true
+
+      # Optional: build & install TriggerAPI into mavenLocal if provided
+      - name: Prepare TriggerAPI (optional)
+        if: ${{ inputs.triggerapi_repo != '' }}
+        run: |
+          set -euxo pipefail
+          git clone --depth 1 --branch "${{ inputs.triggerapi_ref }}" "${{ inputs.triggerapi_repo }}" triggerapi_ext
+          cd triggerapi_ext
+          ./gradlew --no-daemon --stacktrace --info publishToMavenLocal
+          cd ..
+          echo "Installed TriggerAPI into mavenLocal."
+
+      - name: Grant execute on gradlew (if wrapper is present)
+        run: |
+          if [ -f "./gradlew" ]; then chmod +x ./gradlew; fi
+
+      - name: Ensure wrapper exists (fallback)
+        run: |
+          if [ ! -f "./gradlew" ]; then
+            echo "gradlew not found; generating wrapper."
+            gradle wrapper
+            chmod +x ./gradlew
+          fi
+
+      - name: Spotless (optional)
+        run: |
+          if ./gradlew -q tasks --all | grep -q "^spotlessApply"; then
+            ./gradlew --no-daemon --stacktrace --info spotlessApply
+          else
+            echo "spotlessApply not present; skipping."
+          fi
+
+      - name: Print compile classpath (debug)
+        run: |
+          ./gradlew --no-daemon --stacktrace --info :dependencies --configuration compileClasspath || true
+
+      - name: Build
+        run: ./gradlew --no-daemon --stacktrace --info ${{ inputs.gradle_tasks }}
+
+      - name: Rename artifacts with run number and ref
+        shell: bash
+        run: |
+          set -euxo pipefail
+          shopt -s nullglob
+          for f in build/libs/*.jar; do
+            base="${f%.jar}"
+            mv "$f" "${base}-B${{ github.run_number }}-${{ github.ref_name || 'manual' }}.jar"
+          done
+
+      - name: Upload artifact to Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: tts-dev-build-B${{ github.run_number }}
+          path: "build/libs/*.jar"
+          if-no-files-found: error
+          retention-days: 10
+
+      - name: Publish to Discord (optional)
+        if: ${{ secrets.DEV_BUILDS != '' }}
+        uses: DrTheodor/discord-webhook-upload-action@v0.2
+        with:
+          url: ${{ secrets.DEV_BUILDS }}
+          file: 'build/libs/*'
+          username: TAMAman
+          avatar: 'https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png'
+          commit: '> :sparkles: [%MESSAGE%](<%LINK%>) by [%AUTHOR%](<%AUTHOR_LINK%>) '
+          message: |
+            <:new1:1253371736510959636><:new2:1253371805734015006> New `Through Time and Space` dev build `#${{ github.run_number }}`:
+            %COMMITS%
