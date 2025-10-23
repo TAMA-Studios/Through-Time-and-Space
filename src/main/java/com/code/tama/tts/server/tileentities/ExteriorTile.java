@@ -15,8 +15,8 @@ import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
@@ -65,16 +65,17 @@ public class ExteriorTile extends AbstractPortalTile {
 	@Getter
 	@Setter
 	ResourceLocation ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
-	boolean isArtificial = false;
 	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
 
 	public LivingEntity Placer;
 
-	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true;
+	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true, isArtificial = false;
 
 	public boolean ThreadWorking = false;
 
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
+
+	int PlasmicShellPlates, StructuralBeams, Weld;
 
 	public ExteriorTile(BlockPos pos, BlockState state) {
 		super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);

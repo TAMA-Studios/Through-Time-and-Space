@@ -1,0 +1,6 @@
+{
+  "parent" : "minecraft:item/handheld",
+  "textures" : {
+    "layer0" : "tts:item/plasmic_shell_plating"
+  }
+}

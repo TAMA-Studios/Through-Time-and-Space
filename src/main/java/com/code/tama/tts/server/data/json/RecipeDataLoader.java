@@ -1,25 +1,24 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
-import org.slf4j.Logger;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class RecipeDataLoader implements ResourceManagerReloadListener {
@@ -39,7 +38,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 
 				// Validate nozzle as ResourceLocation
 				try {
-					BuiltInRegistries.ITEM.get(ResourceLocation.parse(nozzle)); // Will throw exception if invalid
+					BuiltInRegistries.ITEM.get(new ResourceLocation(nozzle)); // Will throw exception if invalid
 				} catch (IllegalArgumentException e) {
 					LOGGER.warn("Invalid nozzle ResourceLocation: {}", result);
 					return false;
@@ -47,7 +46,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 
 				// Validate result as ResourceLocation
 				try {
-					BuiltInRegistries.ITEM.get(ResourceLocation.parse(result)); // Will throw exception if invalid
+					BuiltInRegistries.ITEM.get(new ResourceLocation(result)); // Will throw exception if invalid
 				} catch (IllegalArgumentException e) {
 					LOGGER.warn("Invalid result ResourceLocation: {}", result);
 					return false;
@@ -58,7 +57,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 						String itemKey = String.valueOf(i);
 						if (valuesObject.has(itemKey)) {
 							String itemValue = valuesObject.get(itemKey).getAsString();
-							BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemValue)); // Will throw exception if
+							BuiltInRegistries.ITEM.get(new ResourceLocation(itemValue)); // Will throw exception if
 																							// invalid
 						}
 					}

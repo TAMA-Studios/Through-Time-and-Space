@@ -11,7 +11,7 @@ import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.extern.slf4j.Slf4j;

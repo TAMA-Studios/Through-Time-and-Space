@@ -300,9 +300,11 @@ spotless {
 
 		importOrder('java', 'javax', '', 'net.minecraft', "com.code.tama.triggerapi", group)
 
+		eclipse()
+
 		trimTrailingWhitespace()
 
-		eclipse()
+		leadingSpacesToTabs()
 
 		formatAnnotations()
 		// make sure every file has the following copyright header.

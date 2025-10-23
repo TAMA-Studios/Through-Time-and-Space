@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.misc;
+package com.code.tama.triggerapi;
 
 import static com.code.tama.tts.TTSMod.MODID;
 

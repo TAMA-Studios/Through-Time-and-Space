@@ -1,12 +1,11 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.misc;
+package com.code.tama.tts.server.misc.containers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -125,7 +124,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 		this.X = nbt.getDouble("x");
 		this.Y = nbt.getDouble("y");
 		this.Z = nbt.getDouble("z");
-		this.level = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("levelLoc")));
+		this.level = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("levelLoc")));
 	}
 
 	public ServerLevel getLevel() {

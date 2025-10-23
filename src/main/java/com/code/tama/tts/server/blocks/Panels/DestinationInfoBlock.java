@@ -11,7 +11,6 @@ import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.misc.GrammarNazi;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -41,6 +40,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import com.code.tama.triggerapi.GrammarNazi;
 
 @SuppressWarnings("deprecation")
 public class DestinationInfoBlock extends HorizontalDirectionalBlock {

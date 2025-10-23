@@ -3,7 +3,7 @@ package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
 import java.util.function.Supplier;
 
-import com.code.tama.tts.server.misc.containers.PhysicalStateManager;
+import com.code.tama.tts.server.misc.PhysicalStateManager;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.AllArgsConstructor;
 

@@ -11,7 +11,7 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;

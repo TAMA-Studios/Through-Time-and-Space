@@ -3,8 +3,7 @@ package com.code.tama.tts.server.items.gadgets;
 
 import java.util.List;
 
-import com.code.tama.tts.server.items.core.IAmAttunable;
-import com.code.tama.tts.server.misc.GrammarNazi;
+import com.code.tama.tts.server.items.core.AttunableItem;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.sonic.SonicBlockMode;
 import com.code.tama.tts.server.sonic.SonicBuilderMode;
@@ -24,7 +23,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,14 +32,15 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BrushableBlock;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
 
-public class SonicItem extends IAmAttunable {
+import com.code.tama.triggerapi.GrammarNazi;
+
+public class SonicItem extends AttunableItem {
 	private final int Variants;
 
 	@Getter
@@ -49,8 +48,17 @@ public class SonicItem extends IAmAttunable {
 	public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
 	public SonicItem(Properties properties, int variants) {
-		super(properties.durability(1000));
+		super(properties.durability(1000).setNoRepair());
 		this.Variants = variants;
+	}
+
+	/**
+	 * Override this to make sure people don't put mending on it like a certain
+	 * <i>REGENERATION MOD</i>s fob watch
+	 **/
+	@Override
+	public boolean isEnchantable(@NotNull ItemStack stack) {
+		return false;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -114,17 +122,18 @@ public class SonicItem extends IAmAttunable {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip,
+			@NotNull TooltipFlag flagIn) {
 		tooltip.add(Component.literal("Sonic Screwdriver! Doesn't work on wood and allat"));
-		tooltip.add(Component.literal("Power - " + stack.getDamageValue()));
+		tooltip.add(Component.literal("Power - " + GetPower(stack)));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
-	public boolean canAttackBlock(@NotNull BlockState p_40962_, Level p_40963_, @NotNull BlockPos p_40964_,
-			@NotNull Player p_40965_) {
+	public boolean canAttackBlock(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull Player p_41444_) {
 		if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode) {
-			sonicBuilderMode.handleInteraction(p_40965_, p_40962_, p_40963_, p_40964_, false,
-					p_40965_.getItemInHand(InteractionHand.MAIN_HAND), this.getDescriptionId());
+			sonicBuilderMode.handleInteraction(p_41444_, state, level, pos, false,
+					p_41444_.getItemInHand(InteractionHand.MAIN_HAND), this.getDescriptionId());
 			return false;
 		}
 
@@ -135,7 +144,7 @@ public class SonicItem extends IAmAttunable {
 	public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack,
 			int i) {
 		// if (this.InteractionType != SonicInteractionType.SCANNER) return;
-		// if Item durability is 0, stop using
+		// if Item durability (powah) is 0, stop using
 		if (itemStack.getDamageValue() >= itemStack.getMaxDamage() - 1) {
 			livingEntity.releaseUsingItem();
 			return;
@@ -180,12 +189,6 @@ public class SonicItem extends IAmAttunable {
 		}
 	}
 
-	public void playDoorSound(@Nullable Entity entity, @NotNull Level level, BlockPos blockPos, boolean bl,
-			DoorBlock Block) {
-		level.playSound(entity, blockPos, bl ? Block.type().doorOpen() : Block.type().doorClose(), SoundSource.BLOCKS,
-				1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-	}
-
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
 			@NotNull InteractionHand interactionHand) {
@@ -227,6 +230,7 @@ public class SonicItem extends IAmAttunable {
 	@Override
 	public @NotNull InteractionResult useOn(@NotNull UseOnContext useOnContext) {
 		if (useOnContext.getHand() == InteractionHand.OFF_HAND) {
+			assert useOnContext.getPlayer() != null;
 			if (useOnContext.getPlayer().isCrouching())
 				CycleVariant(useOnContext.getItemInHand());
 			else

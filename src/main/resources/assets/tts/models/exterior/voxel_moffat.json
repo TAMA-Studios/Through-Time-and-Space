@@ -520,9 +520,9 @@
     "pivot" : [ 0, 24, 0 ],
     "rotation" : [ 0, 0, 0 ]
   } ],
-  "lightmap" : "tts:exteriors/voxel/moffat/12a_lightmap",
+  "lightmap" : "tts:exteriors/voxel/moffat/m12a_lightmap",
   "scale" : 1,
-  "texture" : "tts:exteriors/voxel/moffat/12a_lightmap",
+  "texture" : "tts:exteriors/voxel/moffat/m12a",
   "texture_height" : 140,
   "texture_width" : 140
 }

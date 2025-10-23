@@ -1,19 +1,17 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.misc;
+package com.code.tama.tts.server.misc.containers;
 
+import com.code.tama.triggerapi.codec.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Builder;
 import lombok.Getter;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import com.code.tama.triggerapi.codec.Codecs;
 
 @Builder
 @Getter
@@ -37,7 +35,7 @@ public class PlayerPosition {
 		return new PlayerPositionBuilder().YRot(Float.parseFloat(string[0])).Xrot(Float.parseFloat(string[1]))
 				.pos(new Vec3(Double.parseDouble(string[2]), Double.parseDouble(string[3]),
 						Double.parseDouble(string[4])))
-				.levelKey(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(string[5]))).build();
+				.levelKey(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(string[5]))).build();
 	}
 
 	public BlockPos GetBlockPos() {

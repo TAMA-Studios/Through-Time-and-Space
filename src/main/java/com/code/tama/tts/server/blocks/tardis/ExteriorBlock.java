@@ -144,11 +144,12 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 
 	@Override
 	public void setPlacedBy(Level level, @NotNull BlockPos Pos, @NotNull BlockState State,
-			@org.jetbrains.annotations.Nullable LivingEntity livingEntity, @NotNull ItemStack stack) {
+			@Nullable LivingEntity livingEntity, @NotNull ItemStack stack) {
 		if (level.isClientSide || level.getServer() == null)
 			return;
 		if (level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
-			exteriorTile.ShouldMakeDimOnNextTick = true;
+			exteriorTile.ShouldMakeDimOnNextTick = false;
+			exteriorTile.IsEmptyShell = true;
 			exteriorTile.Placer = livingEntity;
 		}
 		super.setPlacedBy(level, Pos, State, livingEntity, stack);
@@ -175,7 +176,12 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 			@NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
 		if (level.getBlockEntity(blockPos) != null
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
-			if (!level.isClientSide && exteriorTile.GetInterior() != null)
+
+			if (exteriorTile.IsEmptyShell) {
+
+			}
+
+			else if (!level.isClientSide && exteriorTile.GetInterior() != null)
 				level.getServer().getLevel(exteriorTile.GetInterior())
 						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 						.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
@@ -183,5 +189,12 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 			exteriorTile.CycleDoors();
 		}
 		return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+	}
+
+	@Override
+	public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+			@NotNull BlockState state1, boolean simulated) {
+		super.onPlace(state, level, pos, state1, simulated);
+
 	}
 }

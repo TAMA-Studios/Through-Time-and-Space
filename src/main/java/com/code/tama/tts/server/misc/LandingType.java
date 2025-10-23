@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.misc.containers;
+package com.code.tama.tts.server.misc;
 
-import com.code.tama.tts.server.misc.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

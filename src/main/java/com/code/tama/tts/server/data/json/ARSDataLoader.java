@@ -1,25 +1,24 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
-import org.slf4j.Logger;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ARSDataLoader implements ResourceManagerReloadListener {
@@ -43,7 +42,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 
 				// Validate structure as ResourceLocation
 				try {
-					ResourceLocation.parse(location); // Will throw exception if invalid
+					new ResourceLocation(location); // Will throw exception if invalid
 				} catch (IllegalArgumentException e) {
 					LOGGER.warn("Invalid structure ResourceLocation: {}", location);
 					return false;

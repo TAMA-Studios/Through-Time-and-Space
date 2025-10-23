@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.misc;
+package com.code.tama.tts.server.misc.constants;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
 import com.mojang.brigadier.Command;
