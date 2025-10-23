@@ -14,24 +14,24 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
     
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'adopt'
       
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: 8.10.2
+          gradle-version: 8.8
 
       - name: Grant Execute Permissions for Gradlew
         run: chmod +x ./gradlew
 # yes this was copied from aseoha
       - name: More gradle
         run: gradle wrapper
-      - name: hold up. let him cook
+      - name: wax on wax off daniel-san
         run: ./gradlew spotlessApply
 
         
@@ -51,7 +51,7 @@ jobs:
         with:
           url: ${{ secrets.DEV_BUILDS }}
           file: 'build/libs/*'
-          username: TAMAman
+          username: TheMaster
           avatar: 'https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png'
           commit: '> :sparkles: [%MESSAGE%](<%LINK%>) by [%AUTHOR%](<%AUTHOR_LINK%>) '
           message: |
