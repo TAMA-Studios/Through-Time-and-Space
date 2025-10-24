@@ -57,8 +57,7 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 						String itemKey = String.valueOf(i);
 						if (valuesObject.has(itemKey)) {
 							String itemValue = valuesObject.get(itemKey).getAsString();
-							BuiltInRegistries.ITEM.get(new ResourceLocation(itemValue)); // Will throw exception if
-																							// invalid
+							BuiltInRegistries.ITEM.get(new ResourceLocation(itemValue));
 						}
 					}
 				} catch (IllegalArgumentException e) {
@@ -106,12 +105,13 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							ResourceLocation itemOne = new ResourceLocation(valuesObject.get("1").getAsString());
-							ResourceLocation itemTwo = new ResourceLocation(valuesObject.get("2").getAsString());
-							ResourceLocation itemThree = new ResourceLocation(valuesObject.get("3").getAsString());
-							ResourceLocation itemFour = new ResourceLocation(valuesObject.get("4").getAsString());
-							ResourceLocation itemFive = new ResourceLocation(valuesObject.get("5").getAsString());
-							ResourceLocation itemSix = new ResourceLocation(valuesObject.get("6").getAsString());
+							ResourceLocation itemOne = getResourceOrAir(valuesObject, "1");
+							ResourceLocation itemTwo = getResourceOrAir(valuesObject, "2");
+							ResourceLocation itemThree = getResourceOrAir(valuesObject, "3");
+							ResourceLocation itemFour = getResourceOrAir(valuesObject, "4");
+							ResourceLocation itemFive = getResourceOrAir(valuesObject, "5");
+							ResourceLocation itemSix = getResourceOrAir(valuesObject, "6");
+
 							ResourceLocation nozzle = new ResourceLocation(valuesObject.get("nozzle").getAsString());
 							ResourceLocation result = new ResourceLocation(valuesObject.get("result").getAsString());
 							int time = valuesObject.get("time").getAsInt();
@@ -136,5 +136,11 @@ public class RecipeDataLoader implements ResourceManagerReloadListener {
 
 		// Store the list of Data recipe room objects in the Data recipe Array
 		DataRecipeList.setList(dataRecipes);
+	}
+
+	private ResourceLocation getResourceOrAir(JsonObject obj, String key) {
+		return new ResourceLocation(
+				obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "air"
+		);
 	}
 }
