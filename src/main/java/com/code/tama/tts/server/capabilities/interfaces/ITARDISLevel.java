@@ -6,17 +6,17 @@ import com.code.tama.tts.server.data.tardis.TARDISData;
 import com.code.tama.tts.server.data.tardis.TARDISFlightData;
 import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
-	/** Returns whether the TARDIS is capable of flight in its current state * */
+	/** Returns whether the TARDIS is capable of flight in its current state */
 	boolean CanFly();
 
 	/**
@@ -68,11 +68,12 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	 *
 	 * </ul>
 	 */
+	@ApiStatus.Internal
 	void Fly();
 
 	void ForceLoadExteriorChunk(boolean ForceLoad);
 
-	/** THIS ONLY EXISTS CLIENT SIDE DO NOT REFERENCE IT FROM SERVERS * */
+	/** THIS ONLY EXISTS CLIENT SIDE DO NOT REFERENCE IT FROM SERVERS OTHERWISE YOU ARE GAY AND WILL CRASH EVERYTHING */
 	@OnlyIn(Dist.CLIENT)
 	TARDISClientData GetClientData();
 
@@ -91,6 +92,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	TARDISNavigationalData GetNavigationalData();
 
 	/** Finishes up the landing sequence * */
+	@ApiStatus.Internal
 	void Land();
 
 	/** Initiates the TARDIS Landing sequence * */

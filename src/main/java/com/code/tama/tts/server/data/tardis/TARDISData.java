@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.codec.Codecs;
+import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -20,13 +17,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -123,6 +122,13 @@ public class TARDISData {
 	public void SetLightLevel(float LightLevel) {
 		LightLevel = Math.max(Math.min(LightLevel, 1.5F), 0.1F);
 		this.LightLevel = LightLevel;
+	}
+
+	public float getLightLevel() {
+		if(this.isSparking()) {
+			return this.LightLevel - (MathUtils.clamp(this.TARDIS.GetLevel().random.nextFloat(), 0.0f, 0.4f) - 0.2f);
+		}
+		else return this.LightLevel;
 	}
 
 	public void SetPowered(boolean IsPoweredOn) {

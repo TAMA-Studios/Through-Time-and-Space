@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.data.json;
+package com.code.tama.tts.server.data.json.loaders;
 
+import com.code.tama.tts.server.data.json.DataRecipeList;
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
