@@ -48,7 +48,8 @@ public class PhysicalStateManager {
 		float freq = 0.3f;
 
 		while (!itardisLevel.GetFlightData().isInFlight()) {
-			long tick = exteriorTile.getLevel().getGameTime() - startTick;
+            assert exteriorTile.getLevel() != null;
+            long tick = exteriorTile.getLevel().getGameTime() - startTick;
 			float amp = (float) (initialAmp * Math.exp(-decay * tick));
 			float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
 			exteriorTile.setTransparency(alpha);
