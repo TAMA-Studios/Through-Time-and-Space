@@ -4,7 +4,10 @@ import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.PhysicalStateManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class ServerThreads {
     public static Thread TakeoffThread(ITARDISLevel tardis) {
         return ThreadUtils.NewThread((itardisLevel) -> {
