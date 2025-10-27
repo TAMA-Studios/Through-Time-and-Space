@@ -19,6 +19,7 @@ import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
+import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
@@ -56,6 +57,8 @@ import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 @SuppressWarnings("unchecked")
 public class ExteriorTile extends AbstractPortalTile {
+	public ExteriorStatePacket.State state = ExteriorStatePacket.State.LAND;
+
 	private ResourceKey<Level> INTERIOR_DIMENSION;
 	@Getter
 	private float transparency = 1.0f; // Default fully visible
@@ -424,4 +427,5 @@ public class ExteriorTile extends AbstractPortalTile {
 					});
 		}
 	}
+
 }

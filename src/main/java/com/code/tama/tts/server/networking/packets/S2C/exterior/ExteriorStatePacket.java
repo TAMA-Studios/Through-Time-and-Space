@@ -7,12 +7,12 @@ import com.code.tama.tts.server.misc.PhysicalStateManager;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.AllArgsConstructor;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public record ExteriorStatePacket(BlockPos pos,
-		com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket.State state, long startTick) {
+public record ExteriorStatePacket(BlockPos pos, ExteriorStatePacket.State state, long startTick) {
 
 	public static ExteriorStatePacket decode(FriendlyByteBuf buf) {
 		BlockPos pos = buf.readBlockPos();
@@ -29,11 +29,12 @@ public record ExteriorStatePacket(BlockPos pos,
 
 	public static void handle(ExteriorStatePacket msg, Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+			Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 			if (mc.level == null)
 				return;
 			var be = mc.level.getBlockEntity(msg.pos);
 			if (be instanceof ExteriorTile exterior) {
+				exterior.state = msg.state;
 				// Create a client-side PhysicalStateManager
 				new StateThread(msg.startTick, exterior, msg.state);
 			}
@@ -53,7 +54,7 @@ public record ExteriorStatePacket(BlockPos pos,
 
 		@Override
 		public void run() {
-			PhysicalStateManager manager = new PhysicalStateManager(null, exteriorTile);
+			PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
 			if (state == ExteriorStatePacket.State.TAKEOFF) {
 				manager.clientTakeOff(StartTick);
 			} else {

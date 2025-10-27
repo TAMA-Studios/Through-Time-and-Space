@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import com.code.tama.triggerapi.miscs.TriConsumer;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import com.code.tama.triggerapi.miscs.TriConsumer;
 
 public class ThreadUtils {
 	/** THIS SHOULD ONLY BE CALLED IF CONDITION IS UPDATED ON A SEPARATE THREAD **/
@@ -64,10 +64,10 @@ public class ThreadUtils {
 		return new Thread(() -> consumer.accept(object, object2), name);
 	}
 
-	public static <T, V, X> Thread NewThread(TriConsumer<T, V, X> consumer, T object, V object2, X object3, String name) {
+	public static <T, V, X> Thread NewThread(TriConsumer<T, V, X> consumer, T object, V object2, X object3,
+			String name) {
 		return new Thread(() -> consumer.accept(object, object2, object3), name);
 	}
-
 
 	/**
 	 * So intj doesn't complain abt "If statement has empty body"
