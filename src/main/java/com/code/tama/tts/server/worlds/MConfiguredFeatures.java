@@ -1,15 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.List;
-import java.util.OptionalInt;
-
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanFoliagePlacer;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -21,6 +15,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -28,12 +23,19 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTes
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import java.util.List;
+import java.util.OptionalInt;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
 public class MConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> END_ZEITON_ORE_KEY = registerKey("end_zeiton_ore");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> GALLIFREYAN_OAK_KEY = registerKey("gallifreyan_oak");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ZEITON_ORE_KEY = registerKey("nether_zeiton_ore");
 
 	public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ZEITON_ORE_KEY = registerKey("zeiton_ore");
+
+	public static final ResourceKey<ConfiguredFeature<?, ?>> CRATER_KEY = registerKey("crater");
 
 	private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(
 			BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> key, F feature,
@@ -76,6 +78,8 @@ public class MConfiguredFeatures {
 						BlockStateProvider.simple(TTSBlocks.GALLIFREYAN_OAK_LEAVES.get()),
 						new GallifreyanFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
 						new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4))).ignoreVines().build());
+
+		context.register(CRATER_KEY, new ConfiguredFeature<>(TTSFeatures.CRATER.get(), new ProbabilityFeatureConfiguration(0.25F)));
 	}
 
 	public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
