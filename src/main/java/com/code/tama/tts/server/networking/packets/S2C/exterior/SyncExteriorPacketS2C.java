@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -14,7 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
-public class SyncExteriorVariantPacketS2C {
+import java.util.function.Supplier;
+
+public class SyncExteriorPacketS2C {
+	private final boolean artificial;
+
+	private final ExteriorStatePacket.State state;
+
 	private final int blockX, blockY, blockZ; // Block position
 
 	private final ResourceKey<Level> level;
@@ -27,8 +30,10 @@ public class SyncExteriorVariantPacketS2C {
 
 	private final int variant;
 
-	public SyncExteriorVariantPacketS2C(ResourceLocation model, int variant, ResourceKey<Level> level, float targetY,
-			BlockPos targetPos, int x, int y, int z) {
+	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorStatePacket.State state, boolean artificial, int variant, ResourceKey<Level> level, float targetY,
+                                 BlockPos targetPos, int x, int y, int z) {
+		this.state = state;
+		this.artificial = artificial;
 		this.variant = variant;
 		this.model = model;
 		this.level = level;
@@ -39,14 +44,15 @@ public class SyncExteriorVariantPacketS2C {
 		this.blockZ = z;
 	}
 
-	public static SyncExteriorVariantPacketS2C decode(FriendlyByteBuf buffer) {
-		return new SyncExteriorVariantPacketS2C(buffer.readResourceLocation(), buffer.readInt(),
+	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
+		return new SyncExteriorPacketS2C(buffer.readResourceLocation(), buffer.readEnum(ExteriorStatePacket.State.class), buffer.readBoolean(), buffer.readInt(),
 				buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
 				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}
 
-	public static void encode(SyncExteriorVariantPacketS2C packet, FriendlyByteBuf buffer) {
+	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
 		buffer.writeResourceLocation(packet.model);
+		buffer.writeEnum(packet.state);
 		buffer.writeInt(packet.variant);
 		buffer.writeResourceKey(packet.level);
 		buffer.writeFloat(packet.targetY);
@@ -56,7 +62,7 @@ public class SyncExteriorVariantPacketS2C {
 		buffer.writeInt(packet.blockZ);
 	}
 
-	public static void handle(SyncExteriorVariantPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
+	public static void handle(SyncExteriorPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
 			// This code runs on the client side
@@ -69,6 +75,8 @@ public class SyncExteriorVariantPacketS2C {
 					exteriorTile.targetLevel = packet.level;
 					exteriorTile.setModel(packet.variant);
 					exteriorTile.setModelIndex(packet.model);
+					exteriorTile.state = packet.state;
+					exteriorTile.isArtificial = packet.artificial;
 				}
 			}
 		});

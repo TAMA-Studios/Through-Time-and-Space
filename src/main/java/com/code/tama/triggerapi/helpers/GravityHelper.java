@@ -1,17 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import java.util.List;
-import java.util.Map;
-
+import com.code.tama.triggerapi.data.holders.DataDimGravity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GravityHelper {
 	public static List<DataDimGravity> DIMENSIONS = List.of();
-	public static Map<ResourceLocation, Float> MAP;
+	public static Map<ResourceLocation, Float> MAP = new HashMap<>();
 
 	/**
 	 * Returns the gravity strength for a given level. Default Minecraft gravity =
@@ -31,7 +31,8 @@ public class GravityHelper {
 	}
 
 	public static void setMap(List<DataDimGravity> list) {
-		DIMENSIONS.clear();
+		if(!DIMENSIONS.isEmpty())
+			DIMENSIONS.clear();
 		DIMENSIONS = list;
 		MAP.clear();
 		DIMENSIONS.forEach(dim -> MAP.put(dim.dimension, dim.mavity));

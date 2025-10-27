@@ -17,16 +17,11 @@ public interface IBrazeable {
 	 * @return The remaining brazing progress (max - current).
 	 */
 	default int getBrazingProgress() {
-		return getMaxBrazing() - getBrazing();
-	}
 
-	/**
-	 * Sets the maximum brazing value.
-	 *
-	 * @param maxBrazing
-	 *            the maximum brazing capacity
-	 */
-	void setMaxBrazing(int maxBrazing);
+		if (getMaxBrazing() <= 0) return 0; // avoid division by zero
+		float progress = (getBrazing() / (float) getMaxBrazing()) * 100f;
+		return Math.min(100, Math.max(0, Math.round(progress)));
+	}
 
 	/**
 	 * Sets the current brazing value.

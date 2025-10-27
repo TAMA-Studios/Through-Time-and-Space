@@ -1,12 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import org.joml.Vector3d;
-
+import com.code.tama.triggerapi.Logger;
+import com.code.tama.triggerapi.ReflectionBuddy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,9 +21,10 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.joml.Vector3d;
 
-import com.code.tama.triggerapi.Logger;
-import com.code.tama.triggerapi.ReflectionBuddy;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldHelper {
 	public static boolean CanCollide(BlockState state) {
@@ -171,6 +174,34 @@ public class WorldHelper {
 		player.getActiveEffects().forEach(
 				effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
 	}
+
+	public static ResourceKey<Level> cycleDimension(MinecraftServer server, ResourceKey<Level> current, boolean forward) {
+		List<ResourceKey<Level>> keys = new ArrayList<>(server.levelKeys());
+		if (keys.isEmpty()) return current;
+
+		int index = keys.indexOf(current);
+		if (index == -1) index = 0;
+
+		int newIndex = forward ? index + 1 : index - 1;
+		if (newIndex >= keys.size()) newIndex = 0;
+		else if (newIndex < 0) newIndex = keys.size() - 1;
+
+		ResourceKey<Level> next = keys.get(newIndex);
+
+		// Skip The End if the dragon is alive
+		if (next.equals(Level.END) && !IsDragonDead()) {
+			newIndex = forward ? newIndex + 1 : newIndex - 1;
+
+			if (newIndex >= keys.size()) newIndex = 0;
+			else if (newIndex < 0) newIndex = keys.size() - 1;
+
+			next = keys.get(newIndex);
+		}
+
+		return next;
+	}
+
+
 
 	// public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos,
 	// ResourceLocation

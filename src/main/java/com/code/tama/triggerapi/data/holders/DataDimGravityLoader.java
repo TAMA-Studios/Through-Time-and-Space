@@ -1,23 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.data.holders;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
-import org.slf4j.Logger;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class DataDimGravityLoader implements ResourceManagerReloadListener {
@@ -29,13 +28,13 @@ public class DataDimGravityLoader implements ResourceManagerReloadListener {
 			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
 			// Validate grav and structure fields
-			if (valuesObject.has("grav") && valuesObject.has("dimension")) {
-				String grav = valuesObject.get("grav").getAsString();
+			if (valuesObject.has("gravity") && valuesObject.has("dimension")) {
+				String grav = valuesObject.get("gravity").getAsString();
 				String dimension = valuesObject.get("dimension").getAsString();
 
 				// Check for non-empty grav
 				if (grav.isEmpty()) {
-					LOGGER.warn("Empty grav field");
+					LOGGER.warn("Empty gravity field");
 					return false;
 				}
 
@@ -76,7 +75,7 @@ public class DataDimGravityLoader implements ResourceManagerReloadListener {
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							float grav = valuesObject.get("grav").getAsFloat();
+							float grav = valuesObject.get("gravity").getAsFloat();
 							String dimension = valuesObject.get("dimension").getAsString();
 							ResourceLocation dimLoc = new ResourceLocation(dimension);
 							DataDimGravity Structure = new DataDimGravity(grav, dimLoc);

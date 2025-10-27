@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
-
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+import com.code.tama.tts.server.misc.progressable.IWeldable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,9 +18,6 @@ import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.server.ServerLifecycleHooks;
-
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class SonicBlockMode extends SonicMode {
 	public Item getIcon() {
@@ -44,13 +38,18 @@ public class SonicBlockMode extends SonicMode {
 		BlockState state = player.level().getBlockState(usedPos);
 		Level level = player.level();
 
-		if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
-			if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
-				if (exteriorTile.GetInterior() != null)
-					ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
-							.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
-			}
+		if(state.hasBlockEntity() && level.getBlockEntity(usedPos) instanceof IWeldable weldable) {
+
+			weldable.setWeld(weldable.getWeld() + 1);
 		}
+
+//		if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
+//			if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
+//				if (exteriorTile.GetInterior() != null)
+//					ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
+//							.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
+//			}
+//		}
 
 		if (state.getBlock() instanceof SandBlock) {
 			level.setBlockAndUpdate(usedPos, Blocks.GLASS.defaultBlockState());
@@ -100,6 +99,7 @@ public class SonicBlockMode extends SonicMode {
 			item.setPos(usedPos.getCenter());
 			return;
 		}
+
 		//
 		// if (State.getBlock() instanceof PistonBaseBlock pistonBaseBlock) {
 		// pistonBaseBlock.triggerEvent(State, Level, usedPos, 1, 2);

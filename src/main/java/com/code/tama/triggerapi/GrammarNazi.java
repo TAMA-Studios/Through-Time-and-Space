@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * This is for functions related to string manipulation
@@ -28,7 +28,7 @@ public class GrammarNazi {
 	 */
 	public static String CapitalizeFirstLetters(String text) {
 		String firstLetter = text.substring(0, 1).toUpperCase();
-		/**
+		/*
 		 * Find any characters coming after a space char and replace it with the
 		 * uppercase variant
 		 */
@@ -43,7 +43,7 @@ public class GrammarNazi {
 	 * Replaces Underscore characters ('_') with space characters (' ') and
 	 * capitalizes the first letter of every word
 	 */
-	public static String CapitalizeFirstLettersAndRemoveScores(String text) {
+	public static String CleanString(String text) {
 		return CapitalizeFirstLetters(ScoreToSpace(text));
 	}
 

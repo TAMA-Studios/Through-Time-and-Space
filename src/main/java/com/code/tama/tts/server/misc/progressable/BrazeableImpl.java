@@ -25,11 +25,6 @@ public class BrazeableImpl implements IBrazeable {
 	}
 
 	@Override
-	public void setMaxBrazing(int maxBrazing) {
-		this.maxBrazing = maxBrazing;
-	}
-
-	@Override
 	public void setBrazing(int brazing) {
 		this.brazing = brazing;
 	}

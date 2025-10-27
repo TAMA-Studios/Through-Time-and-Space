@@ -1,13 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -17,8 +14,9 @@ import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
+import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
@@ -26,9 +24,6 @@ import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -49,19 +44,24 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-@SuppressWarnings("unchecked")
-public class ExteriorTile extends AbstractPortalTile {
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public ExteriorStatePacket.State state = ExteriorStatePacket.State.LAND;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
 	@Getter
 	private float transparency = 1.0f; // Default fully visible
+
 	@Getter
 	private int transparencyInt; // Default fully visible
 	int DoorState;
@@ -78,7 +78,7 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
-	int PlasmicShellPlates, StructuralBeams, Weld;
+	public int PlasmicShellPlates, StructuralBeams, Weld;
 
 	public ExteriorTile(BlockPos pos, BlockState state) {
 		super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);
@@ -288,8 +288,8 @@ public class ExteriorTile extends AbstractPortalTile {
 			Capabilities
 					.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
 							ServerLifecycleHooks.getCurrentServer().getLevel(this.INTERIOR_DIMENSION))
-					.ifPresent(tadis -> {
-						if (tadis.GetFlightData().IsTakingOff() || tadis.GetFlightData().isInFlight()) {
+					.ifPresent(tardis -> {
+						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight()) {
 							this.UtterlyDestroy();
 						}
 					});
@@ -301,7 +301,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	public void onLoad() {
 		super.onLoad();
 		if (this.level != null && this.level.isClientSide)
-			Networking.sendToServer(new TriggerSyncExteriorVariantPacketC2S(this.level.dimension(),
+			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(),
 					this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
 	}
 
@@ -395,6 +395,7 @@ public class ExteriorTile extends AbstractPortalTile {
 					assert this.getLevel() != null;
 					cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
 					cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+					cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
 					assert this.Placer != null;
 					cap.GetData().setOwnerUUID(this.Placer.getUUID());
 				});
@@ -428,4 +429,21 @@ public class ExteriorTile extends AbstractPortalTile {
 		}
 	}
 
+	/**
+	 * @return The max weld, PlasmicShellPlates * 40 - 40 weld per plate
+	 */
+	@Override
+	public int getMaxWeld() {
+		return this.PlasmicShellPlates * 40;
+	}
+
+	@Override
+	public int getWeld() {
+		return this.Weld;
+	}
+
+	@Override
+	public void setWeld(int weld) {
+		this.Weld = MathHelper.clamp(weld, 0, this.getMaxWeld());
+	}
 }

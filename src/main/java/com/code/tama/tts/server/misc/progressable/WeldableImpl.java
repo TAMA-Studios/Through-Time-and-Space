@@ -25,11 +25,6 @@ public class WeldableImpl implements IWeldable {
 	}
 
 	@Override
-	public void setMaxWeld(int maxWeld) {
-		this.maxWeld = maxWeld;
-	}
-
-	@Override
 	public void setWeld(int weld) {
 		this.weld = weld;
 	}

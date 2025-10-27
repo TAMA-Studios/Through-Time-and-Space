@@ -1,13 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
@@ -15,7 +10,7 @@ import com.code.tama.tts.server.networking.packets.C2S.entities.BlowUpCreeperPac
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.StopViewingExteriorC2S;
-import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorVariantPacketC2S;
+import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -23,11 +18,10 @@ import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapP
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
-import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorVariantPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
-
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -45,8 +39,12 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class Networking {
 	public static int ID = 0;
@@ -76,8 +74,8 @@ public class Networking {
 				SyncButtonAnimationSetPacketS2C::decode, SyncButtonAnimationSetPacketS2C::handle);
 
 		// Exterior Data
-		register(SyncExteriorVariantPacketS2C.class, SyncExteriorVariantPacketS2C::encode,
-				SyncExteriorVariantPacketS2C::decode, SyncExteriorVariantPacketS2C::handle);
+		register(SyncExteriorPacketS2C.class, SyncExteriorPacketS2C::encode,
+				SyncExteriorPacketS2C::decode, SyncExteriorPacketS2C::handle);
 		register(SyncTransparencyPacketS2C.class, SyncTransparencyPacketS2C::encode, SyncTransparencyPacketS2C::decode,
 				SyncTransparencyPacketS2C::handle);
 
@@ -98,8 +96,8 @@ public class Networking {
 				SyncTARDISCapPacketS2C::handle);
 		register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode,
 				TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);
-		register(TriggerSyncExteriorVariantPacketC2S.class, TriggerSyncExteriorVariantPacketC2S::encode,
-				TriggerSyncExteriorVariantPacketC2S::decode, TriggerSyncExteriorVariantPacketC2S::handle);
+		register(TriggerSyncExteriorPacketC2S.class, TriggerSyncExteriorPacketC2S::encode,
+				TriggerSyncExteriorPacketC2S::decode, TriggerSyncExteriorPacketC2S::handle);
 		register(TriggerSyncCapPacketC2S.class, TriggerSyncCapPacketC2S::encode, TriggerSyncCapPacketC2S::decode,
 				TriggerSyncCapPacketC2S::handle);
 

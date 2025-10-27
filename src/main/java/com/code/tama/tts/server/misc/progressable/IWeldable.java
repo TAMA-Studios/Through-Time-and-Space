@@ -17,16 +17,10 @@ public interface IWeldable {
 	 * @return The remaining weld progress (max - current).
 	 */
 	default int getWeldProgress() {
-		return getMaxWeld() - getWeld();
+		if (getWeld() <= 0) return 0; // avoid division by zero
+		float progress = (getWeld() / (float) getMaxWeld()) * 100f;
+		return Math.min(100, Math.max(0, Math.round(progress)));
 	}
-
-	/**
-	 * Sets the maximum weld value.
-	 *
-	 * @param maxWeld
-	 *            the maximum weld capacity
-	 */
-	void setMaxWeld(int maxWeld);
 
 	/**
 	 * Sets the current weld value.

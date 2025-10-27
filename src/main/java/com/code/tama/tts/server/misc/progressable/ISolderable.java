@@ -17,16 +17,10 @@ public interface ISolderable {
 	 * @return The remaining solder progress (max - current).
 	 */
 	default int getSolderProgress() {
-		return getMaxSolder() - getSolder();
+		if (getMaxSolder() <= 0) return 0; // avoid division by zero
+		float progress = (getSolder() / (float) getMaxSolder()) * 100f;
+		return Math.min(100, Math.max(0, Math.round(progress)));
 	}
-
-	/**
-	 * Sets the maximum solder value.
-	 *
-	 * @param maxSolder
-	 *            the maximum solder capacity
-	 */
-	void setMaxSolder(int maxSolder);
 
 	/**
 	 * Sets the current solder value.

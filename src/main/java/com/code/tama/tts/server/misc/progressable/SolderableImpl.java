@@ -25,18 +25,12 @@ public class SolderableImpl implements ISolderable {
 	}
 
 	@Override
-	public void setMaxSolder(int maxSolder) {
-		this.maxSolder = maxSolder;
-	}
-
-	@Override
 	public void setSolder(int solder) {
 		this.solder = solder;
 	}
 
 	@Override
 	public String toString() {
-		return "SolderableImpl{" + "maxSolder=" + maxSolder + ", solder=" + solder + ", progress=" + getSolderProgress()
-				+ '}';
+		return String.format("SolderableImpl{maxSolder=%s, solder=%s, progress=%s}", maxSolder, solder, getSolderProgress());
 	}
 }
