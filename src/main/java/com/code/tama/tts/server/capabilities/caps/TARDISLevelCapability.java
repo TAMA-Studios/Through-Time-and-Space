@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-
+import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.*;
@@ -18,12 +15,7 @@ import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapP
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.threads.CrashThread;
-import com.code.tama.tts.server.threads.LandThread;
-import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +31,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	TARDISData data = new TARDISData(this);
@@ -257,7 +255,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		} else {
 			// Start a new Takeoff thread
 			this.GetFlightData().setPlayRotorAnimation(true);
-			new TakeOffThread(this).start();
+			ServerThreads.TakeoffThread(this).start();
 		}
 	}
 
@@ -270,7 +268,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.START));
 		// TODO: This
-		new LandThread(this).start();
+		ServerThreads.LandingThread(this).start();
 	}
 
 	@Override
