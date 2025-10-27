@@ -12,7 +12,24 @@ public class MathUtils {
 		return RoundToMultiple(num, 48);
 	}
 
+	/**
+	 * @return The number rounded to the nearest multiple
+	 */
 	public static int RoundToMultiple(int num, int multiple) {
+		return Math.round((float) num / multiple) * multiple;
+	}
+
+	/**
+	 * @return The number rounded to the nearest multiple
+	 */
+	public static int RoundToMultiple(float num, int multiple) {
+		return Math.round((float) num / multiple) * multiple;
+	}
+
+	/**
+	 * @return The number rounded to the nearest multiple
+	 */
+	public static int RoundToMultiple(double num, int multiple) {
 		return Math.round((float) num / multiple) * multiple;
 	}
 
@@ -23,9 +40,12 @@ public class MathUtils {
 	}
 
 	/**
-	 * @param value The value to clamp
-	 * @param min the minimum allowed amount (inclusive)
-	 * @param max the maximum allowed amount (inclusive)
+	 * @param value
+	 *            The value to clamp
+	 * @param min
+	 *            the minimum allowed amount (inclusive)
+	 * @param max
+	 *            the maximum allowed amount (inclusive)
 	 * @return a value that is no less than min, and also no greater than max
 	 */
 	public static float clamp(float value, float min, float max) {
@@ -59,9 +79,8 @@ public class MathUtils {
 		// After 90 yaw, slope pitch becomes 0
 		// After 270 yaw, slope pitch becomes 0
 		double radians = Math.toRadians(desiredRot);
-		float newX = (float) (slope * Math.cos(radians));
 
-		return newX;
+		return (float) (slope * Math.cos(radians));
 	}
 
 	public static float lerp(float start, float end, float t) {

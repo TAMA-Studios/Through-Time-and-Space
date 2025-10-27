@@ -1,11 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
 import com.code.tama.tts.server.items.blocks.ConsoleItem;
 import com.code.tama.tts.server.items.blocks.ExteriorItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -13,8 +16,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {

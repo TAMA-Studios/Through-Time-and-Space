@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
@@ -11,6 +13,7 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.capabilities.providers.FragmentLinksCapabilityProvider;
 import com.code.tama.tts.server.capabilities.providers.SerializableCapabilityProvider;
 import com.code.tama.tts.server.worlds.dimension.MDimensions;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -23,8 +26,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Capabilities {
 
@@ -34,14 +35,19 @@ public class Capabilities {
 	});
 
 	/**
-	 * The capability used for TARDIS levels, basically, any level that holds TARDIS data, a console unit, clone of an EOH, etc
+	 * The capability used for TARDIS levels, basically, any level that holds TARDIS
+	 * data, a console unit, clone of an EOH, etc
 	 */
-	public static final Capability<ITARDISLevel> TARDIS_LEVEL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	public static final Capability<ITARDISLevel> TARDIS_LEVEL_CAPABILITY = CapabilityManager
+			.get(new CapabilityToken<>() {
+			});
 
 	/**
-	 * The capability used for the TIR, (TODO:) Cracks (11th hour), Rifts (Cardiff, Boom Town), etc
+	 * The capability used for the TIR, (TODO:) Cracks (11th hour), Rifts (Cardiff,
+	 * Boom Town), etc
 	 */
-	public static final Capability<ILevelCap> LEVEL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	public static final Capability<ILevelCap> LEVEL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+	});
 
 	public static final ResourceLocation TARDIS_CAPABILITY_KEY = new ResourceLocation(MODID, "tardis");
 	public static final ResourceLocation LEVEL_CAP_KEY = new ResourceLocation(MODID, "level_cap");
@@ -69,9 +75,8 @@ public class Capabilities {
 					.getKey(event.getObject().dimensionType()) == null)
 				return;
 
-			event.addCapability(Capabilities.LEVEL_CAP_KEY, new SerializableCapabilityProvider<>(
-					LEVEL_CAPABILITY, new LevelCapability(event.getObject())
-			));
+			event.addCapability(Capabilities.LEVEL_CAP_KEY,
+					new SerializableCapabilityProvider<>(LEVEL_CAPABILITY, new LevelCapability(event.getObject())));
 
 			if (!event.getObject().dimensionTypeId().location().equals(MDimensions.TARDIS_DIM_TYPE.location()))
 				return;

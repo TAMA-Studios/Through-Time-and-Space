@@ -1,6 +1,6 @@
 {
-  "values": {
-    "dimension": "tts:moon",
-    "gravity": "0.01"
+  "values" : {
+    "dimension" : "tts:moon",
+    "gravity" : "0.01"
   }
 }

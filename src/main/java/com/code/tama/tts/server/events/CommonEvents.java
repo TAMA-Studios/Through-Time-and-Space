@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
@@ -8,6 +10,7 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.json.loaders.ARSDataLoader;
 import com.code.tama.tts.server.data.json.loaders.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.loaders.RecipeDataLoader;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -20,8 +23,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {

@@ -3,6 +3,7 @@ package com.code.tama.tts.server.items.core;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +21,8 @@ public abstract class AttunableItem extends Item {
 	}
 
 	public ResourceKey<Level> GetAttuned(ItemStack stack) {
-		ResourceLocation levelLoc = new ResourceLocation(TTSMod.MODID + ":" + stack.getOrCreateTag().getString("tardis"));
+		ResourceLocation levelLoc = new ResourceLocation(
+				TTSMod.MODID + ":" + stack.getOrCreateTag().getString("tardis"));
 		return ResourceKey.create(Registries.DIMENSION, levelLoc);
 	}
 

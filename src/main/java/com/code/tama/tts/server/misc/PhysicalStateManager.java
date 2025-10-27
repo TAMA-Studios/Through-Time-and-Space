@@ -1,10 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import java.util.Objects;
+
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public class PhysicalStateManager {
 
@@ -24,7 +28,7 @@ public class PhysicalStateManager {
 		float decay = 0.05f;
 		float freq = 0.3f;
 
-		while (server && this.itardisLevel.GetFlightData().isInFlight() || !server) {
+		while (!server || this.itardisLevel.GetFlightData().isInFlight()) {
 			long tick = this.itardisLevel.GetLevel().getGameTime() - startTick;
 			float amp = (float) (initialAmp * Math.exp(-decay * tick));
 			float alpha = base - (amp * (float) Math.abs(Math.sin(freq * tick)));
@@ -32,8 +36,7 @@ public class PhysicalStateManager {
 
 			if (amp < 0.05f && alpha > 0.95f) {
 				if (server) {
-					while (!itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished()) {
-					}
+					ThreadUtils.Pause(!itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished());
 					// TODO: Signal to the Exterior that it's fully landed
 				}
 				break;
@@ -48,16 +51,17 @@ public class PhysicalStateManager {
 		float freq = 0.3f;
 
 		while (!itardisLevel.GetFlightData().isInFlight()) {
-            assert exteriorTile.getLevel() != null;
-            long tick = exteriorTile.getLevel().getGameTime() - startTick;
+			assert exteriorTile.getLevel() != null;
+			long tick = exteriorTile.getLevel().getGameTime() - startTick;
 			float amp = (float) (initialAmp * Math.exp(-decay * tick));
 			float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
 			exteriorTile.setTransparency(alpha);
 
 			if (amp < 0.05f && alpha < 0.05f) {
 				if (server) {
-					while (!itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished()) {
-					} // Wait for the takeoff to be finished
+					// Wait for the takeoff to be finished
+					ThreadUtils.Pause(!itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished());
+
 					itardisLevel.Fly();
 					break;
 				}
@@ -90,7 +94,7 @@ public class PhysicalStateManager {
 	}
 
 	public void serverTakeOff() {
-		long tick = exteriorTile.getLevel().getGameTime();
+		long tick = Objects.requireNonNull(exteriorTile.getLevel()).getGameTime();
 		// send packet to everyone in the dimension
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
 				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));

@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json;
 
-import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
-import com.code.tama.tts.server.registries.misc.RecipeRegistry;
-import lombok.Getter;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
+import com.code.tama.tts.server.registries.misc.RecipeRegistry;
+import lombok.Getter;
 
 public class DataRecipeList {
 	@Getter
@@ -22,8 +22,6 @@ public class DataRecipeList {
 
 	public static List<DataRecipe> removeDuplicates(List<DataRecipe> list) {
 		Set<String> seen = new HashSet<>();
-		return list.stream()
-				.filter(r -> seen.add(r.toString()))
-				.collect(Collectors.toList());
+		return list.stream().filter(r -> seen.add(r.toString())).collect(Collectors.toList());
 	}
 }

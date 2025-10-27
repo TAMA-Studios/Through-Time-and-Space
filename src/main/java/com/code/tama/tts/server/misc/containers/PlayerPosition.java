@@ -1,17 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
-import com.code.tama.triggerapi.codec.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Builder;
 import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import com.code.tama.triggerapi.codec.Codecs;
 
 @Builder
 @Getter

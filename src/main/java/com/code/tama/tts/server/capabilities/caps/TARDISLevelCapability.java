@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.Objects;
+
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.*;
@@ -17,6 +21,9 @@ import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.threads.LandThread;
 import com.code.tama.tts.server.threads.TakeOffThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,12 +39,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	TARDISData data = new TARDISData(this);
@@ -145,7 +146,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	/**
-	 * If you call this while the TARDIS is in flight you're gay and it'll return null. <b>DO NOT CALL THIS WHILE THE TARDIS IS IN FLIGHT</b><br />
+	 * If you call this while the TARDIS is in flight you're gay and it'll return
+	 * null. <b>DO NOT CALL THIS WHILE THE TARDIS IS IN FLIGHT</b><br />
+	 *
 	 * @return The ExteriorTile belonging to this TARDIS
 	 */
 	@Override

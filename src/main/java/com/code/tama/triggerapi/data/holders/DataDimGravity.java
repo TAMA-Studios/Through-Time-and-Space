@@ -2,6 +2,7 @@
 package com.code.tama.triggerapi.data.holders;
 
 import lombok.Builder;
+
 import net.minecraft.resources.ResourceLocation;
 
 @Builder
