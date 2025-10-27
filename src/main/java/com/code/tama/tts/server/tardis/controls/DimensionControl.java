@@ -30,7 +30,7 @@ public class DimensionControl extends AbstractControl {
 			if (entity instanceof Player player)
 				player.displayClientMessage(Component.literal(
 								"Destination Level = " + GrammarNazi.CleanString(itardisLevel.GetNavigationalData().getExteriorDimensionKey().location().getPath())),
-						true);
+						false);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -49,6 +49,6 @@ public class DimensionControl extends AbstractControl {
 
 	@Override
 	public String name() {
-		return "z_control";
+		return "dimension_control";
 	}
 }

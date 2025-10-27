@@ -88,6 +88,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	protected void saveAdditional(@NotNull CompoundTag tag) {
 		tag.putInt("TransparencyInt", this.transparencyInt);
 		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
+		tag.putInt("FlightState", this.state.ordinal());
+		tag.putBoolean("artificial", this.isArtificial);
 
 		if (this.INTERIOR_DIMENSION != null)
 			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
@@ -258,6 +260,10 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	public void load(CompoundTag tag) {
+		if(tag.contains("FlightState")) this.state = ExteriorStatePacket.State.values()[tag.getInt("FlightState")];
+
+		if(tag.contains("artificial")) this.isArtificial = tag.getBoolean("artificial");
+
 		if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
 			this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
 		} else {
