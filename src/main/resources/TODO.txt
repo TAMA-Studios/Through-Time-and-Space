@@ -4,6 +4,8 @@ TODO: Figure out all these damn disconnected errors (Maybe fixed?)
 ~~FIX FLIGHT/LAND MECHANIC~~ DONE
 ~~Compressed Multiblocks~~ DONE
 
+TODO: On load, sync the TIR capability to the Client for tooltip tracking data
+
 IMPLEMENT DYNAMOS!
 Fault Locator
 ~~Subsystem/~~Control durability

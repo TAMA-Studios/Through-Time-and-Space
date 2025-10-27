@@ -1,16 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
-import java.util.UUID;
-
+import com.code.tama.triggerapi.codec.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.core.BlockPos;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,7 +21,7 @@ public class TIRBlockContainer {
 	BlockPos pos;
 	UUID tirUUID;
 
-	TIRBlockContainer(BlockPos pos, UUID uuid) {
+	public TIRBlockContainer(BlockPos pos, UUID uuid) {
 		this.pos = pos;
 		this.tirUUID = uuid;
 	}
