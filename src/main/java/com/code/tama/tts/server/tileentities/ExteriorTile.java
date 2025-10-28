@@ -1,10 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -24,6 +27,10 @@ import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -44,16 +51,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public ExteriorStatePacket.State state = ExteriorStatePacket.State.LAND;
@@ -260,9 +262,11 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	public void load(CompoundTag tag) {
-		if(tag.contains("FlightState")) this.state = ExteriorStatePacket.State.values()[tag.getInt("FlightState")];
+		if (tag.contains("FlightState"))
+			this.state = ExteriorStatePacket.State.values()[tag.getInt("FlightState")];
 
-		if(tag.contains("artificial")) this.isArtificial = tag.getBoolean("artificial");
+		if (tag.contains("artificial"))
+			this.isArtificial = tag.getBoolean("artificial");
 
 		if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
 			this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
@@ -307,8 +311,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public void onLoad() {
 		super.onLoad();
 		if (this.level != null && this.level.isClientSide)
-			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(),
-					this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
+			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(), this.getBlockPos().getX(),
+					this.getBlockPos().getY(), this.getBlockPos().getZ()));
 	}
 
 	public void setClientTransparency(float alpha) {

@@ -9,14 +9,18 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.json.loaders.ARSDataLoader;
 import com.code.tama.tts.server.data.json.loaders.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.loaders.RecipeDataLoader;
+import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -123,8 +127,19 @@ public class CommonEvents {
 	@SubscribeEvent
 	public static void onWorldTick(TickEvent.LevelTickEvent event) {
 		event.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(level -> {
-			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff() || !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
+			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff()
+					|| !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
 				level.Tick();
 		});
+	}
+
+	@SubscribeEvent
+	public static void PlayerJoin(EntityJoinLevelEvent event) {
+		if (event.getEntity() instanceof ServerPlayer player) {
+			player.getCapability(Capabilities.PLAYER_CAPABILITY)
+					.ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
+
+			event.getLevel().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap -> cap.OnLoad(player));
+		}
 	}
 }

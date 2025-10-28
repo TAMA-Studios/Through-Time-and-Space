@@ -1,14 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.UUID;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 
-import java.util.UUID;
+import com.code.tama.triggerapi.codec.Codecs;
 
 @Getter
 @Setter

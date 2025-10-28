@@ -10,11 +10,9 @@ import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.entities.StopViewingExteriorC2S;
-import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,13 +33,7 @@ public class ClientForgeEvents {
 		event.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 				.ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 
-		if (event.getEntity().level().isClientSide)
-			CameraShakeHandler.endShake();
-
-		if (event.getEntity() instanceof ServerPlayer player) {
-			player.getCapability(Capabilities.PLAYER_CAPABILITY)
-					.ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
-		}
+		CameraShakeHandler.endShake();
 	}
 
 	@SubscribeEvent

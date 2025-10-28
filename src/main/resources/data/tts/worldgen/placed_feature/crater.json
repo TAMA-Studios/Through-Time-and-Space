@@ -1,16 +1,12 @@
 {
-  "feature": "tts:crater",
-  "placement": [
-    {
-      "type": "minecraft:count",
-      "count": 1
-    },
-    {
-      "type": "minecraft:in_square"
-    },
-    {
-      "type": "minecraft:heightmap",
-      "heightmap": "WORLD_SURFACE"
-    }
-  ]
+  "feature" : "tts:crater",
+  "placement" : [ {
+    "count" : 1,
+    "type" : "minecraft:count"
+  }, {
+    "type" : "minecraft:in_square"
+  }, {
+    "heightmap" : "WORLD_SURFACE",
+    "type" : "minecraft:heightmap"
+  } ]
 }

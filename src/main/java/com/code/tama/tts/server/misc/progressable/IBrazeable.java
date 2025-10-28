@@ -18,7 +18,8 @@ public interface IBrazeable {
 	 */
 	default int getBrazingProgress() {
 
-		if (getMaxBrazing() <= 0) return 0; // avoid division by zero
+		if (getMaxBrazing() <= 0)
+			return 0; // avoid division by zero
 		float progress = (getBrazing() / (float) getMaxBrazing()) * 100f;
 		return Math.min(100, Math.max(0, Math.round(progress)));
 	}

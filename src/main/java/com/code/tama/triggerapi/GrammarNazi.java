@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * This is for functions related to string manipulation

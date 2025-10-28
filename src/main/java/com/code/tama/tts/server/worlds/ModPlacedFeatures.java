@@ -1,7 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -15,10 +20,6 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
-
 public class ModPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> END_ZEITON_ORE_PLACED_KEY = registerKey("end_zeiton_ore_placed");
 	public static final ResourceKey<PlacedFeature> GALLIFREYAN_OAK_PLACED_KEY = registerKey("gallifreyan_oak_placed");
@@ -28,7 +29,6 @@ public class ModPlacedFeatures {
 	public static final ResourceKey<PlacedFeature> ZEITON_ORE_PLACED_KEY = registerKey("zeiton_ore_placed");
 
 	public static final ResourceKey<PlacedFeature> CRATER_PLACED_KEY = registerKey("crater");
-
 
 	private static void register(BootstapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key,
 			Holder<ConfiguredFeature<?, ?>> configuration, List<PlacementModifier> modifiers) {
@@ -42,14 +42,9 @@ public class ModPlacedFeatures {
 	public static void bootstrap(BootstapContext<PlacedFeature> context) {
 		HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
-		register(context, CRATER_PLACED_KEY,
-				configuredFeatures.getOrThrow(MConfiguredFeatures.CRATER_KEY),
-				List.of(
-						RarityFilter.onAverageOnceEvery(10),
-						InSquarePlacement.spread(),
-						HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-				)
-		);
+		register(context, CRATER_PLACED_KEY, configuredFeatures.getOrThrow(MConfiguredFeatures.CRATER_KEY),
+				List.of(RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(),
+						HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)));
 
 		register(context, ZEITON_ORE_PLACED_KEY,
 				configuredFeatures.getOrThrow(MConfiguredFeatures.OVERWORLD_ZEITON_ORE_KEY),

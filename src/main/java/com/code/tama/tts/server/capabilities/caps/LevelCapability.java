@@ -4,10 +4,13 @@ package com.code.tama.tts.server.capabilities.caps;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
+import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.mojang.serialization.DataResult;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -43,10 +46,11 @@ public class LevelCapability implements ILevelCap {
 		int size = nbt.getInt("TIRSize");
 		for (int i = 0; i < size; i++) {
 			CompoundTag tag = nbt.getCompound(String.valueOf(i));
-			if(tag.contains("uuid")) {
+			if (tag.contains("uuid")) {
 				UUID uuid = tag.getUUID("uuid");
 
-				DataResult<TIRBlockContainer> result = TIRBlockContainer.CODEC.parse(NbtOps.INSTANCE, tag.get("container"));
+				DataResult<TIRBlockContainer> result = TIRBlockContainer.CODEC.parse(NbtOps.INSTANCE,
+						tag.get("container"));
 				result.resultOrPartial(err -> TTSMod.LOGGER.error("[TIR] Failed to decode TIRBlockContainer: {}", err))
 						.ifPresent(container -> {
 							TIRBlocks.put(uuid, container);
@@ -59,6 +63,16 @@ public class LevelCapability implements ILevelCap {
 
 	@Override
 	public Map<UUID, TIRBlockContainer> GetTIRBlocks() {
-		return TIRBlocks;
+		return this.TIRBlocks;
+	}
+
+	@Override
+	public void SetTIRBlocks(Map<UUID, TIRBlockContainer> containerMap) {
+		this.TIRBlocks = containerMap;
+	}
+
+	@Override
+	public void OnLoad(ServerPlayer player) {
+		Networking.sendToPlayer(player, new UpdateTIRPacketS2C(this.GetTIRBlocks()));
 	}
 }

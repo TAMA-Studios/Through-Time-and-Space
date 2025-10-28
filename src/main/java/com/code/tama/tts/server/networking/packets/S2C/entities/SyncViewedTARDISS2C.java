@@ -1,23 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.entities;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
-
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class SyncViewedTARDISS2C {
-	public final String tardis;
+import java.util.function.Supplier;
 
-	public SyncViewedTARDISS2C(String tardis) {
-		this.tardis = tardis;
-	}
+public record SyncViewedTARDISS2C(String tardis) {
 
 	public static SyncViewedTARDISS2C decode(FriendlyByteBuf buffer) {
 		return new SyncViewedTARDISS2C(buffer.readUtf());

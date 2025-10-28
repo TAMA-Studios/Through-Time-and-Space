@@ -6,6 +6,7 @@ import com.code.tama.tts.server.items.blocks.ConsoleItem;
 import com.code.tama.tts.server.items.blocks.ExteriorItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
+import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -52,6 +53,8 @@ public class TTSItems {
 
 	public static final RegistryObject<Item> GROWTH_CAKE;
 
+	public static final RegistryObject<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
+
 	static {
 		EXTERIOR = ITEMS.register("exterior",
 				() -> new ExteriorItem(TTSBlocks.EXTERIOR_BLOCK.get(), new Item.Properties()));
@@ -86,10 +89,12 @@ public class TTSItems {
 		ADVANCED_CONTROL_CIRCUIT = ITEMS.register("advanced_control_circuit", () -> new Item(new Item.Properties()));
 
 		PLASMIC_SHELL_PLATING = ITEMS.register("plasmic_shell_plating",
-				() -> new Item(new Item.Properties().fireResistant()));
+				() -> new Item(new Item.Properties().fireResistant().stacksTo(16)));
 
-		STRUCTURAL_BEAMS = ITEMS.register("structural_beams", () -> new Item(new Item.Properties()));
+		STRUCTURAL_BEAMS = ITEMS.register("structural_beams", () -> new Item(new Item.Properties().stacksTo(16)));
 
 		GROWTH_CAKE = ITEMS.register("growth_cake", () -> new Item(new Item.Properties()));
+
+		TEMPORAL_IMPRINT_READER = ITEMS.register("temporal_imprint_reader", () -> new TemporalImprintReaderItem());
 	}
 }

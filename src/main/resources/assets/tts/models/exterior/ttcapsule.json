@@ -1,212 +1,168 @@
 {
-	"credit": "Made with Blockbench",
-	"texture": "tts:exteriors/ttcapsule",
-	"texture_width": 256,
-	"texture_height": 256,
-	"scale": 1,
-	"groups": [
-		{
-			"group_name": "root",
-			"pivot": [0,24,0],
-			"rotation": [0,0,0],
-			"children": [
-				{
-					"group_name": "baseRoot",
-					"pivot": [0,0,0],
-					"rotation": [0,0,0],
-					"children": [
-						{
-							"group_name": "RightDoor",
-							"pivot": [-7,-4,-7],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [1,102],
-									"size": [7,32,1],
-									"origin": [0,-32,0],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						},
-						{
-							"group_name": "LeftDoor",
-							"pivot": [7,-4,-7],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [15,69],
-									"size": [7,32,1],
-									"origin": [-7,-32,0],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						},
-						{
-							"group_name": "Base",
-							"pivot": [0,0,0],
-							"rotation": [0,0,0],
-							"children": [
-								{
-									"group_name": "bone",
-									"pivot": [0,0,0],
-									"rotation": [0,90,0],
-									"cubes": [
-										{
-											"uv": [3,2],
-											"size": [1,32,14],
-											"origin": [7,-36,-7],
-											"inflate": 0,
-											"mirror": true
-										}
-									]
-								}
-							],
-							"cubes": [
-								{
-									"uv": [1,0],
-									"size": [1,32,16],
-									"origin": [-8,-36,-8],
-									"inflate": 0,
-									"mirror": false
-								},
-								{
-									"uv": [0,48],
-									"size": [18,4,18],
-									"origin": [-9,-4,-9],
-									"inflate": 0,
-									"mirror": false
-								},
-								{
-									"uv": [1,0],
-									"size": [1,32,16],
-									"origin": [7,-36,-8],
-									"inflate": 0,
-									"mirror": true
-								},
-								{
-									"uv": [0,48],
-									"size": [18,4,18],
-									"origin": [-9,-40,-9],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						}
-					]
-				},
-				{
-					"group_name": "InteriorDoor",
-					"pivot": [0,0,0],
-					"rotation": [0,0,0],
-					"children": [
-						{
-							"group_name": "IntRightDoor",
-							"pivot": [-7,-4,-7],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [1,102],
-									"size": [7,32,1],
-									"origin": [0,-32,-1],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						},
-						{
-							"group_name": "IntLeftDoor",
-							"pivot": [7,-4,-7],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [15,69],
-									"size": [7,32,1],
-									"origin": [-7,-32,-1],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						}
-					],
-					"cubes": [
-						{
-							"uv": [14,62],
-							"size": [18,4,4],
-							"origin": [-9,-40,-8],
-							"inflate": 0,
-							"mirror": true
-						},
-						{
-							"uv": [14,62],
-							"size": [18,4,4],
-							"origin": [-9,-4,-8],
-							"inflate": 0,
-							"mirror": false
-						},
-						{
-							"uv": [14,13],
-							"size": [1,32,3],
-							"origin": [-8,-36,-8],
-							"inflate": 0,
-							"mirror": false
-						},
-						{
-							"uv": [14,13],
-							"size": [1,32,3],
-							"origin": [7,-36,-8],
-							"inflate": 0,
-							"mirror": true
-						}
-					]
-				},
-				{
-					"group_name": "BOTIRoot",
-					"pivot": [0,0,0],
-					"rotation": [0,0,0],
-					"children": [
-						{
-							"group_name": "PartialInteriorBOTI",
-							"pivot": [0,0,0],
-							"rotation": [0,0,0]
-						},
-						{
-							"group_name": "InteriorBOTI",
-							"pivot": [0,0,0],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [2,188],
-									"size": [14,32,0],
-									"origin": [-7,-36,-7.25],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						},
-						{
-							"group_name": "PartialBOTI",
-							"pivot": [0,0,0],
-							"rotation": [0,0,0]
-						},
-						{
-							"group_name": "BOTI",
-							"pivot": [0,0,0],
-							"rotation": [0,0,0],
-							"cubes": [
-								{
-									"uv": [222,0],
-									"size": [14,32,0],
-									"origin": [-7,-36,-6.925],
-									"inflate": 0,
-									"mirror": false
-								}
-							]
-						}
-					]
-				}
-			]
-		}
-	]
+  "credit" : "Made with Blockbench",
+  "groups" : [ {
+    "children" : [ {
+      "children" : [ {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ 0, -32, 0 ],
+          "size" : [ 7, 32, 1 ],
+          "uv" : [ 1, 102 ]
+        } ],
+        "group_name" : "RightDoor",
+        "pivot" : [ -7, -4, -7 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -7, -32, 0 ],
+          "size" : [ 7, 32, 1 ],
+          "uv" : [ 15, 69 ]
+        } ],
+        "group_name" : "LeftDoor",
+        "pivot" : [ 7, -4, -7 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "children" : [ {
+          "cubes" : [ {
+            "inflate" : 0,
+            "mirror" : true,
+            "origin" : [ 7, -36, -7 ],
+            "size" : [ 1, 32, 14 ],
+            "uv" : [ 3, 2 ]
+          } ],
+          "group_name" : "bone",
+          "pivot" : [ 0, 0, 0 ],
+          "rotation" : [ 0, 90, 0 ]
+        } ],
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -8, -36, -8 ],
+          "size" : [ 1, 32, 16 ],
+          "uv" : [ 1, 0 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -9, -4, -9 ],
+          "size" : [ 18, 4, 18 ],
+          "uv" : [ 0, 48 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : true,
+          "origin" : [ 7, -36, -8 ],
+          "size" : [ 1, 32, 16 ],
+          "uv" : [ 1, 0 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -9, -40, -9 ],
+          "size" : [ 18, 4, 18 ],
+          "uv" : [ 0, 48 ]
+        } ],
+        "group_name" : "Base",
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ 0, 0, 0 ]
+      } ],
+      "group_name" : "baseRoot",
+      "pivot" : [ 0, 0, 0 ],
+      "rotation" : [ 0, 0, 0 ]
+    }, {
+      "children" : [ {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ 0, -32, -1 ],
+          "size" : [ 7, 32, 1 ],
+          "uv" : [ 1, 102 ]
+        } ],
+        "group_name" : "IntRightDoor",
+        "pivot" : [ -7, -4, -7 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -7, -32, -1 ],
+          "size" : [ 7, 32, 1 ],
+          "uv" : [ 15, 69 ]
+        } ],
+        "group_name" : "IntLeftDoor",
+        "pivot" : [ 7, -4, -7 ],
+        "rotation" : [ 0, 0, 0 ]
+      } ],
+      "cubes" : [ {
+        "inflate" : 0,
+        "mirror" : true,
+        "origin" : [ -9, -40, -8 ],
+        "size" : [ 18, 4, 4 ],
+        "uv" : [ 14, 62 ]
+      }, {
+        "inflate" : 0,
+        "mirror" : false,
+        "origin" : [ -9, -4, -8 ],
+        "size" : [ 18, 4, 4 ],
+        "uv" : [ 14, 62 ]
+      }, {
+        "inflate" : 0,
+        "mirror" : false,
+        "origin" : [ -8, -36, -8 ],
+        "size" : [ 1, 32, 3 ],
+        "uv" : [ 14, 13 ]
+      }, {
+        "inflate" : 0,
+        "mirror" : true,
+        "origin" : [ 7, -36, -8 ],
+        "size" : [ 1, 32, 3 ],
+        "uv" : [ 14, 13 ]
+      } ],
+      "group_name" : "InteriorDoor",
+      "pivot" : [ 0, 0, 0 ],
+      "rotation" : [ 0, 0, 0 ]
+    }, {
+      "children" : [ {
+        "group_name" : "PartialInteriorBOTI",
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -7, -36, -7.25 ],
+          "size" : [ 14, 32, 0 ],
+          "uv" : [ 2, 188 ]
+        } ],
+        "group_name" : "InteriorBOTI",
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "group_name" : "PartialBOTI",
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -7, -36, -6.925 ],
+          "size" : [ 14, 32, 0 ],
+          "uv" : [ 222, 0 ]
+        } ],
+        "group_name" : "BOTI",
+        "pivot" : [ 0, 0, 0 ],
+        "rotation" : [ 0, 0, 0 ]
+      } ],
+      "group_name" : "BOTIRoot",
+      "pivot" : [ 0, 0, 0 ],
+      "rotation" : [ 0, 0, 0 ]
+    } ],
+    "group_name" : "root",
+    "pivot" : [ 0, 24, 0 ],
+    "rotation" : [ 0, 0, 0 ]
+  } ],
+  "scale" : 1,
+  "texture" : "tts:exteriors/ttcapsule",
+  "texture_height" : 256,
+  "texture_width" : 256
 }

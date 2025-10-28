@@ -1,12 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -34,11 +40,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -176,31 +179,35 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 		if (level.getBlockEntity(blockPos) != null
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
 
-			if (exteriorTile.IsEmptyShell && exteriorTile.getWeldProgress() != 100 && exteriorTile.GetInterior() == null) {
+			if (exteriorTile.IsEmptyShell && exteriorTile.getWeldProgress() != 100
+					&& exteriorTile.GetInterior() == null) {
 				ItemStack used = player.getItemInHand(interactionHand);
-				if(used.getItem().equals(TTSItems.GROWTH_CAKE.get())) {
+				if (used.getItem().equals(TTSItems.GROWTH_CAKE.get())) {
 					used.shrink(1);
 					exteriorTile.ShouldMakeDimOnNextTick = true;
 				}
 
-				if(used.getItem().equals(TTSItems.STRUCTURAL_BEAMS.get()) && exteriorTile.StructuralBeams < 4) {
+				if (used.getItem().equals(TTSItems.STRUCTURAL_BEAMS.get()) && exteriorTile.StructuralBeams < 4) {
 					exteriorTile.StructuralBeams++;
 					used.shrink(1);
 				}
 
-				if(used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get()) && exteriorTile.PlasmicShellPlates < 5) {
+				if (used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get())
+						&& exteriorTile.PlasmicShellPlates < 5) {
 					// Make sure you have more structural beams than you do plasmic shell plates
-					if(exteriorTile.StructuralBeams - exteriorTile.PlasmicShellPlates >= 1) {
+					if (exteriorTile.StructuralBeams - exteriorTile.PlasmicShellPlates >= 1) {
 						exteriorTile.PlasmicShellPlates++;
 						used.shrink(1);
 					}
 				}
 
-				if(exteriorTile.PlasmicShellPlates == 4 && exteriorTile.StructuralBeams == 4 && exteriorTile.getWeldProgress() == 100) {
+				if (exteriorTile.PlasmicShellPlates == 4 && exteriorTile.StructuralBeams == 4
+						&& exteriorTile.getWeldProgress() == 100) {
 					exteriorTile.ShouldMakeDimOnNextTick = true;
 				}
 
-				System.out.printf("Beams: %s, Plates: %s, Weld: %s%n", exteriorTile.StructuralBeams, exteriorTile.PlasmicShellPlates, exteriorTile.getWeldProgress());
+				System.out.printf("Beams: %s, Plates: %s, Weld: %s%n", exteriorTile.StructuralBeams,
+						exteriorTile.PlasmicShellPlates, exteriorTile.getWeldProgress());
 
 				return InteractionResult.SUCCESS;
 			}
@@ -220,8 +227,8 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 			@NotNull BlockState state1, boolean simulated) {
 		super.onPlace(state, level, pos, state1, simulated);
 
-		if(state.hasBlockEntity()) {
-			if(level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {
+		if (state.hasBlockEntity()) {
+			if (level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {
 				exteriorTile.isArtificial = true;
 			}
 		}

@@ -17,7 +17,8 @@ public interface IWeldable {
 	 * @return The remaining weld progress (max - current).
 	 */
 	default int getWeldProgress() {
-		if (getWeld() <= 0) return 0; // avoid division by zero
+		if (getWeld() <= 0)
+			return 0; // avoid division by zero
 		float progress = (getWeld() / (float) getMaxWeld()) * 100f;
 		return Math.min(100, Math.max(0, Math.round(progress)));
 	}

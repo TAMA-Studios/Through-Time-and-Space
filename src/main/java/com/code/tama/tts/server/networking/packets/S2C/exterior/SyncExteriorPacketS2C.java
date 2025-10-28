@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -10,8 +13,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class SyncExteriorPacketS2C {
 	private final boolean artificial;
@@ -30,8 +31,8 @@ public class SyncExteriorPacketS2C {
 
 	private final int variant;
 
-	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorStatePacket.State state, boolean artificial, int variant, ResourceKey<Level> level, float targetY,
-                                 BlockPos targetPos, int x, int y, int z) {
+	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorStatePacket.State state, boolean artificial,
+			int variant, ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
 		this.state = state;
 		this.artificial = artificial;
 		this.variant = variant;
@@ -45,7 +46,8 @@ public class SyncExteriorPacketS2C {
 	}
 
 	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
-		return new SyncExteriorPacketS2C(buffer.readResourceLocation(), buffer.readEnum(ExteriorStatePacket.State.class), buffer.readBoolean(), buffer.readInt(),
+		return new SyncExteriorPacketS2C(buffer.readResourceLocation(),
+				buffer.readEnum(ExteriorStatePacket.State.class), buffer.readBoolean(), buffer.readInt(),
 				buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
 				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}

@@ -1,11 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import com.code.tama.triggerapi.GrammarNazi;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -33,13 +40,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+import com.code.tama.triggerapi.GrammarNazi;
 
 @SuppressWarnings("deprecation")
 public class DestinationInfoBlock extends HorizontalDirectionalBlock {
@@ -174,8 +176,8 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 					case FACING :
 						tardisLevelCapability.GetNavigationalData().setDestinationFacing(
 								tardisLevelCapability.GetNavigationalData().NextDestinationFacing());
-						player.displayClientMessage(Component
-								.literal("Exterior Facing = " + GrammarNazi.CleanString(
+						player.displayClientMessage(
+								Component.literal("Exterior Facing = " + GrammarNazi.CleanString(
 										tardisLevelCapability.GetNavigationalData().getDestinationFacing().getName())),
 								true);
 						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);

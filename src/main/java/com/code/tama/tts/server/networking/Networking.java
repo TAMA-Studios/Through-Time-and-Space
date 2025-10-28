@@ -17,6 +17,7 @@ import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariant
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
+import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
@@ -74,8 +75,8 @@ public class Networking {
 				SyncButtonAnimationSetPacketS2C::decode, SyncButtonAnimationSetPacketS2C::handle);
 
 		// Exterior Data
-		register(SyncExteriorPacketS2C.class, SyncExteriorPacketS2C::encode,
-				SyncExteriorPacketS2C::decode, SyncExteriorPacketS2C::handle);
+		register(SyncExteriorPacketS2C.class, SyncExteriorPacketS2C::encode, SyncExteriorPacketS2C::decode,
+				SyncExteriorPacketS2C::handle);
 		register(SyncTransparencyPacketS2C.class, SyncTransparencyPacketS2C::encode, SyncTransparencyPacketS2C::decode,
 				SyncTransparencyPacketS2C::handle);
 
@@ -103,6 +104,9 @@ public class Networking {
 
 		register(SyncViewedTARDISS2C.class, SyncViewedTARDISS2C::encode, SyncViewedTARDISS2C::decode,
 				SyncViewedTARDISS2C::handle);
+
+		register(UpdateTIRPacketS2C.class, UpdateTIRPacketS2C::encode, UpdateTIRPacketS2C::decode,
+				UpdateTIRPacketS2C::handle);
 
 		register(StopViewingExteriorC2S.class, StopViewingExteriorC2S::encode, StopViewingExteriorC2S::decode,
 				StopViewingExteriorC2S::handle);

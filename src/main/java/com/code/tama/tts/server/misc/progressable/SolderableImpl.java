@@ -31,6 +31,7 @@ public class SolderableImpl implements ISolderable {
 
 	@Override
 	public String toString() {
-		return String.format("SolderableImpl{maxSolder=%s, solder=%s, progress=%s}", maxSolder, solder, getSolderProgress());
+		return String.format("SolderableImpl{maxSolder=%s, solder=%s, progress=%s}", maxSolder, solder,
+				getSolderProgress());
 	}
 }

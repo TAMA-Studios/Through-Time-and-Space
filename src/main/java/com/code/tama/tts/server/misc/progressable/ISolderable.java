@@ -17,7 +17,8 @@ public interface ISolderable {
 	 * @return The remaining solder progress (max - current).
 	 */
 	default int getSolderProgress() {
-		if (getMaxSolder() <= 0) return 0; // avoid division by zero
+		if (getMaxSolder() <= 0)
+			return 0; // avoid division by zero
 		float progress = (getSolder() / (float) getMaxSolder()) * 100f;
 		return Math.min(100, Math.max(0, Math.round(progress)));
 	}
