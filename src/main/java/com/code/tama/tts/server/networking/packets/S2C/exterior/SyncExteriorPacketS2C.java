@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -13,6 +10,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class SyncExteriorPacketS2C {
 	private final boolean artificial;
@@ -46,15 +45,24 @@ public class SyncExteriorPacketS2C {
 	}
 
 	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
-		return new SyncExteriorPacketS2C(buffer.readResourceLocation(),
-				buffer.readEnum(ExteriorStatePacket.State.class), buffer.readBoolean(), buffer.readInt(),
-				buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
-				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
+		return new SyncExteriorPacketS2C(
+				buffer.readResourceLocation(),
+				buffer.readEnum(ExteriorStatePacket.State.class),
+				buffer.readBoolean(),  // artificial
+				buffer.readInt(),      // variant
+				buffer.readResourceKey(Registries.DIMENSION),
+				buffer.readFloat(),
+				buffer.readJsonWithCodec(BlockPos.CODEC),
+				buffer.readInt(),
+				buffer.readInt(),
+				buffer.readInt()
+		);
 	}
 
 	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
 		buffer.writeResourceLocation(packet.model);
 		buffer.writeEnum(packet.state);
+		buffer.writeBoolean(packet.artificial); // <- missing
 		buffer.writeInt(packet.variant);
 		buffer.writeResourceKey(packet.level);
 		buffer.writeFloat(packet.targetY);
@@ -63,6 +71,7 @@ public class SyncExteriorPacketS2C {
 		buffer.writeInt(packet.blockY);
 		buffer.writeInt(packet.blockZ);
 	}
+
 
 	public static void handle(SyncExteriorPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();

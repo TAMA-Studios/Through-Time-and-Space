@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -9,8 +12,6 @@ import com.code.tama.tts.server.tileentities.DoorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -22,17 +23,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
-
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import org.jetbrains.annotations.NotNull;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {
 	}
 
-	private static void renderDoor(JavaJSONRenderer door, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
-			int combinedLight) {
+	private static void renderBone(JavaJSONRenderer door, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
+								   int combinedLight) {
 		door.render(poseStack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 	}
 
@@ -44,7 +42,8 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
-		poseStack.translate(0.5, 0, 0);
+		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		poseStack.translate(-0.5, 0, 1.5);
 
 		doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 			AbstractJSONRenderer renderer = cap.GetClientData().getExteriorRenderer();
@@ -56,7 +55,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 			assert Minecraft.getInstance().level != null;
 			doorTile.getFBOContainer().Render(poseStack, (pose, buf) -> {
-				renderDoor(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
+				renderBone(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
 				// StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
 			}, (pose, buf) -> {
 			}, (pose, buf) -> {
@@ -74,7 +73,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					renderBOTI(poseStack, doorTile, buf);
 				}
 			});
-			renderDoor(door, poseStack,
+			renderBone(door, poseStack,
 					bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())),
 					combinedLight);
 		});

@@ -1,19 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.entities;
 
+import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
-
-import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.caps.LevelCapability;
-import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
-import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.network.NetworkEvent;
 
 public record UpdateTIRPacketS2C(Map<UUID, TIRBlockContainer> container) {
 	public static UpdateTIRPacketS2C decode(FriendlyByteBuf buffer) {
@@ -27,9 +23,8 @@ public record UpdateTIRPacketS2C(Map<UUID, TIRBlockContainer> container) {
 	@SuppressWarnings("unchecked")
 	public static void handle(UpdateTIRPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> Capabilities.getCap(Capabilities.LEVEL_CAPABILITY, Minecraft.getInstance().level)
-				.orElseGet((NonNullSupplier<? extends ILevelCap>) new LevelCapability(Minecraft.getInstance().level))
-				.SetTIRBlocks(packet.container));
+		context.enqueueWork(() -> Capabilities.getCap(Capabilities.LEVEL_CAPABILITY, Minecraft.getInstance().level).ifPresent(cap ->
+				cap.SetTIRBlocks(packet.container)));
 		context.setPacketHandled(true);
 	}
 
