@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items.gadgets;
 
-import com.code.tama.triggerapi.GrammarNazi;
+import java.util.List;
+
 import com.code.tama.tts.server.items.core.AttunableItem;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.sonic.SonicBlockMode;
@@ -9,6 +10,9 @@ import com.code.tama.tts.server.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.sonic.SonicMode;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,10 +37,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import com.code.tama.triggerapi.GrammarNazi;
 
 public class SonicItem extends AttunableItem {
 	private final int Variants;

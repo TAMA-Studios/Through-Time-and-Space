@@ -1,12 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.entities.FallingExteriorEntity;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -16,6 +23,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,11 +42,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends FallingBlock implements EntityBlock {
@@ -148,7 +153,8 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		if (level.getBlockEntity(Pos) instanceof ExteriorTile exteriorTile) {
 			exteriorTile.ShouldMakeDimOnNextTick = false;
 			exteriorTile.IsEmptyShell = true;
-			exteriorTile.Placer = livingEntity;
+			exteriorTile.PlacerName = livingEntity.getName().getString();
+			exteriorTile.PlacerUUID = livingEntity.getUUID();
 			exteriorTile.isArtificial = true;
 		}
 		super.setPlacedBy(level, Pos, State, livingEntity, stack);
@@ -167,6 +173,12 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			return;
 		}
+
+		if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
+			FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, pos, state);
+			this.falling(fallingblockentity);
+		}
+
 		super.tick(state, level, pos, randomSource);
 	}
 
@@ -240,4 +252,50 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
+
+	// Falling block stuffs
+
+	@Override
+	public void onBrokenAfterFall(Level level, BlockPos pos, FallingBlockEntity entity) {
+		// Called when it lands and breaks - TODO: This
+	}
+
+	@Override
+	public void onLand(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
+			@NotNull BlockState replacedState, @NotNull FallingBlockEntity entity) {
+
+		if (entity instanceof FallingExteriorEntity fallingExteriorEntity) {
+			if (fallingExteriorEntity.getTileData() != null && level.getBlockEntity(pos) instanceof ExteriorTile tile) {
+				tile.load(fallingExteriorEntity.getTileData()); // restore data
+				tile.setChanged();
+			}
+		}
+		super.onLand(level, pos, state, replacedState, entity);
+	}
+
+	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		super.onRemove(state, level, pos, newState, movedByPiston);
+	}
+
+	@Override
+	protected void falling(FallingBlockEntity be) {
+		BlockPos pos = be.blockPosition();
+		Level level = be.level();
+		BlockState state = be.getBlockState();
+
+		if (be.level().getBlockEntity(be.blockPosition()) instanceof ExteriorTile exteriorTile) {
+			assert exteriorTile.getLevel() != null;
+			exteriorTile.getLevel().removeBlockEntity(exteriorTile.getBlockPos()); // remove TE before spawning
+			exteriorTile.getLevel().removeBlock(exteriorTile.getBlockPos(), false);
+
+			var entity = new FallingExteriorEntity(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, state,
+					exteriorTile);
+
+			level.addFreshEntity(entity);
+		} else {
+			super.falling(be);
+		}
+	}
+
 }

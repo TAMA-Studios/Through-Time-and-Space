@@ -3,10 +3,6 @@ package com.code.tama.tts.server.items.core;
 
 import java.util.List;
 
-import com.code.tama.tts.server.sonic.SonicBlockMode;
-import com.code.tama.tts.server.sonic.SonicMode;
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,10 +20,6 @@ import net.minecraft.world.level.Level;
 
 public abstract class PowerableItem extends Item {
 	public abstract int getEnergyCapacity();
-
-	@Getter
-	@Setter
-	public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
 	public PowerableItem(Properties properties, int power) {
 		super(properties.durability(power).setNoRepair());
@@ -89,7 +81,7 @@ public abstract class PowerableItem extends Item {
 		// livingEntityx.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 		// useOnContext.getPlayer().getCooldowns().addCooldown(this, 20);
 
-		this.InteractionType.onUse(useOnContext);
+		// this.InteractionType.onUse(useOnContext);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -101,11 +93,11 @@ public abstract class PowerableItem extends Item {
 	 * @param Power
 	 *            The amount of power to add
 	 */
-	public void AddPower(ItemStack stack, int Power) {
+	public void AddPower(@NotNull ItemStack stack, int Power) {
 		stack.setDamageValue(stack.getDamageValue() - Power);
 	}
 
-	public boolean HasPower(ItemStack stack) {
+	public boolean HasPower(@NotNull ItemStack stack) {
 		return (stack.getDamageValue() >= stack.getMaxDamage() - 1);
 	}
 

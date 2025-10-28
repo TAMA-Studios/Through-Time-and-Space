@@ -189,7 +189,7 @@ public class BOTIUtils {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		Direction[] directions = Direction.values();
 		BakedModel model = blockRenderer.getBlockModel(state);
-		List<BakedQuad> quads = new java.util.ArrayList<>(List.of());
+		List<BakedQuad> quads = new java.util.ArrayList<>();
 		// render only non-occluded faces
 		for (Direction dir : directions) {
 			BlockPos neighbourPos = pos.relative(dir);

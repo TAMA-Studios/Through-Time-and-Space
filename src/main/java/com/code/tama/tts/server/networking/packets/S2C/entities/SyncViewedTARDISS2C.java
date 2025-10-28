@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.entities;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
+
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public record SyncViewedTARDISS2C(String tardis) {
 
@@ -30,11 +31,11 @@ public record SyncViewedTARDISS2C(String tardis) {
 			cap.SetViewingTARDIS(packet.tardis);
 			if (packet.tardis.isEmpty()) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
-                assert mc.player != null;
-                mc.player.setInvisible(false);
+				assert mc.player != null;
+				mc.player.setInvisible(false);
 			} else {
-                assert mc.player != null;
-                mc.player.setInvisible(true);
+				assert mc.player != null;
+				mc.player.setInvisible(true);
 				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
 			}
 		});

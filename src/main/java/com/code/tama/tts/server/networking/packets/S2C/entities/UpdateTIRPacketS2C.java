@@ -1,18 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.entities;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Supplier;
 
 public record UpdateTIRPacketS2C(Map<UUID, TIRBlockContainer> container) {
 	public static UpdateTIRPacketS2C decode(FriendlyByteBuf buffer) {

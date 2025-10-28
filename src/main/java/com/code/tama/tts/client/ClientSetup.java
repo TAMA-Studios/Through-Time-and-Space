@@ -13,6 +13,7 @@ import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.NESSConsoleModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
+import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -128,6 +129,7 @@ public class ClientSetup {
 	public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
 		BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(), SkyTileRenderer::new);
 		event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
+		event.registerEntityRenderer(TTSEntities.FALLING_EXTERIOR.get(), FallingExteriorRenderer::new);
 		event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
 				ChromiumBlockEntityRenderer::new);
 		event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),

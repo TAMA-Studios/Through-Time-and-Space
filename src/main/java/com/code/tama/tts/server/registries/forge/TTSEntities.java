@@ -3,6 +3,7 @@ package com.code.tama.tts.server.registries.forge;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.server.entities.FallingExteriorEntity;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 
 import net.minecraft.world.entity.EntityType;
@@ -20,4 +21,9 @@ public class TTSEntities {
 	public static final RegistryObject<EntityType<ModularControl>> MODULAR_CONTROL = ENTITY_TYPES.register(
 			"modular_control", () -> EntityType.Builder.<ModularControl>of(ModularControl::new, MobCategory.MISC)
 					.sized(0.1f, 0.1f).build("modular_control"));
+
+	public static final RegistryObject<EntityType<FallingExteriorEntity>> FALLING_EXTERIOR = ENTITY_TYPES.register(
+			"falling_exterior",
+			() -> EntityType.Builder.<FallingExteriorEntity>of(FallingExteriorEntity::new, MobCategory.MISC)
+					.sized(1f, 2f).build("falling_exterior"));
 }

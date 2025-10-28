@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.enums.Structures;
@@ -44,7 +45,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -72,7 +72,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	ResourceLocation ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
 	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
 
-	public LivingEntity Placer;
+	public String PlacerName;
+	public UUID PlacerUUID;
 
 	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true, isArtificial = false;
 
@@ -88,6 +89,10 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag) {
+		if (this.PlacerUUID != null)
+			tag.putUUID("placerUUID", this.PlacerUUID);
+		if (this.PlacerName != null)
+			tag.putString("placerName", this.PlacerName);
 		tag.putInt("TransparencyInt", this.transparencyInt);
 		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 		tag.putInt("FlightState", this.state.ordinal());
@@ -203,8 +208,9 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 		// Don't teleport if the entity in question is viewing the exterior via
 		// Environment Scanner
-		if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent() && !Objects.equals(
-				EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).orElse(null).GetViewingTARDIS(), ""))
+		if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent()
+				&& !Objects.equals(EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY)
+						.orElse(new PlayerCapability(EntityToTeleport)).GetViewingTARDIS(), ""))
 			return;
 
 		ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
@@ -262,6 +268,15 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	public void load(CompoundTag tag) {
+
+		if (tag.hasUUID("placerUUID")) {
+			this.PlacerUUID = tag.getUUID("placerUUID");
+		}
+
+		if (tag.contains("placerName", 8)) { // 8 = String type in NBT
+			this.PlacerName = tag.getString("placerName");
+		}
+
 		if (tag.contains("FlightState"))
 			this.state = ExteriorStatePacket.State.values()[tag.getInt("FlightState")];
 
@@ -382,12 +397,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 				return;
 			level.getServer().execute(() -> {
 				ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
-						new ResourceLocation(MODID + "-tardis",
-								"created-" + LocalDate.now() + "-by-" + this.Placer.getName().getString().toLowerCase()
-										+ "-" + "-uuid-" + UUID.randomUUID()));
-
-				this.Placer.getCapability(Capabilities.PLAYER_CAPABILITY)
-						.ifPresent(cap -> cap.AddOwnedTARDIS(resourceKey.location().getPath()));
+						new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
+								+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
 
 				ServerLevel tardisLevel;
 
@@ -406,12 +417,18 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 					cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
 					cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
 					cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
-					assert this.Placer != null;
-					cap.GetData().setOwnerUUID(this.Placer.getUUID());
+					cap.GetData().setOwnerUUID(this.PlacerUUID);
 				});
 
 				this.INTERIOR_DIMENSION = tardisLevel.dimension();
 				this.PlaceInterior(Structures.CleanInterior);
+
+				ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+						.getPlayer(this.PlacerUUID);
+				if (player != null) {
+					player.getCapability(Capabilities.PLAYER_CAPABILITY)
+							.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));
+				}
 			});
 			this.ShouldMakeDimOnNextTick = false;
 			this.IsEmptyShell = false;

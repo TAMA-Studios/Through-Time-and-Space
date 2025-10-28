@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import com.code.tama.triggerapi.helpers.FileHelper;
 
 public class PlayerCapability implements IPlayerCap {
-	List<String> OwnedTARDISes = List.of();
+	List<String> OwnedTARDISes = new ArrayList<>();
 	String ViewedTARDIS = "";
 
 	Player player;
@@ -24,7 +25,8 @@ public class PlayerCapability implements IPlayerCap {
 	}
 
 	public void AddOwnedTARDIS(String UUID) {
-		this.OwnedTARDISes.add(UUID.toString());
+		if (UUID != null)
+			this.OwnedTARDISes.add(UUID);
 
 		AtomicReference<String> Owned = new AtomicReference<>();
 		this.OwnedTARDISes.forEach(tard -> Owned.set(Owned.get() + "\n" + tard));
