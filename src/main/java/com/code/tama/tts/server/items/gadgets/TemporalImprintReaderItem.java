@@ -58,16 +58,20 @@ public class TemporalImprintReaderItem extends PowerableItem {
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip,
 			@NotNull TooltipFlag flagIn) {
-		assert worldIn != null;
+
 		tooltip.add(Component.translatable("gadgets.tir.blockPos", GetLinkedPos(stack, worldIn).toString()));
 
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
 	public BlockPos GetLinkedPos(ItemStack stack, Level level) {
-		if (pos == null)
-			return this.pos = level.getCapability(Capabilities.LEVEL_CAPABILITY).orElseGet(null).GetTIRBlocks()
-					.get(stack.getOrCreateTag().getUUID("uuid")).getPos();
+		if (pos == null) {
+			if (level != null)
+				if(stack.getOrCreateTag().contains("uuid"))
+					return this.pos = level.getCapability(Capabilities.LEVEL_CAPABILITY).orElseGet(null).GetTIRBlocks()
+						.get(stack.getOrCreateTag().getUUID("uuid")).getPos();
+			return BlockPos.ZERO;
+		}
 		else
 			return this.pos;
 	}

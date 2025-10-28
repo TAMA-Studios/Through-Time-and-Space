@@ -67,38 +67,51 @@ public class Networking {
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,
 				ControlClickedPacketC2S::handle);
+
 		register(ControlHitPacketC2S.class, ControlHitPacketC2S::encode, ControlHitPacketC2S::decode,
 				ControlHitPacketC2S::handle);
+
 		register(BlowUpCreeperPacketC2S.class, BlowUpCreeperPacketC2S::encode, BlowUpCreeperPacketC2S::decode,
 				BlowUpCreeperPacketC2S::handle);
+
 		register(SyncButtonAnimationSetPacketS2C.class, SyncButtonAnimationSetPacketS2C::encode,
 				SyncButtonAnimationSetPacketS2C::decode, SyncButtonAnimationSetPacketS2C::handle);
 
 		// Exterior Data
 		register(SyncExteriorPacketS2C.class, SyncExteriorPacketS2C::encode, SyncExteriorPacketS2C::decode,
 				SyncExteriorPacketS2C::handle);
+
 		register(SyncTransparencyPacketS2C.class, SyncTransparencyPacketS2C::encode, SyncTransparencyPacketS2C::decode,
 				SyncTransparencyPacketS2C::handle);
 
 		// Cap Data
 		register(SyncDimensionsS2C.class, SyncDimensionsS2C::encode, SyncDimensionsS2C::decode,
 				SyncDimensionsS2C::handle);
+
 		register(UpdateDimensionsS2C.class, UpdateDimensionsS2C::encode, UpdateDimensionsS2C::decode,
 				UpdateDimensionsS2C::handle);
+
 		register(SyncCapLightLevelPacketS2C.class, SyncCapLightLevelPacketS2C::encode,
 				SyncCapLightLevelPacketS2C::decode, SyncCapLightLevelPacketS2C::handle);
+
 		register(SyncCapVariantPacketS2C.class, SyncCapVariantPacketS2C::encode, SyncCapVariantPacketS2C::decode,
 				SyncCapVariantPacketS2C::handle);
+
 		register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode,
 				TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);
+
 		register(TriggerSyncCapLightPacketC2S.class, TriggerSyncCapLightPacketC2S::encode,
 				TriggerSyncCapLightPacketC2S::decode, TriggerSyncCapLightPacketC2S::handle);
+
 		register(SyncTARDISCapPacketS2C.class, SyncTARDISCapPacketS2C::encode, SyncTARDISCapPacketS2C::decode,
 				SyncTARDISCapPacketS2C::handle);
+
 		register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode,
 				TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);
+
 		register(TriggerSyncExteriorPacketC2S.class, TriggerSyncExteriorPacketC2S::encode,
 				TriggerSyncExteriorPacketC2S::decode, TriggerSyncExteriorPacketC2S::handle);
+
 		register(TriggerSyncCapPacketC2S.class, TriggerSyncCapPacketC2S::encode, TriggerSyncCapPacketC2S::decode,
 				TriggerSyncCapPacketC2S::handle);
 
@@ -124,12 +137,15 @@ public class Networking {
 
 		INSTANCE.registerMessage(id(), PortalSyncPacketS2C.class, PortalSyncPacketS2C::encode,
 				PortalSyncPacketS2C::decode, PortalSyncPacketS2C::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
 		INSTANCE.registerMessage(id(), PortalChunkRequestPacketC2S.class, PortalChunkRequestPacketC2S::encode,
 				PortalChunkRequestPacketC2S::decode, PortalChunkRequestPacketC2S::handle,
 				Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
 		INSTANCE.registerMessage(id(), PortalChunkDataPacketS2C.class, PortalChunkDataPacketS2C::encode,
 				PortalChunkDataPacketS2C::decode, PortalChunkDataPacketS2C::handle,
 				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
 		System.out.println("Network packets registered: Sync=0, Request=1, Data=2");
 	}
 

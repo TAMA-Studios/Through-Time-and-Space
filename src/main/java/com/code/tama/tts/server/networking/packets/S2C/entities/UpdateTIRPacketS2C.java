@@ -23,6 +23,7 @@ public record UpdateTIRPacketS2C(Map<UUID, TIRBlockContainer> container) {
 		buffer.writeMap(packet.container, FriendlyByteBuf::writeUUID, UpdateTIRPacketS2C::writeContainer);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void handle(UpdateTIRPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> Capabilities.getCap(Capabilities.LEVEL_CAPABILITY, Minecraft.getInstance().level)
@@ -35,9 +36,8 @@ public record UpdateTIRPacketS2C(Map<UUID, TIRBlockContainer> container) {
 		return new TIRBlockContainer(buf.readBlockPos(), buf.readUUID());
 	}
 
-	public static FriendlyByteBuf writeContainer(FriendlyByteBuf buf, TIRBlockContainer container) {
+	public static void writeContainer(FriendlyByteBuf buf, TIRBlockContainer container) {
 		buf.writeBlockPos(container.getPos());
 		buf.writeUUID(container.getTirUUID());
-		return buf;
 	}
 }

@@ -1,14 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.code.tama.triggerapi.data.holders.DataDimGravity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GravityHelper {
 	public static List<DataDimGravity> DIMENSIONS = List.of();
@@ -28,7 +27,7 @@ public class GravityHelper {
 
 		// vanilla gravity is supposedly 0.08 idfk tho
 
-		return MAP.getOrDefault(level.dimension().location(), 0.0F);
+		return MAP.getOrDefault(level.dimension().location(), 0.08F);
 	}
 
 	public static void setMap(List<DataDimGravity> list) {

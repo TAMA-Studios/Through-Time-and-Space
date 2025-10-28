@@ -1,18 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -40,11 +34,14 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final VoxelRotatedShape SHAPE_CLOSED = new VoxelRotatedShape(createShapeClosed().optimize());
 	public static final VoxelRotatedShape SHAPE_OPEN = new VoxelRotatedShape(createShape().optimize());
@@ -232,5 +229,15 @@ public class ExteriorBlock extends HorizontalDirectionalBlock implements EntityB
 				exteriorTile.isArtificial = true;
 			}
 		}
+	}
+
+	// Rotation-ey stuffs
+
+	public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+	public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 }

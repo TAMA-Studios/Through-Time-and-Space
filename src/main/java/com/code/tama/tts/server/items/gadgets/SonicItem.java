@@ -46,7 +46,7 @@ public class SonicItem extends AttunableItem {
 	public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
 	public SonicItem(Properties properties, int variants) {
-		super(properties.durability(1000).setNoRepair().stacksTo(1));
+		super(properties.durability(1000).setNoRepair());
 		this.Variants = variants;
 	}
 

@@ -30,9 +30,11 @@ public record SyncViewedTARDISS2C(String tardis) {
 			cap.SetViewingTARDIS(packet.tardis);
 			if (packet.tardis.isEmpty()) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				mc.player.setInvisible(false);
+                assert mc.player != null;
+                mc.player.setInvisible(false);
 			} else {
-				mc.player.setInvisible(true);
+                assert mc.player != null;
+                mc.player.setInvisible(true);
 				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
 			}
 		});
