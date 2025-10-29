@@ -43,7 +43,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
-		poseStack.translate(-0.5, 0, 1.5);
+		poseStack.translate(-0.5, 0, 0.5);
 
 		doorTile.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 			AbstractJSONRenderer renderer = cap.GetClientData().getExteriorRenderer();
@@ -119,10 +119,11 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
 				0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
 				(float) portal.SkyColor.z, 1f);
+
 		botiSource.endBatch();
 		pose.popPose();
 		pose.pushPose();
-		pose.translate(-0.5, -0.5, -0.5);
+		pose.translate(0, 0, 0);
 		pose.mulPose(Axis.XP.rotationDegrees(180));
 		BOTIUtils.RenderScene(pose, portal);
 		pose.popPose();

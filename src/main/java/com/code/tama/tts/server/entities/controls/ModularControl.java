@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.networking.Networking;
@@ -10,8 +11,6 @@ import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,8 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.RegistryObject;
-
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
 	private static final EntityDataAccessor<Integer> CONTROL = SynchedEntityData.defineId(ModularControl.class,

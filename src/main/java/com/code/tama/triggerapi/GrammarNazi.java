@@ -1,11 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
+import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
+import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * This is for functions related to string manipulation
@@ -52,10 +57,9 @@ public class GrammarNazi {
 	 * capitalize every first letter of every word while also replacing underscores
 	 * with spaces
 	 *
-	 * @param text
-	 *            Item#toString()
+	 * @param text Item#toString()
 	 * @return Item#toString() without minecraft:item@modid and every first letter
-	 *         of every word capitalized
+	 * of every word capitalized
 	 */
 	public static String CleanItemString(String text) {
 		/** remove minecraft:item@modid */
@@ -85,8 +89,55 @@ public class GrammarNazi {
 		return item.toString().replaceAll(MODID, "").replaceAll("[{}:]", "").toLowerCase();
 	}
 
-	/** Replace _ chars with space chars */
+	/**
+	 * Replace _ chars with space chars
+	 */
 	public static String ScoreToSpace(String text) {
 		return text.replace("_", " ");
 	}
+
+	public static void checkTranslation(String key) {
+		String translation = I18n.get(key); // or Minecraft.getInstance().getLanguageManager().get(key)
+		if (translation == null || translation.equals(key) || translation.isEmpty()) {
+			throw new RuntimeException("Missing translation key: " + key);
+		}
+	}
+
+	public static void checkAllTranslations() {
+		ForgeRegistries.ITEMS.forEach(item -> {
+			String key = item.getDescriptionId();
+			checkTranslation(key);
+		});
+
+		ForgeRegistries.BLOCKS.forEach(block -> {
+			String key = block.getDescriptionId();
+			checkTranslation(key);
+		});
+
+		ForgeRegistries.ENTITY_TYPES.forEach(entity -> {
+			String key = entity.getDescriptionId();
+			checkTranslation(key);
+		});
+
+		ForgeRegistries.ITEMS.forEach(item -> {
+			String key = item.getDescriptionId();
+			checkTranslation(key);
+		});
+
+		SonicModeRegistry.SONIC_MODE.getEntries().forEach(mode -> {
+			String key = mode.get().getTranslationKey();
+			checkTranslation(key);
+		});
+
+		ControlsRegistry.CONTROLS.getEntries().forEach(mode -> {
+			String key = mode.get().getTranslationKey();
+			checkTranslation(key);
+		});
+
+		ExteriorsRegistry.EXTERIORS.forEach(exterior -> {
+			String key = exterior.getTranslationKey();
+			checkTranslation(key);
+		});
+	}
+
 }

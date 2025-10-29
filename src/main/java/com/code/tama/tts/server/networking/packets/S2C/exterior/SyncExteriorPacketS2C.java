@@ -48,8 +48,8 @@ public class SyncExteriorPacketS2C {
 		return new SyncExteriorPacketS2C(
 				buffer.readResourceLocation(),
 				buffer.readEnum(ExteriorStatePacket.State.class),
-				buffer.readBoolean(),  // artificial
-				buffer.readInt(),      // variant
+				buffer.readBoolean(),
+				buffer.readInt(),
 				buffer.readResourceKey(Registries.DIMENSION),
 				buffer.readFloat(),
 				buffer.readJsonWithCodec(BlockPos.CODEC),
@@ -62,7 +62,7 @@ public class SyncExteriorPacketS2C {
 	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
 		buffer.writeResourceLocation(packet.model);
 		buffer.writeEnum(packet.state);
-		buffer.writeBoolean(packet.artificial); // <- missing
+		buffer.writeBoolean(packet.artificial);
 		buffer.writeInt(packet.variant);
 		buffer.writeResourceKey(packet.level);
 		buffer.writeFloat(packet.targetY);

@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import net.minecraft.resources.ResourceLocation;
 
 @NoArgsConstructor
@@ -29,5 +28,9 @@ public class ExteriorModelContainer {
 		this.Name = name;
 		this.Texture = texture;
 		this.LightMap = lightMap;
+	}
+
+	public String getTranslationKey() {
+		return Model.getNamespace() + ".exterior." + Name;
 	}
 }

@@ -1,20 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
+import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class BOTIUICategory extends UICategory {
 	public BOTIUICategory() {
@@ -67,14 +64,15 @@ public class BOTIUICategory extends UICategory {
 			pose.translate(0.5, 0.5, 1.4);
 			pose.mulPose(Axis.YP.rotationDegrees(180));
 
-			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
+			BOTIUtils.BOTIModel.render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
 					0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 
 			pose.popPose();
 		}, (pose, botiBuffer) -> {
 		}, (pose, botiSource) -> {
 			pose.pushPose();
-			pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
+            assert Minecraft.getInstance().level != null;
+            pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().level.getGameTime() % 360));
 
 			pose.translate(0, -3, -5);
 

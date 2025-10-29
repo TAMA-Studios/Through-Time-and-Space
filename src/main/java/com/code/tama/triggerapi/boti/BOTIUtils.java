@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.client.FluidQuadCollector;
@@ -18,9 +15,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -42,11 +39,20 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
 public class BOTIUtils {
+	public static final ModelPart BOTIModel = BuildBOTIModel();
+
+	private static ModelPart BuildBOTIModel() {
+		return BotiPortalModel.createBodyLayer().bakeRoot();
+	}
+
 	public static void GatherChunkData(AbstractPortalTile portalTile, Level level, int chunks) {
 		if (!TTSConfig.ServerConfig.BOTI_ENABLED.get())
 			return;

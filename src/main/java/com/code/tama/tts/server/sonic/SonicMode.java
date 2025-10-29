@@ -10,4 +10,8 @@ public abstract class SonicMode {
 	public abstract String getName();
 
 	public abstract void onUse(UseOnContext context);
+
+	public String getTranslationKey() {
+		return "tts.sonic_mode." + this.getName();
+	}
 }
