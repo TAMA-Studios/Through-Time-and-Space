@@ -2,7 +2,7 @@
   "values" : {
     "lightmap" : "tts:exteriors/voxel/moffat/m12a_lightmap.png",
     "modelname" : "tts:models/exterior/voxel_moffat.json",
-    "name" : "Voxel Moffat 12a",
+    "name" : "voxel.moffat.12a",
     "texture" : "tts:textures/exteriors/voxel/moffat/m12a.png"
   }
 }

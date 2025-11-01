@@ -1,16 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.triggerapi.GrammarNazi;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.GrammarNazi;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 public class DimensionControl extends AbstractControl {
 	@Override

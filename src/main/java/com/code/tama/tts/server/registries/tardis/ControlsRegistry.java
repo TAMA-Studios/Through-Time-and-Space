@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.server.tardis.controls.*;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,10 +10,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 @SuppressWarnings("unused")
 public class ControlsRegistry {
 	public static final ResourceKey<Registry<AbstractControl>> CONTROL_REGISTRY_KEY = ResourceKey
-			.createRegistryKey(new ResourceLocation(MODID, "sonic_mode"));
+			.createRegistryKey(new ResourceLocation(MODID, "control"));
 
 	public static final DeferredRegister<AbstractControl> CONTROLS = DeferredRegister.create(CONTROL_REGISTRY_KEY,
 			MODID);

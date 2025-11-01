@@ -1,10 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.exterior;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,8 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
-import java.util.function.Supplier;
 
 public class TriggerSyncExteriorPacketC2S {
 	private final int blockX, blockY, blockZ; // Block position
@@ -46,7 +47,8 @@ public class TriggerSyncExteriorPacketC2S {
 		context.enqueueWork(() -> {
 
 			ServerLevel serverLevel = ServerLifecycleHooks.getCurrentServer().getLevel(packet.level);
-			if (serverLevel == null) return;
+			if (serverLevel == null)
+				return;
 			BlockEntity be = serverLevel.getBlockEntity(new BlockPos(packet.blockX, packet.blockY, packet.blockZ));
 
 			if (be instanceof ExteriorTile exteriorTile) {

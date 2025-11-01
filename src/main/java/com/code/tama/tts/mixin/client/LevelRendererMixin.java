@@ -6,6 +6,7 @@ import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,6 +24,10 @@ public abstract class LevelRendererMixin
 			AutoCloseable,
 			IHelpWithLevelRenderer {
 
+	@Shadow
+	protected abstract void renderSnowAndRain(LightTexture p_109704_, float p_109705_, double p_109706_,
+			double p_109707_, double p_109708_);
+
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch(Lnet/minecraft/client/renderer/RenderType;)V", ordinal = 6, shift = At.Shift.AFTER))
 	private void renderLevel(PoseStack poseStack, float delta, long time, boolean blockOutlines, Camera camera,
 			GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix, CallbackInfo ci) {
@@ -32,6 +37,6 @@ public abstract class LevelRendererMixin
 	@Override
 	public void TTS$renderSnowAndRain(LightTexture lightTexture, float delta, double cameraX, double cameraY,
 			double cameraZ) {
-		((ILevelRendererAccessor) this).RenderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
+		this.renderSnowAndRain(lightTexture, delta, cameraX, cameraY, cameraZ);
 	}
 }

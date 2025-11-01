@@ -1,6 +1,6 @@
 {
   "values" : {
     "modelname" : "tts:models/exterior/ttcapsule.json",
-    "name" : "TT Capsule"
+    "name" : "ttcapsule"
   }
 }

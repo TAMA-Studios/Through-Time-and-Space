@@ -27,6 +27,7 @@ public class MBlockStateProvider extends BlockStateProvider {
 	protected void registerStatesAndModels() {
 		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
 			try {
+				assert block.getId() != null;
 				if (block.getId().toString().contains("roundel"))
 					Roundel(block);
 				blockWithItem(block);

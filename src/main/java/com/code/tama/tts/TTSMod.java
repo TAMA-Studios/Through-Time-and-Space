@@ -18,6 +18,7 @@ import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
+import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
@@ -34,14 +35,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
 import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
 import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
 import static com.code.tama.tts.server.registries.forge.TTSBlocks.BLOCKS;
@@ -86,6 +85,8 @@ public class TTSMod {
 		// Register Blocks, Items, Dimensions etc...
 
 		SonicModeRegistry.register(modEventBus);
+
+		ControlsRegistry.register(modEventBus);
 
 		TTSParticles.PARTICLES.register(modEventBus);
 
@@ -144,13 +145,6 @@ public class TTSMod {
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		Networking.registerPackets();
 		event.enqueueWork(() -> {
-
-			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-				if (!FMLEnvironment.production) {
-					checkAllTranslations();
-				}
-			});
-
 		});
 	}
 }

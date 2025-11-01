@@ -1,20 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 import com.mojang.serialization.DataResult;
 import lombok.RequiredArgsConstructor;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 public class LevelCapability implements ILevelCap {
@@ -71,6 +72,6 @@ public class LevelCapability implements ILevelCap {
 
 	@Override
 	public void OnLoad(ServerPlayer player) {
-//		Networking.sendToPlayer(player, new UpdateTIRPacketS2C(this.GetTIRBlocks()));
+		// Networking.sendToPlayer(player, new UpdateTIRPacketS2C(this.GetTIRBlocks()));
 	}
 }
