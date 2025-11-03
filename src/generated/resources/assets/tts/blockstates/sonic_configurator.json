@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/sonic_configurator",
+        "y": 180
+      },
+      {
+        "model": "tts:block/sonic_configurator"
+      },
+      {
+        "model": "tts:block/sonic_configurator",
+        "y": 90
+      },
+      {
+        "model": "tts:block/sonic_configurator",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/toyota_throttle",
+        "y": 180
+      },
+      {
+        "model": "tts:block/toyota_throttle"
+      },
+      {
+        "model": "tts:block/toyota_throttle",
+        "y": 90
+      },
+      {
+        "model": "tts:block/toyota_throttle",
+        "y": 270
+      }
+    ]
+  }
+}

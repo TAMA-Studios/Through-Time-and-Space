@@ -1,12 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.gadgets;
 
+import com.code.tama.tts.server.blocks.core.HorizontalRotatedBlock;
+import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.SonicConfiguratorTileEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,22 +19,27 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // The block Tile Entity class must implement EntityBlock
-public class SonicConfiguratorBlock extends Block implements EntityBlock {
+public class SonicConfiguratorBlock extends HorizontalRotatedBlock implements EntityBlock {
 	public SonicConfiguratorBlock(Properties props) {
 		super(props);
 	}
+	public static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(Shapes.join(Block.box(0, 0, 3, 16, 2, 13), Block.box(3, 2, 6, 13, 6, 10), BooleanOp.OR).optimize());
 
 	@Override
-	public @NotNull VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_,
-			CollisionContext p_60558_) {
-		return Shapes.join(Block.box(0, 0, 3, 16, 2, 13), Block.box(3, 2, 6, 13, 6, 10), BooleanOp.OR);
+	@SuppressWarnings("deprecation")
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_,
+										@NotNull CollisionContext p_60558_) {
+		return SHAPE.GetShapeFromRotation(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
 	}
 
 	@Override
@@ -45,8 +49,9 @@ public class SonicConfiguratorBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @NotNull InteractionResult use(BlockState p_60503_, Level level, BlockPos blockPos, Player player,
-			InteractionHand p_60507_, BlockHitResult p_60508_) {
+	@SuppressWarnings("deprecation")
+	public @NotNull InteractionResult use(@NotNull BlockState p_60503_, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player,
+										  InteractionHand p_60507_, @NotNull BlockHitResult p_60508_) {
 		if (p_60507_.equals(InteractionHand.OFF_HAND))
 			return super.use(p_60503_, level, blockPos, player, p_60507_, p_60508_);
 

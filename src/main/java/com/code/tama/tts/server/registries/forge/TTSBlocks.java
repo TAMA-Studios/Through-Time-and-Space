@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
-
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.core.*;
@@ -27,7 +21,6 @@ import com.code.tama.tts.server.items.tabs.Roundel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -43,6 +36,12 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
 
 public class TTSBlocks {
 	public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -82,7 +81,7 @@ public class TTSBlocks {
 					.sound(SoundType.METAL)));
 
 	@MainTab
-	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("interior_rock", () -> new Block(
+	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("organic/interior_rock", () -> new Block(
 			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL)));
 
 	@MainTab

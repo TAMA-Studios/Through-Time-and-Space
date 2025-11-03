@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/carbon_steel_ladder",
+        "y": 180
+      },
+      {
+        "model": "tts:block/carbon_steel_ladder"
+      },
+      {
+        "model": "tts:block/carbon_steel_ladder",
+        "y": 90
+      },
+      {
+        "model": "tts:block/carbon_steel_ladder",
+        "y": 270
+      }
+    ]
+  }
+}

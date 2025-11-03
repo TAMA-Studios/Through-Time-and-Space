@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/destination_info_panel",
+        "y": 180
+      },
+      {
+        "model": "tts:block/destination_info_panel"
+      },
+      {
+        "model": "tts:block/destination_info_panel",
+        "y": 90
+      },
+      {
+        "model": "tts:block/destination_info_panel",
+        "y": 270
+      }
+    ]
+  }
+}

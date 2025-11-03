@@ -1,0 +1,10 @@
+{
+  "type": "tts:add_item",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/jungle_temple"
+    }
+  ],
+  "item": "tts:purified_zeiton_7"
+}

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/exterior_block",
+        "y": 180
+      },
+      {
+        "model": "tts:block/exterior_block"
+      },
+      {
+        "model": "tts:block/exterior_block",
+        "y": 90
+      },
+      {
+        "model": "tts:block/exterior_block",
+        "y": 270
+      }
+    ]
+  }
+}

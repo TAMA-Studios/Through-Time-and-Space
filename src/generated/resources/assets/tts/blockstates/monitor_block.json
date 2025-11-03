@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/monitor_block",
+        "y": 180
+      },
+      {
+        "model": "tts:block/monitor_block"
+      },
+      {
+        "model": "tts:block/monitor_block",
+        "y": 90
+      },
+      {
+        "model": "tts:block/monitor_block",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/power_lever",
+        "y": 180
+      },
+      {
+        "model": "tts:block/power_lever"
+      },
+      {
+        "model": "tts:block/power_lever",
+        "y": 90
+      },
+      {
+        "model": "tts:block/power_lever",
+        "y": 270
+      }
+    ]
+  }
+}

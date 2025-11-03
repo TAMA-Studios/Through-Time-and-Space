@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/ars_panel",
+        "y": 180
+      },
+      {
+        "model": "tts:block/ars_panel"
+      },
+      {
+        "model": "tts:block/ars_panel",
+        "y": 90
+      },
+      {
+        "model": "tts:block/ars_panel",
+        "y": 270
+      }
+    ]
+  }
+}

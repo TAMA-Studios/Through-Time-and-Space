@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    },
+    {
+      "item": "tts:purified_zeiton_7"
+    }
+  ],
+  "result": {
+    "item": "tts:zeiton/zeiton_block"
+  }
+}

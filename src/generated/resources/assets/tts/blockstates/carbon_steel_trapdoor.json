@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/carbon_steel_trapdoor",
+        "y": 180
+      },
+      {
+        "model": "tts:block/carbon_steel_trapdoor"
+      },
+      {
+        "model": "tts:block/carbon_steel_trapdoor",
+        "y": 90
+      },
+      {
+        "model": "tts:block/carbon_steel_trapdoor",
+        "y": 270
+      }
+    ]
+  }
+}

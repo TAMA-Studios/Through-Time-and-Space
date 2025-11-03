@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tts:block/throttle",
+        "y": 180
+      },
+      {
+        "model": "tts:block/throttle"
+      },
+      {
+        "model": "tts:block/throttle",
+        "y": 90
+      },
+      {
+        "model": "tts:block/throttle",
+        "y": 270
+      }
+    ]
+  }
+}
