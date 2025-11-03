@@ -45,7 +45,8 @@ public class TBlockStateProvider extends BlockStateProvider {
 	private void BlockWithItemAndState(RegistryObject<Block> registryObject) {
 		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
 				blockTexture(registryObject.get()));
-		simpleBlock(registryObject.get(), modelBuilder);
+
+		simpleBlockWithItem(registryObject.get(), modelBuilder);
 	}
 
 	private void Horizontal(RegistryObject<Block> registryObject) {
@@ -82,6 +83,9 @@ public class TBlockStateProvider extends BlockStateProvider {
 		}
 
 		getVariantBuilder(block).partialState().setModels(model);
+
+		simpleBlockItem(registryObject.get(), model[0].model);
+//		blockItem(registryObject);
 	}
 
 
@@ -120,7 +124,7 @@ public class TBlockStateProvider extends BlockStateProvider {
 	}
 
 	private String name(Block block) {
-		return key(block).getPath();
+		return "block/" + key(block).getPath();
 	}
 
 	private void saplingBlock(RegistryObject<Block> blockRegistryObject) {

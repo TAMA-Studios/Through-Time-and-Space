@@ -36,6 +36,6 @@ public class HorizontalRotatedBlock extends Block {
 	}
 
 	public BlockState getStateForPlacement(BlockPlaceContext p_55928_) {
-		return this.defaultBlockState().setValue(FACING, p_55928_.getClickedFace().getOpposite());
+		return this.defaultBlockState().setValue(FACING, p_55928_.getHorizontalDirection().getOpposite());
 	}
 }

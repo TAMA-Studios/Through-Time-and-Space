@@ -1,17 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items.gadgets;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.items.core.PowerableItem;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS2C;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,6 +16,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.UUID;
 
 public class TemporalImprintReaderItem extends PowerableItem {
 	private boolean firstTick = true;
@@ -90,7 +89,10 @@ public class TemporalImprintReaderItem extends PowerableItem {
 			if (level != null)
 				if (stack.getOrCreateTag().contains("uuid")) {
 					level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(
-							cap -> this.pos = cap.GetTIRBlocks().get(stack.getOrCreateTag().getUUID("uuid")).getPos());
+							cap -> {
+								if(cap.GetTIRBlocks().containsKey(stack.getOrCreateTag().getUUID("uuid")))
+									this.pos = cap.GetTIRBlocks().get(stack.getOrCreateTag().getUUID("uuid")).getPos();
+							});
 				}
 		}
 
