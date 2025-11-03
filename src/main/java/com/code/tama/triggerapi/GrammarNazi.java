@@ -1,23 +1,24 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * This is for functions related to string manipulation
@@ -110,7 +111,7 @@ public class GrammarNazi {
 		String translation = I18n.get(key); // I18n.get(key);
 		if (translation == null || translation.equals(key) || translation.isEmpty()) {
 			MissingTranslations.add(key);
-//			throw new RuntimeException("Missing translation key: " + key);
+			// throw new RuntimeException("Missing translation key: " + key);
 		}
 	}
 
@@ -150,7 +151,7 @@ public class GrammarNazi {
 			checkTranslation(key);
 		});
 
-		if(!MissingTranslations.isEmpty()) {
+		if (!MissingTranslations.isEmpty()) {
 			LOGGER.error("Missing translations!");
 			MissingTranslations.forEach(LOGGER::error);
 

@@ -1,7 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import com.code.tama.triggerapi.data.holders.DataDimGravityLoader;
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
@@ -11,6 +13,7 @@ import com.code.tama.tts.server.data.json.loaders.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.loaders.RecipeDataLoader;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -27,8 +30,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.data.holders.DataDimGravityLoader;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -141,7 +143,8 @@ public class CommonEvents {
 			player.getCapability(Capabilities.PLAYER_CAPABILITY)
 					.ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
 
-//			event.getLevel().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap -> cap.OnLoad(player));
+			// event.getLevel().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap
+			// -> cap.OnLoad(player));
 		}
 
 		if (!FMLEnvironment.production) {

@@ -35,8 +35,11 @@ public class MDimensions {
 	public static final ResourceKey<LevelStem> GALLIFREY_STEM = ResourceKey.create(Registries.LEVEL_STEM,
 			new ResourceLocation(MODID, "gallifrey"));
 
-	public static ResourceKey<DimensionType> TARDIS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
-			new ResourceLocation(MODID, "tardis"));
+	public static ResourceKey<DimensionType> TARDIS_NATURAL_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
+			new ResourceLocation(MODID, "natural_tardis"));
+
+	public static ResourceKey<DimensionType> TARDIS_ARTIFICIAL_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
+			new ResourceLocation(MODID, "artificial_tardis"));
 	public static final ResourceKey<Level> TARDIS_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
 			new ResourceLocation(MODID, "tardis"));
 	public static final ResourceKey<DimensionType> VAROS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,

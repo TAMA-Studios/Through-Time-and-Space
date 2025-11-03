@@ -82,6 +82,10 @@ public class TTSBlocks {
 					.sound(SoundType.METAL)));
 
 	@MainTab
+	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("interior_rock", () -> new Block(
+			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL)));
+
+	@MainTab
 	public static final RegistryObject<Block> STRUCTURAL_STEEL = RegisterWithItem("structural_steel",
 			() -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of()
 					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)));

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import com.code.tama.triggerapi.helpers.FileHelper;
+import com.code.tama.triggerapi.helpers.ServerUtils;
 
 public class PlayerCapability implements IPlayerCap {
 	List<String> OwnedTARDISes = new ArrayList<>();
@@ -31,11 +32,13 @@ public class PlayerCapability implements IPlayerCap {
 		AtomicReference<String> Owned = new AtomicReference<>();
 		this.OwnedTARDISes.forEach(tard -> Owned.set(Owned.get() + "\n" + tard));
 
-		FileHelper.createStoredFile("/pdat/" + player.getDisplayName().getString() + "-data",
-				String.format(
-						"This file is to help server owners find info on players and owned TARDISes \n\n"
-								+ "This player currently owns %s TARDISes\n\n" + "Owned TARDISes: %s",
-						this.OwnedTARDISes.size(), Owned.get()));
+		FileHelper.createStoredFile(ServerUtils.getServerDirectoryPath().resolve("/TriggerAPI/playerData/"),
+				player.getDisplayName().getString(), String.format("""
+						This file is to help server owners find info on players and owned TARDISes\s
+
+						This player currently owns %s TARDISes
+
+						Owned TARDISes: %s""", this.OwnedTARDISes.size(), Owned.get()));
 	}
 
 	public int GetOwnedTARDISes() {

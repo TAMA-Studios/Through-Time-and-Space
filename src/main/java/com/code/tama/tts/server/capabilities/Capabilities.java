@@ -78,7 +78,8 @@ public class Capabilities {
 			event.addCapability(Capabilities.LEVEL_CAP_KEY,
 					new SerializableCapabilityProvider<>(LEVEL_CAPABILITY, new LevelCapability(event.getObject())));
 
-			if (!event.getObject().dimensionTypeId().location().equals(MDimensions.TARDIS_DIM_TYPE.location()))
+			if (!event.getObject().dimensionTypeId().location()
+					.equals(MDimensions.TARDIS_ARTIFICIAL_DIM_TYPE.location()))
 				return;
 
 			event.addCapability(Capabilities.TARDIS_CAPABILITY_KEY, new SerializableCapabilityProvider<>(

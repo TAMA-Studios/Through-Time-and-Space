@@ -1,9 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.dimensions.TARDISArtificalDimensionChunkGenerator;
 import com.code.tama.tts.server.dimensions.TARDISNaturalDimensionChunkGenerator;
@@ -13,6 +18,8 @@ import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -48,14 +55,10 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 
 /** DimensionAPI internal implementation */
 @SuppressWarnings("deprecation")
@@ -96,8 +99,8 @@ public final class DimensionManager implements DimensionAPI {
 			throw new IllegalStateException("Dimension registry not writable: " + dimensionKey.location());
 		}
 
-        assert overworld != null;
-        ServerLevel newLevel = new ServerLevel(server, executor, storageAccess, derivedData, levelKey, dimension,
+		assert overworld != null;
+		ServerLevel newLevel = new ServerLevel(server, executor, storageAccess, derivedData, levelKey, dimension,
 				progressListener, server.getWorldData().isDebugWorld(), overworld.getSeed(), List.of(), false, null);
 
 		// Add world border listener
@@ -119,13 +122,13 @@ public final class DimensionManager implements DimensionAPI {
 	}
 
 	public static LevelStem createArtificialTARDISLevelStem(MinecraftServer server) {
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISArtificalDimensionChunkGenerator());
+		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(
+				MDimensions.TARDIS_ARTIFICIAL_DIM_TYPE), new TARDISArtificalDimensionChunkGenerator());
 	}
 
 	public static LevelStem createNaturalTARDISLevelStem(MinecraftServer server) {
 		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
+				.getHolderOrThrow(MDimensions.TARDIS_NATURAL_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
 	}
 
 	public static void prepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {

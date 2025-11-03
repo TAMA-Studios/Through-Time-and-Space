@@ -61,17 +61,19 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 	// Leave (most) these functions below empty to stop stuff from generating
 
 	@Override
-	public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {
+	public void addDebugScreenInfo(@NotNull List<String> p_223175_, @NotNull RandomState p_223176_,
+			@NotNull BlockPos p_223177_) {
 	}
 
 	@Override
-	public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, RandomState p_223045_, BiomeManager p_223046_,
-			StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
+	public void applyCarvers(@NotNull WorldGenRegion p_223043_, long p_223044_, @NotNull RandomState p_223045_,
+			@NotNull BiomeManager p_223046_, @NotNull StructureManager p_223047_, @NotNull ChunkAccess p_223048_,
+			@NotNull GenerationStep.Carving p_223049_) {
 	}
 
 	@Override
-	public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_,
-			ChunkAccess p_223053_) {
+	public void buildSurface(@NotNull WorldGenRegion p_223050_, @NotNull StructureManager p_223051_,
+			@NotNull RandomState p_223052_, @NotNull ChunkAccess p_223053_) {
 	}
 
 	@Override
@@ -80,12 +82,26 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void createReferences(WorldGenLevel pLevel, StructureManager pStructureManager, ChunkAccess pChunk) {
+	public void createReferences(@NotNull WorldGenLevel pLevel, @NotNull StructureManager pStructureManager,
+			@NotNull ChunkAccess pChunk) {
 	}
 
 	@Override
-	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-			RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(@NotNull Executor executor, @NotNull Blender blender,
+			@NotNull RandomState randomState, @NotNull StructureManager structureManager, @NotNull ChunkAccess chunk) {
+
+		BlockState stone = Blocks.STONE.defaultBlockState();
+		int minY = this.getMinY();
+		int maxY = minY + this.getGenDepth();
+
+		for (int y = minY; y < maxY; y++) {
+			for (int x = 0; x < 16; x++) {
+				for (int z = 0; z < 16; z++) {
+					chunk.setBlockState(new BlockPos(x, y, z), stone, false);
+				}
+			}
+		}
+
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -94,14 +110,16 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 			@NotNull RandomState state) {
 		int height = level.getHeight(); // Usually 384
 		BlockState[] blocks = new BlockState[height];
+		BlockState stone = Blocks.STONE.defaultBlockState();
 
-		Arrays.fill(blocks, Blocks.AIR.defaultBlockState());
+		Arrays.fill(blocks, stone);
 
 		return new NoiseColumn(getMinY(), blocks);
 	}
 
 	@Override
-	public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState state) {
+	public int getBaseHeight(int x, int z, Heightmap.@NotNull Types type, @NotNull LevelHeightAccessor level,
+			@NotNull RandomState state) {
 		return getMinY() + getGenDepth(); // top of the filled area
 	}
 
