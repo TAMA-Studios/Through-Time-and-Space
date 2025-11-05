@@ -402,7 +402,7 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 				if (isArtificial)
 					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
-							() -> DimensionManager.createNaturalTARDISLevelStem(level.getServer()));
+							() -> DimensionManager.createArtificialTARDISLevelStem(level.getServer()));
 				else
 					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
 							() -> DimensionManager.createNaturalTARDISLevelStem(level.getServer()));

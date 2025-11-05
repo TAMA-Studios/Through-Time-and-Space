@@ -1,24 +1,22 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.datagen;
-
-import static com.code.tama.tts.TTSMod.MODID;
+package com.code.tama.tts.datagen.assets;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
-
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class MBlockStateProvider extends BlockStateProvider {
-	public MBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class DataBlockStateProvider extends BlockStateProvider {
+	public DataBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
 		super(output, MODID, exFileHelper);
 	}
 
@@ -28,20 +26,69 @@ public class MBlockStateProvider extends BlockStateProvider {
 		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
 			try {
 				assert block.getId() != null;
-				if (block.getId().toString().contains("roundel"))
-					Roundel(block);
-				blockWithItem(block);
+
+				if(block.get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+					Horizontal(block);
+				}
+
+//				if (AnnotationUtils.hasAnnotation(Roundel.class, block))
+				else
+					BlockWithItemAndState(block);
+
+//				blockWithItem(block);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void Roundel(RegistryObject<Block> registryObject) {
+	private void BlockWithItemAndState(RegistryObject<Block> registryObject) {
 		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
 				blockTexture(registryObject.get()));
-		simpleBlock(registryObject.get(), modelBuilder);
+
+		simpleBlockWithItem(registryObject.get(), modelBuilder);
 	}
+
+	private void Horizontal(RegistryObject<Block> registryObject) {
+		Block block = registryObject.get();
+
+		// Safety check: only handle blocks that have the HORIZONTAL_FACING property
+		if (!block.defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+			TTSMod.LOGGER.warn("Block {} has no HORIZONTAL_FACING property! Skipping Horizontal()", block);
+			return;
+		}
+
+		ConfiguredModel model[] = new ConfiguredModel[4];
+
+		int i = 0;
+
+		for (Direction direction : Direction.values()) {
+			if (!(direction.equals(Direction.UP) || direction.equals(Direction.DOWN))) {
+
+				int yRot = switch (direction) {
+					case NORTH -> 180;
+					case SOUTH -> 0;
+					case WEST -> 90;
+					case EAST -> 270;
+					default -> 0;
+				};
+
+				model[i] = new ConfiguredModel(
+						new ModelFile.UncheckedModelFile(MODID + ":block/" + name(block)),
+						0, yRot, false
+				);
+
+				i++;
+			}
+		}
+
+		getVariantBuilder(block).partialState().setModels(model);
+
+		simpleBlockItem(registryObject.get(), model[0].model);
+//		blockItem(registryObject);
+	}
+
+
 
 	private void SpecialBlockItem(RegistryObject<? extends Block> blockRegistryObject) {
 		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
@@ -55,9 +102,11 @@ public class MBlockStateProvider extends BlockStateProvider {
 
 	private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
 		try {
+
+			models().cubeAll(name(blockRegistryObject.get()), blockRegistryObject.getId());
 			simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
-			TTSMod.LOGGER.info(this.blockTexture(blockRegistryObject.get()));
-			TTSMod.LOGGER.info(cubeAll(blockRegistryObject.get()).getLocation());
+			// TTSMod.LOGGER.info(this.blockTexture(blockRegistryObject.get()));
+			// TTSMod.LOGGER.info(cubeAll(blockRegistryObject.get()).getLocation());
 		} catch (Exception e) {
 			TTSMod.LOGGER.info(e.getMessage());
 		}
@@ -70,12 +119,12 @@ public class MBlockStateProvider extends BlockStateProvider {
 	private void leavesBlock(RegistryObject<Block> blockRegistryObject) {
 		simpleBlockWithItem(blockRegistryObject.get(),
 				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
-						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
+								new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
 						.renderType("cutout"));
 	}
 
 	private String name(Block block) {
-		return key(block).getPath();
+		return "block/" + key(block).getPath();
 	}
 
 	private void saplingBlock(RegistryObject<Block> blockRegistryObject) {
@@ -111,7 +160,7 @@ public class MBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void doorBlockWithRenderType(DoorBlock block, ResourceLocation bottom, ResourceLocation top,
-			String renderType) {
+										String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottomLeft = models().doorBottomLeft(baseName + "_bottom_left", bottom, top)
@@ -200,7 +249,7 @@ public class MBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void trapdoorBlockWithRenderType(TrapDoorBlock block, ResourceLocation texture, boolean orientable,
-			String renderType) {
+											String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottom = orientable

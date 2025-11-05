@@ -2,8 +2,7 @@
 package com.code.tama.tts.server.worlds.biomes.surface;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.worlds.biomes.MBiomes;
-
+import com.code.tama.tts.server.worlds.biomes.TBiomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SurfaceRules;
@@ -26,14 +25,14 @@ public class MSurfaceRules {
 		SurfaceRules.RuleSource grassSurface = SurfaceRules
 				.sequence(
 						SurfaceRules.ifTrue(isAtOrAboveWaterLevel,
-								SurfaceRules.ifTrue(SurfaceRules.isBiome(MBiomes.GALLIFREYAN_PLAINS),
+								SurfaceRules.ifTrue(SurfaceRules.isBiome(TBiomes.GALLIFREYAN_PLAINS),
 										SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), GRASS_BLOCK))),
 						DIRT);
 
 		return SurfaceRules
 				.sequence(
 						SurfaceRules.sequence(
-								SurfaceRules.ifTrue(SurfaceRules.isBiome(MBiomes.GALLIFREYAN_DESERT),
+								SurfaceRules.ifTrue(SurfaceRules.isBiome(TBiomes.GALLIFREYAN_DESERT),
 										SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR,
 												SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(),
 														GALLIFREY_SAND))),

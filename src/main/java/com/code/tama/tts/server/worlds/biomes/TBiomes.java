@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.biomes;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import com.code.tama.tts.server.worlds.ModPlacedFeatures;
-
+import com.code.tama.tts.server.worlds.TPlacedFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -18,7 +15,9 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
-public class MBiomes {
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class TBiomes {
 	public static final ResourceKey<Biome> GALLIFREYAN_DESERT = ResourceKey.create(Registries.BIOME,
 			new ResourceLocation(MODID, "gallifreyan_desert"));
 	public static final ResourceKey<Biome> GALLIFREYAN_PLAINS = ResourceKey.create(Registries.BIOME,
@@ -78,7 +77,7 @@ public class MBiomes {
 		BiomeDefaultFeatures.addDefaultMushrooms(biomeBuilder);
 		BiomeDefaultFeatures.addDefaultExtraVegetation(biomeBuilder);
 		biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION,
-				ModPlacedFeatures.GALLIFREYAN_OAK_PLACED_KEY);
+				TPlacedFeatures.GALLIFREYAN_OAK_PLACED_KEY);
 
 		return new Biome.BiomeBuilder().hasPrecipitation(true).downfall(0.2f).temperature(0.7f)
 				.generationSettings(biomeBuilder.build()).mobSpawnSettings(spawnBuilder.build())

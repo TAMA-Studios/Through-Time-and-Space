@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.core;
 
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -18,8 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.RegistryObject;
-
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class ConsoleBlock<T extends AbstractConsoleTile> extends Block implements EntityBlock {
 
@@ -30,8 +28,8 @@ public class ConsoleBlock<T extends AbstractConsoleTile> extends Block implement
 		this.console = consoleTile;
 	}
 
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state,
-			@NotNull BlockEntityType<T> type) {
+	public <V extends BlockEntity> BlockEntityTicker<V> getTicker(@NotNull Level level, @NotNull BlockState state,
+																  @NotNull BlockEntityType<V> type) {
 		return type == console.get() ? AbstractConsoleTile::tick : null;
 	}
 

@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
-
-import java.io.IOException;
-
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
@@ -37,12 +31,9 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.worlds.dimension.MDimensions;
+import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -57,6 +48,14 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+
+import java.io.IOException;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
@@ -161,10 +160,10 @@ public class ClientSetup {
 	@SubscribeEvent
 	public static void registerSkyRenderers(RegisterDimensionSpecialEffectsEvent event) {
 		// Register your custom sky renderer for the TARDIS dimension
-		event.register(MDimensions.DimensionEffects.TARDIS_DIM_TYPE.location(),
-				new TardisSkyEffects(MDimensions.TARDIS_DIM_TYPE));
-		event.register(MDimensions.DimensionEffects.GALLIFREY_EFFECTS.location(),
-				new GallifreyEffects(MDimensions.GALLIFREY_DIM_TYPE));
+		event.register(TDimensions.DimensionEffects.TARDIS_DIM_TYPE.location(),
+				new TardisSkyEffects(TDimensions.TARDIS_DIM_TYPE));
+		event.register(TDimensions.DimensionEffects.GALLIFREY_EFFECTS.location(),
+				new GallifreyEffects(TDimensions.GALLIFREY_DIM_TYPE));
 	}
 
 	// @SubscribeEvent

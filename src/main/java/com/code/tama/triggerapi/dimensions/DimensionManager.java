@@ -5,10 +5,10 @@ import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
 import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.dimensions.TARDISArtificalDimensionChunkGenerator;
+import com.code.tama.tts.server.dimensions.TARDISArtificialDimensionChunkGenerator;
 import com.code.tama.tts.server.dimensions.TARDISNaturalDimensionChunkGenerator;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.worlds.dimension.MDimensions;
+import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
@@ -120,12 +120,12 @@ public final class DimensionManager implements DimensionAPI {
 
 	public static LevelStem createArtificialTARDISLevelStem(MinecraftServer server) {
 		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISArtificalDimensionChunkGenerator());
+				.getHolderOrThrow(TDimensions.TARDIS_DIM_TYPE), new TARDISArtificialDimensionChunkGenerator());
 	}
 
 	public static LevelStem createNaturalTARDISLevelStem(MinecraftServer server) {
 		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(MDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
+				.getHolderOrThrow(TDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
 	}
 
 	public static void prepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {

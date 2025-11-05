@@ -1,15 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.dimensions;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +16,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -33,18 +25,23 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
-public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-	public static final Codec<TARDISArtificalDimensionChunkGenerator> CODEC = RecordCodecBuilder
+public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
+
+	public static final Codec<TARDISArtificialDimensionChunkGenerator> CODEC = RecordCodecBuilder
 			.create(instance -> instance
 					.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
-					.apply(instance, TARDISArtificalDimensionChunkGenerator::new));
+					.apply(instance, TARDISArtificialDimensionChunkGenerator::new));
 
 	public final HolderLookup.RegistryLookup<Biome> biomeReg;
 	public final RandomSource random;
 
-	public TARDISArtificalDimensionChunkGenerator() {
+	public TARDISArtificialDimensionChunkGenerator() {
 		super(new FixedBiomeSource(ServerLifecycleHooks.getCurrentServer().registryAccess()
 				.registryOrThrow(Registries.BIOME).asLookup().getOrThrow(Biomes.TARDIS_BIOME)));
 		this.biomeReg = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME)
@@ -52,7 +49,7 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 		this.random = new SingleThreadedRandomSource(0);
 	}
 
-	public TARDISArtificalDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
+	public TARDISArtificialDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
 		super(new FixedBiomeSource(biomeReg.getOrThrow(Biomes.TARDIS_BIOME)));
 		this.biomeReg = biomeReg;
 		this.random = new SingleThreadedRandomSource(0);
@@ -66,16 +63,16 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, RandomState p_223045_, BiomeManager p_223046_,
-			StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
+							 StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
 	}
 
 	@Override
 	public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_,
-			ChunkAccess p_223053_) {
+							 ChunkAccess p_223053_) {
 	}
 
 	@Override
-	public @NotNull Codec<TARDISArtificalDimensionChunkGenerator> codec() {
+	public @NotNull Codec<TARDISArtificialDimensionChunkGenerator> codec() {
 		return CODEC;
 	}
 
@@ -85,19 +82,15 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-			RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+																 RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
 	@Override
 	public @NotNull NoiseColumn getBaseColumn(int x, int z, @NotNull LevelHeightAccessor level,
-			@NotNull RandomState state) {
-		int height = level.getHeight(); // Usually 384
-		BlockState[] blocks = new BlockState[height];
+											  @NotNull RandomState state) {
 
-		Arrays.fill(blocks, Blocks.AIR.defaultBlockState());
-
-		return new NoiseColumn(getMinY(), blocks);
+		return new NoiseColumn(0, new BlockState[] {});
 	}
 
 	@Override
@@ -121,6 +114,6 @@ public class TARDISArtificalDimensionChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void spawnOriginalMobs(@NotNull WorldGenRegion p_62167_) {
+	public void spawnOriginalMobs(WorldGenRegion p_62167_) {
 	}
 }

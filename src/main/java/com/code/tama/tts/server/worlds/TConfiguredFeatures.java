@@ -1,15 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.List;
-import java.util.OptionalInt;
-
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanFoliagePlacer;
 import com.code.tama.tts.server.worlds.tree.custom.GallifreyanOakTrunkPlacer;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -29,7 +23,12 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTes
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
-public class MConfiguredFeatures {
+import java.util.List;
+import java.util.OptionalInt;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class TConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> END_ZEITON_ORE_KEY = registerKey("end_zeiton_ore");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> GALLIFREYAN_OAK_KEY = registerKey("gallifreyan_oak");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ZEITON_ORE_KEY = registerKey("nether_zeiton_ore");

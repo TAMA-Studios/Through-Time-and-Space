@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
-
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.core.*;
@@ -27,7 +21,6 @@ import com.code.tama.tts.server.items.tabs.Roundel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -41,8 +34,15 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
 
 public class TTSBlocks {
 	public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
@@ -104,8 +104,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final RegistryObject<Block> CARBON_STEEL_LADDER = RegisterWithItem("carbon_steel_ladder",
-			() -> new LadderBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY)
-					.strength(5.0F, 6.0F).sound(SoundType.METAL).forceSolidOff().noOcclusion()));
+			() -> new LadderBlock(BlockBehaviour.Properties.of().forceSolidOff().strength(0.8F).sound(SoundType.LADDER).noOcclusion().pushReaction(PushReaction.DESTROY)));
+
 
 	@MainTab
 	public static final RegistryObject<Block> CARBON_STEEL = RegisterWithItem("carbon_steel",
@@ -225,7 +225,12 @@ public class TTSBlocks {
 			() -> new PortalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(5.0F)
 					.noOcclusion().lightLevel(state -> 10)));
 
+	@MainTab
+	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("organic/interior_rock", () -> new Block(
+			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL)));
+
 	/** Gallifrey Blocks */
+
 	@DimensionalTab
 	public static final RegistryObject<Block> GALLIFREYAN_OAK_LOG = RegisterWithItem(
 			"dimensional/gallifreyan/gallifreyan_oak_log",

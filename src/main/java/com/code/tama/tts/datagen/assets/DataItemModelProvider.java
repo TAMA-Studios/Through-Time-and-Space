@@ -1,12 +1,7 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.datagen;
-
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.LinkedHashMap;
+package com.code.tama.tts.datagen.assets;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
-
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +18,11 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModItemModelProvider extends ItemModelProvider {
+import java.util.LinkedHashMap;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class DataItemModelProvider extends ItemModelProvider {
 	private static LinkedHashMap<ResourceKey<TrimMaterial>, Float> trimMaterials = new LinkedHashMap<>();
 
 	static {
@@ -39,7 +38,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 		trimMaterials.put(TrimMaterials.AMETHYST, 1.0F);
 	}
 
-	public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+	public DataItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
 		super(output, MODID, existingFileHelper);
 	}
 
@@ -61,6 +60,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 		withExistingParent(TTSBlocks.EXTERIOR_BLOCK.getId().getPath(), mcLoc("block/air"));
 		withExistingParent(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
 		withExistingParent(TTSBlocks.NESS_CONSOLE_BLOCK.getId().getPath(), mcLoc("block/air"));
+		simpleBlockItemBlockTexture(TTSBlocks.INTERIOR_ROCK);
 		saplingItem(TTSBlocks.GALLIFREYAN_SAPLING);
 		// simplestBlockItem(TTSBlocks.BLUE_ROTOR);
 		// simplestBlockItem(TTSBlocks.COPPER_ROTOR);

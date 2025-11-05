@@ -1,14 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.worlds.dimension;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.List;
-import java.util.OptionalLong;
-
-import com.code.tama.tts.server.worlds.biomes.MBiomes;
+import com.code.tama.tts.server.worlds.biomes.TBiomes;
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -26,7 +20,12 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
-public class MDimensions {
+import java.util.List;
+import java.util.OptionalLong;
+
+import static com.code.tama.tts.TTSMod.MODID;
+
+public class TDimensions {
 
 	public static final ResourceKey<DimensionType> GALLIFREY_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
 			new ResourceLocation(MODID, "gallifrey_type"));
@@ -53,18 +52,18 @@ public class MDimensions {
 		HolderGetter<NoiseGeneratorSettings> noiseGenSettings = context.lookup(Registries.NOISE_SETTINGS);
 
 		NoiseBasedChunkGenerator wrappedChunkGenerator = new NoiseBasedChunkGenerator(
-				new FixedBiomeSource(biomeRegistry.getOrThrow(MBiomes.GALLIFREYAN_PLAINS)),
+				new FixedBiomeSource(biomeRegistry.getOrThrow(TBiomes.GALLIFREYAN_PLAINS)),
 				noiseGenSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
 
 		NoiseBasedChunkGenerator noiseBasedChunkGenerator = new NoiseBasedChunkGenerator(
 				MultiNoiseBiomeSource.createFromList(new Climate.ParameterList<>(List.of(
 						Pair.of(Climate.parameters(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F),
-								biomeRegistry.getOrThrow(MBiomes.GALLIFREYAN_PLAINS)),
+								biomeRegistry.getOrThrow(TBiomes.GALLIFREYAN_PLAINS)),
 						Pair.of(Climate.parameters(0.1F, 0.2F, 0.0F, 0.2F, 0.0F, 0.0F, 0.0F),
-								biomeRegistry.getOrThrow(MBiomes.GALLIFREYAN_DESERT))))),
+								biomeRegistry.getOrThrow(TBiomes.GALLIFREYAN_DESERT))))),
 				noiseGenSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
 
-		LevelStem stem = new LevelStem(dimTypes.getOrThrow(MDimensions.GALLIFREY_DIM_TYPE), noiseBasedChunkGenerator);
+		LevelStem stem = new LevelStem(dimTypes.getOrThrow(TDimensions.GALLIFREY_DIM_TYPE), noiseBasedChunkGenerator);
 
 		context.register(GALLIFREY_STEM, stem);
 	}

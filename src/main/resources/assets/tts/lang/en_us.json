@@ -156,5 +156,6 @@
   "tts.exterior.steampunk": "Steampunk",
   "tts.exterior.voxel.chibnall": "Voxel — Chibnall",
   "tts.exterior.voxel.rtd": "Voxel — RTD",
-  "tts.exterior.ttcapsule": "TT Capsule"
+  "tts.exterior.ttcapsule": "TT Capsule",
+  "block.tts.organic.interior_rock": "Interior Rock"
 }
