@@ -1,17 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -21,6 +13,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
 public class GallifreyEffects extends DimensionSpecialEffects {
 
@@ -35,32 +33,35 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 	}
 
 	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f matrix4f, @NotNull Vec3 position,
-			Quaternionf rotation, Vec3 PivotPoint, float size) {
+								 Quaternionf rotation, Vec3 PivotPoint, float size) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
 
 		poseStack.pushPose();
+
 		RenderSystem.disableBlend();
 		RenderSystem.enableDepthTest();
 		poseStack.translate(position.x, position.y, position.z);
 		poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
-		poseStack.scale(5.0F, 5.0F, 5.0F);
 
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-		if (SunsVBO == null) {
+		if (SunsVBO == null || SunsVBO.isInvalid()) {
 			buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 			SunsVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
 			SunsVBO.bind();
 			SunsVBO.upload(drawPlanet(buffer, size));
-
 			VertexBuffer.unbind();
 		}
 
-		SunsVBO.bind();
-		SunsVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
-		VertexBuffer.unbind();
+		if (!SunsVBO.isInvalid()) {
+			SunsVBO.bind();
+			SunsVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+			VertexBuffer.unbind();
+		}
+
+		SunsVBO.close();
 
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
@@ -95,25 +96,16 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 
 	@Override
 	public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera,
-			Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+							 @NotNull Matrix4f projectionMatrix, boolean isFoggy, @NotNull Runnable setupFog) {
 
-		renderSun(poseStack, projectionMatrix, new Vec3(30, 400, 0),
-				Axis.ZP.rotation(
-						Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())),
-				new Vec3(0, 0, 0), 2);
-		renderSun(poseStack, projectionMatrix, new Vec3(0, 450, 75),
-				Axis.ZP.rotation(
-						Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())),
-				new Vec3(0, 0, 0), 2);
+		renderSun(poseStack, projectionMatrix, new Vec3(50, 400, 0),
+				Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().getPartialTick())),
+				new Vec3(0, 0, 0), 20);
 
-		renderPlanet(poseStack, new Vec3(30, 400, 0),
-				Axis.ZP.rotation(
-						Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())),
-				new Vec3(0, 0, 0), 2, "sun");
-		renderPlanet(poseStack, new Vec3(0, 450, 75),
-				Axis.ZP.rotation(
-						Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().level.getGameTime())),
-				new Vec3(0, 0, 0), 2, "sun");
+
+		renderSun(poseStack, projectionMatrix, new Vec3(0, 450, 175),
+				Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().getPartialTick())),
+				new Vec3(0, 0, 0), 20);
 
 		return false;
 	}

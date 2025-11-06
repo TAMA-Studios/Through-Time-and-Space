@@ -199,9 +199,10 @@ public class SonicItem extends AttunableItem {
 		}
 		if (player.isCrouching()) {
 				RegistryObject<SonicMode> nextMode = SonicModeRegistry.getFromOrdinal((SonicModeRegistry.ordinal(this.InteractionType) + 1));
+			if (!player.level().isClientSide) {
 				this.InteractionType = nextMode.get();
-				if (!player.level().isClientSide)
-					player.sendSystemMessage(Component.literal(GrammarNazi.CleanString(nextMode.get().getName())));
+				player.sendSystemMessage(Component.literal(GrammarNazi.CleanString(nextMode.get().getName())));
+			}
 
 		} else {
 			if (player.getMainHandItem().getDamageValue() >= player.getMainHandItem().getMaxDamage() - 1) {
