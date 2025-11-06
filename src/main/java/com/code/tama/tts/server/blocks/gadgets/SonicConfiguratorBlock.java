@@ -1,12 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.gadgets;
 
+import com.code.tama.tts.server.blocks.core.HorizontalRotatedBlock;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.SonicConfiguratorTileEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,9 +23,11 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // The block Tile Entity class must implement EntityBlock
-public class SonicConfiguratorBlock extends Block implements EntityBlock {
+public class SonicConfiguratorBlock extends HorizontalRotatedBlock implements EntityBlock {
 	public SonicConfiguratorBlock(Properties props) {
 		super(props);
 	}

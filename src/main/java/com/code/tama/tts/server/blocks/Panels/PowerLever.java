@@ -1,12 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
-
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -23,10 +19,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 @SuppressWarnings("deprecation")
 public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
@@ -64,6 +64,36 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 	}
 
 	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		Direction clickedFace = context.getClickedFace();
+		Player player = context.getPlayer();
+		Direction horizontalFacing = player != null ? player.getDirection().getOpposite() : Direction.NORTH;
+
+		// Default to WALL if side clicked is horizontal
+		if (clickedFace.getAxis().isHorizontal()) {
+			return this.defaultBlockState()
+					.setValue(FACE, AttachFace.WALL)
+					.setValue(FACING, clickedFace.getOpposite());
+		}
+
+		// If top, allow player to control horizontal facing
+		if (clickedFace == Direction.UP) {
+			return this.defaultBlockState()
+					.setValue(FACE, AttachFace.FLOOR)
+					.setValue(FACING, horizontalFacing);
+		}
+
+		// If bottom, use default orientation (or mirror top logic)
+		if (clickedFace == Direction.DOWN) {
+			return this.defaultBlockState()
+					.setValue(FACE, AttachFace.CEILING)
+					.setValue(FACING, horizontalFacing);
+		}
+
+		return this.defaultBlockState();
+	}
+
+	@Override
 	public @NotNull VoxelShape getShape(BlockState p_60555_, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_,
 			@NotNull CollisionContext p_60558_) {
 		return SHAPE.GetShapeFromRotation(p_60555_.getValue(FACING));
@@ -73,11 +103,6 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 		return p_54635_.getValue(POWERED) ? 15 : 0;
 	}
 
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(POWERED, false);
-	}
-
 	public boolean isSignalSource(BlockState p_54675_) {
 		return true;
 	}
@@ -85,7 +110,7 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 	public void onRemove(BlockState p_54647_, Level p_54648_, BlockPos p_54649_, BlockState p_54650_,
 			boolean p_54651_) {
 		if (!p_54651_ && !p_54647_.is(p_54650_.getBlock())) {
-			if ((Boolean) p_54647_.getValue(POWERED)) {
+			if (p_54647_.getValue(POWERED)) {
 				this.updateNeighbours(p_54647_, p_54648_, p_54649_);
 			}
 
@@ -104,8 +129,8 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 			InteractionHand interactionHand, BlockHitResult blockHitResult) {
 		BlockState blockstate1;
 		if (level.isClientSide) {
-			blockstate1 = (BlockState) state.cycle(POWERED);
-			if ((Boolean) blockstate1.getValue(POWERED)) {
+			blockstate1 = state.cycle(POWERED);
+			if (blockstate1.getValue(POWERED)) {
 				makeParticle(blockstate1, level, blockPos, 1.0F);
 			}
 

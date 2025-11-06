@@ -42,10 +42,10 @@ public class ControlsRegistry {
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {
 		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-			if (control.equals(CONTROLS.getEntries().toArray()[i])) {
+			if (control.equals(((RegistryObject<AbstractControl>)CONTROLS.getEntries().toArray()[i]).get())) {
 				if (i == CONTROLS.getEntries().size())
 					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
-				return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i++]).get();
+				return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
 			}
 		}
 
@@ -67,13 +67,14 @@ public class ControlsRegistry {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static AbstractControl getFromOrdinal(int control) {
-		return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[control]).get();
+	public static RegistryObject<AbstractControl> getFromOrdinal(int control) {
+		return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[control]);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static int getOrdinal(AbstractControl control) {
 		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-			if (control.equals(CONTROLS.getEntries().toArray()[i]))
+			if (control.equals((( RegistryObject<AbstractControl>)CONTROLS.getEntries().toArray()[i]).get()))
 				return i;
 		}
 

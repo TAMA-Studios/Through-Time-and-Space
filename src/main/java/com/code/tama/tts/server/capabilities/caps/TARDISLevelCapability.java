@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -20,9 +17,6 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +32,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	TARDISData data = new TARDISData(this);
@@ -228,9 +228,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		ext.UtterlyDestroy();
 
 		this.ForceLoadExteriorChunk(false);
-		this.UpdateClient(DataUpdateValues.FLIGHT);
-		this.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
+
+		this.UpdateClient(DataUpdateValues.ALL);
 	}
 
 	@Override
@@ -358,22 +358,24 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void UpdateClient(int toUpdate) {
-		if (this.level == null)
-			return;
-		if (this.level.isClientSide)
-			Networking.sendPacketToDimension(this.level.dimension(),
-					new TriggerSyncCapPacketC2S(this.level.dimension(), toUpdate));
-		else {
-			Networking.sendPacketToDimension(this.level.dimension(),
-					new SyncTARDISCapPacketS2C(this.data, this.navigationalData, this.flightData, toUpdate));
+		ThreadUtils.NewThread((cap, toSync) -> {
+			if (cap.level == null)
+				return;
+			if (this.level.isClientSide)
+				Networking.sendPacketToDimension(cap.level.dimension(),
+						new TriggerSyncCapPacketC2S(cap.level.dimension(), toUpdate));
+			else {
+				Networking.sendPacketToDimension(cap.level.dimension(),
+						new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
 
-			if (this.GetExteriorTile() != null) {
-				Objects.requireNonNull(this.GetExteriorTile()).Model = this.data.getExteriorModel();
-				Objects.requireNonNull(this.GetExteriorTile()).setModelIndex(this.data.getExteriorModel().getModel());
-				Objects.requireNonNull(this.GetExteriorTile()).setChanged();
-				Objects.requireNonNull(this.GetExteriorTile()).NeedsClientUpdate();
+				if (this.GetExteriorTile() != null) {
+					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
+					Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
+					Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
+					Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
+				}
 			}
-		}
+		}, this, toUpdate, "tardis_update_thread");
 	}
 
 	@Override

@@ -2,20 +2,26 @@
 package com.code.tama.tts.datagen.assets;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.server.blocks.Panels.PowerLever;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.code.tama.tts.TTSMod.MODID;
 
 public class DataBlockStateProvider extends BlockStateProvider {
+	private final List<Block> states = new ArrayList<>();
 	public DataBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
 		super(output, MODID, exFileHelper);
 	}
@@ -23,7 +29,53 @@ public class DataBlockStateProvider extends BlockStateProvider {
 	///////////////////////////////////// HERE!
 	@Override
 	protected void registerStatesAndModels() {
+		states.add(TTSBlocks.POWER_LEVER.get());
+
+		getVariantBuilder(TTSBlocks.POWER_LEVER.get())
+				.forAllStates(state -> {
+					AttachFace face = state.getValue(PowerLever.FACE);
+					Direction facing = state.getValue(PowerLever.FACING);
+					boolean powered = state.getValue(BlockStateProperties.POWERED);
+
+					int xRot = 0;
+					int yRot = 0;
+
+					switch (face) {
+						case FLOOR -> {
+							xRot = 0;
+							yRot = facing.get2DDataValue() * 90;
+						}
+						case CEILING -> {
+							xRot = 180;
+							yRot = facing.get2DDataValue() * 90;
+						}
+						case WALL -> {
+							xRot = 90;
+							yRot = switch (facing) {
+								case NORTH -> 0;
+								case EAST -> 90;
+								case SOUTH -> 180;
+								case WEST -> 270;
+								default -> 0;
+							};
+						}
+					}
+
+					// Model selection based on POWERED
+					String modelName = powered ? "block/control/power_lever_on" : "block/control/power_lever";
+
+					return ConfiguredModel.builder()
+							.modelFile(models().getExistingFile(modLoc(modelName)))
+							.rotationX(xRot)
+							.rotationY(yRot)
+							.build();
+				});
+
+
+
 		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
+			if(states.contains(block.get())) continue;
+			states.add(block.get());
 			try {
 				assert block.getId() != null;
 

@@ -59,11 +59,9 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public ExteriorStatePacket.State state = ExteriorStatePacket.State.LAND;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
-	@Getter
-	private float transparency = 1.0f; // Default fully visible
 
 	@Getter
-	private int transparencyInt; // Default fully visible
+	private float transparency = 1.0f; // Default fully visible
 	int DoorState;
 	@Getter
 	@Setter
@@ -91,7 +89,6 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 			tag.putUUID("placerUUID", this.PlacerUUID);
 		if (this.PlacerName != null)
 			tag.putString("placerName", this.PlacerName);
-		tag.putInt("TransparencyInt", this.transparencyInt);
 		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 		tag.putInt("FlightState", this.state.ordinal());
 		tag.putBoolean("artificial", this.isArtificial);
@@ -372,15 +369,6 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 		}
 	}
 
-	public void setTransparencyInt(int alpha) {
-		this.transparencyInt = alpha; // Math.max(0.0f, Math.min(1.0f, alpha)); // Clamp between 0 (invisible) and 1
-		// (fully visible)
-		setChanged();
-		if (level instanceof ServerLevel serverLevel) {
-			serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-		}
-	}
-
 	@Override
 	public void tick() {
 		if (this.INTERIOR_DIMENSION == null) {
@@ -423,6 +411,7 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 				ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
 						.getPlayer(this.PlacerUUID);
+
 				if (player != null) {
 					player.getCapability(Capabilities.PLAYER_CAPABILITY)
 							.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));

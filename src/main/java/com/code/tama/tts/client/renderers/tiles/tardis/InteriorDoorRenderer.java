@@ -1,16 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.rendering.BotiPortalModel;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.code.tama.tts.server.tileentities.DoorTile;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -22,18 +24,15 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
-
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import org.jetbrains.annotations.NotNull;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {
 	}
 
-	private static void renderBone(JavaJSONRenderer door, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
+	private static void renderBone(JavaJSONRenderer bone, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
 			int combinedLight) {
-		door.render(poseStack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+		bone.render(poseStack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 	}
 
 	@Override
@@ -57,12 +56,22 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 			assert Minecraft.getInstance().level != null;
 			doorTile.getFBOContainer().Render(poseStack, (pose, buf) -> {
-				renderBone(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
+				pose.pushPose();
+
+				pose.translate(0, 0, 0.5);
+
+				renderBone(boti, pose, buf.getBuffer(RenderType.solid()),  0xf000f0);
+
+				pose.popPose();
 				// StencilUtils.drawColoredFrame(pose, 1, 2, new Vec3(0, 0, 0))
 			}, (pose, buf) -> {
 			}, (pose, buf) -> {
-				if (cap.GetFlightData().isInFlight()) {
+				if (cap.GetFlightData().isInFlight() || cap.GetFlightData().IsTakingOff()) {
 					pose.pushPose();
+					if(cap.GetFlightData().IsTakingOff()) {
+						double transperency = Math.sin(((double) (Minecraft.getInstance().level.getGameTime() % 10)));
+						RenderSystem.setShaderColor(1F, 1F, 1F, (float) transperency);
+					}
 					pose.mulPose(
 							Axis.ZP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
 					pose.mulPose(Axis.YP.rotationDegrees(180));
@@ -72,6 +81,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					pose.popPose();
 					poseStack.translate(0, 0, -0.5);
 				} else { // BOTI!!
+					pose.translate(0, 0, 1);
 					renderBOTI(poseStack, doorTile, buf);
 				}
 			});
@@ -117,6 +127,9 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
 			}
 		}
+
+		pose.scale(2, 2, 2);
+
 		// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
 		BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
 				0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,

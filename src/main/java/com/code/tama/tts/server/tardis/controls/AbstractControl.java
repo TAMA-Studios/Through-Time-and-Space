@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.networking.Networking;
@@ -9,8 +10,6 @@ import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.joml.Matrix4f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 public abstract class AbstractControl {
 	private float AnimationState = 0.0f;
@@ -133,6 +133,8 @@ public abstract class AbstractControl {
 
 		tesselator.end();
 
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableCull();
 	}
@@ -147,8 +149,10 @@ public abstract class AbstractControl {
 	}
 
 	public void UpdateClient(AbstractConsoleTile consoleTile) {
-		Networking.sendPacketToDimension(consoleTile.getLevel().dimension(),
-				new SyncButtonAnimationSetPacketS2C(consoleTile.ControlAnimationMap, consoleTile.getBlockPos()));
+		ThreadUtils.NewThread((tile) -> {
+			Networking.sendPacketToDimension(consoleTile.getLevel().dimension(),
+					new SyncButtonAnimationSetPacketS2C(consoleTile.ControlAnimationMap, consoleTile.getBlockPos()));
+		}, consoleTile, "console_update_client_thread");
 		this.NeedsUpdate = false;
 	}
 

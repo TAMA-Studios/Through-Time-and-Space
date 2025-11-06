@@ -1,9 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.core;
 
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.AxeItem;
@@ -12,9 +9,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ToolAction;
+import org.jetbrains.annotations.Nullable;
 
-public class ModFlammableRotatedPillarBlock extends RotatedPillarBlock {
-	public ModFlammableRotatedPillarBlock(Properties pProperties) {
+public class FlammableRotatedPillarBlock extends RotatedPillarBlock {
+	public FlammableRotatedPillarBlock(Properties pProperties) {
 		super(pProperties);
 	}
 
@@ -30,15 +28,10 @@ public class ModFlammableRotatedPillarBlock extends RotatedPillarBlock {
 
 	@Override
 	public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction,
-			boolean simulate) {
+													 boolean simulate) {
 		if (context.getItemInHand().getItem() instanceof AxeItem) {
-			if (state.is(TTSBlocks.GALLIFREYAN_OAK_LOG.get())) {
-				return TTSBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get().defaultBlockState().setValue(AXIS,
-						state.getValue(AXIS));
-			}
-
-			if (state.is(TTSBlocks.GALLIFREYAN_OAK_WOOD.get())) {
-				return TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD.get().defaultBlockState().setValue(AXIS,
+			if (state.getBlock() instanceof FlammableRotatedPillarBlock block) {
+				return block.defaultBlockState().setValue(AXIS,
 						state.getValue(AXIS));
 			}
 		}

@@ -229,12 +229,19 @@ public class TTSBlocks {
 	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("organic/interior_rock", () -> new Block(
 			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL)));
 
-	/** Gallifrey Blocks */
+	/* Moon Block */
+	@DimensionalTab
+	public static final RegistryObject<Block> MOON_ROCK = RegisterWithItem(
+			"dimensional/moon/moon_rock",
+			() -> new SandBlock(0, BlockBehaviour.Properties.of().strength(1.0f)),
+			DIMENSIONAL_ITEMS, BLOCKS);
+
+	/* Gallifrey Blocks */
 
 	@DimensionalTab
 	public static final RegistryObject<Block> GALLIFREYAN_OAK_LOG = RegisterWithItem(
 			"dimensional/gallifreyan/gallifreyan_oak_log",
-			() -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG).strength(3f)),
+			() -> new FlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG).strength(3f)),
 			DIMENSIONAL_ITEMS, BLOCKS);
 
 	@DimensionalTab
@@ -245,18 +252,18 @@ public class TTSBlocks {
 	@DimensionalTab
 	public static final RegistryObject<Block> GALLIFREYAN_OAK_WOOD = RegisterWithItem(
 			"dimensional/gallifreyan/gallifreyan_oak_wood",
-			() -> new ModFlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).strength(3f)),
+			() -> new FlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).strength(3f)),
 			DIMENSIONAL_ITEMS, BLOCKS);
 
 	@DimensionalTab
 	public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_LOG = RegisterWithItem(
-			"dimensional/gallifreyan/gallifreyan_oak_log_stripped", () -> new ModFlammableRotatedPillarBlock(
+			"dimensional/gallifreyan/gallifreyan_oak_log_stripped", () -> new FlammableRotatedPillarBlock(
 					BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG).strength(3f)),
 			DIMENSIONAL_ITEMS, BLOCKS);
 
 	@DimensionalTab
 	public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_WOOD = RegisterWithItem(
-			"dimensional/gallifreyan/gallifreyan_oak_wood_stripped", () -> new ModFlammableRotatedPillarBlock(
+			"dimensional/gallifreyan/gallifreyan_oak_wood_stripped", () -> new FlammableRotatedPillarBlock(
 					BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD).strength(3f)),
 			DIMENSIONAL_ITEMS, BLOCKS);
 

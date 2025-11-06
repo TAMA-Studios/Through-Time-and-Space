@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -14,6 +12,8 @@ import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
+
 public class RedstoneSonicMode extends SonicMode {
 
 	@Override
@@ -23,7 +23,7 @@ public class RedstoneSonicMode extends SonicMode {
 
 	@Override
 	public String getName() {
-		return "Redstone Pulse";
+		return "redstone_pulse";
 	}
 
 	@Override

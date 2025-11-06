@@ -137,7 +137,7 @@
 
   "tts.sonic_mode.block_mode": "Block Mode",
   "tts.sonic_mode.entity_mode": "Entity Mode",
-  "tts.sonic_mode.Redstone Pulse": "Redstone Pulse Mode",
+  "tts.sonic_mode.redstone_pulse": "Redstone Pulse Mode",
   "tts.sonic_mode.builder_mode": "Builder Mode",
 
   "tts.controls.empty": "Empty Control Slot",
@@ -157,5 +157,6 @@
   "tts.exterior.voxel.chibnall": "Voxel — Chibnall",
   "tts.exterior.voxel.rtd": "Voxel — RTD",
   "tts.exterior.ttcapsule": "TT Capsule",
-  "block.tts.organic.interior_rock": "Interior Rock"
+  "block.tts.organic.interior_rock": "Interior Rock",
+  "block.tts.dimensional.moon.moon_rock": "Moon Rock"
 }
