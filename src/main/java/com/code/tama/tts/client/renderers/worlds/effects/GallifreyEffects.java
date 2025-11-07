@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import java.util.Objects;
+
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
@@ -57,7 +59,7 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 
 		if (!SunsVBO.isInvalid()) {
 			SunsVBO.bind();
-			SunsVBO.drawWithShader(poseStack.last().pose(), matrix4f, RenderSystem.getShader());
+			SunsVBO.drawWithShader(poseStack.last().pose(), matrix4f, Objects.requireNonNull(RenderSystem.getShader()));
 			VertexBuffer.unbind();
 		}
 
@@ -75,12 +77,12 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 
 	@Override
 	public float getCloudHeight() {
-		return -10;
+		return 198;
 	}
 
 	@Override
 	public boolean hasGround() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -89,16 +91,17 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 	}
 
 	@Override
-	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX,
-			double camY, double camZ, Matrix4f projectionMatrix) {
+	public boolean renderClouds(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack, double camX,
+								double camY, double camZ, @NotNull Matrix4f projectionMatrix) {
 		return true;
 	}
 
 	@Override
-	public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera,
+	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack, @NotNull Camera camera,
 							 @NotNull Matrix4f projectionMatrix, boolean isFoggy, @NotNull Runnable setupFog) {
 
-		renderSun(poseStack, projectionMatrix, new Vec3(50, 400, 0),
+        assert Minecraft.getInstance().level != null;
+        renderSun(poseStack, projectionMatrix, new Vec3(50, 400, 0),
 				Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().getPartialTick())),
 				new Vec3(0, 0, 0), 20);
 

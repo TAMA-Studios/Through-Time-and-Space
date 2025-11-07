@@ -4,6 +4,7 @@ package com.code.tama.tts.server.capabilities.caps;
 import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.*;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -358,7 +359,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void UpdateClient(int toUpdate) {
-		ThreadUtils.NewThread((cap, toSync) -> {
+		ThreadUtils.RunThread((cap, toSync) -> {
 			if (cap.level == null)
 				return;
 			if (this.level.isClientSide)
@@ -407,5 +408,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				.getLevel(this.navigationalData.getLocation().getLevelKey()))
 				.setChunkForced((int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
 						(int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16), ForceLoad);
+	}
+
+	public static ITARDISLevel GetTARDISCap(Level level) {
+		if(level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
+			return level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null);
+		else return null;
 	}
 }

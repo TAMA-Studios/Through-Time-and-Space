@@ -149,7 +149,7 @@ public abstract class AbstractControl {
 	}
 
 	public void UpdateClient(AbstractConsoleTile consoleTile) {
-		ThreadUtils.NewThread((tile) -> {
+		ThreadUtils.RunThread((tile) -> {
 			Networking.sendPacketToDimension(consoleTile.getLevel().dimension(),
 					new SyncButtonAnimationSetPacketS2C(consoleTile.ControlAnimationMap, consoleTile.getBlockPos()));
 		}, consoleTile, "console_update_client_thread");

@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.codec.Codecs;
+import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -20,14 +17,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.codec.Codecs;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -35,6 +33,7 @@ import com.code.tama.triggerapi.helpers.MathUtils;
 public class TARDISData {
 	public static final Codec<TARDISData> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.FLOAT.fieldOf("lightLevel").forGetter(TARDISData::getLightLevel),
+					Codec.FLOAT.fieldOf("gravityLevel").forGetter(TARDISData::getGravityLevel),
 					Codec.unboundedMap(Codecs.UUID_CODEC, PlayerPosition.CODEC).fieldOf("viewingPlayerPositions")
 							.forGetter(TARDISData::getViewingPlayerMap),
 					Codecs.UUID_CODEC.optionalFieldOf("ownerUUID").xmap(opt -> opt.orElse(null), Optional::ofNullable)
@@ -58,7 +57,7 @@ public class TARDISData {
 	ControlParameters ControlData = new ControlParameters();
 	ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
 	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
-	float LightLevel;
+	float LightLevel, gravityLevel = 0.08f;
 	UUID OwnerUUID;
 	boolean Powered, IsDiscoMode, Sparking, AlarmsState;
 	ProtocolData ProtocolsData = new ProtocolData();
@@ -72,11 +71,12 @@ public class TARDISData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISData(float lightLevel, Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
+	public TARDISData(float lightLevel, float gravityLevel, Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
 			ExteriorModelContainer exteriorModelID, boolean powered, boolean isDiscoMode, boolean isSparking,
 			boolean alarms, DoorData interiorDoorData, SubsystemsData subSystemsData, ControlParameters controlData,
 			ProtocolData protocolsData, long ticks, SpaceTimeCoordinate doorBlock, ResourceLocation vortex) {
 		LightLevel = lightLevel;
+		this.gravityLevel = gravityLevel;
 		ViewingPlayerMap = viewingPlayerMap;
 		OwnerUUID = ownerUUID;
 		ExteriorModel = exteriorModelID;
@@ -100,7 +100,11 @@ public class TARDISData {
 		if (this.TARDIS.GetLevel().isClientSide)
 			return null;
 		// return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
-		return this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID());
+		if(this.TARDIS.GetLevel().getServer() != null)
+			if(this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID()) != null)
+				return this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID());
+
+		return null;
 	}
 
 	public void CycleVariant() {

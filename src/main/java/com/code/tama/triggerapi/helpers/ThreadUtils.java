@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
+import com.code.tama.triggerapi.miscs.TriConsumer;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import com.code.tama.triggerapi.miscs.TriConsumer;
 
 public class ThreadUtils {
 	/** THIS SHOULD ONLY BE CALLED IF CONDITION IS UPDATED ON A SEPARATE THREAD **/
@@ -72,6 +72,5 @@ public class ThreadUtils {
 	/**
 	 * So intj doesn't complain abt "If statement has empty body"
 	 */
-	private static void DoNothing() {
-	};
+	private static void DoNothing() {}
 }

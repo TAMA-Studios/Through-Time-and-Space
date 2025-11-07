@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
+import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-
-import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
 
 public class GravityHelper {
 	public static List<DataDimGravity> DIMENSIONS = new ArrayList<>();
@@ -28,6 +29,10 @@ public class GravityHelper {
 		// }
 
 		// vanilla gravity is supposedly 0.08 idfk tho
+
+		if(GetTARDISCap(level) != null) {
+			return GetTARDISCap(level).GetData().getGravityLevel();
+		}
 
 		return MAP.getOrDefault(level.dimension().location(), 0.08F);
 	}
