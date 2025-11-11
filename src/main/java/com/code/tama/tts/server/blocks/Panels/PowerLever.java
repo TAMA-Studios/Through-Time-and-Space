@@ -1,8 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -24,9 +28,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
-
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 @SuppressWarnings("deprecation")
 public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
@@ -71,23 +72,17 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 
 		// Default to WALL if side clicked is horizontal
 		if (clickedFace.getAxis().isHorizontal()) {
-			return this.defaultBlockState()
-					.setValue(FACE, AttachFace.WALL)
-					.setValue(FACING, clickedFace.getOpposite());
+			return this.defaultBlockState().setValue(FACE, AttachFace.WALL).setValue(FACING, clickedFace.getOpposite());
 		}
 
 		// If top, allow player to control horizontal facing
 		if (clickedFace == Direction.UP) {
-			return this.defaultBlockState()
-					.setValue(FACE, AttachFace.FLOOR)
-					.setValue(FACING, horizontalFacing);
+			return this.defaultBlockState().setValue(FACE, AttachFace.FLOOR).setValue(FACING, horizontalFacing);
 		}
 
 		// If bottom, use default orientation (or mirror top logic)
 		if (clickedFace == Direction.DOWN) {
-			return this.defaultBlockState()
-					.setValue(FACE, AttachFace.CEILING)
-					.setValue(FACING, horizontalFacing);
+			return this.defaultBlockState().setValue(FACE, AttachFace.CEILING).setValue(FACING, horizontalFacing);
 		}
 
 		return this.defaultBlockState();
@@ -136,8 +131,7 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 
 			return InteractionResult.SUCCESS;
 		} else {
-			level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-					.ifPresent(cap -> cap.GetData().SetPowered(!state.getValue(POWERED)));
+			GetTARDISCapSupplier(level).ifPresent(cap -> cap.GetData().SetPowered(!state.getValue(POWERED)));
 
 			blockstate1 = this.pull(state, level, blockPos);
 			level.playSound(null, blockPos, SoundEvents.ARROW_HIT_PLAYER, SoundSource.BLOCKS);

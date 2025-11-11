@@ -1,8 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
@@ -41,7 +42,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			int combinedOverlay) {
 		if (chameleonCircuit.getLevel() == null)
 			return;
-		chameleonCircuit.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		GetTARDISCapSupplier(chameleonCircuit.getLevel()).ifPresent(cap -> {
 			poseStack.pushPose();
 			poseStack.translate(0.5, 0.52, 0.5);
 			poseStack.mulPose(Axis.YP.rotationDegrees(180));

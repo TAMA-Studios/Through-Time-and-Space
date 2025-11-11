@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.FallingExteriorEntity;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
@@ -222,8 +223,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 			}
 
 			else if (!level.isClientSide && exteriorTile.GetInterior() != null)
-				level.getServer().getLevel(exteriorTile.GetInterior())
-						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior()))
 						.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
 
 			exteriorTile.CycleDoors();

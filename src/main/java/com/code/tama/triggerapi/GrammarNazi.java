@@ -1,28 +1,29 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.code.tama.tts.TTSMod.MODID;
-
 /**
  * This is for functions related to string manipulation
  *
- * @version 2.5
+ * @version 2.6
  */
 public class GrammarNazi {
 	private static List<String> MissingTranslations = new ArrayList<>();
@@ -43,8 +44,8 @@ public class GrammarNazi {
 	public static String CapitalizeFirstLetters(String text) {
 		String firstLetter = text.substring(0, 1).toUpperCase();
 		/*
-		 * Find any characters coming after a space char and replace it with the
-		 * uppercase variant
+		 * - - Find any characters coming after a space char and replace it with the -
+		 * uppercase variant -
 		 */
 		for (int i = 0; i < text.length(); i++) {
 			if (text.substring(i, i + 1).contains(" "))
@@ -106,11 +107,42 @@ public class GrammarNazi {
 		return text.replace("_", " ");
 	}
 
+	/**
+	 *
+	 * @param strings
+	 *            Strings to stitch together
+	 * @return All the strings as one string
+	 */
+	public static String Stitch(String... strings) {
+		StringBuilder toReturn = new StringBuilder();
+		for (String string : strings) {
+			toReturn.append(string);
+		}
+
+		return toReturn.toString();
+	}
+
+	/**
+	 * @param delimiter
+	 *            Delimiter to put in between Strings
+	 * @param strings
+	 *            Strings to stitch together
+	 * @return All the strings as one string
+	 */
+	public static String StitchWithDelimeter(String delimiter, String... strings) {
+		StringBuilder toReturn = new StringBuilder();
+		for (String string : strings) {
+			toReturn.append(delimiter).append(string);
+		}
+
+		return toReturn.toString();
+	}
+
 	public static void checkTranslation(String key) {
 		String translation = I18n.get(key); // I18n.get(key);
 		if (translation == null || translation.equals(key) || translation.isEmpty()) {
 			MissingTranslations.add(key);
-//			throw new RuntimeException("Missing translation key: " + key);
+			// throw new RuntimeException("Missing translation key: " + key);
 		}
 	}
 
@@ -150,7 +182,7 @@ public class GrammarNazi {
 			checkTranslation(key);
 		});
 
-		if(!MissingTranslations.isEmpty()) {
+		if (!MissingTranslations.isEmpty()) {
 			LOGGER.error("Missing translations!");
 			MissingTranslations.forEach(LOGGER::error);
 

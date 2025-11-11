@@ -71,12 +71,17 @@ public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends Hierarchic
 				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(CONTROLS_ONE)),
-				Minecraft.getInstance().level.getGameTime() % 80 >= 40 ? 0xf000f0 : combinedLight,
-				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+				Light(combinedLight, true), OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(CONTROLS_TWO)),
-				Minecraft.getInstance().level.getGameTime() % 80 <= 40 ? 0xf000f0 : combinedLight,
-				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+				Light(combinedLight, false), OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 		poseStack.popPose();
+	}
+
+	public int Light(int combinedLight, boolean inverse) {
+		if (inverse)
+			return Minecraft.getInstance().level.getGameTime() % 80 <= 40 ? 0xf000f0 : combinedLight;
+		else
+			return Minecraft.getInstance().level.getGameTime() % 80 >= 40 ? 0xf000f0 : combinedLight;
 	}
 }

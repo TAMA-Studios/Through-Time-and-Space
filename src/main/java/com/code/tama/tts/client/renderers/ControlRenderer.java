@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 import static com.code.tama.tts.server.tardis.controls.AbstractControl.Spark;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,7 +40,7 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
 
 		Entity.GetControl().RenderFlightEvent(PoseStack, Buffer, Entity);
 
-		Entity.level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+		GetTARDISCapSupplier(Entity.level()).ifPresent((cap) -> {
 			if (cap.GetData().isSparking())
 				if (Entity.level().random.nextInt(100000) <= 5) {
 					Spark(Entity.level(), Entity.position());

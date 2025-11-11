@@ -4,6 +4,7 @@ package com.code.tama.tts.server.networking.packets.S2C.exterior;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.server.misc.PhysicalStateManager;
+import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.AllArgsConstructor;
 
@@ -12,11 +13,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public record ExteriorStatePacket(BlockPos pos, ExteriorStatePacket.State state, long startTick) {
+public record ExteriorStatePacket(BlockPos pos, ExteriorState state, long startTick) {
 
 	public static ExteriorStatePacket decode(FriendlyByteBuf buf) {
 		BlockPos pos = buf.readBlockPos();
-		State state = buf.readEnum(State.class);
+		ExteriorState state = buf.readEnum(ExteriorState.class);
 		long tick = buf.readLong();
 		return new ExteriorStatePacket(pos, state, tick);
 	}
@@ -36,26 +37,22 @@ public record ExteriorStatePacket(BlockPos pos, ExteriorStatePacket.State state,
 			if (be instanceof ExteriorTile exterior) {
 				exterior.state = msg.state;
 				// Create a client-side PhysicalStateManager
-				new StateThread(msg.startTick, exterior, msg.state);
+				new StateThread(msg.startTick, exterior, msg.state).start();
 			}
 		});
 		ctx.get().setPacketHandled(true);
-	}
-
-	public enum State {
-		LAND, TAKEOFF
 	}
 
 	@AllArgsConstructor
 	public static class StateThread extends Thread {
 		long StartTick;
 		ExteriorTile exteriorTile;
-		ExteriorStatePacket.State state;
+		ExteriorState state;
 
 		@Override
 		public void run() {
 			PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
-			if (state == ExteriorStatePacket.State.TAKEOFF) {
+			if (state == ExteriorState.TAKEOFF) {
 				manager.clientTakeOff(StartTick);
 			} else {
 				manager.clientLand(StartTick);

@@ -1,6 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
+
+import java.io.IOException;
+
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
@@ -34,6 +40,9 @@ import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -48,14 +57,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
-
-import java.io.IOException;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
@@ -70,7 +71,7 @@ public class ClientSetup {
 
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
-	public static void ClientSetup(FMLClientSetupEvent event) {
+	public static void FMLClientSetup(FMLClientSetupEvent event) {
 		event.enqueueWork(
 				() -> ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent()));
 		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
@@ -86,6 +87,11 @@ public class ClientSetup {
 		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.AMETHYST_ROTOR.get(), RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BLUE_ROTOR.get(), RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), RenderType.cutout());
+
+		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get(),
+				RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get(), RenderType.translucent());
 	}
 
 	@SubscribeEvent
@@ -111,8 +117,7 @@ public class ClientSetup {
 
 	@SubscribeEvent
 	public static void registerFactories(RegisterParticleProvidersEvent event) {
-		event.registerSpriteSet(TTSParticles.ELECTRIC_SPARK.get(),
-				(sprites) -> new ElectricSparkParticle.Provider(sprites));
+		event.registerSpriteSet(TTSParticles.ELECTRIC_SPARK.get(), ElectricSparkParticle.Provider::new);
 	}
 
 	@SubscribeEvent
@@ -151,7 +156,7 @@ public class ClientSetup {
 		event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
 		event.registerBlockEntityRenderer(TTSTileEntities.CRT_MONITOR_TILE.get(), CRTMonitorRenderer::new);
 		event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
-		// Register your renderer here, first value here \/ is the Tile RegistryObject
+		// Register your renderer here, first value here \/ is the Tile RegistryObject,
 		// \/ is the renderer
 		event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), ExampleRenderer::new);
 		event.registerBlockEntityRenderer(TTSTileEntities.SONIC_CONFIGURATOR.get(), SonicConfiguratorRenderer::new);
@@ -166,21 +171,6 @@ public class ClientSetup {
 				new GallifreyEffects(TDimensions.GALLIFREY_DIM_TYPE));
 	}
 
-	// @SubscribeEvent
-	// public static void registerShaders(RegisterShadersEvent event) {
-	// try {
-	// event.registerShader(new ShaderInstance(
-	// event.getResourceProvider(),
-	// new ResourceLocation(MODID, "shaders/core/transparent_block"),
-	// DefaultVertexFormat.POSITION_TEX
-	// ), TransperentModdedEntityRenderer::setShader);
-	// } catch (IOException e) {
-	// throw new RuntimeException("Failed to load custom shader: transparent_block",
-	// e);
-	// }
-	// }
-
-	// Event is on the mod event bus only on the physical client
 	@SubscribeEvent
 	public void registerBindings(RegisterKeyMappingsEvent event) {
 		event.register(EXTERIOR_VIEW.get());

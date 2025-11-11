@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.Map;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import lombok.NoArgsConstructor;
 
@@ -62,14 +63,14 @@ public class NetherReactorCoreSubsystem extends AbstractSubsystem {
 	@Override
 	public void OnActivate(Level level, BlockPos blockPos) {
 		this.Activated = true;
-		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+		GetTARDISCapSupplier(level)
 				.ifPresent(cap -> cap.GetData().getSubSystemsData().setNetherReactorCoreSubsystem(this));
 	}
 
 	@Override
 	public void OnDeActivate(Level level, BlockPos blockPos) {
 		this.Activated = false;
-		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+		GetTARDISCapSupplier(level)
 				.ifPresent(cap -> cap.GetData().getSubSystemsData().setNetherReactorCoreSubsystem(this));
 	}
 

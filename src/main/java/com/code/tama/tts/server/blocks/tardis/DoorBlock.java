@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -8,7 +11,6 @@ import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -75,7 +77,7 @@ public class DoorBlock extends Block implements EntityBlock {
 	@Override
 	public void onPlace(@NotNull BlockState state, Level level, @NotNull BlockPos blockPos,
 			@NotNull BlockState blockState, boolean p_60570_) {
-		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		GetTARDISCapSupplier(level).ifPresent(cap -> {
 			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
 			Direction direction = state.getValue(FACING);
 			// float yRot = switch (direction) {
@@ -95,7 +97,7 @@ public class DoorBlock extends Block implements EntityBlock {
 	public void entityInside(@NotNull BlockState state, @NotNull Level level, net.minecraft.core.@NotNull BlockPos pos,
 			net.minecraft.world.entity.@NotNull Entity entity) {
 		if (entity.getBoundingBox().intersects(state.getShape(level, pos).bounds().move(pos)))
-			level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+			GetTARDISCapSupplier(level).ifPresent(cap -> {
 				if (entity.level().getBlockEntity(pos) instanceof DoorTile tile
 						&& cap.GetData().getDoorData().getDoorsOpen() > 0)
 					this.TeleportToExterior(entity, level);
@@ -103,15 +105,14 @@ public class DoorBlock extends Block implements EntityBlock {
 	}
 
 	public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
-		if (Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
+		if (GetTARDISCapSupplier(Interior).isPresent())
 			// TODO: Move this to onLevelLeave (or whatever it's called) event
-			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(
-					Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null), TardisEvent.State.START,
-					EntityToTeleport));
+			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(GetTARDISCap(Interior),
+					TardisEvent.State.START, EntityToTeleport));
 		if (EntityToTeleport.level().isClientSide)
 			return;
 		try {
-			Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+			GetTARDISCapSupplier(Interior).ifPresent((cap) -> {
 				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
@@ -161,8 +162,7 @@ public class DoorBlock extends Block implements EntityBlock {
 			InteractionHand hand, BlockHitResult p_60508_) {
 		if (hand.equals(InteractionHand.OFF_HAND))
 			return InteractionResult.PASS;
-		Level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+		GetTARDISCapSupplier(Level).ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
 		return super.use(p_60503_, Level, p_60505_, p_60506_, hand, p_60508_);
 	}
 }

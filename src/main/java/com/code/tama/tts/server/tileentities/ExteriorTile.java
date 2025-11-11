@@ -1,10 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -18,13 +21,17 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
-import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
+import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -44,19 +51,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.DimensionManager;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 public class ExteriorTile extends AbstractPortalTile implements IWeldable {
-	public ExteriorStatePacket.State state = ExteriorStatePacket.State.LAND;
+	public ExteriorState state = ExteriorState.LANDED;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
 
@@ -273,7 +275,7 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 		}
 
 		if (tag.contains("FlightState"))
-			this.state = ExteriorStatePacket.State.values()[tag.getInt("FlightState")];
+			this.state = ExteriorState.values()[tag.getInt("FlightState")];
 
 		if (tag.contains("artificial"))
 			this.isArtificial = tag.getBoolean("artificial");

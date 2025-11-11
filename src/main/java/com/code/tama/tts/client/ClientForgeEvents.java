@@ -2,6 +2,7 @@
 package com.code.tama.tts.client;
 
 import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import java.util.Objects;
 
@@ -30,10 +31,10 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientForgeEvents {
 	@SubscribeEvent
 	public static void PlayerJoin(EntityJoinLevelEvent event) {
-		event.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
+		GetTARDISCapSupplier(event.getLevel()).ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 
 		CameraShakeHandler.endShake();
+
 	}
 
 	@SubscribeEvent

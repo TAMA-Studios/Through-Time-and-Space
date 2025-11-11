@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.Locale;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +24,8 @@ public class DestinationUICategory extends UICategory {
 	@Override
 	public void Render(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
 			int combinedLight) {
-		monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		assert monitor.getLevel() != null;
+		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			Font fontRenderer = Minecraft.getInstance().font;
 
 			String line1 = cap.GetCurrentLevel().location().getPath().substring(0, 1).toUpperCase(Locale.ROOT)

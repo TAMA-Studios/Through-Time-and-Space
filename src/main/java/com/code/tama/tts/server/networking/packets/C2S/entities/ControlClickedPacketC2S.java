@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,9 +32,7 @@ public class ControlClickedPacketC2S {
 			ModularControl control = (ModularControl) context.get().getSender().level().getServer()
 					.getLevel(context.get().getSender().level().dimension()).getEntity(mes.control);
 			assert control != null;
-			control.OnControlClicked(
-					context.get().getSender().level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null),
-					context.get().getSender());
+			control.OnControlClicked(GetTARDISCap(context.get().getSender().level()), context.get().getSender());
 		});
 		context.get().setPacketHandled(true);
 	}

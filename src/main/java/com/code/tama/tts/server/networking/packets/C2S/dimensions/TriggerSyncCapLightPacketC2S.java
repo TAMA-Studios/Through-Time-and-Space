@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.dimensions;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+
 import java.util.function.Supplier;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
 
@@ -35,9 +36,8 @@ public class TriggerSyncCapLightPacketC2S {
 
 	public static void handle(TriggerSyncCapLightPacketC2S packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> Networking.sendPacketToDimension(packet.TARDISLevel,
-				new SyncCapLightLevelPacketS2C(ServerLifecycleHooks.getCurrentServer().getLevel(packet.TARDISLevel)
-						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null).GetLightLevel())));
+		context.enqueueWork(() -> Networking.sendPacketToDimension(packet.TARDISLevel, new SyncCapLightLevelPacketS2C(
+				GetTARDISCap(ServerLifecycleHooks.getCurrentServer().getLevel(packet.TARDISLevel)).GetLightLevel())));
 		context.setPacketHandled(true);
 	}
 }

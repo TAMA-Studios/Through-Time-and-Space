@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.networking.Networking;
@@ -10,6 +9,8 @@ import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,7 +21,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public abstract class AbstractControl {
 	private float AnimationState = 0.0f;

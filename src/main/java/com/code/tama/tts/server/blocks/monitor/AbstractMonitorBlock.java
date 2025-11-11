@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.monitor;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
@@ -96,8 +95,6 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
 			}
 		});
 
-		world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-		});
 		return InteractionResult.SUCCESS;
 	}
 }

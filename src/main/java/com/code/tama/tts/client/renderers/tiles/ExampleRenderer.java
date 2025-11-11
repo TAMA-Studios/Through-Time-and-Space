@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.server.tileentities.ExampleTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
 			return;
 
 		// If the TARDIS level cap is present
-		example.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		GetTARDISCapSupplier(example.getLevel()).ifPresent(cap -> {
 			// Do all of this ("cap" is the TARDIS level capability)
 			poseStack.pushPose();
 

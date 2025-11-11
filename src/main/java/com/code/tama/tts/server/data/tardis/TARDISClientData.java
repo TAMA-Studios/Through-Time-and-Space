@@ -1,17 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.rendering.VortexRenderer;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.rendering.VortexRenderer;
 
 @Getter
 @Setter

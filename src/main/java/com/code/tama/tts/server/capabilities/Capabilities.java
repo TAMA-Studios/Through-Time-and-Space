@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
@@ -11,6 +13,7 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.capabilities.providers.FragmentLinksCapabilityProvider;
 import com.code.tama.tts.server.capabilities.providers.SerializableCapabilityProvider;
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -22,8 +25,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Capabilities {

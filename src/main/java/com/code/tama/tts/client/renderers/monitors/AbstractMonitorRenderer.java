@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
@@ -41,7 +42,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		if (monitor.getLevel() == null)
 			return;
 		int light = 0xf00f0;
-		monitor.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			poseStack.pushPose();
 
 			this.ApplyDefaultTransforms(poseStack, monitor);

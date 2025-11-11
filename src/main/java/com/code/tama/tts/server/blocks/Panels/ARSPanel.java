@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.stream.Stream;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import com.code.tama.tts.server.registries.tardis.ARSRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -167,7 +168,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 		BlockPos posToPlace = new BlockPos(MathUtils.RoundTo48(pos.getX()),
 				MathUtils.RoundTo48(pos.getY()) + this.StoredStruct.HeightOffs(), MathUtils.RoundTo48(pos.getZ()));
 
-		world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MODE :
 					if (player.isCrouching()) {

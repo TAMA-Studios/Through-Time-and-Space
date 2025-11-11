@@ -1,0 +1,39 @@
+{
+  "credit" : "Made with Blockbench",
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#0",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "east" : {
+        "texture" : "#0",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "north" : {
+        "texture" : "#1",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "south" : {
+        "texture" : "#1",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "up" : {
+        "texture" : "#0",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "west" : {
+        "texture" : "#0",
+        "uv" : [ 0, 0, 16, 16 ]
+      }
+    },
+    "from" : [ 0, 0, 0 ],
+    "to" : [ 16, 16, 16 ]
+  } ],
+  "format_version" : "1.9.0",
+  "textures" : {
+    "0" : "tts:block/decoration/structural_steel_brushed/rusted_one",
+    "1" : "tts:block/decoration/structural_steel_brushed/rusted_two",
+    "particle" : "tts:block/decoration/structural_steel_brushed/rusted_one"
+  }
+}

@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.tardis.controls.*;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -9,8 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -25,15 +26,21 @@ public class ControlsRegistry {
 			.register("environment_scanner", EnvironmentScannerControl::new);
 	public static final RegistryObject<FacingControl> FACING_CONTROL = CONTROLS.register("facing_control",
 			FacingControl::new);
+
 	public static final RegistryObject<IncrementControl> INCREMENT_CONTROL = CONTROLS.register("increment_control",
 			IncrementControl::new);
 	public static final RegistryObject<PowerControl> POWER_CONTROL = CONTROLS.register("power_control",
 			PowerControl::new);
+
 	public static final RegistryObject<ThrottleControl> THROTTLE = CONTROLS.register("throttle", ThrottleControl::new);
+
 	public static final RegistryObject<VariantControl> VARIANT_CONTROL = CONTROLS.register("variant_control",
 			VariantControl::new);
+
 	public static final RegistryObject<X_Control> X_CONTROL = CONTROLS.register("x_control", X_Control::new);
+
 	public static final RegistryObject<Y_Control> Y_CONTROL = CONTROLS.register("y_control", Y_Control::new);
+
 	public static final RegistryObject<Z_Control> Z_CONTROL = CONTROLS.register("z_control", Z_Control::new);
 
 	public static final RegistryObject<DimensionControl> DIMENSION_CYCLE = CONTROLS.register("dimension_cycle",
@@ -42,7 +49,7 @@ public class ControlsRegistry {
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {
 		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-			if (control.equals(((RegistryObject<AbstractControl>)CONTROLS.getEntries().toArray()[i]).get())) {
+			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get())) {
 				if (i == CONTROLS.getEntries().size())
 					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
 				return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
@@ -74,7 +81,7 @@ public class ControlsRegistry {
 	@SuppressWarnings("unchecked")
 	public static int getOrdinal(AbstractControl control) {
 		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-			if (control.equals((( RegistryObject<AbstractControl>)CONTROLS.getEntries().toArray()[i]).get()))
+			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get()))
 				return i;
 		}
 

@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.Objects;
+
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -18,6 +21,10 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,12 +40,9 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.Objects;
-
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	TARDISData data = new TARDISData(this);
@@ -411,8 +415,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public static ITARDISLevel GetTARDISCap(Level level) {
-		if(level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
+		if (level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
 			return level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).orElse(null);
-		else return null;
+		else
+			return null;
+	}
+
+	public static LazyOptional<ITARDISLevel> GetTARDISCapSupplier(Level level) {
+		return level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
+	}
+
+	public static LazyOptional<ITARDISLevel> GetClientTARDISCapSupplier() {
+		return Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
 	}
 }

@@ -2,6 +2,7 @@
 package com.code.tama.tts.client.renderers.worlds.helper;
 
 import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,6 @@ import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.TardisSkyRenderer;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -141,11 +141,10 @@ public class CustomLevelRenderer {
 		}
 
 		// Calculate the light level from the cap if it exists
-		float ambientLight = Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.map(ITARDISLevel::GetLightLevel).orElse(1.0f);
+		float ambientLight = GetClientTARDISCapSupplier().map(ITARDISLevel::GetLightLevel).orElse(1.0f);
 
-		boolean Disco = Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.map(level -> level.GetData().isIsDiscoMode()).orElse(false); // Default value
+		boolean Disco = GetClientTARDISCapSupplier().map(level -> level.GetData().isIsDiscoMode()).orElse(false); // Default
+																													// value
 
 		// Apply the calculated lighting
 		CustomLevelRenderer.applyLighting(ambientLight, Disco);

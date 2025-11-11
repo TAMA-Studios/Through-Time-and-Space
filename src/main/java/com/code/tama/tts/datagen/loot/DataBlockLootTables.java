@@ -1,8 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.loot;
 
+import java.util.Set;
+
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSItems;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -15,9 +19,6 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public class DataBlockLootTables extends BlockLootSubProvider {
 	public DataBlockLootTables() {

@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,6 @@ import javax.annotation.Nullable;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -179,7 +180,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 		if (button == null)
 			return InteractionResult.FAIL;
 
-		world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MINUS :
 					tardisLevelCapability.GetData().setExteriorModel(

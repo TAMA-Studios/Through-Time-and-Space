@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.Map;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import org.jetbrains.annotations.NotNull;
@@ -156,7 +157,7 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 			if (button == null)
 				return InteractionResult.FAIL;
 			else
-				world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+				GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 					SpaceTimeCoordinate destination = tardisLevelCapability.GetNavigationalData().getDestination();
 					int DestOffset = tardisLevelCapability.GetNavigationalData().getIncrement();
 					switch (button) {

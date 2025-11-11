@@ -1,8 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+import java.util.function.Consumer;
+
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSItems;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
@@ -10,11 +16,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-
-import java.util.List;
-import java.util.function.Consumer;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class DataRecipeProvider extends RecipeProvider implements IConditionBuilder {
 	private static final List<ItemLike> ZEITON_SMELTABLES = List.of(TTSItems.ZEITON.get(), TTSBlocks.ZEITON_ORE.get(),

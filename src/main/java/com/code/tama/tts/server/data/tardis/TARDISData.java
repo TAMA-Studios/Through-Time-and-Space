@@ -1,8 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
-import com.code.tama.triggerapi.codec.Codecs;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -17,15 +20,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import com.code.tama.triggerapi.codec.Codecs;
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 @Getter
 @Setter
@@ -100,8 +102,8 @@ public class TARDISData {
 		if (this.TARDIS.GetLevel().isClientSide)
 			return null;
 		// return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());
-		if(this.TARDIS.GetLevel().getServer() != null)
-			if(this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID()) != null)
+		if (this.TARDIS.GetLevel().getServer() != null)
+			if (this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID()) != null)
 				return this.TARDIS.GetLevel().getServer().getPlayerList().getPlayer(this.getOwnerUUID());
 
 		return null;

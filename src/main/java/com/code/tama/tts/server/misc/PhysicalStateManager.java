@@ -4,6 +4,7 @@ package com.code.tama.tts.server.misc;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
+import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +38,7 @@ public class PhysicalStateManager {
 		float decay = 0.05f;
 		float freq = 0.3f;
 
-		while (!this.exteriorTile.state.equals(ExteriorStatePacket.State.LAND)) {
+		while (!this.exteriorTile.state.equals(ExteriorState.LANDED)) {
 			if (!server) {
 				assert this.exteriorTile.getLevel() != null;
 				long tick = this.exteriorTile.getLevel().getGameTime() - startTick;
@@ -52,7 +53,7 @@ public class PhysicalStateManager {
 				// when I wrote this comment but I'll leave it here if I someday remember)
 				// ThreadUtils.Pause(!itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished());
 				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished()) {
-					exteriorTile.state = ExteriorStatePacket.State.LAND;
+					exteriorTile.state = ExteriorState.LANDED;
 					break;
 				}
 			}
@@ -65,8 +66,8 @@ public class PhysicalStateManager {
 		float decay = 0.05f;
 		float freq = 0.3f;
 
-		while (!this.exteriorTile.state.equals(ExteriorStatePacket.State.TAKEOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
-																					// {
+		while (!this.exteriorTile.state.equals(ExteriorState.TAKEOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
+																		// {
 			if (!server) {
 				assert exteriorTile.getLevel() != null;
 				long tick = exteriorTile.getLevel().getGameTime() - startTick;
@@ -80,7 +81,7 @@ public class PhysicalStateManager {
 				// ThreadUtils.Pause(!itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished());
 				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished()) {
 					itardisLevel.Fly();
-					exteriorTile.state = ExteriorStatePacket.State.TAKEOFF;
+					exteriorTile.state = ExteriorState.TAKEOFF;
 					break;
 				}
 			}
@@ -99,6 +100,7 @@ public class PhysicalStateManager {
 
 	/* ==================== ANIMATION CORE ==================== */
 
+	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void serverLand() {
 		assert itardisLevel != null;
 		itardisLevel.Land();
@@ -108,11 +110,12 @@ public class PhysicalStateManager {
 
 		Networking.sendPacketToDimension(
 				new ExteriorStatePacket(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
-						ExteriorStatePacket.State.LAND, tick),
+						ExteriorState.LANDED, tick),
 				this.itardisLevel.GetLevel());
 		landAnimation(tick, true);
 	}
 
+	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void serverTakeOff() {
 		assert itardisLevel != null;
 		long tick = itardisLevel.GetLevel().getGameTime();
@@ -121,7 +124,7 @@ public class PhysicalStateManager {
 				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));
 		assert exteriorTile.getLevel() != null;
 		Networking.sendPacketToDimension(
-				new ExteriorStatePacket(exteriorTile.getBlockPos(), ExteriorStatePacket.State.TAKEOFF, tick),
+				new ExteriorStatePacket(exteriorTile.getBlockPos(), ExteriorState.TAKEOFF, tick),
 				exteriorTile.getLevel());
 		// run the animation server-side
 		takeOffAnimation(tick, true);

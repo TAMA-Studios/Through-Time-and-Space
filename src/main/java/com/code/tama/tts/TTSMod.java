@@ -1,9 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
-import com.code.tama.triggerapi.helpers.FileHelper;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.forge.TTSBlocks.BLOCKS;
+import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
+import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
+import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
+import static com.code.tama.tts.server.registries.forge.TTSTileEntities.TILE_ENTITIES;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
@@ -24,6 +32,8 @@ import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,18 +46,10 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.forge.TTSBlocks.BLOCKS;
-import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.TILE_ENTITIES;
+import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import com.code.tama.triggerapi.helpers.FileHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)

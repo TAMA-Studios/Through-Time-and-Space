@@ -2,6 +2,7 @@
 package com.code.tama.tts.client.renderers.worlds;
 
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
+
 import net.minecraft.resources.ResourceLocation;
 
 public class VarosSkyRenderer extends BasicSkyRenderer {

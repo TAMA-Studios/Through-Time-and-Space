@@ -8,6 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import lombok.Getter;
+import lombok.Setter;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Camera;
@@ -21,6 +23,8 @@ public class SkyBlock {
 	private static boolean isRenderingSky = false;
 	private static int skyHeight = -1;
 	private static TextureTarget skyRenderTarget;
+	@Setter
+	@Getter
 	private static ShaderInstance skyShader;
 	private static int skyWidth = -1;
 	public static final RenderType SKY_RENDER_TYPE = RenderType.create("sky", DefaultVertexFormat.POSITION,
@@ -38,13 +42,6 @@ public class SkyBlock {
 		} else {
 			RenderSystem.setShaderTexture(0, 0);
 		}
-	}
-
-	public static ShaderInstance getSkyShader() {
-		return skyShader;
-	}
-
-	public static void init() {
 	}
 
 	public static void renderActualSky(Minecraft mc, RenderData renderData) {
@@ -141,10 +138,6 @@ public class SkyBlock {
 		mc.levelRenderer.graphicsChanged();
 		mainRenderTarget.bindWrite(true);
 		// if (irisLoaded) IrisCompat.postRender(mc.levelRenderer);
-	}
-
-	public static void setSkyShader(ShaderInstance shader) {
-		skyShader = shader;
 	}
 
 	public record RenderData(PoseStack poseStack, float partialTick, Matrix4f projectionMatrix) {

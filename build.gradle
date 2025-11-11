@@ -12,6 +12,7 @@ plugins {
 	id("com.diffplug.spotless") version "7.0.4"
 	id "io.freefair.lombok" version "8.12.2.1"
 	id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+	id 'org.jetbrains.kotlin.jvm' version '1.9.0'
 	id 'org.spongepowered.mixin' version '0.7.+'
 	id 'jacoco'
 	id 'com.gradleup.shadow' version '8.3.0'
@@ -127,6 +128,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
 
+	maven { // Registrate
+		url "https://maven.tterrag.com/"
+	}
+
 	maven { url "https://cursemaven.com" }
 
 	// If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
@@ -145,11 +150,26 @@ repositories {
 		name = "Jared's maven"
 		url = "https://maven.blamejared.com/"
 	}
+
+	maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+	maven { url = "https://maven.createmod.net" }
+
+//	maven{
+//		url = "https://repo.essential.gg/repository/maven-public"
+//	}
 }
 
 dependencies {
+	// Ponder
+	implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+
 	// Mixin Extras
 	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
+
+	implementation fg.deobf(jarJar("com.tterrag.registrate:Registrate:${registrate_version}"))
+
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
+
 	implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")) {
 		jarJar.ranged(it, "[0.5.0,)")
 	}
@@ -164,7 +184,8 @@ dependencies {
 	implementation fg.deobf("curse.maven:worldedit-225608:4586218")
 
 	// Patchouli
-	implementation fg.deobf("curse.maven:patchouli-306770:4966125")
+	compileOnly(fg.deobf(jarJar("vazkii.patchouli:Patchouli:${patchouliVersion}:api")))
+	runtimeOnly(fg.deobf(jarJar("vazkii.patchouli:Patchouli:${patchouliVersion}")))
 
 	// JEI API (not include in runtime)
 	compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
@@ -191,54 +212,32 @@ dependencies {
 
 	// Mixin
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+//	implementation(jarJar("gg.essential:universalcraft-1.8.9-forge:$ucVersion"))
 }
 
 shadowJar {
-	configurations = [project.configurations.shadeOnly]
+	archiveClassifier.set('shadowed')
+	destinationDirectory.set(layout.buildDirectory.dir("libs"))
+
+	configurations = [project.configurations.jarJar]
 	from(sourceSets.main.output)
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'META-INF/mods.toml'  // exclude extra copies
-	}
+
+//	relocate("gg.essential.universalcraft", "com.code.tama.shadow.universalcraft")
 
 	// Relocate TerraBlender package
 //	relocate 'terrablender', 'com.code.tama.shadow.terrablender'
 
-	relocate 'patchouli', 'com.code.tama.shadow.patchouli'
-
-	archiveClassifier.set('') // No -all
-
-	// Step 1: Exclude all foreign mods.toml (from shaded deps)
-	doFirst {
-		def ownModsTomlFile = file('src/main/resources/META-INF/mods.toml')
-		if (!ownModsTomlFile.exists()) {
-			println "Warning: Your own mods.toml not found at ${ownModsTomlFile.absolutePath}"
-		}
-		def ownModsToml = ownModsTomlFile.exists() ? ownModsTomlFile.absolutePath : null
-
-		project.configurations.shadeOnly.resolvedConfiguration.resolvedArtifacts.each { artifact ->
-			def jarFile = artifact.file
-			if (jarFile.name.endsWith(".jar")) {
-				zipTree(jarFile).matching {
-					include 'META-INF/mods.toml'
-				}.files.each { f ->
-					if (ownModsToml == null || !f.absolutePath.equalsIgnoreCase(ownModsToml)) {
-						exclude { fileTreeElement ->
-							fileTreeElement.file?.absolutePath == f?.absolutePath
-						}
-					}
-				}
-			}
-		}
-	}
-
-
-	// Step 2: Re-include your own mods.toml from resources
-	from('src/main/resources') {
-		include 'META-INF/mods.toml'
-		include 'META-INF/**'
-	}
+	relocate('patchouli', 'com.code.tama.shadow.patchouli')
 }
+
+reobf {
+	jarJar { }
+}
+
+tasks.jarJar.finalizedBy('reobfJarJar')
+
+tasks.build.dependsOn shadowJar
 
 tasks.named('processResources', ProcessResources).configure {
 	var replaceProperties = [

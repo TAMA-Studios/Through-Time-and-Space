@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -133,7 +133,7 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
 		state.setValue(POWERED, Power);
 
 		AtomicReference<SoundState> soundState = new AtomicReference<>(SoundState.FAIL);
-		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+		GetTARDISCapSupplier(level).ifPresent(cap -> {
 			if (!cap.GetFlightData().isInFlight()) {
 				cap.Dematerialize();
 				soundState.set(SoundState.ON);

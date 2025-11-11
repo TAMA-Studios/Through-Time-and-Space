@@ -1,8 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.dimensions;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -25,11 +31,6 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 
@@ -63,12 +64,12 @@ public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, RandomState p_223045_, BiomeManager p_223046_,
-							 StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
+			StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
 	}
 
 	@Override
 	public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_,
-							 ChunkAccess p_223053_) {
+			ChunkAccess p_223053_) {
 	}
 
 	@Override
@@ -82,15 +83,15 @@ public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-																 RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+			RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
 	@Override
 	public @NotNull NoiseColumn getBaseColumn(int x, int z, @NotNull LevelHeightAccessor level,
-											  @NotNull RandomState state) {
+			@NotNull RandomState state) {
 
-		return new NoiseColumn(0, new BlockState[] {});
+		return new NoiseColumn(0, new BlockState[]{});
 	}
 
 	@Override

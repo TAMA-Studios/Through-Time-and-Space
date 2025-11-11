@@ -19,8 +19,8 @@ import net.minecraftforge.registries.RegistryObject;
 public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.WeatherState> {
 	BiMap<RegistryObject<Block>, RegistryObject<Block>> NEXT_BY_BLOCK = ImmutableBiMap
 			.<RegistryObject<Block>, RegistryObject<Block>>builder()
-			.put(TTSBlocks.STRUCTURAL_STEEL, TTSBlocks.STRUCTURAL_STEEL_WEATHERED)
-			.put(TTSBlocks.STRUCTURAL_STEEL_WEATHERED, TTSBlocks.STRUCTURAL_STEEL_RUSTED).build();
+			.put(TTSBlocks.BRUSHED_STRUCTURAL_STEEL, TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED)
+			.put(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED, TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED).build();
 
 	BiMap<RegistryObject<Block>, RegistryObject<Block>> PREVIOUS_BY_BLOCK = NEXT_BY_BLOCK.inverse();
 

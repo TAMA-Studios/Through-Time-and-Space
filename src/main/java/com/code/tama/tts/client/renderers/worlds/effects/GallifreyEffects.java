@@ -1,9 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+
+import java.util.Objects;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -13,14 +22,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
-import java.util.Objects;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
 public class GallifreyEffects extends DimensionSpecialEffects {
 
@@ -35,7 +36,7 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 	}
 
 	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f matrix4f, @NotNull Vec3 position,
-								 Quaternionf rotation, Vec3 PivotPoint, float size) {
+			Quaternionf rotation, Vec3 PivotPoint, float size) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
@@ -91,20 +92,19 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 	}
 
 	@Override
-	public boolean renderClouds(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack, double camX,
-								double camY, double camZ, @NotNull Matrix4f projectionMatrix) {
+	public boolean renderClouds(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack,
+			double camX, double camY, double camZ, @NotNull Matrix4f projectionMatrix) {
 		return true;
 	}
 
 	@Override
-	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack, @NotNull Camera camera,
-							 @NotNull Matrix4f projectionMatrix, boolean isFoggy, @NotNull Runnable setupFog) {
+	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, @NotNull PoseStack poseStack,
+			@NotNull Camera camera, @NotNull Matrix4f projectionMatrix, boolean isFoggy, @NotNull Runnable setupFog) {
 
-        assert Minecraft.getInstance().level != null;
-        renderSun(poseStack, projectionMatrix, new Vec3(50, 400, 0),
+		assert Minecraft.getInstance().level != null;
+		renderSun(poseStack, projectionMatrix, new Vec3(50, 400, 0),
 				Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().getPartialTick())),
 				new Vec3(0, 0, 0), 20);
-
 
 		renderSun(poseStack, projectionMatrix, new Vec3(0, 450, 175),
 				Axis.ZP.rotation(Minecraft.getInstance().level.getSunAngle(Minecraft.getInstance().getPartialTick())),

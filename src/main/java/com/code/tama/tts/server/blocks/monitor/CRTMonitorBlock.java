@@ -4,7 +4,6 @@ package com.code.tama.tts.server.blocks.monitor;
 import java.util.stream.Stream;
 
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
@@ -117,8 +116,6 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
 			}
 		});
 
-		world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-		});
 		return InteractionResult.SUCCESS;
 	}
 }

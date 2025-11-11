@@ -1,9 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.assets;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -15,11 +21,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
-
 public class DataBlockStateProvider extends BlockStateProvider {
 	private final List<Block> states = new ArrayList<>();
 	public DataBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -30,68 +31,82 @@ public class DataBlockStateProvider extends BlockStateProvider {
 	@Override
 	protected void registerStatesAndModels() {
 		states.add(TTSBlocks.POWER_LEVER.get());
+		states.add(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get());
 
-		getVariantBuilder(TTSBlocks.POWER_LEVER.get())
-				.forAllStates(state -> {
-					AttachFace face = state.getValue(PowerLever.FACE);
-					Direction facing = state.getValue(PowerLever.FACING);
-					boolean powered = state.getValue(BlockStateProperties.POWERED);
+		RegisterStateForExistingModel(TTSBlocks.BRUSHED_STRUCTURAL_STEEL,
+				"decoration/structural_steel_brushed/structural_steel");
 
-					int xRot = 0;
-					int yRot = 0;
+		RegisterStateForExistingModel(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED,
+				"decoration/structural_steel_brushed/structural_steel_weathered");
 
-					switch (face) {
-						case FLOOR -> {
-							xRot = 0;
-							yRot = facing.get2DDataValue() * 90;
-						}
-						case CEILING -> {
-							xRot = 180;
-							yRot = facing.get2DDataValue() * 90;
-						}
-						case WALL -> {
-							xRot = 90;
-							yRot = switch (facing) {
-								case NORTH -> 0;
-								case EAST -> 90;
-								case SOUTH -> 180;
-								case WEST -> 270;
-								default -> 0;
-							};
-						}
-					}
+		RegisterStateForExistingModel(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED,
+				"decoration/structural_steel_brushed/structural_steel_rusted");
 
-					// Model selection based on POWERED
-					String modelName = powered ? "block/control/power_lever_on" : "block/control/power_lever";
+		getVariantBuilder(TTSBlocks.POWER_LEVER.get()).forAllStates(state -> {
+			AttachFace face = state.getValue(PowerLever.FACE);
+			Direction facing = state.getValue(PowerLever.FACING);
+			boolean powered = state.getValue(BlockStateProperties.POWERED);
 
-					return ConfiguredModel.builder()
-							.modelFile(models().getExistingFile(modLoc(modelName)))
-							.rotationX(xRot)
-							.rotationY(yRot)
-							.build();
-				});
+			int xRot = 0;
+			int yRot = 0;
 
+			switch (face) {
+				case FLOOR -> {
+					yRot = facing.get2DDataValue() * 90;
+					break;
+				}
+				case CEILING -> {
+					xRot = 180;
+					yRot = facing.get2DDataValue() * 90;
+					break;
+				}
+				case WALL -> {
+					xRot = 90;
+					yRot = switch (facing) {
+						case NORTH -> 0;
+						case EAST -> 90;
+						case SOUTH -> 180;
+						case WEST -> 270;
+						default -> 0;
+					};
+					break;
+				}
+			}
 
+			// Model selection based on POWERED
+			String modelName = powered ? "block/control/power_lever_on" : "block/control/power_lever";
+
+			return ConfiguredModel.builder().modelFile(models().getExistingFile(modLoc(modelName))).rotationX(xRot)
+					.rotationY(yRot).build();
+		});
 
 		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
-			if(states.contains(block.get())) continue;
+			if (states.contains(block.get()))
+				continue;
 			states.add(block.get());
 			try {
 				assert block.getId() != null;
 
-				if(block.get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+				if (block.get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
 					Horizontal(block);
 				}
 
-//				if (AnnotationUtils.hasAnnotation(Roundel.class, block))
+				// if (AnnotationUtils.hasAnnotation(Roundel.class, block))
 				else
 					BlockWithItemAndState(block);
 
-//				blockWithItem(block);
+				// blockWithItem(block);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void RegisterStateForExistingModel(RegistryObject<Block> block, String model) {
+		getVariantBuilder(block.get()).forAllStates(state -> {
+			String modelName = model.substring(8).equals("block/") ? model : "block/" + model;
+			return ConfiguredModel.builder().modelFile(models().getExistingFile(modLoc(modelName))).build();
+		});
 	}
 
 	private void BlockWithItemAndState(RegistryObject<Block> registryObject) {
@@ -125,10 +140,8 @@ public class DataBlockStateProvider extends BlockStateProvider {
 					default -> 0;
 				};
 
-				model[i] = new ConfiguredModel(
-						new ModelFile.UncheckedModelFile(MODID + ":block/" + name(block)),
-						0, yRot, false
-				);
+				model[i] = new ConfiguredModel(new ModelFile.UncheckedModelFile(MODID + ":block/" + name(block)), 0,
+						yRot, false);
 
 				i++;
 			}
@@ -137,10 +150,8 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		getVariantBuilder(block).partialState().setModels(model);
 
 		simpleBlockItem(registryObject.get(), model[0].model);
-//		blockItem(registryObject);
+		// blockItem(registryObject);
 	}
-
-
 
 	private void SpecialBlockItem(RegistryObject<? extends Block> blockRegistryObject) {
 		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
@@ -171,7 +182,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 	private void leavesBlock(RegistryObject<Block> blockRegistryObject) {
 		simpleBlockWithItem(blockRegistryObject.get(),
 				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
-								new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
+						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
 						.renderType("cutout"));
 	}
 
@@ -212,7 +223,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void doorBlockWithRenderType(DoorBlock block, ResourceLocation bottom, ResourceLocation top,
-										String renderType) {
+			String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottomLeft = models().doorBottomLeft(baseName + "_bottom_left", bottom, top)
@@ -301,7 +312,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void trapdoorBlockWithRenderType(TrapDoorBlock block, ResourceLocation texture, boolean orientable,
-											String renderType) {
+			String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottom = orientable

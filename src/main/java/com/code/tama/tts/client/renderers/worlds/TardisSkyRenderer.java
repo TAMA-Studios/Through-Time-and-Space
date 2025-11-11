@@ -5,11 +5,12 @@ import com.code.tama.tts.client.renderers.worlds.helper.AbstractLevelRenderer;
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
 public class TardisSkyRenderer extends AbstractLevelRenderer {
 	private static VertexBuffer StarsVBO = null;

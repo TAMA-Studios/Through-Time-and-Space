@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ public class AttunementPanel extends Block {
 	@SuppressWarnings("deprecation")
 	public @NotNull InteractionResult use(@NotNull BlockState p_60503_, Level level, @NotNull BlockPos p_60505_,
 			@NotNull Player player, @NotNull InteractionHand p_60507_, @NotNull BlockHitResult p_60508_) {
-		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardis -> {
+		GetTARDISCapSupplier(level).ifPresent(tardis -> {
 			if (player.getMainHandItem().getItem() instanceof SonicItem sonicItem) {
 				ItemStack sonic = player.getMainHandItem();
 				sonicItem.Attune(tardis, sonic);

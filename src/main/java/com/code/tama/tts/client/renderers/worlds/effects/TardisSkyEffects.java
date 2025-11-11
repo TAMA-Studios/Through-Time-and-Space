@@ -1,9 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+
+import java.util.Objects;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,14 +25,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
-import java.util.Objects;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
 public class TardisSkyEffects extends DimensionSpecialEffects {
 
@@ -101,8 +102,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		RenderSystem.disableDepthTest();
 		StarsVBO.bind();
-        assert GameRenderer.getPositionShader() != null;
-        StarsVBO.drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
+		assert GameRenderer.getPositionShader() != null;
+		StarsVBO.drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
 
 		VertexBuffer.unbind();
 		RenderSystem.enableDepthTest();
@@ -170,11 +171,11 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 	}
 
 	@Override
-	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, PoseStack poseStack, @NotNull Camera camera,
-							 @NotNull Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, PoseStack poseStack,
+			@NotNull Camera camera, @NotNull Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 
-        assert Minecraft.getInstance().player != null;
-        Vec3 position = Minecraft.getInstance().player.position();
+		assert Minecraft.getInstance().player != null;
+		Vec3 position = Minecraft.getInstance().player.position();
 
 		poseStack.pushPose();
 
@@ -193,6 +194,5 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		setupFog.run();
 		return false;
 	}
-
 
 }

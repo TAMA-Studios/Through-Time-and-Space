@@ -1,44 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import com.code.tama.triggerapi.miscs.TriConsumer;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.code.tama.triggerapi.miscs.TriConsumer;
+
 public class ThreadUtils {
-	/** THIS SHOULD ONLY BE CALLED IF CONDITION IS UPDATED ON A SEPARATE THREAD **/
-	public static void Pause(Boolean condition) {
-		while (condition) {
-			DoNothing();
-		}
-	}
-
-	/**
-	 * "Pauses" the current thread by making a while loop for a duration of time
-	 *
-	 * @param ms
-	 *            Milliseconds to pause for
-	 */
-	public static void Pause(long ms) {
-		// AtomicBoolean b = new AtomicBoolean();
-		// b.set(true);
-		// long t = 0;
-		// RunThread((prevMS, condition) -> {
-		// while (prevMS < ms) {
-		// prevMS++;
-		// }
-		//
-		// condition.set(false);
-		// }, t, b);
-
-		// Pause(b.get());
-
-		long prevMS = 0;
-		while (prevMS < ms) {
-			prevMS++;
-		}
-	}
 
 	public static void RunThread(Runnable run, String name) {
 		new Thread(run, name).start();
@@ -72,5 +40,6 @@ public class ThreadUtils {
 	/**
 	 * So intj doesn't complain abt "If statement has empty body"
 	 */
-	private static void DoNothing() {}
+	private static void DoNothing() {
+	}
 }

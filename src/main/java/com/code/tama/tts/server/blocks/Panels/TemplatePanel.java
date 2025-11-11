@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.stream.Stream;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -157,7 +158,7 @@ public class TemplatePanel extends HorizontalDirectionalBlock {
 		if (button == null)
 			return InteractionResult.FAIL;
 
-		world.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(tardisLevelCapability -> {
+		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case ONE :
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
