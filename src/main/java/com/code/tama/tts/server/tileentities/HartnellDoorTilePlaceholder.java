@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.tileentities;
 
 import com.code.tama.tts.server.blocks.cosmetic.HartnellDoorMultiBlock;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,14 +11,15 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HartnellDoorTilePlaceholder extends BlockEntity {
 	private boolean IsOpen = false;
 	public BlockPos Master = BlockPos.ZERO;
 
-	public HartnellDoorTilePlaceholder(BlockPos pos, BlockState state) {
-		super(TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER.get(), pos, state);
+	public HartnellDoorTilePlaceholder(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	public void SetIsOpen(boolean IsOpen) {

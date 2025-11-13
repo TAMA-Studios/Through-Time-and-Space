@@ -4,33 +4,14 @@ package com.code.tama.tts.server.blocks.core;
 import java.util.Optional;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.WeatherState> {
-	BiMap<RegistryObject<Block>, RegistryObject<Block>> NEXT_BY_BLOCK = ImmutableBiMap
-			.<RegistryObject<Block>, RegistryObject<Block>>builder()
-			.put(TTSBlocks.BRUSHED_STRUCTURAL_STEEL, TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED)
-			.put(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED, TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED).build();
-
-	BiMap<RegistryObject<Block>, RegistryObject<Block>> PREVIOUS_BY_BLOCK = NEXT_BY_BLOCK.inverse();
-
-	@Nullable private static RegistryObject<Block> RegFromBlock(Block block) {
-		RegistryObject<Block> reg = RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
-		return reg.get() == Blocks.AIR
-				? null
-				: RegistryObject.create(ForgeRegistries.BLOCKS.getKey(block), ForgeRegistries.BLOCKS);
-	}
-
 	static Block getFirst(Block block) {
 		Block prev;
 		while ((prev = getPrevious(block)) != null) {
@@ -44,19 +25,19 @@ public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.Wea
 	}
 
 	@Nullable static Block getNext(Block block) {
-		if (!nextExists(block))
-			return null;
-
-		Block next = NEXT_BY_BLOCK.get(RegFromBlock(block)).get();
-		return next == Blocks.AIR ? null : next;
+		if (block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get()))
+			return TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get();
+		if (block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get()))
+			return TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get();
+		return null;
 	}
 
 	@Nullable static Block getPrevious(Block block) {
-		if (!prevExists(block))
-			return null;
-
-		Block prev = PREVIOUS_BY_BLOCK.get(RegFromBlock(block)).get();
-		return prev == Blocks.AIR ? null : prev;
+		if (block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get()))
+			return TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get();
+		if (block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get()))
+			return TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get();
+		return null;
 	}
 
 	@Nullable static BlockState getPrevious(BlockState state) {
@@ -68,11 +49,11 @@ public interface WeatheringSteel extends ChangeOverTimeBlock<WeatheringSteel.Wea
 	}
 
 	static boolean nextExists(@NotNull Block block) {
-		return Optional.ofNullable(NEXT_BY_BLOCK.get(RegFromBlock(block))).isPresent();
+		return !block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get());
 	}
 
 	static boolean prevExists(@NotNull Block block) {
-		return Optional.ofNullable(PREVIOUS_BY_BLOCK.get(RegFromBlock(block))).isPresent();
+		return !block.equals(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get());
 	}
 
 	default float getChanceModifier() {

@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.cosmetic;
 
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +74,7 @@ public class HartnellRotor extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-		return new HartnellRotorTile(pos, state);
+		return new HartnellRotorTile(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
 	}
 
 	@SuppressWarnings("deprecation")

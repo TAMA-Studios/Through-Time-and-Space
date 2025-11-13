@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSItems;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.registries.RegistryObject;
 
 public class DataBlockLootTables extends BlockLootSubProvider {
 	public DataBlockLootTables() {
@@ -114,6 +114,6 @@ public class DataBlockLootTables extends BlockLootSubProvider {
 
 	@Override
 	protected @NotNull Iterable<Block> getKnownBlocks() {
-		return TTSBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+		return TTSBlocks.AllValues().stream().map(RegistryEntry::get)::iterator;
 	}
 }

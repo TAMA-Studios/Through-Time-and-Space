@@ -1,15 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.cosmetic;
 
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.tileentities.HartnellDoorTile;
 import com.code.tama.tts.server.tileentities.HartnellDoorTilePlaceholder;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -30,14 +24,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class HartnellDoor extends Block implements EntityBlock {
 	private boolean IsOpen = false;
 	private final Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> tile;
 
-	public HartnellDoor(Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> factory) {
-		super(Properties.of().strength(3.0F).requiresCorrectToolForDrops());
+	public HartnellDoor(Properties p, Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> factory) {
+		super(p.strength(3.0F).requiresCorrectToolForDrops());
 		this.tile = factory;
 	}
 

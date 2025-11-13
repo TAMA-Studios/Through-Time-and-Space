@@ -9,6 +9,7 @@ import java.util.List;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -80,13 +81,11 @@ public class DataBlockStateProvider extends BlockStateProvider {
 					.rotationY(yRot).build();
 		});
 
-		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
+		for (RegistryEntry<Block> block : TTSBlocks.AllValues().stream().toList()) {
 			if (states.contains(block.get()))
 				continue;
 			states.add(block.get());
 			try {
-				assert block.getId() != null;
-
 				if (block.get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
 					Horizontal(block);
 				}
@@ -102,21 +101,21 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	private void RegisterStateForExistingModel(RegistryObject<Block> block, String model) {
+	private void RegisterStateForExistingModel(RegistryEntry<Block> block, String model) {
 		getVariantBuilder(block.get()).forAllStates(state -> {
 			String modelName = model.substring(8).equals("block/") ? model : "block/" + model;
 			return ConfiguredModel.builder().modelFile(models().getExistingFile(modLoc(modelName))).build();
 		});
 	}
 
-	private void BlockWithItemAndState(RegistryObject<Block> registryObject) {
+	private void BlockWithItemAndState(RegistryEntry<Block> registryObject) {
 		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
 				blockTexture(registryObject.get()));
 
 		simpleBlockWithItem(registryObject.get(), modelBuilder);
 	}
 
-	private void Horizontal(RegistryObject<Block> registryObject) {
+	private void Horizontal(RegistryEntry<Block> registryObject) {
 		Block block = registryObject.get();
 
 		// Safety check: only handle blocks that have the HORIZONTAL_FACING property
@@ -158,12 +157,12 @@ public class DataBlockStateProvider extends BlockStateProvider {
 				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
 	}
 
-	private void blockItem(RegistryObject<Block> blockRegistryObject) {
+	private void blockItem(RegistryEntry<Block> blockRegistryObject) {
 		simpleBlockItem(blockRegistryObject.get(), new ModelFile.UncheckedModelFile(
 				MODID + ":block/" + ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath()));
 	}
 
-	private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
+	private void blockWithItem(RegistryEntry<Block> blockRegistryObject) {
 		try {
 
 			models().cubeAll(name(blockRegistryObject.get()), blockRegistryObject.getId());
@@ -179,7 +178,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		return ForgeRegistries.BLOCKS.getKey(block);
 	}
 
-	private void leavesBlock(RegistryObject<Block> blockRegistryObject) {
+	private void leavesBlock(RegistryEntry<Block> blockRegistryObject) {
 		simpleBlockWithItem(blockRegistryObject.get(),
 				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
 						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
@@ -190,7 +189,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		return "block/" + key(block).getPath();
 	}
 
-	private void saplingBlock(RegistryObject<Block> blockRegistryObject) {
+	private void saplingBlock(RegistryEntry<Block> blockRegistryObject) {
 		try {
 			simpleBlock(blockRegistryObject.get(),
 					models().cross(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),

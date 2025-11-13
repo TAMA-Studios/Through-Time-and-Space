@@ -22,7 +22,6 @@ import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
@@ -48,6 +47,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -81,8 +81,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	public int PlasmicShellPlates, StructuralBeams, Weld;
 
-	public ExteriorTile(BlockPos pos, BlockState state) {
-		super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);
+	public ExteriorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override

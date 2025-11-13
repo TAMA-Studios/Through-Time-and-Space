@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CompressedMultiblockTile extends BlockEntity {
@@ -27,13 +28,14 @@ public class CompressedMultiblockTile extends BlockEntity {
 	 */
 	public Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
-	public CompressedMultiblockTile(BlockPos pos, BlockState state) {
-		super(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(), pos, state);
+	public CompressedMultiblockTile(BlockPos pos, BlockState state, Map<BlockPos, BlockState> map) {
+		this(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(), pos, state);
+		this.stateMap = map;
 	}
 
-	public CompressedMultiblockTile(BlockPos pos, BlockState state, Map<BlockPos, BlockState> map) {
-		this(pos, state);
-		this.stateMap = map;
+	public <T extends BlockEntity> CompressedMultiblockTile(BlockEntityType<T> tBlockEntityType, BlockPos pos,
+			BlockState state) {
+		super(tBlockEntityType, pos, state);
 	}
 
 	@Override

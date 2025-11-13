@@ -1,24 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Set;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,6 +31,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Set;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Slf4j
 @SuppressWarnings("deprecation")
@@ -48,9 +47,9 @@ public class DoorBlock extends Block implements EntityBlock {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	private final Supplier<? extends BlockEntityType<? extends DoorTile>> doorBlock;
 
-	public DoorBlock(Properties p_49795_, Supplier<? extends BlockEntityType<? extends DoorTile>> factory) {
+	public DoorBlock(Properties p_49795_) {
 		super(p_49795_);
-		this.doorBlock = factory;
+		this.doorBlock = TTSTileEntities.DOOR_TILE;
 	}
 
 	@Nullable @Override

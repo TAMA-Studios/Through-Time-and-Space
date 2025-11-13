@@ -2,20 +2,21 @@
 package com.code.tama.tts.server.blocks.cosmetic;
 
 import com.code.tama.tts.server.blocks.core.WeatheringSteel;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
+import org.jetbrains.annotations.NotNull;
 
 public class StructuralSteelBlock extends Block implements WeatheringSteel {
 	private final WeatheringSteel.WeatherState weatherState;
 
-	public StructuralSteelBlock(WeatheringSteel.WeatherState p_154925_, BlockBehaviour.Properties p_154926_) {
-		super(p_154926_);
+	public StructuralSteelBlock(WeatheringSteel.WeatherState p_154925_, Properties properties) {
+		super(properties.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).noOcclusion()
+				.sound(SoundType.METAL));
 		this.weatherState = p_154925_;
 	}
 

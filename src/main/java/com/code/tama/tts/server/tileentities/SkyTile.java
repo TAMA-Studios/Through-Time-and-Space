@@ -3,13 +3,12 @@ package com.code.tama.tts.server.tileentities;
 
 import java.util.Arrays;
 
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SkyTile extends BlockEntity {
@@ -18,12 +17,12 @@ public class SkyTile extends BlockEntity {
 
 	private SkyType skyType = SkyType.Overworld;
 
-	public SkyTile(BlockPos blockPos, BlockState blockState) {
-		super(TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
+	public SkyTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
-	public SkyTile(SkyType skyType, BlockPos pos, BlockState state) {
-		this(pos, state);
+	public SkyTile(SkyType skyType, BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		this(type, pos, state);
 		this.skyType = skyType;
 	}
 

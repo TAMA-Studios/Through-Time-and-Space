@@ -1,17 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.forge.TTSBlocks.BLOCKS;
-import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.TILE_ENTITIES;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
+import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
@@ -20,9 +12,8 @@ import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.loots.TTSLootModifiers;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.registries.forge.TTSCreativeTabs;
-import com.code.tama.tts.server.registries.forge.TTSEntities;
-import com.code.tama.tts.server.registries.forge.TTSParticles;
+import com.code.tama.tts.server.registries.TTSRegistrate;
+import com.code.tama.tts.server.registries.forge.*;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.registries.misc.UIComponentRegistry;
@@ -32,8 +23,7 @@ import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
-import org.apache.logging.log4j.Logger;
-
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,20 +35,25 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.Logger;
 
-import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
-import com.code.tama.triggerapi.helpers.FileHelper;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
 @SuppressWarnings("removal")
 public class TTSMod {
+	public static final String MODID = "tts";
+	private static final TTSRegistrate REGISTRATE = TTSRegistrate.create(MODID);
+
 	public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
 	public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
 	// Define mod id in a common place for everything to reference
-	public static final String MODID = "tts";
 	public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
 	public static TriggerAPI triggerAPI;
 
@@ -86,53 +81,37 @@ public class TTSMod {
 
 		// Register Blocks, Items, Dimensions etc...
 
+		registrates();
+
 		SonicModeRegistry.register(modEventBus);
-
 		ControlsRegistry.register(modEventBus);
-
-		TTSParticles.PARTICLES.register(modEventBus);
-
-		BLOCKS.register(modEventBus);
-
-		ITEMS.register(modEventBus);
-
-		DIMENSIONAL_ITEMS.register(modEventBus);
-
-		TILE_ENTITIES.register(modEventBus);
-
-		CREATIVE_MODE_TABS.register(modEventBus);
-
 		TTSEntities.ENTITY_TYPES.register(modEventBus);
-
+		TTSParticles.PARTICLES.register(modEventBus);
+		CREATIVE_MODE_TABS.register(modEventBus);
 		TTSLootModifiers.register(modEventBus);
-
 		TTSSounds.register(modEventBus);
-
 		UICategoryRegistry.register(modEventBus);
-
 		UIComponentRegistry.register(modEventBus);
-
 		TTSTrunkPlacerTypes.register(modEventBus);
-
 		ModFoliagePlacers.register(modEventBus);
-
 		TTSFeatures.FEATURES.register(modEventBus);
-
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-
 		// Register the item to a creative tab
 		modEventBus.addListener(this::addCreative);
-
 		Biomes.BIOME_MODIFIERS.register(modEventBus);
-
 		Biomes.CHUNK_GENERATORS.register(modEventBus);
-
 		ModCompat.Run();
 	}
 
+	private void registrates() {
+		TTSBlocks.register();
+		TTSItems.register();
+		TTSTileEntities.register();
+	}
+
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
-		for (RegistryObject<Item> item : ITEMS.getEntries()) {
+		for (RegistryEntry<Item> item : TTSItems.AllValues()) {
 			if (AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
 				if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
 					event.accept(item);
@@ -148,5 +127,9 @@ public class TTSMod {
 		Networking.registerPackets();
 		event.enqueueWork(() -> {
 		});
+	}
+
+	public static TTSRegistrate registrate() {
+		return REGISTRATE;
 	}
 }

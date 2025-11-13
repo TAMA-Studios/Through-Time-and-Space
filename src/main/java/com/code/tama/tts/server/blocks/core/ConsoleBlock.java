@@ -3,6 +3,7 @@ package com.code.tama.tts.server.blocks.core;
 
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -17,15 +18,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class ConsoleBlock<T extends AbstractConsoleTile> extends Block implements EntityBlock {
 
-	private final RegistryObject<BlockEntityType<T>> console;
+	private final RegistryEntry<BlockEntityType<T>> console;
 
-	public ConsoleBlock(BlockBehaviour.Properties properties, RegistryObject<BlockEntityType<T>> consoleTile) {
+	public ConsoleBlock(BlockBehaviour.Properties properties, RegistryEntry<BlockEntityType<T>> consoleTile) {
 		super(properties);
 		this.console = consoleTile;
 	}
