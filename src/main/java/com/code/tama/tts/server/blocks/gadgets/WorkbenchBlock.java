@@ -7,6 +7,9 @@ import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.misc.RecipeRegistry;
 import com.code.tama.tts.server.tileentities.WorkbenchTile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -19,8 +22,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBlock {

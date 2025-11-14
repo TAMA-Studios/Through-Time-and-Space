@@ -6,6 +6,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.util.LinkedHashMap;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.data.PackOutput;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -125,7 +127,7 @@ public class DataItemModelProvider extends ItemModelProvider {
 		}
 	}
 
-	private ItemModelBuilder saplingItem(RegistryEntry<Block> item) {
+	private ItemModelBuilder saplingItem(BlockEntry<SaplingBlock> item) {
 		return withExistingParent(item.getId().getPath(), new ResourceLocation("item/generated")).texture("layer0",
 				new ResourceLocation(MODID, "block/" + item.getId().getPath()));
 	}

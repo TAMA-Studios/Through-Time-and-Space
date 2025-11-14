@@ -408,10 +408,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void ForceLoadExteriorChunk(boolean ForceLoad) {
-		Objects.requireNonNull(this.GetNavigationalData().getDestination().getLevel().getServer()
-				.getLevel(this.navigationalData.getLocation().getLevelKey()))
-				.setChunkForced((int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
-						(int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16), ForceLoad);
+		getExteriorLevel().setChunkForced((int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
+				(int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16), ForceLoad);
 	}
 
 	public static ITARDISLevel GetTARDISCap(Level level) {
@@ -427,5 +425,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	public static LazyOptional<ITARDISLevel> GetClientTARDISCapSupplier() {
 		return Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
+	}
+
+	public ServerLevel getExteriorLevel() {
+		return this.GetNavigationalData().getDestination().getLevel().getServer()
+				.getLevel(this.navigationalData.getLocation().getLevelKey());
 	}
 }

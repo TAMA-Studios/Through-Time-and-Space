@@ -104,4 +104,12 @@ public class TARDISNavigationalData {
 			this.Location.setLevel(this.ExteriorDimensionKey);
 		return this.Location.copy();
 	}
+
+	public void setDestination(SpaceTimeCoordinate destination) {
+		Destination = destination.copy();
+	}
+
+	public void setLocation(SpaceTimeCoordinate location) {
+		Location = location.copy();
+	}
 }

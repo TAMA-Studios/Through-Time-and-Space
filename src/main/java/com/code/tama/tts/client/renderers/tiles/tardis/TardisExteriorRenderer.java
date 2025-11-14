@@ -38,6 +38,9 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	public TardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
 	}
 
+	public TardisExteriorRenderer() {
+	}
+
 	@Override
 	public void render(@NotNull T exteriorTile, float partialTicks, @NotNull PoseStack stack,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {

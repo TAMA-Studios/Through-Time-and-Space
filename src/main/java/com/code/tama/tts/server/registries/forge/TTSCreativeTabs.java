@@ -3,7 +3,6 @@ package com.code.tama.tts.server.registries.forge;
 
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.registries.forge.TTSItems.AllValues;
-import static com.code.tama.tts.server.registries.forge.TTSItems.EXTERIOR;
 
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
@@ -23,7 +22,7 @@ public class TTSCreativeTabs {
 
 	public static final RegistryObject<CreativeModeTab> DIMENSIONAL_TAB = CREATIVE_MODE_TABS.register("dimensional_tab",
 			() -> CreativeModeTab.builder().withTabsBefore(TTSCreativeTabs.MAIN_TAB.getId())
-					.icon(() -> EXTERIOR.get().getDefaultInstance())
+					.icon(() -> TTSBlocks.EXTERIOR_BLOCK.asItem().getDefaultInstance())
 					.displayItems((parameters, output) -> AllValues().forEach((reg) -> {
 						if (AnnotationUtils.hasAnnotation(DimensionalTab.class, reg))
 							output.accept(reg.get());
@@ -31,7 +30,7 @@ public class TTSCreativeTabs {
 
 	public static final RegistryObject<CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main_tab",
 			() -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT)
-					.icon(() -> EXTERIOR.get().getDefaultInstance())
+					.icon(() -> TTSBlocks.EXTERIOR_BLOCK.asItem().getDefaultInstance())
 					.displayItems((parameters, output) -> AllValues().forEach((reg) -> {
 						if (AnnotationUtils.hasAnnotation(MainTab.class, reg))
 							output.accept(reg.get());

@@ -2,8 +2,6 @@
 package com.code.tama.tts.client;
 
 import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.HARTNELL_ROTOR;
-import static com.code.tama.tts.server.registries.forge.TTSTileEntities.PORTAL_TILE_ENTITY;
 
 import java.io.IOException;
 
@@ -12,34 +10,19 @@ import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.NESSConsoleModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
+import com.code.tama.tts.client.ponder.TTSPonderPlugin;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
-import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
-import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
-import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
-import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
-import com.code.tama.tts.client.renderers.tiles.ChromiumBlockEntityRenderer;
-import com.code.tama.tts.client.renderers.tiles.ExampleRenderer;
-import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
-import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.HartnellDoorRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
-import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
-import com.code.tama.tts.client.renderers.tiles.gadgets.SonicConfiguratorRenderer;
-import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
-import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.TardisSkyEffects;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.registries.forge.TTSParticles;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.createmod.ponder.foundation.PonderIndex;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -48,7 +31,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -72,26 +54,30 @@ public class ClientSetup {
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void FMLClientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(
-				() -> ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent()));
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.NESS_CONSOLE_BLOCK.get(), RenderType.translucent());
+		event.enqueueWork(() -> {
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.NESS_CONSOLE_BLOCK.get(), RenderType.translucent());
 
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_BLOCK.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_BLOCK.get(), RenderType.cutout());
 
-		// Rotors
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COPPER_ROTOR.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.AMETHYST_ROTOR.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BLUE_ROTOR.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), RenderType.cutout());
+			// Rotors
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COPPER_ROTOR.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.AMETHYST_ROTOR.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BLUE_ROTOR.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COMPRESSED_MULTIBLOCK.get(), RenderType.cutout());
 
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get(),
-				RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_RUSTED.get(),
+					RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL_WEATHERED.get(),
+					RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get(), RenderType.translucent());
+
+			PonderIndex.addPlugin(new TTSPonderPlugin());
+		});
 	}
 
 	@SubscribeEvent
@@ -131,35 +117,84 @@ public class ClientSetup {
 
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.@NotNull RegisterRenderers event) {
-		BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(), SkyTileRenderer::new);
+		// BlockEntityRenderers.register(TTSTileEntities.SKY_TILE.get(),
+		// SkyTileRenderer::new);
 		event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
 		event.registerEntityRenderer(TTSEntities.FALLING_EXTERIOR.get(), FallingExteriorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
-				ChromiumBlockEntityRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),
-				CompressedMultiblockRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(), TardisExteriorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(), HartnellDoorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(), InteriorDoorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
-				context -> new HudolinConsoleRenderer<>(context,
-						new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION))));
+		// event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
+		// ChromiumBlockEntityRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),
+		// CompressedMultiblockRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(),
+		// TardisExteriorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(),
+		// HartnellDoorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(),
+		// InteriorDoorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
+		// context -> new HudolinConsoleRenderer<>(context,
+		// new
+		// HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION))));
+		//
+		// event.registerBlockEntityRenderer(TTSTileEntities.NESS_CONSOLE_TILE.get(),
+		// context -> new NESSConsoleRenderer<>(context,
+		// new NESSConsoleModel<>(context.bakeLayer(NESSConsoleModel.LAYER_LOCATION))));
+		//
+		////		event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
+////		event.registerBlockEntityRenderer(HARTNELL_ROTOR.get(), context -> new HartnellRotorRenderer<>(context,
+////				new HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION))));
+		// event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(),
+		// ChameleonCircuitRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(),
+		// MonitorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.CRT_MONITOR_TILE.get(),
+		// CRTMonitorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(),
+		// MonitorPanelRenderer::new);
+		// // Register your renderer here, first value here \/ is the Tile
+		// RegistryObject,
+		// // \/ is the renderer
+		// event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(),
+		// ExampleRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntitiget(),
+		// ChromiumBlockEntityRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),
+		// CompressedMultiblockRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.EXTERIOR_TILE.get(),
+		// TardisExteriorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.HARTNELL_DOOR.get(),
+		// HartnellDoorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.DOOR_TILE.get(),
+		// InteriorDoorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.HUDOLIN_CONSOLE_TILE.get(),
+		// context -> new HudolinConsoleRenderer<>(context,
+		// new
+		// HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION))));
+		//
+		// event.registerBlockEntityRenderer(TTSTileEntities.NESS_CONSOLE_TILE.get(),
+		// context -> new NESSConsoleRenderer<>(context,
+		// new NESSConsoleModel<>(context.bakeLayer(NESSConsoleModel.LAYER_LOCATION))));
 
-		event.registerBlockEntityRenderer(TTSTileEntities.NESS_CONSOLE_TILE.get(),
-				context -> new NESSConsoleRenderer<>(context,
-						new NESSConsoleModel<>(context.bakeLayer(NESSConsoleModel.LAYER_LOCATION))));
-
-		event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(), PortalTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(HARTNELL_ROTOR.get(), context -> new HartnellRotorRenderer<>(context,
-				new HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION))));
-		event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(), ChameleonCircuitRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(), MonitorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.CRT_MONITOR_TILE.get(), CRTMonitorRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(), MonitorPanelRenderer::new);
+		// event.registerBlockEntityRenderer(PORTAL_TILE_ENTITY.get(),
+		// PortalTileEntityRenderer::new);
+		// event.registerBlockEntityRenderer(HARTNELL_ROTOR.get(), context -> new
+		// HartnellRotorRenderer<>(context,
+		// new
+		// HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION))));
+		// event.registerBlockEntityRenderer(TTSTileEntities.CHAMELEON_CIRCUIT_PANEL.get(),
+		// ChameleonCircuitRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_TILE.get(),
+		// MonitorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.CRT_MONITOR_TILE.get(),
+		// CRTMonitorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.MONITOR_PANEL_TILE.get(),
+		// MonitorPanelRenderer::new);
 		// Register your renderer here, first value here \/ is the Tile RegistryObject,
 		// \/ is the renderer
-		event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(), ExampleRenderer::new);
-		event.registerBlockEntityRenderer(TTSTileEntities.SONIC_CONFIGURATOR.get(), SonicConfiguratorRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.EXAMPLE_TILE.get(),
+		// ExampleRenderer::new);
+		// event.registerBlockEntityRenderer(TTSTileEntities.SONIC_CONFIGURATOR.get(),
+		// SonicConfiguratorRenderer::new);
 	}
 
 	@SubscribeEvent

@@ -3,6 +3,7 @@ package com.code.tama.tts.server.blocks.cosmetic;
 
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.SkyTile;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -22,8 +23,8 @@ public class SkyBlock extends BaseEntityBlock {
 
 	public SkyBlock(Properties properties) {
 		super(properties);
-				//Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
-//				.requiresCorrectToolForDrops().strength(1.5F, 6.0F));
+		// Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
+		// .requiresCorrectToolForDrops().strength(1.5F, 6.0F));
 		registerDefaultState(defaultBlockState().setValue(ACTIVE, true));
 	}
 
@@ -109,7 +110,7 @@ public class SkyBlock extends BaseEntityBlock {
 
 		@Override
 		public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-			return new SkyTile(SkyTile.SkyType.Void, TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
+			return new SkyTile(SkyTile.SkyType.Void, TTSTileEntities.SKY_TILE_VOID.get(), blockPos, blockState);
 		}
 	}
 }

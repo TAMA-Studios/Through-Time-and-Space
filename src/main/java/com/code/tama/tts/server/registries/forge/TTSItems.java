@@ -1,111 +1,102 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
-import com.code.tama.tts.server.items.blocks.ConsoleItem;
-import com.code.tama.tts.server.items.blocks.ExteriorItem;
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
-import com.code.tama.tts.server.registries.TTSRegistrate;
+import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
-
 @SuppressWarnings("deprecation")
 public class TTSItems {
-	public static final RegistryEntry<Item> HUDOLIN_CONSOLE_TILE;
+	// public static final ItemEntry<Item> HUDOLIN_CONSOLE_TILE;
 
-	public static final RegistryEntry<Item> COMPRESSED_MULTIBLOCK_ITEM;
+	// public static final ItemEntry<Item> NESS_CONSOLE_TILE;
 
-	public static final RegistryEntry<Item> NESS_CONSOLE_TILE;
+	public static final ItemEntry<Item> HUON_BOTTLE;
 
-	public static final ItemEntry<ExteriorItem> EXTERIOR;
+	public static final ItemEntry<Item> RAW_ZEITON;
 
-	public static final RegistryEntry<Item> HUON_BOTTLE;
+	public static final ItemEntry<Item> BASIC_CONTROL_CIRCUIT;
 
-	public static final RegistryEntry<Item> RAW_ZEITON;
+	public static final ItemEntry<Item> ADVANCED_CONTROL_CIRCUIT;
 
-	public static final RegistryEntry<Item> BASIC_CONTROL_CIRCUIT;
+	public static final ItemEntry<SonicItem> CORAL_SONIC;
 
-	public static final RegistryEntry<Item> ADVANCED_CONTROL_CIRCUIT;
+	public static final ItemEntry<SonicItem> COPPER_SONIC;
 
-	public static final RegistryEntry<SonicItem> CORAL_SONIC;
+	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
 
-	public static final RegistryEntry<SonicItem> COPPER_SONIC;
+	public static final ItemEntry<Item> ZEITON;
 
-	public static final RegistryEntry<NozzleItem> BASIC_NOZZLE;
+	public static final ItemEntry<Item> PLASMIC_SHELL_PLATING;
 
-	public static final RegistryEntry<Item> ZEITON;
+	public static final ItemEntry<Item> STRUCTURAL_BEAMS;
 
-	public static final RegistryEntry<Item> PLASMIC_SHELL_PLATING;
+	public static final ItemEntry<Item> GROWTH_CAKE;
 
-	public static final RegistryEntry<Item> STRUCTURAL_BEAMS;
-
-	public static final RegistryEntry<Item> GROWTH_CAKE;
-
-	public static final RegistryEntry<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
+	public static final ItemEntry<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
 
 	static {
-		EXTERIOR = registrate()
-				.item("exterior", (prop) -> new ExteriorItem(TTSBlocks.EXTERIOR_BLOCK.get(), new Item.Properties()))
+		ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
+
+		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		HUON_BOTTLE = registrate().item("huon_bottle", prop -> new Item(prop.food(new FoodProperties.Builder()
+				.alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 1, 1), 1f).build()))).register();
+
+		// HUDOLIN_CONSOLE_TILE = register("hudolin_console_block", new
+		// ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE,
+		// TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), new Item.Properties()));
+		//
+		// NESS_CONSOLE_TILE = register("ness_console_block", new
+		// ConsoleItem<>(TTSTileEntities.NESS_CONSOLE_TILE,
+		// TTSBlocks.NESS_CONSOLE_BLOCK.get(), new Item.Properties()));
+
+		CORAL_SONIC = registrate().item("sonic/coral", prop -> new SonicItem(prop, 5)).register();
+
+		COPPER_SONIC = registrate().item("sonic/copper", prop -> new SonicItem(prop, 5)).register();
+
+		BASIC_NOZZLE = registrate().item("basic_nozzle", NozzleItem::new).register();
+
+		BASIC_CONTROL_CIRCUIT = registrate().item("basic_control_circuit", Item::new).register();
+
+		ADVANCED_CONTROL_CIRCUIT = registrate().item("advanced_control_circuit", Item::new).register();
+
+		PLASMIC_SHELL_PLATING = registrate().item("plasmic_shell_plating", Item::new)
+				.properties(p -> p.fireResistant().stacksTo(16)).register();
+
+		STRUCTURAL_BEAMS = registrate().item("structural_beams", Item::new).properties(prop -> prop.stacksTo(16))
 				.register();
 
-		COMPRESSED_MULTIBLOCK_ITEM = register("compressed_multiblock_item",
-				new CompressedMultiblockItem(new Item.Properties()));
+		GROWTH_CAKE = registrate().item("growth_cake", Item::new).register();
 
-		ZEITON = register("purified_zeiton_7", new Item(new Item.Properties()));
-
-		RAW_ZEITON = register("zeiton_7", new Item(new Item.Properties()));
-
-		HUON_BOTTLE = register("huon_bottle", new Item(new Item.Properties().food(new FoodProperties.Builder()
-				.alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 1, 1), 1f).build())));
-
-		HUDOLIN_CONSOLE_TILE = register("hudolin_console_block", new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE,
-				TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), new Item.Properties()));
-
-		NESS_CONSOLE_TILE = register("ness_console_block", new ConsoleItem<>(TTSTileEntities.NESS_CONSOLE_TILE,
-				TTSBlocks.NESS_CONSOLE_BLOCK.get(), new Item.Properties()));
-
-		CORAL_SONIC = register("sonic/coral", new SonicItem(new Item.Properties(), 5));
-
-		COPPER_SONIC = register("sonic/copper", new SonicItem(new Item.Properties(), 5));
-
-		BASIC_NOZZLE = register("basic_nozzle", new NozzleItem());
-
-		BASIC_CONTROL_CIRCUIT = register("basic_control_circuit", new Item(new Item.Properties()));
-
-		ADVANCED_CONTROL_CIRCUIT = register("advanced_control_circuit", new Item(new Item.Properties()));
-
-		PLASMIC_SHELL_PLATING = register("plasmic_shell_plating",
-				new Item(new Item.Properties().fireResistant().stacksTo(16)));
-
-		STRUCTURAL_BEAMS = register("structural_beams", new Item(new Item.Properties().stacksTo(16)));
-
-		GROWTH_CAKE = register("growth_cake", new Item(new Item.Properties()));
-
-		TEMPORAL_IMPRINT_READER = register("temporal_imprint_reader", new TemporalImprintReaderItem());
+		TEMPORAL_IMPRINT_READER = registrate().item("temporal_imprint_reader", TemporalImprintReaderItem::new)
+				.properties(prop -> prop.stacksTo(1)).register();
 	}
 
-	public static <T extends Item> RegistryEntry<T> register(String name, T item) {
+	public static <T extends Item> ItemEntry<T> register(String name, T item) {
 		return registrate().item(name, (prop) -> item).register();
 	}
 
-	public static <T extends Item> RegistryEntry<T> register(String name, NonNullFunction<Item.Properties, T> item) {
+	public static <T extends Item> ItemEntry<T> register(String name, NonNullFunction<Item.Properties, T> item) {
 		return registrate().item(name, item).register();
 	}
 
-	public static <T extends Item> ItemBuilder<T, TTSRegistrate> Builder(String name, T item) {
+	public static <T extends Item> ItemBuilder<T, Registrate> Builder(String name, T item) {
 		return registrate().item(name, (prop) -> item);
 	}
 

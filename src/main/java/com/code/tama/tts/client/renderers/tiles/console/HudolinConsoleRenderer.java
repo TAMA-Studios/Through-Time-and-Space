@@ -1,14 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.console;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,8 +17,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
@@ -31,6 +30,10 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 
 	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
 		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
+	}
+
+	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new HudolinConsoleModel<>(HudolinConsoleModel.createBodyLayer().bakeRoot());
 	}
 
 	@Override

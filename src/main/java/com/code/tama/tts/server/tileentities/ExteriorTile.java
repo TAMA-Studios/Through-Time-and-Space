@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.tileentities;
 
 import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -399,11 +400,14 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 				((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
 
-				tardisLevel.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
+				GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
 					cap.SetExteriorTile(this);
 					assert this.getLevel() != null;
 					cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
 					cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+					BlockPos loc = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos();
+					cap.GetNavigationalData().setDestination(new SpaceTimeCoordinate(
+							level.getBlockRandomPos(loc.getX(), loc.getY(), loc.getZ(), 50000)));
 					cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
 					cap.GetData().setOwnerUUID(this.PlacerUUID);
 				});

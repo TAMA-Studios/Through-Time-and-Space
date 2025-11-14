@@ -1,9 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
-import com.code.tama.triggerapi.helpers.FileHelper;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
@@ -12,7 +16,6 @@ import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.loots.TTSLootModifiers;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.registries.forge.*;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
@@ -23,7 +26,10 @@ import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
+import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,21 +41,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
+import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import com.code.tama.triggerapi.helpers.FileHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
 @SuppressWarnings("removal")
 public class TTSMod {
 	public static final String MODID = "tts";
-	private static final TTSRegistrate REGISTRATE = TTSRegistrate.create(MODID);
+	private static final Registrate REGISTRATE = Registrate.create(MODID);
 
 	public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
 	public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
@@ -106,8 +108,8 @@ public class TTSMod {
 
 	private void registrates() {
 		TTSBlocks.register();
-		TTSItems.register();
 		TTSTileEntities.register();
+		TTSItems.register();
 	}
 
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -129,7 +131,7 @@ public class TTSMod {
 		});
 	}
 
-	public static TTSRegistrate registrate() {
+	public static Registrate registrate() {
 		return REGISTRATE;
 	}
 }

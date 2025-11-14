@@ -9,6 +9,7 @@ import java.util.List;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.core.Direction;
@@ -101,14 +102,14 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	private void RegisterStateForExistingModel(RegistryEntry<Block> block, String model) {
+	private <T extends Block> void RegisterStateForExistingModel(BlockEntry<T> block, String model) {
 		getVariantBuilder(block.get()).forAllStates(state -> {
 			String modelName = model.substring(8).equals("block/") ? model : "block/" + model;
 			return ConfiguredModel.builder().modelFile(models().getExistingFile(modLoc(modelName))).build();
 		});
 	}
 
-	private void BlockWithItemAndState(RegistryEntry<Block> registryObject) {
+	private <T extends Block> void BlockWithItemAndState(RegistryEntry<T> registryObject) {
 		ModelBuilder<BlockModelBuilder> modelBuilder = models().cubeAll(name(registryObject.get()),
 				blockTexture(registryObject.get()));
 

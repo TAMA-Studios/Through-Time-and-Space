@@ -5,6 +5,7 @@ import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.server.tileentities.SkyTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,13 +14,17 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 
-public class SkyTileRenderer implements BlockEntityRenderer<SkyTile> {
+public class SkyTileRenderer<T extends SkyTile> implements BlockEntityRenderer<T> {
 	public SkyTileRenderer(BlockEntityRendererProvider.Context context) {
 	}
 
+	public SkyTileRenderer() {
+
+	}
+
 	@Override
-	public void render(SkyTile blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i,
-			int j) {
+	public void render(T blockEntity, float f, @NotNull PoseStack poseStack,
+			@NotNull MultiBufferSource multiBufferSource, int i, int j) {
 		if (!blockEntity.getBlockState().getValue(com.code.tama.tts.server.blocks.cosmetic.SkyBlock.ACTIVE))
 			return;
 		Matrix4f m4f = poseStack.last().pose();
@@ -31,7 +36,7 @@ public class SkyTileRenderer implements BlockEntityRenderer<SkyTile> {
 		SkyBlock.updateSky = true;
 	}
 
-	private void renderCube(SkyTile entity, Matrix4f matrix, VertexConsumer buffer) {
+	private void renderCube(T entity, Matrix4f matrix, VertexConsumer buffer) {
 		renderFace(entity, matrix, buffer, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, Direction.SOUTH);
 		renderFace(entity, matrix, buffer, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, Direction.NORTH);
 		renderFace(entity, matrix, buffer, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, Direction.EAST);
@@ -40,7 +45,7 @@ public class SkyTileRenderer implements BlockEntityRenderer<SkyTile> {
 		renderFace(entity, matrix, buffer, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, Direction.UP);
 	}
 
-	private void renderFace(SkyTile entity, Matrix4f matrix, VertexConsumer buffer, float f, float g, float h, float i,
+	private void renderFace(T entity, Matrix4f matrix, VertexConsumer buffer, float f, float g, float h, float i,
 			float j, float k, float l, float m, Direction direction) {
 		if (entity.shouldRenderFace(direction)) {
 			buffer.vertex(matrix, f, h, j).endVertex();
