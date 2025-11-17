@@ -26,7 +26,7 @@ public class UICategoryRegistry {
 			LocationUICategory::new);
 
 	public static final RegistryObject<UICategory> EXTERIOR_DIAGNOSTIC_READOUT = UI_CATEGORIES.register("exterior_diagnostic_readout",
-			LocationUICategory::new);
+			ExteriorStatsUICategory::new);
 
 	public static final RegistryObject<UICategory> FLIGHT_STATUS = UI_CATEGORIES.register("flight_status",
 			FlightStatusUICategory::new);
