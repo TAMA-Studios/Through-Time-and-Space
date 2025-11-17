@@ -7,12 +7,11 @@ import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.math.Axis;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 @Setter
 @Getter
@@ -54,6 +54,16 @@ public abstract class AbstractMonitorBlock extends HorizontalDirectionalBlock im
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
 			@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+		if(hand.equals(InteractionHand.OFF_HAND)) return InteractionResult.PASS;
+
+
+		if(player.getItemInHand(hand).getItem() instanceof DyeItem dye) {
+			if(world.getBlockEntity(pos) instanceof AbstractMonitorTile tile) {
+				tile.color = dye.getDyeColor();
+				player.getItemInHand(hand).shrink(1);
+				return InteractionResult.CONSUME;
+			}
+		}
 
 		// Get the coordinates the player clicked on the screen
 		Vec3 hitVec = hit.getLocation();

@@ -8,7 +8,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,7 @@ public class ProtocolData {
 			.group(SpaceTimeCoordinate.CODEC.fieldOf("ep1_destination").forGetter(ProtocolData::getEP1Destination))
 			.apply(instance, ProtocolData::new));
 
-	SpaceTimeCoordinate EP1Destination = new SpaceTimeCoordinate();
+	SpaceTimeCoordinate EP1Destination = new SpacProtocoleTimeCoordinate();
 
 	public void EP1(Player player, ITARDISLevel tardis) {
 		if (tardis.GetData().getOwnerUUID().equals(player.getUUID())) {

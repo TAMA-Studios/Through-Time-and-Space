@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
+import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
@@ -26,15 +23,15 @@ import com.code.tama.tts.server.items.blocks.ExteriorItem;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.items.tabs.Roundel;
+import com.code.tama.tts.server.registries.TTSBlockBuilder;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
-import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -49,7 +46,9 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -81,9 +80,6 @@ public class TTSBlocks {
 	@Roundel
 	public static final BlockEntry<Block> POLISHED_BLACKSTONE_ROUNDEL = SetupRoundel("polished_blackstone");
 
-	@Roundel
-	public static final BlockEntry<Block> CHROMIUM_ROUNDEL = SetupRoundel("chromium_block");
-
 	@MainTab
 	public static final BlockEntry<Block> CHROMIUM_BLOCK = registrate()
 			.block("chromium_block", Block::new).properties((properties) -> properties
@@ -93,17 +89,17 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL = Builder(
 			"decoration/structural_steel_brushed/structural_steel",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_WEATHERED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_weathered",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_RUSTED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_rusted",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel().register();
 
 	@MainTab
 	public static final BlockEntry<Block> BRUSHED_STEEL = Builder("brushed_steel", Block::new)
@@ -123,7 +119,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_GRATE_SLAB = Builder("carbon_steel_grate_slab",
-			SlabBlock::new)
+			SlabBlock::new).stateWithExistingModel()
 			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
 					.noOcclusion())
 			.simpleItem().register();
@@ -136,16 +132,15 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_SLAB = Builder("carbon_steel_slab", SlabBlock::new)
-			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
-					.noOcclusion())
-			.simpleItem().register();
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion())
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<TrapDoorBlock> CARBON_STEEL_TRAPDOOR = Builder("carbon_steel_trapdoor",
 			(prop) -> new TrapDoorBlock(prop, BlockSetType.IRON))
 			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL))
-			.simpleItem().defaultBlockstate().register();
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
@@ -485,12 +480,12 @@ public class TTSBlocks {
 	}
 
 	/** Registers a block */
-	public static BlockBuilder<Block, Registrate> Builder(String name, Block block) {
+	public static BlockBuilder<Block, TTSRegistrate> Builder(String name, Block block) {
 		return registrate().block(name, (properties) -> block);
 	}
 
-	public static <T extends Block> BlockBuilder<T, Registrate> Builder(String name,
-			NonNullFunction<BlockBehaviour.Properties, T> block) {
+	public static <T extends Block> TTSBlockBuilder<T, TTSRegistrate> Builder(String name,
+																			  NonNullFunction<BlockBehaviour.Properties, T> block) {
 		return registrate().block(name, block);
 	}
 

@@ -1,13 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
+import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
@@ -16,6 +12,7 @@ import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.loots.TTSLootModifiers;
 import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.registries.forge.*;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
@@ -26,10 +23,8 @@ import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
-import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import org.apache.logging.log4j.Logger;
-
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,23 +36,30 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.Logger;
 
-import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
-import com.code.tama.triggerapi.helpers.FileHelper;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
 @SuppressWarnings("removal")
 public class TTSMod {
 	public static final String MODID = "tts";
-	private static final Registrate REGISTRATE = Registrate.create(MODID);
+	private static final TTSRegistrate REGISTRATE = TTSRegistrate.create(MODID);
 
 	public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
 	public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
 	// Define mod id in a common place for everything to reference
 	public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
 	public static TriggerAPI triggerAPI;
+	private RegistryEntry<Item> item;
 
 	public TTSMod() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -81,9 +83,9 @@ public class TTSMod {
 		FileHelper.createStoredFile("last_time_launched",
 				LocalDateTime.now().format(DATE_FORMAT_FILE) + " - " + LocalDateTime.now().format(DATE_FORMAT_FOLDER));
 
-		// Register Blocks, Items, Dimensions etc...
+		// Registration!
 
-		registrates();
+		registrates(modEventBus);
 
 		SonicModeRegistry.register(modEventBus);
 		ControlsRegistry.register(modEventBus);
@@ -106,18 +108,29 @@ public class TTSMod {
 		ModCompat.Run();
 	}
 
-	private void registrates() {
+	private void registrates(IEventBus modEventBus) {
+		REGISTRATE.registerEventListeners(modEventBus);
+
 		TTSBlocks.register();
 		TTSTileEntities.register();
 		TTSItems.register();
 	}
 
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
+		Class<TTSItems> clazz = TTSItems.class;
+		Arrays.stream(clazz.getFields()).toList().forEach(f -> {
+
+        });
+
 		for (RegistryEntry<Item> item : TTSItems.AllValues()) {
-			if (AnnotationUtils.hasAnnotation(DimensionalTab.class, item)) {
-				if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
-					event.accept(item);
-			}
+				try {
+					Field f = Arrays.stream(clazz.getFields()).filter(p -> p == item.getClass().getDeclaredField(BuiltInRegistries.ITEM.getKey(item.get()).toString())).limit(1)[0];
+					if (AnnotationUtils.hasAnnotation(f, DimensionalTab.class))
+						if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
+							event.accept(item);
+				}
+				catch(NoSuchFieldException e) { e.printStackTrace(); }
+
 			if (AnnotationUtils.hasAnnotation(MainTab.class, item)) {
 				if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
 					event.accept(item);
@@ -131,7 +144,7 @@ public class TTSMod {
 		});
 	}
 
-	public static Registrate registrate() {
+	public static TTSRegistrate registrate() {
 		return REGISTRATE;
 	}
 }

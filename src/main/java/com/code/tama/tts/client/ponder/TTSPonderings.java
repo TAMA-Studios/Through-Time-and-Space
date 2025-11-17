@@ -1,83 +1,27 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.ponder;
 
-import net.createmod.ponder.api.element.ElementLink;
-import net.createmod.ponder.api.element.WorldSectionElement;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
-
+import net.createmod.ponder.foundation.instruction.RotateSceneInstruction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.Vec3;
 
 public class TTSPonderings {
-	public static void sticker(SceneBuilder scene, SceneBuildingUtil util) {
-		// CreateSceneBuilder scene = new CreateSceneBuilder(builder);
-		scene.title("sticker", "Attaching blocks using the Sticker");
+	public static void base(SceneBuilder scene, SceneBuildingUtil util) {
+		scene.title("console", "Configuring the Console");
 		scene.configureBasePlate(0, 0, 5);
 		scene.showBasePlate();
 		scene.idle(5);
 
-		Selection redstone = util.select().fromTo(0, 2, 2, 2, 2, 2);
-		BlockPos stickerPos = util.grid().at(2, 2, 2);
-		Selection stickerSelect = util.select().position(stickerPos);
-		BlockPos buttonPos = util.grid().at(0, 2, 2);
-		BlockPos bearingPos = util.grid().at(2, 1, 2);
+		BlockPos consolePos = util.grid().at(3, 3, 3);
 
-		scene.world().showSection(util.select().fromTo(2, 1, 2, 0, 2, 2).substract(stickerSelect), Direction.DOWN);
 		scene.idle(10);
-		ElementLink<WorldSectionElement> sticker = scene.world().showIndependentSection(stickerSelect, Direction.DOWN);
-		scene.idle(10);
-		ElementLink<WorldSectionElement> plank = scene.world().showIndependentSection(util.select().position(2, 2, 1),
-				Direction.SOUTH);
-		scene.world().configureCenterOfRotation(sticker, util.vector().centerOf(stickerPos));
-		scene.world().configureCenterOfRotation(plank, util.vector().centerOf(stickerPos));
-		scene.overlay().showText(60).text("Stickers are ideal for Redstone-controlled block attachment")
-				.attachKeyFrame().pointAt(util.vector().blockSurface(stickerPos, Direction.WEST)).placeNearTarget();
-		scene.idle(70);
-
-		scene.world().toggleRedstonePower(redstone);
-		// scene.world().modifyBlock(stickerPos, s -> s.setValue(StickerBlock.EXTENDED,
-		// true), false);
-		scene.effects().indicateRedstone(buttonPos);
-		// scene.world().modifyBlockEntityNBT(stickerSelect, StickerBlockEntity.class,
-		// nbt -> {
-		// });
-		scene.idle(20);
-
-		scene.world().toggleRedstonePower(redstone);
-		scene.idle(20);
-
-		scene.overlay().showText(60).text("Upon receiving a signal, it will toggle its state")
-				.pointAt(util.vector().blockSurface(stickerPos, Direction.WEST)).placeNearTarget();
-		scene.idle(70);
-
-		// scene.world().rotateBearing(bearingPos, 180 * 3, 80);
-		scene.world().rotateSection(sticker, 0, 180 * 3, 0, 80);
-		scene.world().rotateSection(plank, 0, 180 * 3, 0, 80);
-		scene.overlay().showText(70).text("If it is now moved in a contraption, the block will move with it")
-				.pointAt(util.vector().topOf(stickerPos)).placeNearTarget();
-		scene.idle(90);
-		scene.addKeyframe();
-
-		scene.world().toggleRedstonePower(redstone);
-		// scene.world().modifyBlock(stickerPos, s -> s.setValue(StickerBlock.EXTENDED,
-		// false), false);
-		scene.effects().indicateRedstone(buttonPos);
-		// scene.world().modifyBlockEntityNBT(stickerSelect, StickerBlockEntity.class,
-		// nbt -> {
-		// });
-		scene.idle(20);
-
-		scene.world().toggleRedstonePower(redstone);
-		scene.idle(20);
-
-		scene.overlay().showText(60).text("Toggled once again, the block is no longer attached")
-				.pointAt(util.vector().blockSurface(stickerPos, Direction.WEST)).placeNearTarget();
-		scene.idle(70);
-
-		// scene.world().rotateBearing(bearingPos, 180 * 3, 80);
-		scene.world().rotateSection(sticker, 0, 180 * 3, 0, 80);
+		scene.overlay().showText(60).text("Consoles are the main way of piloting and controlling the TARDIS")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
 	}
 
 	public static void console(SceneBuilder scene, SceneBuildingUtil util) {
@@ -87,17 +31,9 @@ public class TTSPonderings {
 		scene.showBasePlate();
 		scene.idle(5);
 
-		BlockPos consolePos = util.grid().at(2, 2, 2);
-		Selection stickerSelect = util.select().position(consolePos);
+		BlockPos consolePos = util.grid().at(3, 3, 3);
 
-		scene.world().showSection(util.select().fromTo(2, 1, 2, 0, 2, 2).substract(stickerSelect), Direction.DOWN);
 		scene.idle(10);
-		ElementLink<WorldSectionElement> sticker = scene.world().showIndependentSection(stickerSelect, Direction.DOWN);
-		scene.idle(10);
-		ElementLink<WorldSectionElement> plank = scene.world().showIndependentSection(util.select().position(2, 2, 1),
-				Direction.SOUTH);
-		scene.world().configureCenterOfRotation(sticker, util.vector().centerOf(consolePos));
-		scene.world().configureCenterOfRotation(plank, util.vector().centerOf(consolePos));
 		scene.overlay().showText(60).text("Consoles are the main way of piloting and controlling the TARDIS")
 				.attachKeyFrame().pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
 		scene.idle(20);
@@ -106,20 +42,117 @@ public class TTSPonderings {
 				.pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
 
 		scene.idle(70);
+	}
 
-		// scene.world().rotateBearing(bearingPos, 180 * 3, 80);
-		scene.world().rotateSection(sticker, 0, 180 * 3, 0, 80);
-		scene.world().rotateSection(plank, 0, 180 * 3, 0, 80);
-		scene.overlay().showText(70).text("If it is now moved in a contraption, the block will move with it")
-				.pointAt(util.vector().topOf(consolePos)).placeNearTarget();
-		scene.idle(90);
+	public static void dematCircuit(SceneBuilder scene, SceneBuildingUtil util) {
+		scene.title("demat_circuit", "Dematerialization Circuit");
+		scene.configureBasePlate(0, 0, 5);
+		scene.showBasePlate();
+		scene.idle(5);
+
+		BlockPos corePos = util.grid().at(3, 3, 3);
+
+		scene.idle(10);
+		scene.overlay().showText(60).text("The Dematerialization Circuit is essential to the flight of the TARDIS")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+		scene.idle(20);
+
+		scene.overlay().showText(60).text("").pointAt(util.vector().blockSurface(corePos, Direction.WEST))
+				.placeNearTarget();
+
+		scene.idle(70);
+	}
+
+	public static void netherCore(SceneBuilder scene, SceneBuildingUtil util) {
+		scene.title("nether_reactor", "Nether Reactor Core");
+		scene.configureBasePlate(0, 0, 5);
+		scene.showBasePlate();
+		scene.idle(10);
+
+		BlockPos corePos = util.grid().at(2, 2, 2);
+
+		Selection bottomLayer = util.select().fromTo(1, 1, 1, 3, 1, 3);
+
+		Selection midLayer = util.select().fromTo(1, 2, 1, 3, 2, 3);
+
+		Selection topLayer = util.select().fromTo(1, 3, 1, 3, 3, 3);
+
+		scene.world().showSection(bottomLayer, Direction.WEST);
+
+		scene.idle(10);
+
+		scene.world().showSection(midLayer, Direction.EAST);
+
+		scene.idle(10);
+
+		scene.world().showSection(topLayer, Direction.WEST);
+
+		scene.idle(10);
+		scene.overlay().showText(60)
+				.text("The Nether Reactor Core is essential for the TARDISes inter-dimensional travel capabilities")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
+		scene.idle(60);
+
 		scene.addKeyframe();
 
-		scene.overlay().showText(60).text("Toggled once again, the block is no longer attached")
-				.pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
-		scene.idle(70);
+		scene.addInstruction(new RotateSceneInstruction(-90, 0, false));
 
-		// scene.world().rotateBearing(bearingPos, 180 * 3, 80);
-		scene.world().rotateSection(sticker, 0, 180 * 3, 0, 80);
+		scene.world().moveSection(scene.world().makeSectionIndependent(bottomLayer), Vec3.ZERO.add(4, 0, 0), 10);
+
+		scene.world().moveSection(scene.world().makeSectionIndependent(topLayer), Vec3.ZERO.add(-4, 0, 0), 10);
+
+		scene.idle(20);
+
+		scene.overlay().showText(40).text("The Nether Reactor Core is assembled like so").attachKeyFrame()
+				.pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
+		scene.idle(40);
+
+		scene.world()
+				.hideSection(scene.getScene().getSceneBuildingUtil().select().cuboid(
+						new BlockPos(scene.getScene().getBasePlateOffsetX(), 0, scene.getScene().getBasePlateOffsetZ()),
+						new Vec3i(scene.getScene().getBasePlateSize() - 1, 0, scene.getScene().getBasePlateSize() - 1)),
+						Direction.NORTH);
+
+		scene.overlay().showText(40).text("Bottom Layer").attachKeyFrame()
+				.pointAt(util.vector().blockSurface(corePos.relative(Direction.WEST, 4).north(), Direction.WEST))
+				.placeNearTarget();
+
+		scene.overlay().showText(40).text("Middle Layer").attachKeyFrame()
+				.pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
+		scene.overlay().showText(40).text("Top Layer").attachKeyFrame()
+				.pointAt(util.vector().blockSurface(corePos.relative(Direction.EAST, 4).south(), Direction.WEST))
+				.placeNearTarget();
+
+		scene.idle(50);
+	}
+
+	public static void engineInterface(SceneBuilder scene, SceneBuildingUtil util) {
+		scene.title("engine_interface", "TARDIS Remote Engine Interface");
+		scene.configureBasePlate(0, 0, 5);
+		scene.showBasePlate();
+
+		BlockPos corePos = util.grid().at(2, 1, 2);
+		Selection links = util.select().fromTo(0, 1, 1, 5, 1, 0);
+		Selection coreSelect = util.select().position(corePos);
+
+		scene.world().showSection(coreSelect, Direction.DOWN);
+
+		scene.idle(10);
+
+		scene.overlay().showText(60)
+				.text("The TARDIS Remote Engine Interface is required to connect subsystems to the TARDIS engines")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
+		scene.idle(60);
+
+		scene.world().showSection(links, Direction.DOWN);
+
+		scene.overlay().showText(60).text("Subsystems are connected to the Interface via the use of Fragment Links")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
+		scene.idle(10);
 	}
 }

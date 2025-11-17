@@ -7,31 +7,36 @@ import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+@Slf4j
 @Getter
 @Setter
 public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	public int categoryID = 1;
 	public boolean powered = false;
+	public DyeColor color;
 
 	public AbstractMonitorTile(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 		super(p_155228_, p_155229_, p_155230_);
+		this.color = DyeColor.WHITE;
 	}
 
 	@Override
 	protected void saveAdditional(CompoundTag tag) {
 		tag.putBoolean("powered", isPowered());
 		tag.putInt("categoryID", getCategoryID());
+		tag.putInt("dye", this.color.getId());
 		super.saveAdditional(tag);
 	}
 
@@ -47,15 +52,13 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	@Override
 	public @NotNull CompoundTag getUpdateTag() {
 		CompoundTag tag = super.getUpdateTag();
-		tag.putBoolean("powered", powered);
-		tag.putInt("categoryID", categoryID);
+		saveAdditional(tag);
 		return tag;
 	}
 
 	@Override
 	public void handleUpdateTag(CompoundTag tag) {
-		setPowered(tag.getBoolean("powered"));
-		setCategoryID(tag.getInt("categoryID"));
+		load(tag);
 		super.handleUpdateTag(tag);
 	}
 
@@ -63,6 +66,7 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	public void load(CompoundTag tag) {
 		setPowered(tag.getBoolean("powered"));
 		setCategoryID(tag.getInt("categoryID"));
+		this.color = DyeColor.byId(tag.getInt("dye"));
 		super.load(tag);
 	}
 

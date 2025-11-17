@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.io.IOException;
-
 import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
 import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.HudolinConsoleModel;
@@ -23,9 +19,6 @@ import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.createmod.ponder.foundation.PonderIndex;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -39,6 +32,12 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+
+import java.io.IOException;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
@@ -48,7 +47,7 @@ public class ClientSetup {
 					// key
 					KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
 					GLFW.GLFW_KEY_C, // Default key is C
-					"key.categories.tts.main" // Mapping will be in the misc category
+					"key.categories.tts.main" // Mapping will be in the main tts category
 			));
 
 	@SuppressWarnings("deprecation")

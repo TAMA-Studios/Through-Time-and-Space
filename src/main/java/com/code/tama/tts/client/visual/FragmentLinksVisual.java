@@ -1,10 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.visual;
 
-import java.util.function.Consumer;
-
 import com.code.tama.tts.client.TTSPartialModels;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import dev.engine_room.flywheel.api.instance.Instance;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.instance.InstanceTypes;
@@ -13,9 +11,11 @@ import dev.engine_room.flywheel.lib.model.Models;
 import dev.engine_room.flywheel.lib.visual.AbstractBlockEntityVisual;
 import org.jetbrains.annotations.Nullable;
 
-public class ExteriorVisual extends AbstractBlockEntityVisual<ExteriorTile> {
+import java.util.function.Consumer;
+
+public class FragmentLinksVisual extends AbstractBlockEntityVisual<FragmentLinksTile> {
 	private final TransformedInstance model;
-	public ExteriorVisual(VisualizationContext ctx, ExteriorTile blockEntity, float partialTick) {
+	public FragmentLinksVisual(VisualizationContext ctx, FragmentLinksTile blockEntity, float partialTick) {
 		super(ctx, blockEntity, partialTick);
 
 		// PartialModel blazeModel = BlazeBurnerRenderer.getBlazeModel(heatLevel,
@@ -39,7 +39,6 @@ public class ExteriorVisual extends AbstractBlockEntityVisual<ExteriorTile> {
 
 	@Override
 	protected void _delete() {
-		this.delete();
+		model.delete();
 	}
-
 }

@@ -1,17 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
+import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
+import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
+import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
-import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -20,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import static com.code.tama.tts.TTSMod.registrate;
 
+@SuppressWarnings("unchecked")
 public class TTSTileEntities {
 
 	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
@@ -53,21 +59,23 @@ public class TTSTileEntities {
 
 	public static final BlockEntityEntry<HudolinConsoleTile> HUDOLIN_CONSOLE_TILE = registrate()
 			.blockEntity("hudolin_console_tile", HudolinConsoleTile::new).validBlocks(TTSBlocks.HUDOLIN_CONSOLE_BLOCK)
-			.renderer(() -> HudolinConsoleRenderer::new)
-			.register();
+			.renderer(() -> HudolinConsoleRenderer::new).register();
 
 	public static final BlockEntityEntry<NESSConsoleTile> NESS_CONSOLE_TILE = registrate()
 			.blockEntity("ness_console_tile", NESSConsoleTile::new).validBlocks(TTSBlocks.NESS_CONSOLE_BLOCK)
-			.register();
+			.renderer(() -> NESSConsoleRenderer::new).register();
 
 	public static final BlockEntityEntry<MonitorTile> MONITOR_TILE = registrate()
-			.blockEntity("monitor_tile", MonitorTile::new).validBlocks(TTSBlocks.MONITOR_BLOCK).register();
+			.blockEntity("monitor_tile", MonitorTile::new).validBlocks(TTSBlocks.MONITOR_BLOCK)
+			.renderer(() -> MonitorRenderer::new).register();
 
 	public static final BlockEntityEntry<CRTMonitorTile> CRT_MONITOR_TILE = registrate()
-			.blockEntity("crt_monitor_tile", CRTMonitorTile::new).validBlocks(TTSBlocks.CRT_MONITOR_BLOCK).register();
+			.blockEntity("crt_monitor_tile", CRTMonitorTile::new).validBlocks(TTSBlocks.CRT_MONITOR_BLOCK)
+			.renderer(() -> CRTMonitorRenderer::new).register();
 
 	public static final BlockEntityEntry<MonitorPanelTile> MONITOR_PANEL_TILE = registrate()
-			.blockEntity("monitor_panel_tile", MonitorPanelTile::new).validBlocks(TTSBlocks.MONITOR_PANEL).register();
+			.blockEntity("monitor_panel_tile", MonitorPanelTile::new).validBlocks(TTSBlocks.MONITOR_PANEL)
+			.renderer(() -> MonitorPanelRenderer::new).register();
 
 	public static final BlockEntityEntry<FragmentLinksTile> FRAGMENT_LINKS_TILE = registrate()
 			.blockEntity("fragment_links_tile", FragmentLinksTile::new).validBlocks(TTSBlocks.FRAGMENT_LINKS)
@@ -89,8 +97,9 @@ public class TTSTileEntities {
 			(t, p, e) -> new SkyTile(SkyTile.SkyType.Void, t, p, e), TTSBlocks.VOID_BLOCK)
 			.renderer(() -> (context) -> new SkyTileRenderer(context)).register();
 
-	public static final BlockEntityEntry<CompressedMultiblockTile> COMPRESSED_MULTIBLOCK_TILE = registerTile(
-			"compressed_multiblock_tile", CompressedMultiblockTile::new, TTSBlocks.COMPRESSED_MULTIBLOCK);
+	public static final BlockEntityEntry<BlockEntity> COMPRESSED_MULTIBLOCK_TILE = builder("compressed_multiblock_tile",
+			CompressedMultiblockTile::new, TTSBlocks.COMPRESSED_MULTIBLOCK)
+			.renderer(() -> (ctx) -> new CompressedMultiblockRenderer(ctx)).register();
 
 	public static final BlockEntityEntry<WorkbenchTile> WORKBENCH_TILE = registrate()
 			.blockEntity("celestial_workbench", WorkbenchTile::new).validBlocks(TTSBlocks.TEMPORAL_FABRICATOR)
@@ -103,8 +112,8 @@ public class TTSTileEntities {
 	}
 
 	@SafeVarargs
-	public static <P extends Block, T extends BlockEntity> BlockEntityBuilder<T, Registrate> builder(String name,
-			BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
+	public static <P extends Block, T extends BlockEntity> BlockEntityBuilder<T, TTSRegistrate> builder(String name,
+																										BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
 		return registrate().blockEntity(name, factory).validBlocks(blocks);
 	}
 

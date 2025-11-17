@@ -1,24 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
-import com.tterrag.registrate.Registrate;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {
@@ -40,7 +39,9 @@ public class TTSItems {
 
 	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
 
-	public static final ItemEntry<Item> ZEITON;
+	public static final ItemEntry<Item> ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
+
+	public static final ItemEntry<Item> TWINE_SPOOL = registrate().item("gadgets/twine_spool", Item::new).defaultModel().defaultLang().register();
 
 	public static final ItemEntry<Item> PLASMIC_SHELL_PLATING;
 
@@ -51,7 +52,6 @@ public class TTSItems {
 	public static final ItemEntry<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
 
 	static {
-		ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
 
@@ -96,8 +96,8 @@ public class TTSItems {
 		return registrate().item(name, item).register();
 	}
 
-	public static <T extends Item> ItemBuilder<T, Registrate> Builder(String name, T item) {
-		return registrate().item(name, (prop) -> item);
+	public static <T extends Item> ItemBuilder<T, TTSRegistrate> Builder(String name, T item) {
+		return registrate().item(name, (NonNullFunction<Item.Properties, T>) (prop) -> item);
 	}
 
 	public static List<RegistryEntry<Item>> AllValues() {

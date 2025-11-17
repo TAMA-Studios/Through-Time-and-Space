@@ -13,5 +13,14 @@ public class AllTTSPonders {
 		PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
 		HELPER.forComponents(TTSBlocks.HUDOLIN_CONSOLE_BLOCK).addStoryBoard("gadgets/console", TTSPonderings::console);
+
+		HELPER.forComponents(TTSBlocks.TARDIS_ENGINE_INTERFACE).addStoryBoard("gadgets/engine_interface",
+				TTSPonderings::engineInterface);
+
+		HELPER.forComponents(TTSBlocks.DEMATERIALIZATION_CIRCUIT_CORE)
+				.addStoryBoard("subsystems/dematerialization_circuit", TTSPonderings::dematCircuit);
+
+		HELPER.forComponents(TTSBlocks.NETHER_REACTOR_CORE).addStoryBoard("subsystems/nether_reactor_core",
+				TTSPonderings::netherCore);
 	}
 }
