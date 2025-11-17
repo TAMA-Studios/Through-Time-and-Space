@@ -124,7 +124,7 @@ public class TTSMod {
 
 		for (RegistryEntry<Item> item : TTSItems.AllValues()) {
 				try {
-					Field f = Arrays.stream(clazz.getFields()).filter(p -> p == item.getClass().getDeclaredField(BuiltInRegistries.ITEM.getKey(item.get()).toString())).limit(1)[0];
+					Field f = Arrays.stream(clazz.getFields()).filter(p -> p == item.getClass().getDeclaredField(BuiltInRegistries.ITEM.getKey(item.get()).toString())).limit(1).toList().get(0);
 					if (AnnotationUtils.hasAnnotation(f, DimensionalTab.class))
 						if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
 							event.accept(item);
