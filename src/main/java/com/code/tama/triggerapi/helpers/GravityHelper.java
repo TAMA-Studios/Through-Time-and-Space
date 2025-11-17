@@ -1,17 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-
-import com.code.tama.triggerapi.data.holders.DataDimGravity;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
 
 public class GravityHelper {
 	public static List<DataDimGravity> DIMENSIONS = new ArrayList<>();
@@ -22,20 +22,15 @@ public class GravityHelper {
 	 * 0.08F TODO: Datapack gravity values, take the dimension RL and a float mavity
 	 */
 	public static float getGravity(Level level) {
-		// if (level.dimension().location().getPath().contains("moon")) { // moon
-		// return -0.02F;
-		// }
-		// if (level.dimension().location().getPath().contains("heavyworld")) {
-		// return 0.15F;
-		// }
-
-		// vanilla gravity is supposedly 0.08 idfk tho
-
 		if (GetTARDISCap(level) != null) {
 			return GetTARDISCap(level).GetData().getGravityLevel();
 		}
 
 		return MAP.getOrDefault(level.dimension().location(), 0.08F);
+	}
+
+	public static float getGravity(ResourceKey<Level> level) {
+		return MAP.getOrDefault(level.location(), 0.08F);
 	}
 
 	public static void setMap(List<DataDimGravity> list) {

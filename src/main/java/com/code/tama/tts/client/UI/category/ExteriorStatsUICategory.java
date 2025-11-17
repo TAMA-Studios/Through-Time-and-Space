@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import com.code.tama.triggerapi.helpers.GravityHelper;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,8 +10,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Locale;
 
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
@@ -31,9 +30,7 @@ public class ExteriorStatsUICategory extends UICategory {
 			RenderSystem.disableDepthTest();
 
 			Component line1 = Component
-					.literal(cap.GetCurrentLevel().location().getPath().substring(0, 1).toUpperCase(Locale.ROOT)
-							+ cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " "))
-					.setStyle(style(monitor));
+					.literal("Mavity" + GravityHelper.getGravity(cap.GetCurrentLevel()));
 
 			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
 
