@@ -49,7 +49,6 @@ import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
-@SuppressWarnings("removal")
 public class TTSMod {
 	public static final String MODID = "tts";
 	private static final TTSRegistrate REGISTRATE = TTSRegistrate.create(MODID);
@@ -59,7 +58,6 @@ public class TTSMod {
 	// Define mod id in a common place for everything to reference
 	public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
 	public static TriggerAPI triggerAPI;
-	private RegistryEntry<Item> item;
 
 	public TTSMod() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
