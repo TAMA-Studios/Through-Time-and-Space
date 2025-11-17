@@ -29,8 +29,6 @@ public class ExteriorStatsUICategory extends UICategory {
 
 			RenderSystem.disableDepthTest();
 
-			Component line1 = Component
-					.literal("Mavity" + GravityHelper.getGravity(cap.GetCurrentLevel()));
 
 			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
 
@@ -40,7 +38,8 @@ public class ExteriorStatsUICategory extends UICategory {
 			fontRenderer.drawInBatch(Component.literal("Location").withStyle(style(monitor)), -22.5f, 15, color(monitor), false,
 					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(line1, -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch(Component
+					.literal("Mavity " + GravityHelper.getGravity(cap.GetCurrentLevel())), -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 
 			fontRenderer.drawInBatch(line2, -40, 35, color(monitor), false, poseStack.last().pose(), bufferSource,
