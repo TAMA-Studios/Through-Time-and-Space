@@ -1,17 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
-
-import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -25,8 +19,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class AbstractConsoleTile extends BlockEntity {
 
@@ -44,7 +42,7 @@ public class AbstractConsoleTile extends BlockEntity {
 
 	public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
 		if (blockEntity instanceof AbstractConsoleTile tile) {
-			level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+			TARDISLevelCapability.GetTARDISCapSupplier(level).ifPresent(cap -> {
 				if (level.isClientSide)
 					tile.GetRotorAnimation().animateWhen(cap.GetFlightData().isPlayRotorAnimation(),
 							(int) level.getGameTime());

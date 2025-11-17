@@ -1,19 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
-import java.util.function.Supplier;
-
-import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.TARDISData;
 import com.code.tama.tts.server.data.tardis.TARDISFlightData;
 import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
 
 /** Used to sync the TARDIS Cap data between the server and the client */
 public class SyncTARDISCapPacketS2C {
@@ -84,7 +83,7 @@ public class SyncTARDISCapPacketS2C {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
 			if (Minecraft.getInstance().level != null) {
-				Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+				GetClientTARDISCapSupplier().ifPresent(cap -> {
 					switch (packet.toUpdate) {
 						case DataUpdateValues.DATA, DataUpdateValues.RENDERING : {
 							cap.setData(packet.data);

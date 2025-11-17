@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,5 +35,13 @@ public class UICategory {
 
 	public static Style style(AbstractMonitorTile tile) {
 		return Style.EMPTY.withColor(tile.color.getTextColor()).withFont(font(tile));
+	}
+
+	public static int color(AbstractMonitorTile tile) {
+		return style(tile).getColor().getValue();
+	}
+
+	public static MutableComponent osVer(AbstractMonitorTile tile) {
+		return OS_VER.copy().withStyle(style(tile));
 	}
 }

@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
-import java.util.function.Supplier;
-
-import com.code.tama.tts.server.capabilities.Capabilities;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
 
 /** Used to sync the light level between the server and the client */
 public class SyncCapLightLevelPacketS2C {
@@ -29,7 +29,7 @@ public class SyncCapLightLevelPacketS2C {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
 			if (Minecraft.getInstance().level != null) {
-				Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+				GetClientTARDISCapSupplier()
 						.ifPresent(cap -> cap.GetData().SetLightLevel(packet.level));
 			}
 		});

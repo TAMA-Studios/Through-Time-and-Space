@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.tileentities.monitors;
 
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.Getter;
@@ -18,6 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Slf4j
 @Getter
@@ -73,7 +74,7 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	@Override
 	public void onLoad() {
 		assert this.getLevel() != null;
-		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+		GetTARDISCapSupplier(this.getLevel())
 				.ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 		super.onLoad();
 	}

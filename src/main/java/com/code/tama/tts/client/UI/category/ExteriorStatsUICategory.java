@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Locale;
@@ -29,29 +28,25 @@ public class ExteriorStatsUICategory extends UICategory {
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			Font fontRenderer = Minecraft.getInstance().font;
 
-			int white = 0xFFFFFF;
-
 			RenderSystem.disableDepthTest();
-
-			Style STYLE = style(monitor);
 
 			Component line1 = Component
 					.literal(cap.GetCurrentLevel().location().getPath().substring(0, 1).toUpperCase(Locale.ROOT)
 							+ cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " "))
-					.setStyle(STYLE);
+					.setStyle(style(monitor));
 
 			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
 
-			fontRenderer.drawInBatch(OS_VER.copy().setStyle(STYLE), -40, 5, white, false, poseStack.last().pose(),
+			fontRenderer.drawInBatch(OS_VER.copy().setStyle(style(monitor)), -40, 5, color(monitor), false, poseStack.last().pose(),
 					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(Component.literal("Location").withStyle(STYLE), -22.5f, 15, white, false,
+			fontRenderer.drawInBatch(Component.literal("Location").withStyle(style(monitor)), -22.5f, 15, color(monitor), false,
 					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(line1, -40, 25, white, false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch(line1, -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(line2, -40, 35, white, false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch(line2, -40, 35, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 		});
 	}

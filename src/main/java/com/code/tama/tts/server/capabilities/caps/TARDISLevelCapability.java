@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -21,9 +18,6 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,8 +35,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
+import java.util.Objects;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	TARDISData data = new TARDISData(this);
@@ -421,6 +420,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	public static LazyOptional<ITARDISLevel> GetTARDISCapSupplier(Level level) {
 		return level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
+	}
+
+	public static LazyOptional<ITARDISLevel> GetTARDISCapSupplier(ResourceKey<Level> level) {
+		return ServerLifecycleHooks.getCurrentServer().getLevel(level).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
 	}
 
 	public static LazyOptional<ITARDISLevel> GetClientTARDISCapSupplier() {
