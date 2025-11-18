@@ -119,9 +119,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_GRATE_SLAB = Builder("carbon_steel_grate_slab",
-			SlabBlock::new).stateWithExistingModel()
-			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
-					.noOcclusion())
+			SlabBlock::new).simpleSlabStateAndModel()
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion())
 			.simpleItem().register();
 
 	@MainTab
@@ -133,147 +132,145 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_SLAB = Builder("carbon_steel_slab", SlabBlock::new)
 			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion())
-			.stateWithExistingModel().simpleItem().register();
+			.simpleSlabStateAndModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<TrapDoorBlock> CARBON_STEEL_TRAPDOOR = Builder("carbon_steel_trapdoor",
 			(prop) -> new TrapDoorBlock(prop, BlockSetType.IRON))
-			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL))
-			.stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
+			.simpleTrapdoor().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
-			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).defaultBlockstate()
-			.simpleItem().register();
+			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
-			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).defaultBlockstate().simpleItem()
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).airState().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
 			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
-			.properties(BlockBehaviour.Properties::noOcclusion).item(ExteriorItem::new).build().defaultBlockstate()
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = Builder(
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion)
-			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
-			.defaultBlockstate().simpleItem().register();
+			.airState().item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ConsoleBlock<NESSConsoleTile>> NESS_CONSOLE_BLOCK = Builder("ness_console_block",
 			p -> new ConsoleBlock<NESSConsoleTile>(p, TTSTileEntities.NESS_CONSOLE_TILE))
-			.properties(BlockBehaviour.Properties::noOcclusion)
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
 			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.NESS_CONSOLE_TILE, block, prop)).build()
-			.defaultBlockstate().simpleItem().register();
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
 			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL))
-			.properties(BlockBehaviour.Properties::noOcclusion).defaultBlockstate().simpleItem().register();
+			.controlPanelState().properties(BlockBehaviour.Properties::noOcclusion).simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
-			.properties(p -> p.noOcclusion().noCollission()).defaultBlockstate().simpleItem().register();
+			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<MonitorBlock> MONITOR_BLOCK = Builder("monitor_block", MonitorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
-			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).simpleItem().register();
+			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<MonitorPanel> MONITOR_PANEL = Builder("monitor_panel", MonitorPanel::new)
-			.properties(p -> p.strength(1f).sound(SoundType.GLASS)).simpleItem().register();
+			.properties(p -> p.strength(1f).sound(SoundType.GLASS)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<CoordinatePanelBlock> COORDINATE_PANEL = Builder("coordinate_panel",
-			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).defaultBlockstate()
+			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel()
 			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> BLUE_ROTOR = Builder("rotor/blue", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).defaultBlockstate().simpleItem()
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> AMETHYST_ROTOR = Builder("rotor/amethyst", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).defaultBlockstate().simpleItem()
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> COPPER_ROTOR = Builder("rotor/copper", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).defaultBlockstate().simpleItem()
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<LightPanel> LIGHT_PANEL = Builder("light_panel", LightPanel::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ARSPanel> ARS_PANEL = Builder("ars_panel", ARSPanel::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ThrottleBlock> THROTTLE = Builder("throttle", ThrottleBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ToyotaThrottleBlock> TOYOTA_THROTTLE = Builder("toyota_throttle",
-			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
-			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).simpleItem()
+			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<HartnellDoor> HARTNELL_DOOR = TTSBlocks
-			.Builder("hartnell_door", p -> new HartnellDoor(p, TTSTileEntities.HARTNELL_DOOR)).defaultBlockstate()
+			.Builder("hartnell_door", p -> new HartnellDoor(p, TTSTileEntities.HARTNELL_DOOR)).airState().defaultBlockstate()
 			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<WorkbenchBlock> TEMPORAL_FABRICATOR = TTSBlocks
-			.Builder("temporal_fabricator", WorkbenchBlock::new).defaultBlockstate().simpleItem().register();
+			.Builder("temporal_fabricator", WorkbenchBlock::new).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<FragmentLinksBlock> FRAGMENT_LINKS = Builder("fragment_links",
-			FragmentLinksBlock::new).defaultBlockstate().simpleItem().register();
+			FragmentLinksBlock::new).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DematerializationCircuitCoreBlock> DEMATERIALIZATION_CIRCUIT_CORE = Builder(
-			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).defaultBlockstate().simpleItem()
+			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel().simpleItem()
 			.register();
 
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",
-			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate()
+			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).stateWithExistingModel()
 			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
-			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate()
+			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).stateWithExistingModel()
 			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<EnginesBlock> TARDIS_ENGINES = Builder("tardis_engines", EnginesBlock::new)
-			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().simpleItem().register();
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
 
 	@MainTab
 	public static final BlockEntry<PortalBlock> PORTAL_BLOCK = Builder("portal_block", PortalBlock::new)
 			.properties(p -> p.mapColor(MapColor.COLOR_PURPLE).strength(5.0F).noOcclusion().lightLevel(state -> 10))
-			.defaultBlockstate().simpleItem().register();
+			.airState().simpleItem().register();
 
 	@DimensionalTab
 	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("organic/interior_rock", Block::new)

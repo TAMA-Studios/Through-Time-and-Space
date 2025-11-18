@@ -34,6 +34,43 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
         return this.blockstate(DataBlockStateProvider::existingModel);
     }
 
+    public TTSBlockBuilder<T, P> stateWithExistingModel(String path) {
+        return this.blockstate((ctx, provider) -> DataBlockStateProvider.existingModel(path, ctx, provider));
+    }
+
+    public TTSBlockBuilder<T, P> controlPanelState() {
+        return this.blockstate(DataBlockStateProvider::controlPanel);
+    }
+
+    public TTSBlockBuilder<T, P> airState() {
+        return this.blockstate(DataBlockStateProvider::air);
+    }
+
+
+    public TTSBlockBuilder<T, P> slabStateAndModel() {
+        try {
+            return this.blockstate(DataBlockStateProvider::slab);
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return this;
+    }
+
+    public TTSBlockBuilder<T, P> simpleSlabStateAndModel() {
+        try {
+            return this.blockstate(DataBlockStateProvider::simpleSlab);
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return this;
+    }
+
+    public TTSBlockBuilder<T, P> simpleTrapdoor() {
+        try {
+            return this.blockstate(DataBlockStateProvider::simpleTrapdoor);
+        }
+        catch (Exception e) {e.printStackTrace();}
+        return this;
+    }
+
     @Override
     public TTSBlockBuilder<T, P> properties(NonNullUnaryOperator<BlockBehaviour.Properties> func) {
         return (TTSBlockBuilder<T, P>) super.properties(func);
@@ -61,7 +98,14 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     @Override
     public TTSBlockBuilder<T, P> defaultBlockstate() {
-        return (TTSBlockBuilder<T, P>) super.defaultBlockstate();
+        try {
+            return (TTSBlockBuilder<T, P>) super.defaultBlockstate();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return this;
     }
 
     @Override

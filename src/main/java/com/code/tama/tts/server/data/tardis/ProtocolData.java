@@ -22,7 +22,7 @@ public class ProtocolData {
 			.group(SpaceTimeCoordinate.CODEC.fieldOf("ep1_destination").forGetter(ProtocolData::getEP1Destination))
 			.apply(instance, ProtocolData::new));
 
-	SpaceTimeCoordinate EP1Destination = new SpacProtocoleTimeCoordinate();
+	SpaceTimeCoordinate EP1Destination = new SpaceTimeCoordinate();
 
 	public void EP1(Player player, ITARDISLevel tardis) {
 		if (tardis.GetData().getOwnerUUID().equals(player.getUUID())) {
