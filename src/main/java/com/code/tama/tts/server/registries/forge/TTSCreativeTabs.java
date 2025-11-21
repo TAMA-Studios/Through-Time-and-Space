@@ -1,12 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSItems.AllValues;
-
+import com.code.tama.triggerapi.helpers.AnnotationUtils;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -14,7 +11,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.registries.forge.TTSItems.AllValues;
 
 public class TTSCreativeTabs {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister

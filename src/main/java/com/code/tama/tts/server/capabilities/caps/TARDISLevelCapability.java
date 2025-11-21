@@ -64,8 +64,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		CompoundTag tag = new CompoundTag();
 		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
 		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
-		tag.put("navigational_data",
-				TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
+		tag.put("navigational_data", TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
 
 		return tag;
 	}
@@ -73,8 +72,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		this.data = TARDISData.CODEC.parse(NbtOps.INSTANCE, nbt.get("data")).get().orThrow();
-		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get()
-				.orThrow();
+		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get().orThrow();
 		this.flightData = TARDISFlightData.CODEC.parse(NbtOps.INSTANCE, nbt.get("flight_data")).get().orThrow();
 
 		this.data.setTARDIS(this);

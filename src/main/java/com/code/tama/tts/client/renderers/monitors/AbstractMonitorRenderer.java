@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
@@ -13,9 +11,6 @@ import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,6 +21,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+
+import static com.code.tama.tts.client.UI.category.UICategory.RenderText;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
 	public final BlockEntityRendererProvider.Context context;
@@ -42,47 +42,54 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		if (monitor.getLevel() == null)
 			return;
 		int light = 0xf00f0;
-		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
-			poseStack.pushPose();
+//		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 
-			this.ApplyDefaultTransforms(poseStack, monitor);
+		boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
 
-			if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
-				UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
-					if (reg.get().getID() == monitor.getCategoryID()) {
-						this.category = reg.get();
-					}
-				});
-			}
-			if (monitor.isPowered())
+		poseStack.pushPose();
+
+		this.ApplyDefaultTransforms(poseStack, monitor);
+
+		if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+			UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
+				if (reg.get().getID() == monitor.getCategoryID()) {
+					this.category = reg.get();
+				}
+			});
+		}
+
+		if (monitor.isPowered()) {
+			if(isInTARDIS)
 				this.category.Render(monitor, poseStack, bufferSource, combinedLight);
+			else RenderText(monitor, "Not in a TARDIS!", poseStack, bufferSource, -40, 25);
+		}
 
-			poseStack.popPose();
-			poseStack.pushPose();
+		poseStack.popPose();
+		poseStack.pushPose();
 
-			this.ApplyDefaultTransforms(poseStack, monitor);
+		this.ApplyDefaultTransforms(poseStack, monitor);
 
-			renderUIComponents(monitor, poseStack, bufferSource, light);
+		renderUIComponents(monitor, poseStack, bufferSource, light);
 
-			poseStack.popPose();
-			poseStack.pushPose();
+		poseStack.popPose();
+		poseStack.pushPose();
 
-			this.ApplyDefaultTransforms(poseStack, monitor);
+		this.ApplyDefaultTransforms(poseStack, monitor);
 
-			renderRotatingImage(monitor, poseStack, bufferSource, light);
+		renderRotatingImage(monitor, poseStack, bufferSource, light);
 
-			poseStack.popPose();
+		poseStack.popPose();
 
-			poseStack.pushPose();
+		poseStack.pushPose();
 
-			this.ApplyDefaultTransforms(poseStack, monitor);
+		this.ApplyDefaultTransforms(poseStack, monitor);
 
-			renderBackground(monitor, poseStack, bufferSource, light);
+		renderBackground(monitor, poseStack, bufferSource, light);
 
-			poseStack.popPose();
+		poseStack.popPose();
 
-			RenderSystem.enableDepthTest();
-		});
+		RenderSystem.enableDepthTest();
+//		});
 	}
 
 	private void renderRotatingImage(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,

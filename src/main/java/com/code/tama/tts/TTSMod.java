@@ -2,7 +2,6 @@
 package com.code.tama.tts;
 
 import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
 import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
@@ -23,9 +22,10 @@ import com.code.tama.tts.server.worlds.TTSFeatures;
 import com.code.tama.tts.server.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -41,7 +41,6 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
 import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
@@ -115,27 +114,75 @@ public class TTSMod {
 	}
 
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
-		Class<TTSItems> clazz = TTSItems.class;
-		Arrays.stream(clazz.getFields()).toList().forEach(f -> {
 
-        });
-
-		for (RegistryEntry<Item> item : TTSItems.AllValues()) {
-					Field f = Arrays.stream(clazz.getFields()).filter(p -> {
-                        try {
-                            return p == item.getClass().getDeclaredField(BuiltInRegistries.ITEM.getKey(item.get()).toString());
-                        } catch (NoSuchFieldException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).limit(1).toList().get(0);
-					if (AnnotationUtils.hasAnnotation(f, DimensionalTab.class))
-						if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
-							event.accept(item);
+		if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey() || event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey()) {
 
 
-			if (AnnotationUtils.hasAnnotation(MainTab.class, item)) {
-				if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
-					event.accept(item);
+			// Check items
+			for (Field f : TTSItems.class.getFields()) {
+
+				// Check if the field type is ItemEntry<?>
+				if (ItemEntry.class.isAssignableFrom(f.getType())) {
+
+					try {
+						// Get the value of the field
+						Object value = f.get(null);
+
+						if (value instanceof ItemEntry<?> entry) {
+							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
+								if (f.isAnnotationPresent(DimensionalTab.class)) {
+									ItemStack stack = entry.get().getDefaultInstance();
+									stack.setCount(1);
+									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
+										event.accept(stack);
+								}
+
+							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
+								if (f.isAnnotationPresent(MainTab.class)) {
+									ItemStack stack = entry.get().getDefaultInstance();
+									stack.setCount(1);
+									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
+										event.accept(stack);
+								}
+						}
+
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+
+			// Now do blocks
+			for (Field f : TTSBlocks.class.getFields()) {
+
+				// Check if the field type is ItemEntry<?>
+				if (BlockEntry.class.isAssignableFrom(f.getType())) {
+
+					try {
+						// Get the value of the field
+						Object value = f.get(null);
+
+						if (value instanceof BlockEntry<?> entry) {
+							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
+								if (f.isAnnotationPresent(DimensionalTab.class)) {
+									ItemStack stack = entry.get().asItem().getDefaultInstance();
+									stack.setCount(1);
+									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
+										event.accept(stack);
+								}
+							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
+								if (f.isAnnotationPresent(MainTab.class)) {
+									ItemStack stack = entry.get().asItem().getDefaultInstance();
+									stack.setCount(1);
+									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
+										event.accept(stack);
+								}
+						}
+
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				}
 			}
 		}
 	}

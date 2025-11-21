@@ -4,6 +4,7 @@ package com.code.tama.tts.server.registries.forge;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
+import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -25,30 +26,43 @@ public class TTSItems {
 
 	// public static final ItemEntry<Item> NESS_CONSOLE_TILE;
 
+	@MainTab
 	public static final ItemEntry<Item> HUON_BOTTLE;
 
+	@MainTab
 	public static final ItemEntry<Item> RAW_ZEITON;
 
+	@MainTab
 	public static final ItemEntry<Item> BASIC_CONTROL_CIRCUIT;
 
+	@MainTab
 	public static final ItemEntry<Item> ADVANCED_CONTROL_CIRCUIT;
 
+	@MainTab
 	public static final ItemEntry<SonicItem> CORAL_SONIC;
 
+	@MainTab
 	public static final ItemEntry<SonicItem> COPPER_SONIC;
 
+	@MainTab
 	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
 
+	@MainTab
 	public static final ItemEntry<Item> ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
 
+	@MainTab
 	public static final ItemEntry<Item> TWINE_SPOOL = registrate().item("gadgets/twine_spool", Item::new).defaultModel().defaultLang().register();
 
+	@MainTab
 	public static final ItemEntry<Item> PLASMIC_SHELL_PLATING;
 
+	@MainTab
 	public static final ItemEntry<Item> STRUCTURAL_BEAMS;
 
+	@MainTab
 	public static final ItemEntry<Item> GROWTH_CAKE;
 
+	@MainTab
 	public static final ItemEntry<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
 
 	static {

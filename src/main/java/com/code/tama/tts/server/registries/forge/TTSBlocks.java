@@ -89,17 +89,17 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL = Builder(
 			"decoration/structural_steel_brushed/structural_steel",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_WEATHERED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_weathered",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_RUSTED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_rusted",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<Block> BRUSHED_STEEL = Builder("brushed_steel", Block::new)

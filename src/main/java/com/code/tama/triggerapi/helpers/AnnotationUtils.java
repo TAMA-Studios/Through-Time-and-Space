@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
+import com.code.tama.triggerapi.Logger;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import com.code.tama.triggerapi.Logger;
 
 public class AnnotationUtils {
 	public static boolean fieldHasAnnotation(Class<?> clazz, String fieldName,
@@ -25,22 +25,26 @@ public class AnnotationUtils {
 		return field.getAnnotation(annotationClass);
 	}
 
-	public static boolean hasAnnotation(Class<? extends Annotation> clazz, Object object) {
-		for (Field f : clazz.getDeclaredFields()) {
-			try {
-				Object TestField = f.get(Object.class);
+	public static boolean hasAnnotation(Class<? extends Annotation> annotation, Object instance) {
+		Class<?> objClass = instance.getClass();
 
-				if (TestField == object) {
-					if (f.isAnnotationPresent(clazz)) {
-						return true;
-					}
+		for (Field f : objClass.getDeclaredFields()) {
+			try {
+				f.setAccessible(true);
+				Object fieldValue = f.get(instance);
+
+				if (fieldValue == instance && f.isAnnotationPresent(annotation)) {
+					return true;
 				}
+
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
+
 		return false;
 	}
+
 
 	public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
 		if (clazz == null || annotationClass == null)
