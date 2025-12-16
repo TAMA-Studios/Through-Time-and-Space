@@ -1,18 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.Panels;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -40,6 +30,15 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @SuppressWarnings("deprecation")
 public class LightPanel extends HorizontalDirectionalBlock {
@@ -161,13 +160,13 @@ public class LightPanel extends HorizontalDirectionalBlock {
 		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MINUS :
-					tardisLevelCapability.GetData().SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
+					tardisLevelCapability.GetEnvironmentalData().SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case PLUS :
-					tardisLevelCapability.GetData().SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
+					tardisLevelCapability.GetEnvironmentalData().SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

@@ -2,6 +2,7 @@
 package com.code.tama.tts.client.UI.category;
 
 import com.code.tama.triggerapi.helpers.GravityHelper;
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -29,20 +30,20 @@ public class ExteriorStatsUICategory extends UICategory {
 
 			RenderSystem.disableDepthTest();
 
-
-			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
-
 			fontRenderer.drawInBatch(OS_VER.copy().setStyle(style(monitor)), -40, 5, color(monitor), false, poseStack.last().pose(),
 					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(Component.literal("Location").withStyle(style(monitor)), -22.5f, 15, color(monitor), false,
+			poseStack.pushPose();
+			poseStack.scale(0.2f, 0.2f, 0);
+			fontRenderer.drawInBatch(Component.literal("Exterior Environmental Display").withStyle(style(monitor)), -22.5f, 15, color(monitor), false,
 					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			poseStack.popPose();
 
 			fontRenderer.drawInBatch(Component
-					.literal("Mavity " + GravityHelper.getGravity(cap.GetCurrentLevel())), -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
+					.literal("Gravity " + GravityHelper.getGravity(cap.GetCurrentLevel())), -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(line2, -40, 35, color(monitor), false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch("Oxygen " + OxygenHelper.getO2(cap.GetCurrentLevel()), -40, 35, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 		});
 	}

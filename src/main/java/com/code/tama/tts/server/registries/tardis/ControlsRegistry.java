@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.server.tardis.controls.*;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +9,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -45,6 +44,13 @@ public class ControlsRegistry {
 
 	public static final RegistryObject<DimensionControl> DIMENSION_CYCLE = CONTROLS.register("dimension_cycle",
 			DimensionControl::new);
+
+	public static final RegistryObject<HelmicRegulatorControl> HELMIC_REGULATOR = CONTROLS.register("helmic_regulator",
+			HelmicRegulatorControl::new);
+
+	public static final RegistryObject<CoordinateLockControl> COORDINATE_LOCK = CONTROLS.register("coordinate_lock",
+			CoordinateLockControl::new);
+
 
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {

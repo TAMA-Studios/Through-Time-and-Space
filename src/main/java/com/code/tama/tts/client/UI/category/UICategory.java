@@ -2,7 +2,6 @@
 package com.code.tama.tts.client.UI.category;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.client.util.Fonts;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -37,7 +36,7 @@ public class UICategory {
 	}
 
 	public static ResourceLocation font(AbstractMonitorTile tile) {
-		return Fonts.DEFAULT;
+		return tile.FONT;
 	}
 
 	public static Style style(AbstractMonitorTile tile) {

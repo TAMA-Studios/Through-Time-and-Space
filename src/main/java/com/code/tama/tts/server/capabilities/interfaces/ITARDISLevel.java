@@ -1,19 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
-import com.code.tama.tts.server.data.tardis.TARDISClientData;
-import com.code.tama.tts.server.data.tardis.TARDISData;
-import com.code.tama.tts.server.data.tardis.TARDISFlightData;
-import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
+import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
@@ -84,6 +80,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	ResourceKey<Level> GetCurrentLevel();
 
 	TARDISData GetData();
+
+	TARDISEnvironmentalData GetEnvironmentalData();
 
 	ExteriorTile GetExteriorTile();
 

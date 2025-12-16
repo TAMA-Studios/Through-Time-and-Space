@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
@@ -13,16 +15,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockUtils {
 	public static void breakBlock(Level world, BlockPos pos) {
-		if (!world.isClientSide) {
-			world.destroyBlock(pos, true);
-		}
+		UniversalServerOnly.Level.breakBlock(world, pos);
 	}
 
 	public static BlockPos fromChunkAndLocal(ChunkPos chunkPos, BlockPos localPos) {
-		int worldX = (chunkPos.x << 4) + localPos.getX();
-		int worldY = localPos.getY();
-		int worldZ = (chunkPos.z << 4) + localPos.getZ();
-		return new BlockPos(worldX, worldY, worldZ);
+		return new BlockPos(
+				(chunkPos.x << 4) + UniversalCommon.Pos.x(localPos),
+				UniversalCommon.Pos.y(localPos),
+				(chunkPos.z << 4) + UniversalCommon.Pos.z(localPos));
 	}
 
 	public static float getDifferenceInHeight(BlockState from, BlockState to) {
@@ -59,8 +59,10 @@ public class BlockUtils {
 	}
 
 	public static BlockPos getRelativeBlockPos(BlockPos basePos, BlockPos offsetPos) {
-		return new BlockPos(basePos.getX() + offsetPos.getX(), basePos.getY() + offsetPos.getY(),
-				basePos.getZ() + offsetPos.getZ());
+		return new BlockPos(
+				UniversalCommon.Pos.x(basePos) + UniversalCommon.Pos.x(offsetPos),
+				UniversalCommon.Pos.y(basePos) + UniversalCommon.Pos.y(offsetPos),
+				UniversalCommon.Pos.z(basePos) + UniversalCommon.Pos.z(offsetPos));
 	}
 
 	public static float getReverseHeightModifier(BlockState state) {

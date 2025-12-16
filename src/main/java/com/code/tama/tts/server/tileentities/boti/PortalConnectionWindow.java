@@ -1,8 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities.boti;
 
-import com.code.tama.tts.server.tileentities.TickingTile;
-
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;

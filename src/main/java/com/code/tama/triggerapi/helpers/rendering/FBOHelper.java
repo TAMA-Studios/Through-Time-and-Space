@@ -1,15 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.rendering;
 
-import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
-
-import java.util.function.BiConsumer;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.IHelpWithFBOs;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.mixin.client.RenderStateShardAccessor;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlConst;
@@ -21,9 +20,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -39,10 +35,12 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.IHelpWithFBOs;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import java.util.function.BiConsumer;
+
+import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {

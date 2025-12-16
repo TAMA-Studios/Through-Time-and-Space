@@ -1,4 +1,6 @@
 {
+  "tts.controls.helmic_regulator": "Helmic Regulator",
+  "tts.controls.coordinate_lock": "Coordinate Lock",
   "item.tts.gadgets.twine_spool": "Spool of Twine",
   "advancement.tts.sonic_screwdriver.desc" : "Go build a cabinet.",
   "advancement.tts.sonic_screwdriver.title" : "You have a screwdriver!",

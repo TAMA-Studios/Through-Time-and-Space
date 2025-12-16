@@ -1,15 +1,14 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.triggerapi.rendering;
+package com.code.tama.triggerapi.boti.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
 public class BotiPortalModel<T extends Entity> extends EntityModel<T> {
 	private final ModelPart BOTI;

@@ -1,25 +1,26 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.json.loaders.ARSDataLoader;
+import com.code.tama.tts.server.data.json.loaders.DataDimGravityLoader;
 import com.code.tama.tts.server.data.json.loaders.ExteriorDataLoader;
 import com.code.tama.tts.server.data.json.loaders.RecipeDataLoader;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
-
+import com.code.tama.tts.server.registries.forge.TTSDamageSources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -31,7 +32,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.data.holders.DataDimGravityLoader;
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -131,11 +134,33 @@ public class CommonEvents {
 
 	@SubscribeEvent
 	public static void onWorldTick(TickEvent.LevelTickEvent event) {
+		if (event.phase != TickEvent.Phase.END)
+			return;
+		if (event.level.isClientSide)
+			return;
+		if (event.level.getServer() == null)
+			return;
+		if (event.level.getServer().getLevel(event.level.dimension()) == null)
+			return;
+
 		GetTARDISCapSupplier(event.level).ifPresent(level -> {
 			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff()
 					|| !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
 				level.Tick();
 		});
+
+		event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
+
+
+				if (entity instanceof LivingEntity livingEntity) {
+					// TODO: REAL Oxygen implementation
+					float O2 = OxygenHelper.getO2(event.level) * 10;
+
+					if(O2 != 10 && event.level.getGameTime() % O2 == 0) {
+						entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
+					}
+				}
+		}));
 	}
 
 	@SubscribeEvent

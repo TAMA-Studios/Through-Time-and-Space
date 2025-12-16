@@ -1,18 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -24,10 +23,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {

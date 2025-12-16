@@ -1,16 +1,10 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.code.tama.triggerapi.boti.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +14,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter

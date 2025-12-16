@@ -1,20 +1,16 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.tileentities;
+package com.code.tama.triggerapi.boti;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalSyncPacketS2C;
+import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import lombok.Getter;
-
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -29,8 +25,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Other tiles implement this to get data for portals */
 @OnlyIn(Dist.CLIENT)

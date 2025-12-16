@@ -1,17 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.client.BotiChunkContainer;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.AllArgsConstructor;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -21,7 +17,8 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 public class ChunkGatheringThread extends Thread {
@@ -34,7 +31,7 @@ public class ChunkGatheringThread extends Thread {
 	@SuppressWarnings("unchecked")
 	public void run() {
 		this.setName("BOTIChunkGatheringThread");
-		System.out.println("Gathering chunks for BOTI");
+//		System.out.println("Gathering chunks for BOTI");
 		// Direction axis = Direction.fromYRot(portalTile.targetY);
 		BlockPos portalPos = portalTile.getBlockPos();
 		int maxBlocks = 50000;
@@ -43,15 +40,8 @@ public class ChunkGatheringThread extends Thread {
 			ArrayList<BotiChunkContainer> containers = new ArrayList<>();
 			ArrayList<List<BotiChunkContainer>> containerLists = new ArrayList<>();
 			boolean isSquare = true;
-			int chunksToRender = Math.min(this.chunks, TTSConfig.ServerConfig.BOTI_RENDER_DISTANCE.get()); // Use either
-																											// client
-																											// render
-																											// distance,
-																											// or server
-																											// render
-																											// distance,
-																											// whichever's
-			// smaller
+			// \/ Use either client render distance, or server render distance, whichever's smaller
+			int chunksToRender = Math.min(this.chunks, TTSConfig.ServerConfig.BOTI_RENDER_DISTANCE.get());
 			int uMax; // = (axis.equals(Direction.WEST) ? 1 : chunksToRender / 2);
 			int uMin; // = (axis.equals(Direction.EAST) ? 0 : -chunksToRender / 2);
 			int vMax; // = (axis.equals(Direction.NORTH) ? 1 : chunksToRender / 2);

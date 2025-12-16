@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.data.tardis.*;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -24,8 +24,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,13 +46,14 @@ import java.util.Objects;
 import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	TARDISData data = new TARDISData(this);
-	TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
+	private TARDISData data = new TARDISData(this);
+	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
+	private TARDISEnvironmentalData environmentalData = new TARDISEnvironmentalData(this);
 	@OnlyIn(Dist.CLIENT)
-	TARDISClientData clientData = new TARDISClientData(this);
+	private TARDISClientData clientData = new TARDISClientData(this);
 
-	TARDISFlightData flightData = new TARDISFlightData(this);
+	private TARDISFlightData flightData = new TARDISFlightData(this);
 	Level level;
 	ExteriorTile exteriorTile;
 	private long ticks = 0;
@@ -65,6 +68,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
 		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
 		tag.put("navigational_data", TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
+		tag.put("environmental_data", TARDISEnvironmentalData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
 
 		return tag;
 	}
@@ -74,14 +78,21 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.data = TARDISData.CODEC.parse(NbtOps.INSTANCE, nbt.get("data")).get().orThrow();
 		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get().orThrow();
 		this.flightData = TARDISFlightData.CODEC.parse(NbtOps.INSTANCE, nbt.get("flight_data")).get().orThrow();
+		this.environmentalData = TARDISEnvironmentalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("environmental_data")).get().orThrow();
 
 		this.data.setTARDIS(this);
 		this.navigationalData.setTARDIS(this);
 		this.flightData.setTARDIS(this);
+		this.environmentalData.setTARDIS(this);
 	}
 
 	public TARDISData GetData() {
 		return data;
+	}
+
+	@Override
+	public TARDISEnvironmentalData GetEnvironmentalData() {
+		return this.environmentalData;
 	}
 
 	@Override
@@ -338,7 +349,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.START));
 		this.flightData.setInFlight(false);
 		this.data.setSparking(true);
-		this.data.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
+		this.environmentalData.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
 		new CrashThread(this).start();
 		this.NullExteriorChecksAndFixes();
 	}
@@ -360,7 +371,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void UpdateClient(int toUpdate) {
-		ThreadUtils.RunThread((cap, toSync) -> {
+//		ThreadUtils.RunThread((cap, toSync) -> {
+		TARDISLevelCapability cap = this;
 			if (cap.level == null)
 				return;
 			if (this.level.isClientSide)
@@ -377,7 +389,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 					Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
 				}
 			}
-		}, this, toUpdate, "tardis_update_thread");
+//		}, this, toUpdate, "tardis_update_thread");
 	}
 
 	@Override
@@ -391,11 +403,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public float GetLightLevel() {
-		if (this.data.getLightLevel() == 0.0f) {
+		if (this.environmentalData.getLightLevel() == 0.0f) {
 			Networking.sendToServer(new TriggerSyncCapLightPacketC2S(this.level.dimension()));
 			return 0.1f;
 		}
-		return this.data.getLightLevel();
+		return this.environmentalData.getLightLevel();
 	}
 
 	@Override
@@ -405,8 +417,15 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void ForceLoadExteriorChunk(boolean ForceLoad) {
-		getExteriorLevel().setChunkForced((int) (this.GetNavigationalData().GetExteriorLocation().GetX() / 16),
-				(int) (this.GetNavigationalData().GetExteriorLocation().GetZ() / 16), ForceLoad);
+
+		MinecraftServer server = this.level.getServer();
+		if (server != null) {
+			server.execute(() -> {
+				ChunkPos pos = new ChunkPos(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+				if(getExteriorLevel().hasChunk(pos.x, pos.z))
+					getExteriorLevel().setChunkForced(pos.x, pos.z, ForceLoad);
+			});
+		}
 	}
 
 	public static ITARDISLevel GetTARDISCap(Level level) {

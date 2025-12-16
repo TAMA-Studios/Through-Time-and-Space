@@ -1,9 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import java.util.UUID;
-
-import net.minecraft.server.MinecraftServer;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +9,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.server.ServerLifecycleHooks;
+
+import java.util.UUID;
 
 public class EntityUtils {
 	public static void applyEffect(LivingEntity entity, MobEffect effect, int Duration, int Potency) {
@@ -21,9 +20,8 @@ public class EntityUtils {
 	}
 
 	public static Player getPlayerByUUID(UUID uuid) {
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		if (server != null) {
-			for (Level world : server.getAllLevels()) {
+		if (UniversalServerOnly.getServer() != null) {
+			for (Level world : UniversalServerOnly.getServer().getAllLevels()) {
 				Player player = world.getPlayerByUUID(uuid);
 				if (player != null) {
 					return player;

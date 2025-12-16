@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.code.tama.triggerapi.boti.client;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FluidQuadCollector implements VertexConsumer {
 

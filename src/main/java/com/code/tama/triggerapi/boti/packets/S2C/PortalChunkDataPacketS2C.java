@@ -1,14 +1,9 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.networking.packets.S2C.portal;
+package com.code.tama.triggerapi.boti.packets.S2C;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.client.BotiChunkContainer;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,6 +12,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class PortalChunkDataPacketS2C {
 	private final BlockPos portalPos;

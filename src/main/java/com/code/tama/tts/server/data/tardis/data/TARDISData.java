@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.data.tardis;
+package com.code.tama.tts.server.data.tardis.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.codec.Codecs;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.tardis.ControlParameters;
+import com.code.tama.tts.server.data.tardis.DoorData;
+import com.code.tama.tts.server.data.tardis.ProtocolData;
+import com.code.tama.tts.server.data.tardis.SubsystemsData;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.PlayerPosition;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -20,22 +20,21 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.codec.Codecs;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class TARDISData {
-	public static final Codec<TARDISData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("lightLevel").forGetter(TARDISData::getLightLevel),
-					Codec.FLOAT.fieldOf("gravityLevel").forGetter(TARDISData::getGravityLevel),
+	public static final Codec<TARDISData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					Codec.unboundedMap(Codecs.UUID_CODEC, PlayerPosition.CODEC).fieldOf("viewingPlayerPositions")
 							.forGetter(TARDISData::getViewingPlayerMap),
 					Codecs.UUID_CODEC.optionalFieldOf("ownerUUID").xmap(opt -> opt.orElse(null), Optional::ofNullable)
@@ -59,26 +58,23 @@ public class TARDISData {
 	ControlParameters ControlData = new ControlParameters();
 	ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
 	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
-	float LightLevel, gravityLevel = 0.08f;
 	UUID OwnerUUID;
 	boolean Powered, IsDiscoMode, Sparking, AlarmsState;
 	ProtocolData ProtocolsData = new ProtocolData();
 	SubsystemsData SubSystemsData = new SubsystemsData();
-	ITARDISLevel TARDIS;
 	Map<UUID, PlayerPosition> ViewingPlayerMap = new HashMap<>();
 	ResourceLocation Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness");
 	SpaceTimeCoordinate doorBlock = new SpaceTimeCoordinate();
+	ITARDISLevel TARDIS;
 
 	public TARDISData(TARDISLevelCapability TARDIS) {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISData(float lightLevel, float gravityLevel, Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
+	public TARDISData(Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
 			ExteriorModelContainer exteriorModelID, boolean powered, boolean isDiscoMode, boolean isSparking,
 			boolean alarms, DoorData interiorDoorData, SubsystemsData subSystemsData, ControlParameters controlData,
 			ProtocolData protocolsData, long ticks, SpaceTimeCoordinate doorBlock, ResourceLocation vortex) {
-		LightLevel = lightLevel;
-		this.gravityLevel = gravityLevel;
 		ViewingPlayerMap = viewingPlayerMap;
 		OwnerUUID = ownerUUID;
 		ExteriorModel = exteriorModelID;
@@ -125,18 +121,6 @@ public class TARDISData {
 			this.TARDIS.GetExteriorTile().NeedsClientUpdate();
 			this.TARDIS.GetExteriorTile().setChanged();
 		}
-	}
-
-	public void SetLightLevel(float LightLevel) {
-		LightLevel = Math.max(Math.min(LightLevel, 1.5F), 0.1F);
-		this.LightLevel = LightLevel;
-	}
-
-	public float getLightLevel() {
-		if (this.isSparking()) {
-			return this.LightLevel - (MathUtils.clamp(this.TARDIS.GetLevel().random.nextFloat(), 0.0f, 0.4f) - 0.2f);
-		} else
-			return this.LightLevel;
 	}
 
 	public void SetPowered(boolean IsPoweredOn) {

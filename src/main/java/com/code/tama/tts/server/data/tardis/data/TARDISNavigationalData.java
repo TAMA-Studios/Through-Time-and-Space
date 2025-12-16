@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.data.tardis;
+package com.code.tama.tts.server.data.tardis.data;
 
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -8,7 +8,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

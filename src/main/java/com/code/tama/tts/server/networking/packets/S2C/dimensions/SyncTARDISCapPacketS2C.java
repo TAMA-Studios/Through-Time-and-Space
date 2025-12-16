@@ -3,9 +3,9 @@ package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
 import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.data.tardis.TARDISData;
-import com.code.tama.tts.server.data.tardis.TARDISFlightData;
-import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
+import com.code.tama.tts.server.data.tardis.data.TARDISData;
+import com.code.tama.tts.server.data.tardis.data.TARDISFlightData;
+import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;

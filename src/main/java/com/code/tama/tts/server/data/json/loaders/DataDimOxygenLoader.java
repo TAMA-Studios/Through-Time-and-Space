@@ -1,5 +1,18 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.triggerapi.data.holders;
+package com.code.tama.tts.server.data.json.loaders;
+
+import com.code.tama.tts.server.data.json.dataHolders.DataDimOxygen;
+import com.code.tama.tts.server.data.json.lists.DataDimOxygenList;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
+import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.GsonHelper;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,35 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.logging.LogUtils;
-import lombok.Getter;
-import org.slf4j.Logger;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.util.GsonHelper;
-
 @Getter
-public class DataDimGravityLoader implements ResourceManagerReloadListener {
+public class DataDimOxygenLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private final List<DataDimGravity> dataGrav = new ArrayList<>(); // List to store Data ars objects
+	private final List<DataDimOxygen> dataOxygen = new ArrayList<>(); // List to store objects
 
 	private boolean isValidJson(JsonObject jsonObject) {
 		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject()) {
 			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
 			// Validate grav and structure fields
-			if (valuesObject.has("gravity") && valuesObject.has("dimension")) {
-				String grav = valuesObject.get("gravity").getAsString();
+			if (valuesObject.has("oxygen") && valuesObject.has("dimension")) {
+				String grav = valuesObject.get("oxygen").getAsString();
 				String dimension = valuesObject.get("dimension").getAsString();
 
 				// Check for non-empty grav
 				if (grav.isEmpty()) {
-					LOGGER.warn("Empty gravity field");
+					LOGGER.warn("Empty oxygen field");
 					return false;
 				}
 
@@ -55,11 +56,11 @@ public class DataDimGravityLoader implements ResourceManagerReloadListener {
 
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
-		dataGrav.clear(); // Reset the list of Data grav objects
+		dataOxygen.clear(); // Reset the list of Data grav objects
 
 		// Iterate over all namespaces
 		for (String namespace : resourceManager.getNamespaces()) {
-			Map<ResourceLocation, Resource> resources = resourceManager.listResources("tts/dim/gravity",
+			Map<ResourceLocation, Resource> resources = resourceManager.listResources("tts/dim/oxygen",
 					fileName -> fileName.toString().endsWith(".json"));
 
 			if (resources.isEmpty()) {
@@ -76,12 +77,12 @@ public class DataDimGravityLoader implements ResourceManagerReloadListener {
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							float grav = valuesObject.get("gravity").getAsFloat();
+							float oxygen = valuesObject.get("gravity").getAsFloat();
 							String dimension = valuesObject.get("dimension").getAsString();
 							ResourceLocation dimLoc = new ResourceLocation(dimension);
-							DataDimGravity Structure = new DataDimGravity(grav, dimLoc);
-							if (!dataGrav.contains(Structure))
-								dataGrav.add(Structure);
+							DataDimOxygen Oxygen = DataDimOxygen.builder().oxygen(oxygen).dimension(dimLoc).build();
+							if (!dataOxygen.contains(Oxygen))
+								dataOxygen.add(Oxygen);
 						} else {
 							LOGGER.warn("Invalid JSON structure in {}", rl);
 						}
@@ -93,6 +94,6 @@ public class DataDimGravityLoader implements ResourceManagerReloadListener {
 		}
 
 		// Store the list of Data ars room objects in the Data ars Array
-		DataDimGravityList.setList(dataGrav);
+		DataDimOxygenList.setList(dataOxygen);
 	}
 }

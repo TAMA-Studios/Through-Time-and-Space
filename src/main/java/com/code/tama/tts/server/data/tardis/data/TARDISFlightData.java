@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.server.data.tardis;
+package com.code.tama.tts.server.data.tardis.data;
 
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;

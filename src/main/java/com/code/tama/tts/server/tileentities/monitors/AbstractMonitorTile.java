@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities.monitors;
 
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.tts.client.util.Fonts;
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +29,7 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	public int categoryID = 1;
 	public boolean powered = false;
 	public DyeColor color;
+	public ResourceLocation FONT = Fonts.DEFAULT;
 
 	public AbstractMonitorTile(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 		super(p_155228_, p_155229_, p_155230_);

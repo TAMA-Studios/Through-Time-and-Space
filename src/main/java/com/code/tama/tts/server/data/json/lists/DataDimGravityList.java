@@ -1,22 +1,22 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.triggerapi.data.holders;
+package com.code.tama.tts.server.data.json.lists;
+
+import com.code.tama.triggerapi.helpers.GravityHelper;
+import com.code.tama.tts.server.data.json.dataHolders.DataDimGravity;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-
-import com.code.tama.triggerapi.helpers.GravityHelper;
-
 public class DataDimGravityList {
 	@Getter
-	private static List<DataDimGravity> StructureList;
+	private static List<DataDimGravity> GravList;
 
 	public static void setList(List<DataDimGravity> list) {
-		StructureList = removeDuplicates(list);
-		GravityHelper.setMap(StructureList);
+		GravList = removeDuplicates(list);
+		GravityHelper.setMap(GravList);
 	}
 
 	public static List<DataDimGravity> removeDuplicates(List<DataDimGravity> list) {
