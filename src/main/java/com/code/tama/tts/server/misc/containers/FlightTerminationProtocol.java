@@ -58,4 +58,8 @@ public class FlightTerminationProtocol {
 	public boolean ShouldBeInaccurate() {
 		return new Random(System.currentTimeMillis()).nextFloat(1) < this.Accuracy;
 	}
+
+	public String TranslatableString() {
+		return "tts.flight_termination_protocol." + this.name;
+	}
 }

@@ -14,8 +14,11 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
+import com.code.tama.tts.server.tardis.ExteriorState;
+import com.code.tama.tts.server.tardis.flight_events.AbstractFlightEvent;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.client.Minecraft;
@@ -45,6 +48,7 @@ import java.util.Objects;
 import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
+	private AbstractFlightEvent flightEvent;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
@@ -107,6 +111,31 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
+	public void setCurrentFlightEvent(AbstractFlightEvent event) {
+		this.flightEvent = event;
+	}
+
+	@Override
+	public AbstractFlightEvent getCurrentFlightEvent() {
+		return this.flightEvent;
+	}
+
+	@Override
+	public void UpdateExteriorState(ExteriorState state) {
+		if(this.GetExteriorTile() == null) return;
+		if(!this.level.isClientSide) {
+			long tick = this.GetLevel().getGameTime();
+
+			this.exteriorTile.state = state;
+
+			Networking.sendPacketToDimension(
+					new ExteriorStatePacket(this.GetNavigationalData().getDestination().GetBlockPos(),
+							ExteriorState.LANDING, tick),
+					this.getExteriorLevel());
+		}
+	}
+
+	@Override
 	public void setFlightData(TARDISFlightData data) {
 		this.flightData = data;
 		this.flightData.setTARDIS(this);
@@ -157,7 +186,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	/**
-	 * If you call this while the TARDIS is in flight you're gay and it'll return
+	 * If you call this while the TARDIS is in flight you're gay, and it'll return
 	 * null. <b>DO NOT CALL THIS WHILE THE TARDIS IS IN FLIGHT</b><br />
 	 *
 	 * @return The ExteriorTile belonging to this TARDIS

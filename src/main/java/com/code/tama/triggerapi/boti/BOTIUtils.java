@@ -6,7 +6,7 @@ import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
 import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.tts.TTSConfig;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;

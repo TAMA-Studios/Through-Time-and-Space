@@ -16,8 +16,6 @@ public class ServerThreads {
 
 	public static Thread LandingThread(ITARDISLevel tardis) {
 		return ThreadUtils.NewThread((itardisLevel) -> {
-			itardisLevel.GetFlightData().setPlayRotorAnimation(false);
-			itardisLevel.UpdateClient(DataUpdateValues.ALL);
 			new PhysicalStateManager(itardisLevel).serverLand();
 		}, tardis, "Landing Thread");
 	}

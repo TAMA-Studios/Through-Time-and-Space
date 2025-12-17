@@ -158,5 +158,6 @@
   "tts.tardis.control.throttle" : "Dematerialization Lever",
   "tts.tardis.control.x_control" : "X Plotters",
   "tts.tardis.control.y_control" : "Y Plotters",
-  "tts.tardis.control.z_control" : "Z Plotters"
+  "tts.tardis.control.z_control" : "Z Plotters",
+  "tts.controls.flight_termination_protocol.use": "Flight Termination Protocol: %s"
 }

@@ -51,6 +51,9 @@ public class ControlsRegistry {
 	public static final RegistryObject<CoordinateLockControl> COORDINATE_LOCK = CONTROLS.register("coordinate_lock",
 			CoordinateLockControl::new);
 
+	public static final RegistryObject<TerminationProtocolControl> TERMINATION_PROTOCOL = CONTROLS.register("termination_protocol",
+			TerminationProtocolControl::new);
+
 
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {

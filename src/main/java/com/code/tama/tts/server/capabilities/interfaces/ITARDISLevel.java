@@ -2,6 +2,8 @@
 package com.code.tama.tts.server.capabilities.interfaces;
 
 import com.code.tama.tts.server.data.tardis.data.*;
+import com.code.tama.tts.server.tardis.ExteriorState;
+import com.code.tama.tts.server.tardis.flight_events.AbstractFlightEvent;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -114,4 +116,9 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	void setFlightData(TARDISFlightData data);
 
 	void setNavigationalData(TARDISNavigationalData data);
+
+	void setCurrentFlightEvent(AbstractFlightEvent event);
+	AbstractFlightEvent getCurrentFlightEvent();
+
+	void UpdateExteriorState(ExteriorState state);
 }

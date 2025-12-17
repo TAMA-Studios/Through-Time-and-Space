@@ -3,7 +3,7 @@ package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.boti.client.BotiPortalModel;
-import com.code.tama.tts.TTSConfig;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;

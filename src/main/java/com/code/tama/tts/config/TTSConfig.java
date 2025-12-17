@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts;
+package com.code.tama.tts.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class TTSConfig {
 	public static class ClientConfig {
 		public static ForgeConfigSpec.BooleanValue BOTI_ENABLED;
+		public static ForgeConfigSpec.EnumValue<FlightType> FLIGHT_TYPE;
 
 		public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
 
@@ -25,6 +26,10 @@ public class TTSConfig {
 			builder.comment("Is BOTI Enabled (values: true/false. Default false)");
 			BOTI_ENABLED = builder.define("boti_enabled", false);
 
+			builder.pop();
+			builder.push("Flight Configuration");
+			builder.comment("Flight Type (basic, normal, advanced)");
+			FLIGHT_TYPE = builder.defineEnum("flight_type", FlightType.NORMAL);
 			builder.pop();
 		}
 	}

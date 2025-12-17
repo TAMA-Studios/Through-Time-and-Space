@@ -2,8 +2,8 @@
 package com.code.tama.tts.server.tardis;
 
 /**
- * LANDED: Is currently landed TAKEOFF: Is NOT fully dematerialized
+ * LANDING: Is landing, LANDED: Is currently landed, TAKEOFF: Is NOT fully dematerialized, SHOULDNTEXIST: It's fully taken off and shouldn't exist anymore
  */
 public enum ExteriorState {
-	LANDED, TAKEOFF
+	LANDING, LANDED, TAKINGOFF, SHOULDNTEXIST;
 }

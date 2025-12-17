@@ -28,14 +28,14 @@ public class FlightTerminationProtocolRegistry {
 		return FLIGHT_TERMINATION_PROTOCOLS.get(ID);
 	}
 
-	public static FlightTerminationProtocol AddProtocol(FlightTerminationProtocol structure) {
-		FLIGHT_TERMINATION_PROTOCOLS.add(structure);
-		return structure;
+	public static FlightTerminationProtocol AddProtocol(FlightTerminationProtocol prot) {
+		FLIGHT_TERMINATION_PROTOCOLS.add(prot);
+		return prot;
 	}
 
-	public static FlightTerminationProtocol CycleProt(FlightTerminationProtocol structure) {
+	public static FlightTerminationProtocol CycleProt(FlightTerminationProtocol prot) {
 		for (int i = 0; i < FLIGHT_TERMINATION_PROTOCOLS.size() - 1; i++) {
-			if (GetProtocol(i).equals(structure))
+			if (GetProtocol(i).equals(prot))
 				return GetProtocol(i + 1);
 		}
 		return GetProtocol(0);

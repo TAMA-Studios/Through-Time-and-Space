@@ -2,8 +2,7 @@
 package com.code.tama.tts.server.misc;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,7 +53,7 @@ public class PhysicalStateManager {
 				// Wait for the takeoff to be finished
 				assert itardisLevel != null;
 				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished()) {
-					exteriorTile.state = ExteriorState.LANDED;
+					itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
 					break;
 				}
 			}
@@ -68,7 +67,7 @@ public class PhysicalStateManager {
 		float freq = 0.3f;
 		if(this.exteriorTile == null) itardisLevel.Fly();
 
-		while (!this.exteriorTile.state.equals(ExteriorState.TAKEOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
+		while (this.exteriorTile.state.equals(ExteriorState.TAKINGOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
 																		// {
 			if (!server) { // If it's client side, actually do the animation
 				assert exteriorTile.getLevel() != null;
@@ -80,8 +79,8 @@ public class PhysicalStateManager {
 			if (server) { // If it is server side, just wait for the animation to be done
 				assert itardisLevel != null;
 				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished()) {
+					itardisLevel.UpdateExteriorState(ExteriorState.SHOULDNTEXIST);
 					itardisLevel.Fly();
-					exteriorTile.state = ExteriorState.TAKEOFF;
 					break;
 				}
 			}
@@ -108,12 +107,11 @@ public class PhysicalStateManager {
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
 				.getFlightSoundScheme().GetLanding().PlayIfFinished(player.level(), player.blockPosition()));
 
-		Networking.sendPacketToDimension(
-				new ExteriorStatePacket(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
-						ExteriorState.LANDED, tick),
-				this.itardisLevel.GetLevel());
-
 		this.exteriorTile = itardisLevel.GetExteriorTile();
+
+		itardisLevel.UpdateExteriorState(ExteriorState.LANDING);
+
+		itardisLevel.UpdateClient(DataUpdateValues.ALL);
 		// run the animation server-side
 		landAnimation(tick, true);
 	}
@@ -124,8 +122,9 @@ public class PhysicalStateManager {
 		// Play takeoff sound to everyone in dimension
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
 				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));
+
+		itardisLevel.UpdateExteriorState(ExteriorState.TAKINGOFF);
 		assert exteriorTile.getLevel() != null;
-		// send packet to everyone in the dimension
 		// run the animation server-side
 		takeOffAnimation(tick, true);
 	}

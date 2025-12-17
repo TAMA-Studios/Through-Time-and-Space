@@ -6,6 +6,7 @@ import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.dimensions.Biomes;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
