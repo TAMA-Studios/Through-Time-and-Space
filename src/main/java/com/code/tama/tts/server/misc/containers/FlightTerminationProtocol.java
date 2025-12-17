@@ -1,14 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
-import com.code.tama.tts.server.tardis.terminationprotocol.TerminationProtocolHandler;
-import lombok.Builder;
+import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
-@Builder
+import java.util.Random;
+
+@RequiredArgsConstructor
 @Getter
 public class FlightTerminationProtocol {
-	private final TerminationProtocolHandler terminationProtocolHandler;
 	// The probability of the TARDIS landing off course
 	public final float Accuracy;
 	// How much the floaterior shakes during remat
@@ -20,4 +24,38 @@ public class FlightTerminationProtocol {
 	// How much the exterior shakes during demat
 	public final float TakeoffShakeAmount;
 	public final String name;
+
+
+	private BlockPos landPos;
+
+
+	public BlockPos GetLandPos() {
+		return this.landPos;
+	}
+
+	/**
+	 * Called when the TARDIS flight sequence is terminated (Right before the
+	 * exterior tile is placed)
+	 *
+	 * @param blockPos
+	 *            the destination position
+	 * @param itardisLevel
+	 *            the capability of the TARDIS interior level
+	 * @param level
+	 *            The level that the Exterior will be placed in
+	 */
+	public void OnLand(ITARDISLevel itardisLevel, BlockPos blockPos, Level level) {
+		CameraShakeHandler.startShake(this.LandShakeAmount, 40);
+		if (this.ShouldBeInaccurate())
+			this.SetLandPos(level.getBlockRandomPos(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
+					(int) ((this.Accuracy - 1) * 10)));
+	}
+
+	public void SetLandPos(BlockPos pos) {
+		this.landPos = pos;
+	}
+
+	public boolean ShouldBeInaccurate() {
+		return new Random(System.currentTimeMillis()).nextFloat(1) < this.Accuracy;
+	}
 }

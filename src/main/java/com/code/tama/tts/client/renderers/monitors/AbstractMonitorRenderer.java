@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
@@ -30,6 +31,8 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
 	public final BlockEntityRendererProvider.Context context;
 	public static final int fullBright = 0xF000F0;
+	int light = 0xf00f0;
+
 	UICategory category;
 
 	public AbstractMonitorRenderer(BlockEntityRendererProvider.Context context) {
@@ -41,55 +44,66 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 		if (monitor.getLevel() == null)
 			return;
-		int light = 0xf00f0;
+		StencilUtils.DrawStencil(poseStack, (pose) -> {
+			pose.pushPose();
+			this.ApplyDefaultTransforms(pose, monitor);
+//		poseStack.translate(0.5, 0.5, 0);
+
+			pose.translate(-44, -0.5, 0);
+			pose.scale(5.5f, 5.5f, 0);
+
+			renderFrame(monitor, pose, bufferSource, fullBright);
+			pose.popPose();
+		}, (pose) -> {
+
 //		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 
-		boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
+			boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
 
-		poseStack.pushPose();
+			pose.pushPose();
 
-		this.ApplyDefaultTransforms(poseStack, monitor);
+			this.ApplyDefaultTransforms(pose, monitor);
 
-		if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
-			UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
-				if (reg.get().getID() == monitor.getCategoryID()) {
-					this.category = reg.get();
-				}
-			});
-		}
+			if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+				UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
+					if (reg.get().getID() == monitor.getCategoryID()) {
+						this.category = reg.get();
+					}
+				});
+			}
 
-		if (monitor.isPowered()) {
-			if(isInTARDIS)
-				this.category.Render(monitor, poseStack, bufferSource, combinedLight);
-			else RenderText(monitor, "Not in a TARDIS!", poseStack, bufferSource, -40, 25);
-		}
+			if (monitor.isPowered()) {
+				if (isInTARDIS)
+					this.category.Render(monitor, pose, bufferSource, combinedLight);
+				else RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
+			}
 
-		poseStack.popPose();
-		poseStack.pushPose();
+			pose.popPose();
+			pose.pushPose();
 
-		this.ApplyDefaultTransforms(poseStack, monitor);
+			this.ApplyDefaultTransforms(pose, monitor);
 
-		renderUIComponents(monitor, poseStack, bufferSource, light);
+			renderUIComponents(monitor, pose, bufferSource, light);
 
-		poseStack.popPose();
-		poseStack.pushPose();
+			pose.popPose();
+			pose.pushPose();
 
-		this.ApplyDefaultTransforms(poseStack, monitor);
+			this.ApplyDefaultTransforms(pose, monitor);
 
-		renderRotatingImage(monitor, poseStack, bufferSource, light);
+			renderRotatingImage(monitor, pose, bufferSource, light);
 
-		poseStack.popPose();
+			pose.popPose();
 
-		poseStack.pushPose();
+			pose.pushPose();
 
-		this.ApplyDefaultTransforms(poseStack, monitor);
+			this.ApplyDefaultTransforms(pose, monitor);
 
-		renderBackground(monitor, poseStack, bufferSource, light);
+			renderBackground(monitor, pose, bufferSource, light);
 
-		poseStack.popPose();
+			pose.popPose();
 
-		RenderSystem.enableDepthTest();
-//		});
+			RenderSystem.enableDepthTest();
+		});
 	}
 
 	private void renderRotatingImage(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
@@ -181,7 +195,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 	}
 
 	private void renderBackground(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
-			int combinedLight) {
+								  int combinedLight) {
 		if (!monitor.isPowered())
 			return;
 		ResourceLocation texture;
@@ -212,6 +226,39 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
 		buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
 		buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
+		BufferUploader.drawWithShader(buffer.end());
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.enableBlend();
+
+		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+	}
+
+	private void renderFrame(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
+								  int combinedLight) {
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.disableBlend();
+		RenderSystem.enableDepthTest();
+
+		poseStack.translate(-0.25, -0.25, 0);
+		poseStack.scale(1.0325f, 1.0325f, 0);
+
+		Matrix4f matrix = poseStack.last().pose();
+		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+
+		float XStart = 0;
+		float YStart = 0;
+		float XEnd = 16;
+		float YEnd = 16;
+
+		buffer.vertex(matrix, XStart, YEnd, 0).endVertex();
+		buffer.vertex(matrix, XEnd, YEnd, 0).endVertex();
+		buffer.vertex(matrix, XEnd, YStart, 0).endVertex();
+		buffer.vertex(matrix, XStart, YStart, 0).endVertex();
+
+		RenderSystem.setShaderColor(1, 1, 1, 1);
 		BufferUploader.drawWithShader(buffer.end());
 
 		RenderSystem.disableDepthTest();

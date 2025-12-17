@@ -3,14 +3,13 @@ package com.code.tama.tts.server.tardis.terminationprotocol;
 
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
-
+import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-public class EmergencyStopProtocolHandler extends TerminationProtocolHandler {
-	public EmergencyStopProtocolHandler() {
-		super(FlightTerminationProtocolRegistry.EMERGENCY_STOP);
+public class EmergencyStopProtocol extends FlightTerminationProtocol {
+	public EmergencyStopProtocol() {
+		super(0.3f, 1.0f, false, 1.0f, 1.0f, "emergency_stop");
 	}
 
 	@Override

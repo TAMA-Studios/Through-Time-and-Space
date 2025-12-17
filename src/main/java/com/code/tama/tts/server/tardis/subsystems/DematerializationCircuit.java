@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -53,13 +54,16 @@ public class DematerializationCircuit extends AbstractSubsystem {
 
 		if (Map == null || Map.isEmpty()) {
 			HashMap<Character, BlockState> key = new HashMap<>();
-			String map[] = new String[]{"CLC\nLRL\nCLC", "I I\nT#T\nITI", "MNM\nNMN\nMNM"};
+			String map[] = new String[]{"CLC\nLRL\nCLC", "I I\nT#T\nITI", "CKC\nRGR\nCRC"};
 
 			key.put('C', Blocks.COPPER_BLOCK.defaultBlockState());
 			key.put('L', Blocks.REDSTONE_LAMP.defaultBlockState());
 			key.put('R', Blocks.REDSTONE_BLOCK.defaultBlockState());
 			key.put('I', Blocks.IRON_BLOCK.defaultBlockState());
 			key.put('T', Blocks.IRON_TRAPDOOR.defaultBlockState());
+			key.put('G', Blocks.GOLD_BLOCK.defaultBlockState());
+			key.put('K', Blocks.LAPIS_BLOCK.defaultBlockState());
+			key.put('#', TTSBlocks.DEMATERIALIZATION_CIRCUIT_CORE.get().defaultBlockState());
 
 			Map = new SubsystemMapRecipeThing(map, key).getMap();
 		}

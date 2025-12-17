@@ -25,7 +25,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -165,7 +164,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	 */
 	@Override
 	@Nullable public ExteriorTile GetExteriorTile() {
-		if (!this.flightData.isInFlight()) {
 			if (this.exteriorTile == null) {
 				if (!this.level.isClientSide && this.level.getServer() != null) {
 					if (this.level.getServer().getLevel(this.navigationalData.getExteriorDimensionKey()) != null) {
@@ -195,13 +193,15 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				}
 			} else
 				return this.exteriorTile;
-		}
+
 		return null;
 	}
 
 	@Override
 	public void SetExteriorTile(ExteriorTile exteriorTile) {
 		this.exteriorTile = exteriorTile;
+		this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
+		this.exteriorTile.IsEmptyShell = false;
 		assert exteriorTile.getLevel() != null;
 		this.navigationalData
 				.setLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension()));
@@ -221,26 +221,23 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		// Set reach destination ticks
 		this.GetFlightData().setTicksTillDestination((int) Distance * 20);
 		//////////////////////// CALCULATIONS END ////////////////////////
-		// Make sure this is powered before continuing
-		if (!this.CanFly())
-			return;
-		if (this.GetLevel().isClientSide())
-			return;
-		if (this.GetExteriorTile() == null)
-			return;
-		ExteriorTile ext = this.GetExteriorTile();
 
-		// Set the TARDIS in flight
+		if (!this.CanFly() || this.GetLevel().isClientSide()) return;
+
+		if(this.GetExteriorTile() != null) {
+			ExteriorTile ext = this.GetExteriorTile();
+
+			assert ext != null;
+			Level exteriorLevel = ext.getLevel();
+			assert exteriorLevel != null;
+			this.ForceLoadExteriorChunk(true);
+
+			ext.UtterlyDestroy();
+
+			this.ForceLoadExteriorChunk(false);
+		}
+
 		this.GetFlightData().setInFlight(true);
-
-		assert ext != null;
-		Level exteriorLevel = ext.getLevel();
-		assert exteriorLevel != null;
-		this.ForceLoadExteriorChunk(true);
-
-		ext.UtterlyDestroy();
-
-		this.ForceLoadExteriorChunk(false);
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
 
 		this.UpdateClient(DataUpdateValues.ALL);
@@ -251,16 +248,23 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (!this.CanFly())
 			return;
 
-		if (this.GetFlightData().isInFlight() && !this.GetFlightData().IsTakingOff())
+		if (this.GetFlightData().isInFlight() || this.GetFlightData().IsTakingOff())
 			return;
+
+		GetFlightData().setPlayRotorAnimation(true);
+
+		if(this.exteriorTile == null) {
+			Fly();
+			return;
+		}
 
 		this.data.setSparking(false);
 
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.START));
 
-		UpdateClient(DataUpdateValues.FLIGHT);
+		if (level.isClientSide()) return;
 
-		if (this.GetExteriorTile() == null) {
+		if (this.GetFlightData().isInFlight()) {//this.GetExteriorTile() == null) {
 			// // Makes it so the TARDIS is supposed to be in-flight
 			// this.GetFlightData().setInFlight(true);
 			// this.GetFlightData().getFlightSoundScheme().GetTakeoff().SetFinished(true);
@@ -270,22 +274,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			// this.Rematerialize();
 		} else {
 			// Start a new Takeoff thread
-			if (!level.isClientSide()) {
-				this.GetFlightData().setPlayRotorAnimation(true);
-				ServerThreads.TakeoffThread(this).start();
-			}
+			ServerThreads.TakeoffThread(this).start();
 		}
 	}
 
 	@Override
 	public void Rematerialize() {
-		if (!this.flightData.isInFlight())
-			return;
-
-		UpdateClient(DataUpdateValues.FLIGHT);
+//		if (!this.flightData.isInFlight())
+//			return;
 
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.START));
-		// TODO: This
 		if (!level.isClientSide())
 			ServerThreads.LandingThread(this).start();
 	}
@@ -304,11 +302,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			BlockPos pos = BlockHelper.snapToGround(this.GetLevel(),
 					this.GetNavigationalData().getDestination().GetBlockPos());
 
-			// this.GetFlightTerminationPolicy().GetProtocol().OnLand(this, pos,
-			// CurrentLevel);
-			// pos = this.GetFlightTerminationPolicy().GetProtocol().GetLandPos();
-
 			pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
+
+			// Perform landing protocol calculations and stuffs
+			this.GetData().getControlData().getFlightTerminationProtocol().OnLand(this, pos,
+					CurrentLevel);
+			pos = this.GetData().getControlData().getFlightTerminationProtocol().GetLandPos();
+
+			if (CurrentLevel.isOutsideBuildHeight(pos)) pos = pos.atY(64);
 
 			SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos, CurrentLevel.dimension());
 
@@ -325,14 +326,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 			this.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), exteriorBlockState);
 			if (CurrentLevel.getBlockEntity(pos) != null) {
-				BlockPos finalPos = pos; // pos used in lambda must be final or effectively final
-				CurrentLevel.getServer().execute(new TickTask(1,
-						() -> this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(finalPos)))));
+				this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(pos)));
+			} else {
+				ExteriorTile tile = ((ExteriorTile) ((ExteriorBlock) exteriorBlockState.getBlock()).newBlockEntity(coords.GetBlockPos(), exteriorBlockState));
+				assert tile != null;
+				CurrentLevel.setBlockEntity(tile);
+				tile.setLevel(CurrentLevel);
+				this.SetExteriorTile(tile);
 			}
 			this.ForceLoadExteriorChunk(false);
 			this.GetFlightData().setPlayRotorAnimation(false);
-			this.UpdateClient(DataUpdateValues.FLIGHT);
-			this.UpdateClient(DataUpdateValues.NAVIGATIONAL);
+			this.UpdateClient(DataUpdateValues.ALL);
 		}
 
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
