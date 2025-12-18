@@ -6,6 +6,8 @@ import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -19,7 +21,6 @@ import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePac
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
-import com.code.tama.tts.server.tardis.flight_events.AbstractFlightEvent;
 import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.client.Minecraft;
@@ -27,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -45,11 +47,12 @@ import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Random;
 
 import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	private AbstractFlightEvent flightEvent;
+	private DataFlightEvent flightEvent;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
@@ -112,12 +115,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public void setCurrentFlightEvent(AbstractFlightEvent event) {
+	public void setCurrentFlightEvent(DataFlightEvent event) {
 		this.flightEvent = event;
 	}
 
 	@Override
-	public AbstractFlightEvent getCurrentFlightEvent() {
+	public DataFlightEvent getCurrentFlightEvent() {
 		return this.flightEvent;
 	}
 
@@ -279,8 +282,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	public void FlightTick() {
 		this.GetFlightData().setTicksInFlight(
-				this.GetFlightData().getTicksInFlight() + 1
-		);
+				this.GetFlightData().getTicksInFlight() + 1);
 
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
 		SpaceTimeCoordinate delta = distanceToLoc();
@@ -308,8 +310,23 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void HandleFlightEvents() {
-		if(!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1 && this.level.getGameTime() - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())) return;
-		this.setCurrentFlightEvent(null);
+		if(this.getCurrentFlightEvent() != null && (this.level.getGameTime() - (this.lastFlightEvent + this.getCurrentFlightEvent().Time()) > TTSConfig.ServerConfig.FLIGHT_EVENT_DURATION.get())) {
+			this.getCurrentFlightEvent().action().Action.accept(this);
+			this.setCurrentFlightEvent(null);
+			this.lastFlightEvent = ticks;
+		}
+
+		if(!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1 &&
+				this.level.getGameTime() - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())
+		|| this.GetFlightData().getTicksInFlight() < 80) return;
+
+		int eventIndex = new Random(this.level.getGameTime()).nextInt(DataFlightEventList.getList().size()) - 1;
+
+		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex));
+
+		this.level.players().forEach(p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name())));
+
+		this.lastFlightEvent = this.ticks;
 	}
 
 	@Override

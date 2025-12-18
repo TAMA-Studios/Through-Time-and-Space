@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -74,7 +75,7 @@ public abstract class AbstractControl {
 		assert control.consoleTile.getLevel() != null;
 		if(control.getConsoleTile() == null) return;
 		TARDISLevelCapability.GetTARDISCapSupplier(control.getConsoleTile().getLevel()).ifPresent((cap) -> {
-			if (cap.getCurrentFlightEvent().getRequiredToComplete().contains(this)) {
+			if (cap.getCurrentFlightEvent().RequiredControls().contains(this.id())) {
 				assert Minecraft.getInstance().level != null;
 				if (Minecraft.getInstance().level.random.nextInt(100000) <= 5) {
 					Spark(Minecraft.getInstance().level, control.position());
@@ -170,10 +171,10 @@ public abstract class AbstractControl {
 		this.NeedsUpdate = false;
 	}
 
-	public abstract String name();
+	public abstract ResourceLocation id();
 
 	public String getTranslationKey() {
-		return "tts.controls." + name();
+		return id().getNamespace() + ".controls." + id().getPath();
 	}
 
 	public void render(PoseStack stack, MultiBufferSource source, int combinedLight, ModularControl control) {

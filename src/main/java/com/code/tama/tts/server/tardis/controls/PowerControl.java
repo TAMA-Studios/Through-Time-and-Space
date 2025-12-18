@@ -1,8 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -32,8 +33,9 @@ public class PowerControl extends AbstractControl {
 		return InteractionResult.SUCCESS;
 	}
 
+
 	@Override
-	public String name() {
-		return "power_control";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("power_control");
 	}
 }

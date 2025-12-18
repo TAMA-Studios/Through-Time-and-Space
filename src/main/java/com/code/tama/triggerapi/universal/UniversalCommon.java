@@ -24,6 +24,10 @@ public class UniversalCommon {
         return new ResourceLocation(path);
     }
 
+    public static ResourceLocation parse(String path) {
+        return ResourceLocation.tryParse(path);
+    }
+
     /**
      * @return A new ResourceLocation
      */

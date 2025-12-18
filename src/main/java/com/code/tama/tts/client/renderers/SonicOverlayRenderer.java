@@ -94,7 +94,7 @@ public class SonicOverlayRenderer {
 
 			stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
 
-			BlockHitResult hit = RayTraceUtils.getLookingAtBlock(10);
+			BlockHitResult hit = RayTraceUtils.getLookingAtBlock(25);
 			assert Minecraft.getInstance().level != null;
 			if (hit != null)
 				if (Minecraft.getInstance().level.getBlockState(hit.getBlockPos()) != null) {

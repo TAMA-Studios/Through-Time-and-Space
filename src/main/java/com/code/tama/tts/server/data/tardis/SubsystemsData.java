@@ -18,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SubsystemsData {
 	public static Codec<SubsystemsData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.DOUBLE.fieldOf("artron").forGetter(SubsystemsData::getArtron),
 			SubsystemsCodecs.DEMAT_CIRCUIT.fieldOf("demat_circuit")
 					.forGetter(SubsystemsData::getDematerializationCircuit),
 			SubsystemsCodecs.DIMENSIONAL_CORE.fieldOf("dimensional_core")
@@ -26,12 +27,14 @@ public class SubsystemsData {
 					.forGetter(SubsystemsData::getDynamorphicController))
 			.apply(instance, SubsystemsData::new));
 
+	public double Artron = 0;
 	public DematerializationCircuit DematerializationCircuit = new DematerializationCircuit();
 	public DynamorphicController DynamorphicController = new DynamorphicController();
 	public NetherReactorCoreSubsystem NetherReactorCoreSubsystem = new NetherReactorCoreSubsystem();
 
-	public SubsystemsData(DematerializationCircuit dematerializationCircuit,
+	public SubsystemsData(double au, DematerializationCircuit dematerializationCircuit,
 			NetherReactorCoreSubsystem netherReactorCoreSubsystem, DynamorphicController dynamorphicController) {
+		this.Artron = au;
 		this.DematerializationCircuit = dematerializationCircuit;
 		this.NetherReactorCoreSubsystem = netherReactorCoreSubsystem;
 		this.DynamorphicController = dynamorphicController;

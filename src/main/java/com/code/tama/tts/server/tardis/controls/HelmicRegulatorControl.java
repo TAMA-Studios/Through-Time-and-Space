@@ -2,8 +2,10 @@
 package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +40,7 @@ public class HelmicRegulatorControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "helmic_regulator";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("helmic_regulator");
 	}
 }

@@ -1,0 +1,12 @@
+{
+  "values": {
+    "name": "throttle_slip",
+    "controls": [
+      "tts:throttle"
+    ],
+    "time": 200,
+    "fail_action": {
+      "name": "crash"
+    }
+  }
+}

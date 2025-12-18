@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -46,7 +47,7 @@ public class EnvironmentScannerControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "environment_scanner";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("environment_scanner");
 	}
 }
