@@ -1,4 +1,5 @@
 {
+  "block.tts.empty_shell": "Empty Artificial Shell",
   "tts.controls.helmic_regulator": "Helmic Regulator",
   "tts.controls.coordinate_lock": "Coordinate Lock",
   "item.tts.gadgets.twine_spool": "Spool of Twine",

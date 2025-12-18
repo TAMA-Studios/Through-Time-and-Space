@@ -1,20 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.entities.FallingExteriorEntity;
-import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -43,8 +34,13 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends FallingBlock implements EntityBlock {
@@ -189,40 +185,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		if (level.getBlockEntity(blockPos) != null
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
 
-			if (exteriorTile.IsEmptyShell && exteriorTile.getWeldProgress() != 100
-					&& exteriorTile.GetInterior() == null) {
-				ItemStack used = player.getItemInHand(interactionHand);
-				if (used.getItem().equals(TTSItems.GROWTH_CAKE.get())) {
-					used.shrink(1);
-					exteriorTile.ShouldMakeDimOnNextTick = true;
-				}
-
-				if (used.getItem().equals(TTSItems.STRUCTURAL_BEAMS.get()) && exteriorTile.StructuralBeams < 4) {
-					exteriorTile.StructuralBeams++;
-					used.shrink(1);
-				}
-
-				if (used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get())
-						&& exteriorTile.PlasmicShellPlates < 5) {
-					// Make sure you have more structural beams than you do plasmic shell plates
-					if (exteriorTile.StructuralBeams - exteriorTile.PlasmicShellPlates >= 1) {
-						exteriorTile.PlasmicShellPlates++;
-						used.shrink(1);
-					}
-				}
-
-				if (exteriorTile.PlasmicShellPlates == 4 && exteriorTile.StructuralBeams == 4
-						&& exteriorTile.getWeldProgress() == 100) {
-					exteriorTile.ShouldMakeDimOnNextTick = true;
-				}
-
-				System.out.printf("Beams: %s, Plates: %s, Weld: %s%n", exteriorTile.StructuralBeams,
-						exteriorTile.PlasmicShellPlates, exteriorTile.getWeldProgress());
-
-				return InteractionResult.SUCCESS;
-			}
-
-			else if (!level.isClientSide && exteriorTile.GetInterior() != null)
+			if (!level.isClientSide && exteriorTile.GetInterior() != null)
 				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior()))
 						.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
 

@@ -5,6 +5,7 @@ import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -15,7 +16,6 @@ import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
@@ -45,7 +45,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +56,7 @@ import java.util.UUID;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-public class ExteriorTile extends AbstractPortalTile implements IWeldable {
+public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
@@ -79,7 +78,6 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
-	public int PlasmicShellPlates, StructuralBeams, Weld;
 
 	public ExteriorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -198,37 +196,44 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	}
 
 	public void TeleportToInterior(Entity EntityToTeleport) {
-		if (this.getLevel() == null || this.getLevel().isClientSide)
-			return;
-		if (this.INTERIOR_DIMENSION == null)
+		if (this.getLevel() == null || this.getLevel().isClientSide || this.INTERIOR_DIMENSION == null)
 			return;
 
-		// Don't teleport if the entity in question is viewing the exterior via
-		// Environment Scanner
+		// Don't teleport if the entity in question is viewing the exterior via Environment Scanner
 		if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent()
 				&& !Objects.equals(EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY)
 						.orElse(new PlayerCapability(EntityToTeleport)).GetViewingTARDIS(), ""))
 			return;
 
 		ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
+
 		assert Interior != null;
 		Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-			MinecraftForge.EVENT_BUS
-					.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
+
+			TardisEvent.EntityEnterTARDIS event = new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport);
+			MinecraftForge.EVENT_BUS.post(event);
+
+			if (event.isCanceled()) return;
+
 			float X, Y, Z;
+
 			BlockPos pos = cap.GetData().getDoorData().getLocation().GetBlockPos()
 					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
+
 			X = pos.getX() + 0.5f;
 			Y = pos.getY() == 0 ? 128 : pos.getY();
 			Z = pos.getZ() + 0.5f;
+
 			float yRot = cap.GetData().getDoorData().getYRot() + EntityToTeleport.getYRot();
+
 			if (EntityToTeleport instanceof ServerPlayer player) {
 				player.getAbilities().flying = false;
 				player.onUpdateAbilities();
 			}
+
 			EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
-			MinecraftForge.EVENT_BUS
-					.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
+
+			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
 		});
 	}
 
@@ -307,14 +312,15 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public void onChunkUnloaded() {
 		assert this.level != null;
 		if (!this.level.isClientSide) {
-			Capabilities
-					.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
-							ServerLifecycleHooks.getCurrentServer().getLevel(this.INTERIOR_DIMENSION))
-					.ifPresent(tardis -> {
-						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight()) {
+			if(this.state.equals(ExteriorState.SHOULDNTEXIST) || this.state.equals(ExteriorState.TAKINGOFF)) {
+				this.UtterlyDestroy();
+				return;
+			}
+			TARDISLevelCapability.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(tardis -> {
+						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight())
 							this.UtterlyDestroy();
-						}
 					});
+
 			super.onChunkUnloaded();
 		}
 	}
@@ -373,6 +379,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	public void tick() {
+		if(this.state.equals(ExteriorState.SHOULDNTEXIST)) this.UtterlyDestroy();
+
 		if (this.INTERIOR_DIMENSION == null) {
 			if (!this.IsEmptyShell)
 				this.UtterlyDestroy();
@@ -448,21 +456,4 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 		}
 	}
 
-	/**
-	 * @return The max weld, PlasmicShellPlates * 40 - 40 weld per plate
-	 */
-	@Override
-	public int getMaxWeld() {
-		return this.PlasmicShellPlates * 40;
-	}
-
-	@Override
-	public int getWeld() {
-		return this.Weld;
-	}
-
-	@Override
-	public void setWeld(int weld) {
-		this.Weld = MathHelper.clamp(weld, 0, this.getMaxWeld());
-	}
 }

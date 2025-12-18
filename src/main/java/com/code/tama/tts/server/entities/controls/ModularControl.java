@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.networking.Networking;
@@ -10,8 +11,6 @@ import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,8 +33,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.RegistryObject;
-
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
 	private static final EntityDataAccessor<Integer> CONTROL = SynchedEntityData.defineId(ModularControl.class,
@@ -46,19 +45,23 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	public Vec3 Position;
 	public AbstractConsoleTile consoleTile;
+	private final BlockPos consolePos;
 	public AABB size;
 
 	/**
 	 * DO NOT CALL THIS! Use
 	 * {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}*
 	 */
+	@ApiStatus.Internal
 	public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
 		super(modularControlEntityType, level);
+		this.consolePos = BlockPos.ZERO;
 	}
 
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
 		assert consoleTile.getLevel() != null;
+		this.consolePos = consoleTile.getBlockPos();
 		float offs;
 		if (level.getBlockState(consoleTile.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
 			offs = -1;
@@ -266,5 +269,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		if (this.GetControl() != null)
 			buf.writeInt(ControlsRegistry.getOrdinal(this.GetControl()));
 		buf.writeInt(this.Identifier());
+	}
+
+	public AbstractConsoleTile getConsoleTile() {
+		return (AbstractConsoleTile) this.level().getBlockEntity(this.consolePos);
 	}
 }

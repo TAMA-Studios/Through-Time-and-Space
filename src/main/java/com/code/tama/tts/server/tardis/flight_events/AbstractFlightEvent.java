@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class AbstractFlightEvent {
+public abstract class AbstractFlightEvent {
     private final List<AbstractControl> RequiredToComplete;
     private final String name;
 
@@ -18,4 +18,7 @@ public class AbstractFlightEvent {
     public String getTranslatableKey() {
         return "tts.flight_event." + this.name;
     }
+
+    public abstract void onFail();
+    public abstract void onSuccess();
 }

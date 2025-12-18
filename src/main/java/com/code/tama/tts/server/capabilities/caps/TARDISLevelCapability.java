@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -59,7 +60,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	private TARDISFlightData flightData = new TARDISFlightData(this);
 	Level level;
 	ExteriorTile exteriorTile;
-	private long ticks = 0;
+	private long ticks = 0, lastFlightEvent;
 
 	public TARDISLevelCapability(Level level) {
 		this.level = level;
@@ -122,8 +123,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void UpdateExteriorState(ExteriorState state) {
-		if(this.GetExteriorTile() == null) return;
-		if(!this.level.isClientSide) {
+		if (this.GetExteriorTile() == null || this.level.isClientSide) return;
+		ForceLoadExteriorChunk(true);
+		if (state.equals(ExteriorState.SHOULDNTEXIST)) GetExteriorTile().UtterlyDestroy();
+
+		else {
 			long tick = this.GetLevel().getGameTime();
 
 			this.exteriorTile.state = state;
@@ -133,6 +137,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 							ExteriorState.LANDING, tick),
 					this.getExteriorLevel());
 		}
+		ForceLoadExteriorChunk(false);
 	}
 
 	@Override
@@ -272,6 +277,41 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.UpdateClient(DataUpdateValues.ALL);
 	}
 
+	public void FlightTick() {
+		this.GetFlightData().setTicksInFlight(
+				this.GetFlightData().getTicksInFlight() + 1
+		);
+
+		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
+		SpaceTimeCoordinate delta = distanceToLoc();
+
+		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get(); // blocks per tick
+
+		double dx = Math.signum(delta.GetX()) * speed;
+		double dy = Math.signum(delta.GetY()) * speed;
+		double dz = Math.signum(delta.GetZ()) * speed;
+
+		current
+				.AddX(dx)
+				.AddY(dy)
+				.AddZ(dz);
+
+		this.GetNavigationalData().setLocation(current);
+
+		HandleFlightEvents();
+	}
+
+
+	public SpaceTimeCoordinate distanceToLoc() {
+		return new SpaceTimeCoordinate(
+				this.GetNavigationalData().getDestination().GetBlockPos().getCenter().subtract(this.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
+	}
+
+	public void HandleFlightEvents() {
+		if(!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1 && this.level.getGameTime() - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())) return;
+		this.setCurrentFlightEvent(null);
+	}
+
 	@Override
 	public void Dematerialize() {
 		if (!this.CanFly())
@@ -279,6 +319,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		if (this.GetFlightData().isInFlight() || this.GetFlightData().IsTakingOff())
 			return;
+
+		TardisEvent.TakeOff event = new TardisEvent.TakeOff(this, TardisEvent.State.START);
+		MinecraftForge.EVENT_BUS.post(event);
+
+		if(event.isCanceled()) return;
 
 		GetFlightData().setPlayRotorAnimation(true);
 
@@ -288,8 +333,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		}
 
 		this.data.setSparking(false);
-
-		MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.START));
 
 		if (level.isClientSide()) return;
 
@@ -312,7 +355,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 //		if (!this.flightData.isInFlight())
 //			return;
 
-		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.START));
+		TardisEvent.Land event = new TardisEvent.Land(this, TardisEvent.State.START);
+		MinecraftForge.EVENT_BUS.post(event);
+
+		if (event.isCanceled()) return;
+
 		if (!level.isClientSide())
 			ServerThreads.LandingThread(this).start();
 	}
@@ -375,11 +422,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void Crash() {
-		if (this.level.isClientSide)
+		if (this.level.isClientSide || !this.flightData.isInFlight())
 			return;
-		if (!this.flightData.isInFlight())
-			return;
-		MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this, TardisEvent.State.START));
+
+		TardisEvent.Crash event = new TardisEvent.Crash(this, TardisEvent.State.START);
+		MinecraftForge.EVENT_BUS.post(event);
+
+		if (event.isCanceled()) return;
+
 		this.flightData.setInFlight(false);
 		this.data.setSparking(true);
 		this.environmentalData.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
@@ -428,9 +478,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Tick() {
 		this.ticks++;
-		if (this.flightData.isInFlight() && this.flightData.getTicksInFlight() > 0) {
-			this.flightData.setTicksInFlight(
-					this.flightData.getTicksInFlight() - this.data.getControlData().GetArtronPacketOutput());
+		if (this.flightData.isInFlight()) {
+			this.FlightTick();
 		}
 	}
 

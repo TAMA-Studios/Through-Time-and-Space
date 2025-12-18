@@ -59,9 +59,10 @@ public class ControlsRegistry {
 	public static AbstractControl Cycle(AbstractControl control) {
 		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
 			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get())) {
-				if (i == CONTROLS.getEntries().size())
+				if (i >= CONTROLS.getEntries().size() - 1)
 					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
-				return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
+				else
+					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
 			}
 		}
 

@@ -1,14 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -27,6 +21,13 @@ import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class ReflectionBuddy {
 	@SuppressWarnings("unchecked")
@@ -72,6 +73,10 @@ public class ReflectionBuddy {
 		public static final Function<Block, Boolean> hasCollision = getInstanceFieldGetter(Block.class, "hasCollision");
 		public static final Function<Block, Item.Properties> properties = getInstanceFieldGetter(Block.class,
 				"properties");
+	}
+
+	public static class RenderStateShardAccess {
+		public static final Function<RenderStateShard, RenderStateShard.TextureStateShard> BLOCK_SHEET_MIPPED = getInstanceFieldGetter(RenderStateShard.class, "BLOCK_SHEET_MIPPED");
 	}
 
 	public static class BlockBehaviorAccess {

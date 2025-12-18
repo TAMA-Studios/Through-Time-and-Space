@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.rendering;
 
+import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.boti.IHelpWithFBOs;
@@ -376,7 +377,7 @@ public class FBOHelper {
 
 		public static RenderType getRenderType() {
 			RenderType.CompositeState parameters = RenderType.CompositeState.builder()
-					.setTextureState(RenderStateShardAccessor.getBLOCK_SHEET_MIPPED())
+					.setTextureState(ReflectionBuddy.RenderStateShardAccess.BLOCK_SHEET_MIPPED.apply(null)) // RenderStateShard.class.getDeclaredField("BLOCK_SHEET_MIPPED").get(null)
 					.setTransparencyState(RenderStateShardAccessor.getTRANSLUCENT_TRANSPARENCY())
 					.setLayeringState(RenderStateShardAccessor.getNO_LAYERING()).createCompositeState(false);
 			return RenderType.create("boti", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, QUADS, 256, false, true,

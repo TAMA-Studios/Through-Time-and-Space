@@ -1,14 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Set;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.data.tardis.DoorData;
@@ -18,8 +10,6 @@ import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,6 +31,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Set;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Slf4j
 @SuppressWarnings("deprecation")
@@ -106,32 +103,35 @@ public class DoorBlock extends Block implements EntityBlock {
 	}
 
 	public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
-		if (GetTARDISCapSupplier(Interior).isPresent())
-			// TODO: Move this to onLevelLeave (or whatever it's called) event
-			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(GetTARDISCap(Interior),
-					TardisEvent.State.START, EntityToTeleport));
-		if (EntityToTeleport.level().isClientSide)
-			return;
-		try {
-			GetTARDISCapSupplier(Interior).ifPresent((cap) -> {
-				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
-				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
-						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
-					exteriorTile.SetInteriorAndSyncWithBlock(Interior.dimension());
-				}
-				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot()
-						+ EntityToTeleport.getYRot();
-				EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()), pos.getX(),
-						pos.getY(), pos.getZ(), Set.of(), yRot, 0);
+		GetTARDISCapSupplier(Interior).ifPresent(cap -> {
+			if (EntityToTeleport.level().isClientSide)
+				return;
 
-				((ServerPlayer) EntityToTeleport).getAbilities().flying = false;
-				((ServerPlayer) EntityToTeleport).onUpdateAbilities();
-				MinecraftForge.EVENT_BUS
-						.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
-			});
-		} catch (Exception e) {
-			TTSMod.LOGGER.error("EXTERIOR NOT FOUND");
-		}
+
+			TardisEvent.EntityExitTARDIS event = new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START, EntityToTeleport);
+			MinecraftForge.EVENT_BUS.post(event);
+
+			if (event.isCanceled()) return;
+
+			try {
+					BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
+					if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
+							.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
+						exteriorTile.SetInteriorAndSyncWithBlock(Interior.dimension());
+					}
+					float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot()
+							+ EntityToTeleport.getYRot();
+					EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()), pos.getX(),
+							pos.getY(), pos.getZ(), Set.of(), yRot, 0);
+
+					((ServerPlayer) EntityToTeleport).getAbilities().flying = false;
+					((ServerPlayer) EntityToTeleport).onUpdateAbilities();
+					MinecraftForge.EVENT_BUS
+							.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
+			} catch (Exception e) {
+				TTSMod.LOGGER.error("EXTERIOR NOT FOUND");
+			}
+		});
 	}
 
 	public BlockPos GetPosForTeleport(BlockState state, BlockPos pos) {

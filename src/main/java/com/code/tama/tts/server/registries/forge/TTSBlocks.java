@@ -3,6 +3,7 @@ package com.code.tama.tts.server.registries.forge;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
+import com.code.tama.tts.server.blocks.EmptyShellBlock;
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.core.*;
@@ -154,6 +155,10 @@ public class TTSBlocks {
 			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build()
 			.register();
+
+	@MainTab
+	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = Builder(

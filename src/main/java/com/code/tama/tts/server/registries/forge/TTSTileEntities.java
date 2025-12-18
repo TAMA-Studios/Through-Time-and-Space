@@ -32,6 +32,10 @@ public class TTSTileEntities {
 			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
 			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
+	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
+			.blockEntity("empty_shell", EmptyArtificialShellTile::new)
+			.validBlocks(TTSBlocks.EMPTY_SHELL).register();
+
 	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
 			.validBlocks(TTSBlocks.DOOR_BLOCK).register();
 

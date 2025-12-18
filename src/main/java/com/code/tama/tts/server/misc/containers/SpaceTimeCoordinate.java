@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -41,6 +41,12 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 		this.X = pos.getX();
 		this.Y = pos.getY();
 		this.Z = pos.getZ();
+	}
+
+	public SpaceTimeCoordinate(Vec3 pos) {
+		this.X = pos.x();
+		this.Y = pos.y();
+		this.Z = pos.z();
 	}
 
 	public SpaceTimeCoordinate(BlockPos pos, ResourceKey<Level> level) {

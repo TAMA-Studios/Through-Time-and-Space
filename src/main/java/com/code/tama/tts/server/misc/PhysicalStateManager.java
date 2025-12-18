@@ -41,7 +41,7 @@ public class PhysicalStateManager {
 		float decay = 0.05f;
 		float freq = 0.3f;
 
-		while (!this.exteriorTile.state.equals(ExteriorState.LANDED)) {
+		while (this.exteriorTile.state.equals(ExteriorState.LANDING)) {
 			if (!server) {
 				assert this.exteriorTile.getLevel() != null;
 				long tick = this.exteriorTile.getLevel().getGameTime() - startTick;

@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 import com.code.tama.tts.server.misc.progressable.IWeldable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class SonicBlockMode extends SonicMode {
 	public Item getIcon() {
@@ -41,7 +39,6 @@ public class SonicBlockMode extends SonicMode {
 		Level level = player.level();
 
 		if (state.hasBlockEntity() && level.getBlockEntity(usedPos) instanceof IWeldable weldable) {
-
 			weldable.setWeld(weldable.getWeld() + 1);
 		}
 

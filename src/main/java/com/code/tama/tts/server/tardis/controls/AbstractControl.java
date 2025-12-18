@@ -72,7 +72,8 @@ public abstract class AbstractControl {
 
 	public void RenderFlightEvent(PoseStack stack, MultiBufferSource source, ModularControl control) {
 		assert control.consoleTile.getLevel() != null;
-		TARDISLevelCapability.GetTARDISCapSupplier(control.consoleTile.getLevel()).ifPresent((cap) -> {
+		if(control.getConsoleTile() == null) return;
+		TARDISLevelCapability.GetTARDISCapSupplier(control.getConsoleTile().getLevel()).ifPresent((cap) -> {
 			if (cap.getCurrentFlightEvent().getRequiredToComplete().contains(this)) {
 				assert Minecraft.getInstance().level != null;
 				if (Minecraft.getInstance().level.random.nextInt(100000) <= 5) {
