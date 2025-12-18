@@ -40,6 +40,8 @@ public class SonicBlockMode extends SonicMode {
 
 		if (state.hasBlockEntity() && level.getBlockEntity(usedPos) instanceof IWeldable weldable) {
 			weldable.setWeld(weldable.getWeld() + 1);
+			System.out.println(weldable.getWeld());
+			return;
 		}
 
 		// if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {

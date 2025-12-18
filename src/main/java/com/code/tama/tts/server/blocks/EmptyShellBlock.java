@@ -3,6 +3,7 @@ package com.code.tama.tts.server.blocks;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
+import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.EmptyArtificialShellTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
@@ -64,12 +65,20 @@ public class EmptyShellBlock extends Block implements EntityBlock {
 
                 return InteractionResult.SUCCESS;
             }
+            else if(shell.getWeldProgress() >= 100) shell.ShouldMakeExt = true;
 
             if(shell.ShouldMakeExt) {
                 level.removeBlock(blockPos, false);
                 level.removeBlockEntity(blockPos);
+
                 BlockState state1 = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
                 ExteriorTile tile = TTSTileEntities.EXTERIOR_TILE.create(blockPos, state1);
+
+                tile.PlacerName = player.getName().getString();
+                tile.PlacerUUID = player.getUUID();
+                tile.state = ExteriorState.LANDED;
+                tile.isArtificial = true;
+
                 level.setBlockAndUpdate(blockPos, state1);
                 level.setBlockEntity(tile);
 
