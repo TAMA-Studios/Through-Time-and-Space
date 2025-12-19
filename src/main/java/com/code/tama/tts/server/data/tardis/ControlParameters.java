@@ -58,7 +58,6 @@ public class ControlParameters {
 		return this.APCState;
 	}
 
-	// TODO: Implement Artron Frequency Controller
 	/**
 	 * Higher packet output = Smaller Artron Packets = Slower Flight Speed + Slower
 	 * power drain <br>

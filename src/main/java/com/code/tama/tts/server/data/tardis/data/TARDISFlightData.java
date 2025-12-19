@@ -1,11 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.tardis.FlightSoundSchemesRegistry;
 import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
@@ -24,7 +26,6 @@ public class TARDISFlightData {
 			.group(DataFlightEvent.CODEC.fieldOf("flight_event").forGetter(TARDISFlightData::getFlightEvent),
 					Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
 					Codec.INT.fieldOf("drift").forGetter(TARDISFlightData::getDrift),
-					Codec.INT.fieldOf("ticksTillDestination").forGetter(TARDISFlightData::getTicksTillDestination),
 					FlightTerminationProtocolRegistry.CODEC.fieldOf("flightTerminationProtocol")
 							.forGetter(TARDISFlightData::getFlightTerminationProtocol),
 					FlightSoundSchemesRegistry.CODEC.fieldOf("flightSoundScheme")
@@ -37,7 +38,7 @@ public class TARDISFlightData {
 
 	ITARDISLevel TARDIS;
 	private DataFlightEvent flightEvent = new DecoyFlightEvent();
-	int TicksInFlight, TicksTillDestination, Drift;
+	int TicksInFlight, Drift;
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 	boolean inFlight, PlayRotorAnimation;
 
@@ -45,12 +46,11 @@ public class TARDISFlightData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISFlightData(DataFlightEvent flightEvent, int ticksInFlight, int drift, int ticksTillDestination,
+	public TARDISFlightData(DataFlightEvent flightEvent, int ticksInFlight, int drift,
 			FlightTerminationProtocol flightTerminationProtocol, AbstractSoundScheme flightSoundScheme,
 			boolean inFlight, boolean playRotorAnimation) {
 		this.TicksInFlight = ticksInFlight;
 		this.Drift = drift;
-		this.TicksTillDestination = ticksTillDestination;
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.FlightSoundScheme = flightSoundScheme;
 		this.inFlight = inFlight;
@@ -59,5 +59,31 @@ public class TARDISFlightData {
 
 	public boolean IsTakingOff() {
 		return this.PlayRotorAnimation && !this.inFlight;
+	}
+
+	public SpaceTimeCoordinate distanceToLoc() {
+		return new SpaceTimeCoordinate(this.TARDIS.GetNavigationalData().getDestination().GetBlockPos().getCenter()
+				.subtract(this.TARDIS.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
+	}
+
+	public long getTicksUntilArrival() {
+		if (this.TARDIS.GetData().getControlData().isVortexAnchor())
+			return Long.MAX_VALUE;
+
+		SpaceTimeCoordinate delta = this.distanceToLoc();
+
+		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get()
+				+ Math.max(1, this.TARDIS.GetData().getControlData().GetArtronPacketOutput() * 10);
+
+		if (speed <= 0)
+			return Long.MAX_VALUE;
+
+		double ticksX = Math.abs(delta.GetX()) / speed;
+		double ticksY = Math.abs(delta.GetY()) / speed;
+		double ticksZ = Math.abs(delta.GetZ()) / speed;
+
+		double ticks = Math.max(ticksX, Math.max(ticksY, ticksZ));
+
+		return Math.max(0L, (long) Math.ceil(ticks));
 	}
 }

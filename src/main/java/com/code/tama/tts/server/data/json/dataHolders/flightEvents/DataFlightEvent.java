@@ -1,17 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json.dataHolders.flightEvents;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventActions;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventFailureAction;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.resources.ResourceLocation;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class DataFlightEvent {
@@ -26,6 +25,10 @@ public class DataFlightEvent {
 		this.name = name;
 		Time = time;
 		this.action = action;
+	}
+
+	public DataFlightEvent copy() {
+		return new DataFlightEvent(this.RequiredControls, this.name, this.Time, this.action);
 	}
 
 	public DataFlightEvent(List<ResourceLocation> requiredControls, String name, int time, String action) {

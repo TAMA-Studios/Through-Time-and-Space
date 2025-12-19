@@ -1,23 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.code.tama.tts.exceptions.GrammarException;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.code.tama.tts.server.registries.forge.TTSItems;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
-
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.LOGGER;
+import static com.code.tama.tts.TTSMod.MODID;
 
 /**
  * This is for functions related to string manipulation
@@ -145,7 +145,7 @@ public class GrammarNazi {
 		}
 	}
 
-	public static void checkAllTranslations() {
+	public static void checkAllTranslations() throws GrammarException {
 		TTSItems.AllValues().forEach(item -> {
 			String key = item.get().getDescriptionId();
 			checkTranslation(key);
@@ -180,7 +180,7 @@ public class GrammarNazi {
 			LOGGER.error("Missing translations!");
 			MissingTranslations.forEach(LOGGER::error);
 
-			throw new RuntimeException();
+			throw new GrammarException(MissingTranslations);
 		}
 	}
 

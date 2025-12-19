@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.server.tardis.controls.*;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +9,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -52,35 +51,42 @@ public class ControlsRegistry {
 	public static final RegistryObject<CoordinateLockControl> COORDINATE_LOCK = CONTROLS.register("coordinate_lock",
 			CoordinateLockControl::new);
 
+	public static final RegistryObject<CoordinateLockControl> APC_STATE = CONTROLS.register("apc_state",
+			CoordinateLockControl::new);
+
+	public static final RegistryObject<ArtronPacketOutput> ARTRON_PACKET_OUTPUT = CONTROLS.register("artron_packet_output",
+			ArtronPacketOutput::new);
+
 	public static final RegistryObject<TerminationProtocolControl> TERMINATION_PROTOCOL = CONTROLS
 			.register("termination_protocol", TerminationProtocolControl::new);
 
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {
-		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get())) {
-				if (i >= CONTROLS.getEntries().size() - 1)
-					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
-				else
-					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
-			}
-		}
+//		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
+//			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get())) {
+//				if (i >= CONTROLS.getEntries().size() - 1)
+//					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
+//				else
+//					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
+//			}
+//		}
 
-		return EMPTY.get();
+		int ordinal = (getOrdinal(control) + 1);
+		if(ordinal >= CONTROLS.getEntries().size())
+			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
+		else {
+			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[ordinal]).get();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public static AbstractControl CycleBackwards(AbstractControl control) {
-		for (int i = CONTROLS.getEntries().size(); i >= 0; i--) {
-			if (control.equals(CONTROLS.getEntries().toArray()[i])) {
-				if (i == 0)
-					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[CONTROLS.getEntries()
-							.size()]).get();
-				return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get();
-			}
+		int ordinal = (getOrdinal(control) - 1);
+		if(ordinal <= CONTROLS.getEntries().size())
+			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[CONTROLS.getEntries().size() - 1]).get();
+		else {
+			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[ordinal]).get();
 		}
-
-		return EMPTY.get();
 	}
 
 	@SuppressWarnings("unchecked")

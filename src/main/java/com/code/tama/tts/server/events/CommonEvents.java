@@ -1,18 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.exceptions.GrammarException;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.json.loaders.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.registries.forge.TTSDamageSources;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +28,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.helpers.OxygenHelper;
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -104,9 +103,8 @@ public class CommonEvents {
 				CameraShakeHandler.endShake();
 				if (event.level.GetData().getControlData().isBrakes()) {
 					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
-					event.level.GetExteriorTile().getLevel().playSound(null,
-							event.level.GetExteriorTile().getBlockPos(), TTSSounds.THUD.get(), SoundSource.BLOCKS, 1,
-							1); // Play at exterior
+					event.level.GetExteriorTile().getLevel().playLocalSound(event.level.GetExteriorTile().getBlockPos(), TTSSounds.THUD.get(), SoundSource.BLOCKS, 1,
+							1, true); // Play at exterior
 					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
 							SoundSource.BLOCKS, 1, 1); // Play at interior
 				}
@@ -161,7 +159,7 @@ public class CommonEvents {
 	}
 
 	@SubscribeEvent
-	public static void PlayerJoin(EntityJoinLevelEvent event) {
+	public static void PlayerJoin(EntityJoinLevelEvent event) throws GrammarException {
 		if (event.getEntity() instanceof ServerPlayer player) {
 			player.getCapability(Capabilities.PLAYER_CAPABILITY)
 					.ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));

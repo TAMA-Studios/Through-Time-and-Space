@@ -8,7 +8,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -105,7 +104,16 @@ public class TARDISNavigationalData {
 		return this.Location.copy();
 	}
 
+	/**
+	 * Sets the TARDIS Destination IF the coordinate lock is NOT on
+	 */
 	public void setDestination(SpaceTimeCoordinate destination) {
+		if(!this.TARDIS.GetData().getControlData().isCoordinateLock())
+			Destination = destination.copy();
+	}
+
+	/** Sets the TARDIS Destination, ignoring the coordinate lock **/
+	public void forceSetDestination(SpaceTimeCoordinate destination) {
 		Destination = destination.copy();
 	}
 

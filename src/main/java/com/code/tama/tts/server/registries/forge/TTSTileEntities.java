@@ -1,11 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
+import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
@@ -22,9 +21,10 @@ import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
@@ -41,6 +41,9 @@ public class TTSTileEntities {
 
 	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
+
+	public static final BlockEntityEntry<FaultLocatorTile> FAULT_LOCATOR = registrate()
+			.blockEntity("fault_locator", FaultLocatorTile::new).validBlocks(TTSBlocks.FAULT_LOCATOR).renderer(() -> FaultLocatorRenderer::new).register();
 
 	public static final BlockEntityEntry<SonicConfiguratorTileEntity> SONIC_CONFIGURATOR = registrate()
 			.blockEntity("sonic_configurator", SonicConfiguratorTileEntity::new)

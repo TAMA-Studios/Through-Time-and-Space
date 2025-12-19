@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
@@ -29,9 +24,6 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,6 +44,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private TARDISData data = new TARDISData(this);
@@ -177,7 +176,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public boolean CanFly() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered();
+				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock();
 	}
 
 	@Override
@@ -257,14 +256,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		// Null exterior checks!
 		this.NullExteriorChecksAndFixes();
 
-		//////////////////////// CALCULATIONS START ////////////////////////
-		// Set distance between the location and destination
-		double Distance = this.GetNavigationalData().getDestination().GetBlockPos().getCenter()
-				.distanceTo(this.GetNavigationalData().GetExteriorLocation().GetBlockPos().getCenter());
-		// Set reach destination ticks
-		this.GetFlightData().setTicksTillDestination((int) Distance * 20);
-		//////////////////////// CALCULATIONS END ////////////////////////
-
 		if (!this.CanFly() || this.GetLevel().isClientSide())
 			return;
 
@@ -294,9 +285,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			return;
 
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
-		SpaceTimeCoordinate delta = distanceToLoc();
+		SpaceTimeCoordinate delta = flightData.distanceToLoc();
 
-		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get(); // blocks per tick
+		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get() + (Math.max(1, this.data.getControlData().GetArtronPacketOutput() * 10)); // blocks per tick, calculated using default config value, + Artron packet output * 10 (where artron packet output is a float from 0-1)
 
 		double dx = Math.signum(delta.GetX()) * speed;
 		double dy = Math.signum(delta.GetY()) * speed;
@@ -310,12 +301,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			HandleFlightEvents();
 	}
 
-	public SpaceTimeCoordinate distanceToLoc() {
-		return new SpaceTimeCoordinate(this.GetNavigationalData().getDestination().GetBlockPos().getCenter()
-				.subtract(this.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
-	}
-
 	public void HandleFlightEvents() {
+		if(ticks % (80 + ThreadLocalRandom.current().nextInt(120)) == 1) {
+			this.data.getControlData().setHelmicRegulator(
+					this.data.getControlData().getHelmicRegulator() + ThreadLocalRandom.current().nextFloat(0.2f) - 0.1f
+			);
+			this.UpdateClient(DataUpdateValues.DATA);
+		}
+
 		if (!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) {
 			if (this.getCurrentFlightEvent().RequiredControls.isEmpty()) {
 				this.setCurrentFlightEvent(new DecoyFlightEvent());
@@ -338,7 +331,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		int eventIndex = Math.max(ThreadLocalRandom.current().nextInt(0, DataFlightEventList.getList().size()), 0);
 
-		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex));
+		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex).copy());
 
 		this.level.players().forEach(
 				p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name)));
@@ -405,6 +398,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Land() {
 		this.flightData.setInFlight(false);
+		this.flightData.setTicksInFlight(0);
 		if (!this.GetLevel().isClientSide) {
 
 			ServerLevel CurrentLevel = Objects.requireNonNull(this.GetLevel().getServer())
