@@ -1,7 +1,3 @@
 {
-  "values": [
-    "minecraft:skeleton",
-    "minecraft:creeper",
-    "minecraft:sheep"
-  ]
+  "values" : [ "minecraft:skeleton", "minecraft:creeper", "minecraft:sheep" ]
 }

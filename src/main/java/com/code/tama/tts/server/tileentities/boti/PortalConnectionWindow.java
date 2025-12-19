@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities.boti;
 
-import com.code.tama.triggerapi.tileEntities.TickingTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 
 public class PortalConnectionWindow extends TickingTile {
 	public PortalConnectionWindow(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {

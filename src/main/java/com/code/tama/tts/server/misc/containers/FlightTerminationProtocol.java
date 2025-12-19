@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
+import java.util.Random;
+
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Getter
@@ -25,9 +26,7 @@ public class FlightTerminationProtocol {
 	public final float TakeoffShakeAmount;
 	public final String name;
 
-
 	private BlockPos landPos;
-
 
 	public BlockPos GetLandPos() {
 		return this.landPos;

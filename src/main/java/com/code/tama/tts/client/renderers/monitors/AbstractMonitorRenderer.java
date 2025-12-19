@@ -1,7 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import static com.code.tama.tts.client.UI.category.UICategory.RenderText;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.client.UI.component.all.UIComponentPower;
@@ -12,6 +14,9 @@ import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,11 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
-import static com.code.tama.tts.client.UI.category.UICategory.RenderText;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
 	public final BlockEntityRendererProvider.Context context;
@@ -47,7 +49,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		StencilUtils.DrawStencil(poseStack, (pose) -> {
 			pose.pushPose();
 			this.ApplyDefaultTransforms(pose, monitor);
-//		poseStack.translate(0.5, 0.5, 0);
+			// poseStack.translate(0.5, 0.5, 0);
 
 			pose.translate(-44, -0.5, 0);
 			pose.scale(5.5f, 5.5f, 0);
@@ -56,7 +58,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			pose.popPose();
 		}, (pose) -> {
 
-//		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
+			// GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 
 			boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
 
@@ -75,7 +77,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			if (monitor.isPowered()) {
 				if (isInTARDIS)
 					this.category.Render(monitor, pose, bufferSource, combinedLight);
-				else RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
+				else
+					RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
 			}
 
 			pose.popPose();
@@ -195,7 +198,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 	}
 
 	private void renderBackground(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
-								  int combinedLight) {
+			int combinedLight) {
 		if (!monitor.isPowered())
 			return;
 		ResourceLocation texture;
@@ -235,7 +238,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 	}
 
 	private void renderFrame(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
-								  int combinedLight) {
+			int combinedLight) {
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.disableBlend();
 		RenderSystem.enableDepthTest();

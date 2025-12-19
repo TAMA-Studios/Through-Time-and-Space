@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
@@ -13,15 +11,16 @@ import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
+
 public class BlockUtils {
 	public static void breakBlock(Level world, BlockPos pos) {
 		UniversalServerOnly.Level.breakBlock(world, pos);
 	}
 
 	public static BlockPos fromChunkAndLocal(ChunkPos chunkPos, BlockPos localPos) {
-		return new BlockPos(
-				(chunkPos.x << 4) + UniversalCommon.Pos.x(localPos),
-				UniversalCommon.Pos.y(localPos),
+		return new BlockPos((chunkPos.x << 4) + UniversalCommon.Pos.x(localPos), UniversalCommon.Pos.y(localPos),
 				(chunkPos.z << 4) + UniversalCommon.Pos.z(localPos));
 	}
 
@@ -59,8 +58,7 @@ public class BlockUtils {
 	}
 
 	public static BlockPos getRelativeBlockPos(BlockPos basePos, BlockPos offsetPos) {
-		return new BlockPos(
-				UniversalCommon.Pos.x(basePos) + UniversalCommon.Pos.x(offsetPos),
+		return new BlockPos(UniversalCommon.Pos.x(basePos) + UniversalCommon.Pos.x(offsetPos),
 				UniversalCommon.Pos.y(basePos) + UniversalCommon.Pos.y(offsetPos),
 				UniversalCommon.Pos.z(basePos) + UniversalCommon.Pos.z(offsetPos));
 	}

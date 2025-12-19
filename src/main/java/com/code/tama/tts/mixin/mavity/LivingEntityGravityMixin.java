@@ -1,15 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin.mavity;
 
-import com.code.tama.triggerapi.helpers.GravityHelper;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
 import net.minecraft.world.entity.Attackable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import com.code.tama.triggerapi.helpers.GravityHelper;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityGravityMixin extends Entity

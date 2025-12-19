@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
 import com.code.tama.tts.server.blocks.HardLightBlock;
@@ -33,6 +36,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -47,9 +51,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
+import com.code.tama.triggerapi.ReflectionBuddy;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -90,17 +92,20 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL = Builder(
 			"decoration/structural_steel_brushed/structural_steel",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel().simpleItem().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_WEATHERED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_weathered",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel().simpleItem().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_RUSTED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_rusted",
-			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel().simpleItem().register();
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<Block> BRUSHED_STEEL = Builder("brushed_steel", Block::new)
@@ -121,7 +126,8 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_GRATE_SLAB = Builder("carbon_steel_grate_slab",
 			SlabBlock::new).simpleSlabStateAndModel()
-			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion())
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
+					.noOcclusion())
 			.simpleItem().register();
 
 	@MainTab
@@ -132,29 +138,30 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<SlabBlock> CARBON_STEEL_SLAB = Builder("carbon_steel_slab", SlabBlock::new)
-			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion())
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
+					.noOcclusion())
 			.simpleSlabStateAndModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<TrapDoorBlock> CARBON_STEEL_TRAPDOOR = Builder("carbon_steel_trapdoor",
 			(prop) -> new TrapDoorBlock(prop, BlockSetType.IRON))
-			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
+			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL))
 			.simpleTrapdoor().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
-			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem().register();
+			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
-			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).airState().simpleItem()
-			.register();
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
 			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
-			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build()
-			.register();
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
@@ -163,8 +170,8 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = Builder(
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
-			.properties(BlockBehaviour.Properties::noOcclusion)
-			.airState().item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
 			.simpleItem().register();
 
 	@MainTab
@@ -176,8 +183,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
-			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL))
-			.controlPanelState().properties(BlockBehaviour.Properties::noOcclusion).simpleItem().register();
+			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL)).controlPanelState()
+			.properties(BlockBehaviour.Properties::noOcclusion).simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
@@ -189,7 +196,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
-			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel().simpleItem().register();
+			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<MonitorPanel> MONITOR_PANEL = Builder("monitor_panel", MonitorPanel::new)
@@ -197,23 +205,23 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<CoordinatePanelBlock> COORDINATE_PANEL = Builder("coordinate_panel",
-			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel()
-			.simpleItem().register();
+			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> BLUE_ROTOR = Builder("rotor/blue", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
-			.register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> AMETHYST_ROTOR = Builder("rotor/amethyst", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
-			.register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> COPPER_ROTOR = Builder("rotor/copper", RotorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel().simpleItem()
-			.register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<LightPanel> LIGHT_PANEL = Builder("light_panel", LightPanel::new)
@@ -229,7 +237,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<ToyotaThrottleBlock> TOYOTA_THROTTLE = Builder("toyota_throttle",
-			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
@@ -237,13 +246,13 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
-			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem()
-			.register();
+			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HartnellDoor> HARTNELL_DOOR = TTSBlocks
-			.Builder("hartnell_door", p -> new HartnellDoor(p, TTSTileEntities.HARTNELL_DOOR)).airState().defaultBlockstate()
-			.simpleItem().register();
+			.Builder("hartnell_door", p -> new HartnellDoor(p, TTSTileEntities.HARTNELL_DOOR)).airState()
+			.defaultBlockstate().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<WorkbenchBlock> TEMPORAL_FABRICATOR = TTSBlocks
@@ -255,13 +264,13 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<DematerializationCircuitCoreBlock> DEMATERIALIZATION_CIRCUIT_CORE = Builder(
-			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel().simpleItem()
-			.register();
+			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",
-			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).stateWithExistingModel()
-			.simpleItem().register();
+			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
@@ -487,7 +496,7 @@ public class TTSBlocks {
 	}
 
 	public static <T extends Block> TTSBlockBuilder<T, TTSRegistrate> Builder(String name,
-																			  NonNullFunction<BlockBehaviour.Properties, T> block) {
+			NonNullFunction<BlockBehaviour.Properties, T> block) {
 		return registrate().block(name, block);
 	}
 

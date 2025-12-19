@@ -1,16 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.exterior;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.misc.PhysicalStateManager;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.AllArgsConstructor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public record ExteriorStatePacket(BlockPos pos, ExteriorState state, long startTick) {
 
@@ -53,7 +54,8 @@ public record ExteriorStatePacket(BlockPos pos, ExteriorState state, long startT
 			if (state == ExteriorState.TAKINGOFF) {
 				PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
 				manager.clientTakeOff(StartTick);
-			} if(state == ExteriorState.LANDING) {
+			}
+			if (state == ExteriorState.LANDING) {
 				PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
 				manager.clientLand(StartTick);
 			}

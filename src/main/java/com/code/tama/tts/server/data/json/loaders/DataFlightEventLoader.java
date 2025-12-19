@@ -1,7 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json.loaders;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.CrashFailureAction;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventFailureAction;
@@ -12,18 +17,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
+import org.slf4j.Logger;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
-import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Getter
 public class DataFlightEventLoader implements ResourceManagerReloadListener {
@@ -49,8 +51,7 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 					controls.asList().forEach(e -> {
 						new ResourceLocation(e.getAsString());
 					});
-				}
-				catch (Exception exception) {
+				} catch (Exception exception) {
 					exception.printStackTrace();
 				}
 
@@ -92,11 +93,11 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 							JsonObject jsonAction = valuesObject.get("fail_action").getAsJsonObject();
 
 							switch (jsonAction.get("name").getAsString()) {
-								case "artron": {
+								case "artron" : {
 									action = new TakeArtronAction(jsonAction.get("fuel_to_take").getAsInt());
 									break;
 								}
-                                default: {
+								default : {
 									action = new CrashFailureAction();
 									break;
 								}

@@ -1,13 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities.monitors;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.util.Fonts;
 import com.code.tama.tts.server.blocks.monitor.AbstractMonitorBlock;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -17,10 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 
 @Slf4j
 @Getter
@@ -77,8 +79,7 @@ public abstract class AbstractMonitorTile extends AbstractPortalTile {
 	@Override
 	public void onLoad() {
 		assert this.getLevel() != null;
-		GetTARDISCapSupplier(this.getLevel())
-				.ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
+		GetTARDISCapSupplier(this.getLevel()).ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
 		super.onLoad();
 	}
 }

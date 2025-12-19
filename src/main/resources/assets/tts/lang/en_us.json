@@ -1,8 +1,4 @@
 {
-  "block.tts.empty_shell": "Empty Artificial Shell",
-  "tts.controls.helmic_regulator": "Helmic Regulator",
-  "tts.controls.coordinate_lock": "Coordinate Lock",
-  "item.tts.gadgets.twine_spool": "Spool of Twine",
   "advancement.tts.sonic_screwdriver.desc" : "Go build a cabinet.",
   "advancement.tts.sonic_screwdriver.title" : "You have a screwdriver!",
   "advancement.tts.tardis_entry.desc" : "Three-dimensional euclidean geometry has been torn up, thrown in the air and SNOGGED TO DEATH!!",
@@ -51,6 +47,7 @@
   "block.tts.dimentional.gallifreyan.gallifreyan_oak_wood_stripped" : "Stripped Gallifreyan Oak Wood",
   "block.tts.dimentional.gallifreyan.gallifreyan_sand" : "Gallifreyan Sand",
   "block.tts.door_block" : "Inter-Dimensional Exterior Link (Door)",
+  "block.tts.empty_shell" : "Empty Artificial Shell",
   "block.tts.example_tile_block" : "Example Tile Block",
   "block.tts.exterior_block" : "TARDIS Type 40 Shell",
   "block.tts.fragment_links" : "Fragment Links",
@@ -99,6 +96,7 @@
   "item.tts.basic_nozzle" : "Fabricator Nozzle [Basic]",
   "item.tts.console_block" : "Console Block",
   "item.tts.exterior" : "TARDIS Exterior",
+  "item.tts.gadgets.twine_spool" : "Spool of Twine",
   "item.tts.growth_cake" : "Growth Cake",
   "item.tts.huon_bottle" : "Huon Bottle",
   "item.tts.manual" : "TTS Manual",
@@ -122,10 +120,13 @@
   "tts.ars.ironclad" : "Ironclad Interior",
   "tts.ars.rustic_storage" : "Rustic Storage",
   "tts.ars.starter" : "Starter Room",
+  "tts.controls.coordinate_lock" : "Coordinate Lock",
   "tts.controls.dimension_control" : "Dimension Control",
   "tts.controls.empty" : "Empty Control Slot",
   "tts.controls.environment_scanner" : "Environment Scanner",
   "tts.controls.facing_control" : "Facing Control",
+  "tts.controls.flight_termination_protocol.use" : "Flight Termination Protocol: %s",
+  "tts.controls.helmic_regulator" : "Helmic Regulator",
   "tts.controls.increment_control" : "Increment Control",
   "tts.controls.power_control" : "Power Control",
   "tts.controls.throttle" : "Throttle Control",
@@ -159,6 +160,5 @@
   "tts.tardis.control.throttle" : "Dematerialization Lever",
   "tts.tardis.control.x_control" : "X Plotters",
   "tts.tardis.control.y_control" : "Y Plotters",
-  "tts.tardis.control.z_control" : "Z Plotters",
-  "tts.controls.flight_termination_protocol.use": "Flight Termination Protocol: %s"
+  "tts.tardis.control.z_control" : "Z Plotters"
 }

@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.visual;
 
+import java.util.function.Consumer;
+
 import com.code.tama.tts.client.TTSPartialModels;
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import dev.engine_room.flywheel.api.instance.Instance;
@@ -10,8 +12,6 @@ import dev.engine_room.flywheel.lib.instance.TransformedInstance;
 import dev.engine_room.flywheel.lib.model.Models;
 import dev.engine_room.flywheel.lib.visual.AbstractBlockEntityVisual;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public class FragmentLinksVisual extends AbstractBlockEntityVisual<FragmentLinksTile> {
 	private final TransformedInstance model;

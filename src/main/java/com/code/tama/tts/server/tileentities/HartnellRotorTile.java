@@ -1,15 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.tileEntities.TickingTile;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+
 import com.code.tama.tts.server.capabilities.Capabilities;
 import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 
 @Getter
 public class HartnellRotorTile extends TickingTile {

@@ -1,12 +1,10 @@
 {
-  "values": {
-    "name": "helmic_bump",
-    "controls": [
-      "tts:helmic_regulator"
-    ],
-    "time": 200,
-    "fail_action": {
-      "name": "crash"
-    }
+  "values" : {
+    "controls" : [ "tts:helmic_regulator" ],
+    "fail_action" : {
+      "name" : "crash"
+    },
+    "name" : "helmic_bump",
+    "time" : 200
   }
 }

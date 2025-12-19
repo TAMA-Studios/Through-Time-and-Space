@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -20,10 +22,9 @@ import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
@@ -33,8 +34,7 @@ public class TTSTileEntities {
 			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
 	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
-			.blockEntity("empty_shell", EmptyArtificialShellTile::new)
-			.validBlocks(TTSBlocks.EMPTY_SHELL).register();
+			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL).register();
 
 	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
 			.validBlocks(TTSBlocks.DOOR_BLOCK).register();
@@ -117,7 +117,7 @@ public class TTSTileEntities {
 
 	@SafeVarargs
 	public static <P extends Block, T extends BlockEntity> BlockEntityBuilder<T, TTSRegistrate> builder(String name,
-																										BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
+			BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
 		return registrate().blockEntity(name, factory).validBlocks(blocks);
 	}
 

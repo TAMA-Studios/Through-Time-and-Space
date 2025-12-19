@@ -1,15 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
-import com.code.tama.tts.server.entities.controls.ModularControl;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
+import com.code.tama.tts.server.entities.controls.ModularControl;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class ControlClickedPacketC2S {
 

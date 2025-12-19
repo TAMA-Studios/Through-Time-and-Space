@@ -55,12 +55,13 @@ public class TTSConfig {
 			builder.comment("Through Time and Space - A Config");
 			builder.comment("""
 					We trust you have received the usual lecture from the local System Administrator.
-					
+
 					It usually boils down to these three things:
 					#1) Respect the privacy of others.
 					#2) Think before you type.
 					#3) With great power comes great responsibility.""");
-			builder.comment("Important note: Time is measured in ticks, one tick is 1/20th of a second, meaning there are 20 ticks in one second.");
+			builder.comment(
+					"Important note: Time is measured in ticks, one tick is 1/20th of a second, meaning there are 20 ticks in one second.");
 			builder.push("BOTI Config Values");
 
 			builder.comment("BOTI Render Distance (Default 6)");

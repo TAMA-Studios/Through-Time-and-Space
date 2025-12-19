@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.misc;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.client.UI.category.*;
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -9,9 +13,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.ApiStatus;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class UICategoryRegistry {
 	public static final ResourceKey<Registry<UICategory>> UI_CATEGORY_REGISTRY_KEY = ResourceKey
@@ -25,8 +26,8 @@ public class UICategoryRegistry {
 	public static final RegistryObject<UICategory> CURRENT_LOC = UI_CATEGORIES.register("current_location",
 			LocationUICategory::new);
 
-	public static final RegistryObject<UICategory> EXTERIOR_DIAGNOSTIC_READOUT = UI_CATEGORIES.register("exterior_diagnostic_readout",
-			ExteriorStatsUICategory::new);
+	public static final RegistryObject<UICategory> EXTERIOR_DIAGNOSTIC_READOUT = UI_CATEGORIES
+			.register("exterior_diagnostic_readout", ExteriorStatsUICategory::new);
 
 	public static final RegistryObject<UICategory> FLIGHT_STATUS = UI_CATEGORIES.register("flight_status",
 			FlightStatusUICategory::new);

@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.data.json.dataHolders;
 
 import lombok.Builder;
+
 import net.minecraft.resources.ResourceLocation;
 
 @Builder

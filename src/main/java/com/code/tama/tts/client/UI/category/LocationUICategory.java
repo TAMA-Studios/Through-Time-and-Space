@@ -1,19 +1,20 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.Locale;
+
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Locale;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class LocationUICategory extends UICategory {
 	public LocationUICategory() {
@@ -39,8 +40,8 @@ public class LocationUICategory extends UICategory {
 
 			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
 
-			fontRenderer.drawInBatch(osVer(monitor), -40, 5, white, false, poseStack.last().pose(),
-					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch(osVer(monitor), -40, 5, white, false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, combinedLight);
 
 			fontRenderer.drawInBatch(Component.literal("Location").withStyle(style(monitor)), -22.5f, 15, white, false,
 					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);

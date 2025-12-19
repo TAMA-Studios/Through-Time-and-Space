@@ -1,6 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
@@ -24,6 +29,9 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,13 +52,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private TARDISData data = new TARDISData(this);
@@ -74,8 +75,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		CompoundTag tag = new CompoundTag();
 		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
 		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
-		tag.put("navigational_data", TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
-		tag.put("environmental_data", TARDISEnvironmentalData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
+		tag.put("navigational_data",
+				TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
+		tag.put("environmental_data",
+				TARDISEnvironmentalData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
 
 		return tag;
 	}
@@ -83,9 +86,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		this.data = TARDISData.CODEC.parse(NbtOps.INSTANCE, nbt.get("data")).get().orThrow();
-		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get().orThrow();
+		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get()
+				.orThrow();
 		this.flightData = TARDISFlightData.CODEC.parse(NbtOps.INSTANCE, nbt.get("flight_data")).get().orThrow();
-		this.environmentalData = TARDISEnvironmentalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("environmental_data")).get().orThrow();
+		this.environmentalData = TARDISEnvironmentalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("environmental_data"))
+				.get().orThrow();
 
 		this.data.setTARDIS(this);
 		this.navigationalData.setTARDIS(this);
@@ -126,9 +131,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void UpdateExteriorState(ExteriorState state) {
-		if (this.GetExteriorTile() == null || this.level.isClientSide) return;
+		if (this.GetExteriorTile() == null || this.level.isClientSide)
+			return;
 		ForceLoadExteriorChunk(true);
-		if (state.equals(ExteriorState.SHOULDNTEXIST)) GetExteriorTile().UtterlyDestroy();
+		if (state.equals(ExteriorState.SHOULDNTEXIST))
+			GetExteriorTile().UtterlyDestroy();
 
 		else {
 			long tick = this.GetLevel().getGameTime();
@@ -201,35 +208,34 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	 */
 	@Override
 	@Nullable public ExteriorTile GetExteriorTile() {
-			if (this.exteriorTile == null) {
-				if (!this.level.isClientSide && this.level.getServer() != null) {
-					if (this.level.getServer().getLevel(this.navigationalData.getExteriorDimensionKey()) != null) {
-						ServerLevel tardisLevel = this.level.getServer()
-								.getLevel(this.navigationalData.getExteriorDimensionKey());
+		if (this.exteriorTile == null) {
+			if (!this.level.isClientSide && this.level.getServer() != null) {
+				if (this.level.getServer().getLevel(this.navigationalData.getExteriorDimensionKey()) != null) {
+					ServerLevel tardisLevel = this.level.getServer()
+							.getLevel(this.navigationalData.getExteriorDimensionKey());
 
-						assert tardisLevel != null;
+					assert tardisLevel != null;
 
-						ChunkAccess chunk = this.level
-								.getChunk(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+					ChunkAccess chunk = this.level
+							.getChunk(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
-						BlockEntity fromChunk = chunk
-								.getBlockEntity(this.navigationalData.getDestination().GetBlockPos());
+					BlockEntity fromChunk = chunk.getBlockEntity(this.navigationalData.getDestination().GetBlockPos());
 
-						if (fromChunk instanceof ExteriorTile tile)
-							return exteriorTile = tile;
+					if (fromChunk instanceof ExteriorTile tile)
+						return exteriorTile = tile;
 
-						this.ForceLoadExteriorChunk(true);
+					this.ForceLoadExteriorChunk(true);
 
-						this.exteriorTile = (ExteriorTile) chunk
-								.getBlockEntity(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+					this.exteriorTile = (ExteriorTile) chunk
+							.getBlockEntity(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
-						this.ForceLoadExteriorChunk(false);
+					this.ForceLoadExteriorChunk(false);
 
-						return this.exteriorTile;
-					}
+					return this.exteriorTile;
 				}
-			} else
-				return this.exteriorTile;
+			}
+		} else
+			return this.exteriorTile;
 
 		return null;
 	}
@@ -259,9 +265,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.GetFlightData().setTicksTillDestination((int) Distance * 20);
 		//////////////////////// CALCULATIONS END ////////////////////////
 
-		if (!this.CanFly() || this.GetLevel().isClientSide()) return;
+		if (!this.CanFly() || this.GetLevel().isClientSide())
+			return;
 
-		if(this.GetExteriorTile() != null) {
+		if (this.GetExteriorTile() != null) {
 			ExteriorTile ext = this.GetExteriorTile();
 
 			assert ext != null;
@@ -281,11 +288,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void FlightTick() {
-		this.GetFlightData().setTicksInFlight(
-				this.GetFlightData().getTicksInFlight() + 1);
+		this.GetFlightData().setTicksInFlight(this.GetFlightData().getTicksInFlight() + 1);
 
-		if(this.GetData().getControlData().isVortexAnchor()) return;
-
+		if (this.GetData().getControlData().isVortexAnchor())
+			return;
 
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
 		SpaceTimeCoordinate delta = distanceToLoc();
@@ -296,31 +302,28 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		double dy = Math.signum(delta.GetY()) * speed;
 		double dz = Math.signum(delta.GetZ()) * speed;
 
-		current
-				.AddX(dx)
-				.AddY(dy)
-				.AddZ(dz);
+		current.AddX(dx).AddY(dy).AddZ(dz);
 
 		this.GetNavigationalData().setLocation(current);
 
-		if(!level.isClientSide)
+		if (!level.isClientSide)
 			HandleFlightEvents();
 	}
 
-
 	public SpaceTimeCoordinate distanceToLoc() {
-		return new SpaceTimeCoordinate(
-				this.GetNavigationalData().getDestination().GetBlockPos().getCenter().subtract(this.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
+		return new SpaceTimeCoordinate(this.GetNavigationalData().getDestination().GetBlockPos().getCenter()
+				.subtract(this.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
 	}
 
 	public void HandleFlightEvents() {
-		if(!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) {
-			if(this.getCurrentFlightEvent().RequiredControls.isEmpty()) {
+		if (!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) {
+			if (this.getCurrentFlightEvent().RequiredControls.isEmpty()) {
 				this.setCurrentFlightEvent(new DecoyFlightEvent());
 				this.lastFlightEvent = ticks;
 				this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
 			}
-			if ((this.ticks - (this.lastFlightEvent + this.getCurrentFlightEvent().Time) > TTSConfig.ServerConfig.FLIGHT_EVENT_DURATION.get())) {
+			if ((this.ticks - (this.lastFlightEvent
+					+ this.getCurrentFlightEvent().Time) > TTSConfig.ServerConfig.FLIGHT_EVENT_DURATION.get())) {
 				this.getCurrentFlightEvent().action.Action.accept(this);
 				this.setCurrentFlightEvent(new DecoyFlightEvent());
 				this.lastFlightEvent = ticks;
@@ -328,15 +331,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			}
 		}
 
-		if(!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1 &&
-				this.ticks - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())
-		|| this.GetFlightData().getTicksInFlight() < 80) return;
+		if (!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1
+				&& this.ticks - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())
+				|| this.GetFlightData().getTicksInFlight() < 80)
+			return;
 
 		int eventIndex = Math.max(ThreadLocalRandom.current().nextInt(0, DataFlightEventList.getList().size()), 0);
 
 		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex));
 
-		this.level.players().forEach(p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name)));
+		this.level.players().forEach(
+				p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name)));
 
 		this.lastFlightEvent = this.ticks;
 		this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
@@ -353,20 +358,22 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		TardisEvent.TakeOff event = new TardisEvent.TakeOff(this, TardisEvent.State.START);
 		MinecraftForge.EVENT_BUS.post(event);
 
-		if(event.isCanceled()) return;
+		if (event.isCanceled())
+			return;
 
 		GetFlightData().setPlayRotorAnimation(true);
 
-		if(this.exteriorTile == null) {
+		if (this.exteriorTile == null) {
 			Fly();
 			return;
 		}
 
 		this.data.setSparking(false);
 
-		if (level.isClientSide()) return;
+		if (level.isClientSide())
+			return;
 
-		if (this.GetFlightData().isInFlight()) {//this.GetExteriorTile() == null) {
+		if (this.GetFlightData().isInFlight()) {// this.GetExteriorTile() == null) {
 			// // Makes it so the TARDIS is supposed to be in-flight
 			// this.GetFlightData().setInFlight(true);
 			// this.GetFlightData().getFlightSoundScheme().GetTakeoff().SetFinished(true);
@@ -382,13 +389,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void Rematerialize() {
-//		if (!this.flightData.isInFlight())
-//			return;
+		// if (!this.flightData.isInFlight())
+		// return;
 
 		TardisEvent.Land event = new TardisEvent.Land(this, TardisEvent.State.START);
 		MinecraftForge.EVENT_BUS.post(event);
 
-		if (event.isCanceled()) return;
+		if (event.isCanceled())
+			return;
 
 		if (!level.isClientSide())
 			ServerThreads.LandingThread(this).start();
@@ -411,11 +419,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
 
 			// Perform landing protocol calculations and stuffs
-			this.GetData().getControlData().getFlightTerminationProtocol().OnLand(this, pos,
-					CurrentLevel);
+			this.GetData().getControlData().getFlightTerminationProtocol().OnLand(this, pos, CurrentLevel);
 			pos = this.GetData().getControlData().getFlightTerminationProtocol().GetLandPos();
 
-			if (CurrentLevel.isOutsideBuildHeight(pos)) pos = pos.atY(64);
+			if (CurrentLevel.isOutsideBuildHeight(pos))
+				pos = pos.atY(64);
 
 			SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos, CurrentLevel.dimension());
 
@@ -434,7 +442,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			if (CurrentLevel.getBlockEntity(pos) != null) {
 				this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(pos)));
 			} else {
-				ExteriorTile tile = ((ExteriorTile) ((ExteriorBlock) exteriorBlockState.getBlock()).newBlockEntity(coords.GetBlockPos(), exteriorBlockState));
+				ExteriorTile tile = ((ExteriorTile) ((ExteriorBlock) exteriorBlockState.getBlock())
+						.newBlockEntity(coords.GetBlockPos(), exteriorBlockState));
 				assert tile != null;
 				CurrentLevel.setBlockEntity(tile);
 				tile.setLevel(CurrentLevel);
@@ -458,15 +467,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		TardisEvent.Crash event = new TardisEvent.Crash(this, TardisEvent.State.START);
 		MinecraftForge.EVENT_BUS.post(event);
 
-		if (event.isCanceled()) return;
+		if (event.isCanceled())
+			return;
 
-//		this.flightData.setInFlight(false);
+		// this.flightData.setInFlight(false);
 		this.data.setSparking(true);
-		this.environmentalData.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
+		this.environmentalData
+				.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
 
 		this.Rematerialize();
-		//		new CrashThread(this).start();
-//		this.NullExteriorChecksAndFixes();
+		// new CrashThread(this).start();
+		// this.NullExteriorChecksAndFixes();
 	}
 
 	public static Rotation DirectionToRotation(Direction direction) {
@@ -486,32 +497,31 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void UpdateClient(int toUpdate) {
-//		ThreadUtils.RunThread((cap, toSync) -> {
+		// ThreadUtils.RunThread((cap, toSync) -> {
 		TARDISLevelCapability cap = this;
-			if (cap.level == null)
-				return;
-			if (this.level.isClientSide)
+		if (cap.level == null)
+			return;
+		if (this.level.isClientSide)
+			Networking.sendPacketToDimension(cap.level.dimension(),
+					new TriggerSyncCapPacketC2S(cap.level.dimension(), toUpdate));
+		else {
+			if (toUpdate == DataUpdateValues.FLIGHT_EVENTS) {
 				Networking.sendPacketToDimension(cap.level.dimension(),
-						new TriggerSyncCapPacketC2S(cap.level.dimension(), toUpdate));
-			else {
-				if(toUpdate == DataUpdateValues.FLIGHT_EVENTS) {
-					Networking.sendPacketToDimension(cap.level.dimension(),
-							new SyncTARDISFlightEventPacketS2C(cap.GetFlightData().getFlightEvent()));
-				}
-				else {
+						new SyncTARDISFlightEventPacketS2C(cap.GetFlightData().getFlightEvent()));
+			} else {
 
-					Networking.sendPacketToDimension(cap.level.dimension(),
-							new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
+				Networking.sendPacketToDimension(cap.level.dimension(),
+						new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
 
-					if (this.GetExteriorTile() != null) {
-						Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
-						Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
-						Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
-						Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
-					}
+				if (this.GetExteriorTile() != null) {
+					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
+					Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
+					Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
+					Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
 				}
 			}
-//		}, this, toUpdate, "tardis_update_thread");
+		}
+		// }, this, toUpdate, "tardis_update_thread");
 	}
 
 	@Override
@@ -543,7 +553,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (server != null) {
 			server.execute(() -> {
 				ChunkPos pos = new ChunkPos(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
-				if(getExteriorLevel().hasChunk(pos.x, pos.z))
+				if (getExteriorLevel().hasChunk(pos.x, pos.z))
 					getExteriorLevel().setChunkForced(pos.x, pos.z, ForceLoad);
 			});
 		}
@@ -561,7 +571,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public static LazyOptional<ITARDISLevel> GetTARDISCapSupplier(ResourceKey<Level> level) {
-		return ServerLifecycleHooks.getCurrentServer().getLevel(level).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
+		return ServerLifecycleHooks.getCurrentServer().getLevel(level)
+				.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY);
 	}
 
 	public static LazyOptional<ITARDISLevel> GetClientTARDISCapSupplier() {

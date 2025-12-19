@@ -1,27 +1,12 @@
 {
-  "client": [
-    "client.ILevelRendererAccessor",
-    "client.IMinecraftAccessor",
-    "client.LevelRendererMixin",
-    "client.MixinRenderTarget",
-    "client.RenderStateShardAccessor"
-  ],
-  "compatibilityLevel": "JAVA_8",
-  "injectors": {
-    "defaultRequire": 1
+  "client" : [ "client.ILevelRendererAccessor", "client.IMinecraftAccessor", "client.LevelRendererMixin", "client.MixinRenderTarget", "client.RenderStateShardAccessor" ],
+  "compatibilityLevel" : "JAVA_8",
+  "injectors" : {
+    "defaultRequire" : 1
   },
-  "minVersion": "0.8",
-  "mixins": [
-    "BlockAccessor",
-    "BlockBehaviourPropertiesAccessor",
-    "PistonBlockMixin",
-    "PlayerMixin",
-    "ProjectileGravityMixin",
-    "RedstoneWireMixin",
-    "mavity.FallingBlockGravityMixin",
-    "mavity.LivingEntityGravityMixin"
-  ],
-  "package": "com.code.tama.tts.mixin",
-  "refmap": "mixins.tts.refmap.json",
-  "required": true
+  "minVersion" : "0.8",
+  "mixins" : [ "BlockAccessor", "BlockBehaviourPropertiesAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin" ],
+  "package" : "com.code.tama.tts.mixin",
+  "refmap" : "mixins.tts.refmap.json",
+  "required" : true
 }

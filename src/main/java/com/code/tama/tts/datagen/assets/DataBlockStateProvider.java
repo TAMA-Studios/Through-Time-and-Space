@@ -1,6 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.assets;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.ChameleonCircuitPanel;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
@@ -9,6 +14,7 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -21,11 +27,6 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class DataBlockStateProvider extends BlockStateProvider {
 	private final List<Block> states = new ArrayList<>();
@@ -187,7 +188,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 	private void leavesBlock(RegistryEntry<Block> blockRegistryObject) {
 		simpleBlockWithItem(blockRegistryObject.get(),
 				models().singleTexture(ForgeRegistries.BLOCKS.getKey(blockRegistryObject.get()).getPath(),
-								new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
+						new ResourceLocation("minecraft:block/leaves"), "all", blockTexture(blockRegistryObject.get()))
 						.renderType("cutout"));
 	}
 
@@ -228,7 +229,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void doorBlockWithRenderType(DoorBlock block, ResourceLocation bottom, ResourceLocation top,
-										String renderType) {
+			String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottomLeft = models().doorBottomLeft(baseName + "_bottom_left", bottom, top)
@@ -317,7 +318,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 	@Override
 	public void trapdoorBlockWithRenderType(TrapDoorBlock block, ResourceLocation texture, boolean orientable,
-											String renderType) {
+			String renderType) {
 		try {
 			String baseName = key(block).toString();
 			ModelFile bottom = orientable
@@ -386,128 +387,122 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		}
 	}
 
-	public static <T extends Block> void existingModel(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get())
-				.forAllStates(state -> {
-					int y = 0;
+	public static <T extends Block> void existingModel(DataGenContext<Block, T> ctx,
+			RegistrateBlockstateProvider provider) {
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
+			int y = 0;
 
-					if(state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-						y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
-					}
-					else if(state.hasProperty(BlockStateProperties.FACING)) {
-						y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
-					}
+			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+			} else if (state.hasProperty(BlockStateProperties.FACING)) {
+				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+			}
 
-					return new ConfiguredModel[]{new ConfiguredModel(provider.models().getExistingFile(
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())), 0, y, false)};
-				});
+			return new ConfiguredModel[]{new ConfiguredModel(
+					provider.models().getExistingFile(new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())), 0,
+					y, false)};
+		});
 	}
 
-	public static <T extends Block> void existingModel(String path, DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get())
-				.forAllStates(state -> {
-					int y = 0;
+	public static <T extends Block> void existingModel(String path, DataGenContext<Block, T> ctx,
+			RegistrateBlockstateProvider provider) {
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
+			int y = 0;
 
-					if(state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-						y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
-					}
-					else if(state.hasProperty(BlockStateProperties.FACING)) {
-						y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
-					}
+			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+			} else if (state.hasProperty(BlockStateProperties.FACING)) {
+				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+			}
 
-					return new ConfiguredModel[]{new ConfiguredModel(provider.models().getExistingFile(
-							new ResourceLocation(TTSMod.MODID, "block/" + path)), 0, y, false)};
-				});
+			return new ConfiguredModel[]{new ConfiguredModel(
+					provider.models().getExistingFile(new ResourceLocation(TTSMod.MODID, "block/" + path)), 0, y,
+					false)};
+		});
 	}
 
 	public static <T extends Block> void air(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get())
-				.forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(provider.models().getExistingFile(
-						new ResourceLocation("block/air")))});
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> new ConfiguredModel[]{
+				new ConfiguredModel(provider.models().getExistingFile(new ResourceLocation("block/air")))});
 	}
 
 	public static <T extends Block> void slab(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get()).forAllStates(
-				state -> {
-					SlabType TYPE = state.getValue(BlockStateProperties.SLAB_TYPE);
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
+			SlabType TYPE = state.getValue(BlockStateProperties.SLAB_TYPE);
 
-					return switch (TYPE) {
-						case TOP -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName() + "_top",
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+			return switch (TYPE) {
+				case TOP ->
+					new ConfiguredModel[]{new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_top",
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
 
-						case BOTTOM -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName() + "_bottom",
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+				case BOTTOM -> new ConfiguredModel[]{
+						new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_bottom",
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
 
-						default -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName().replace("slab", ""),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
-					};
-				}
-		);
+				default -> new ConfiguredModel[]{
+						new ConfiguredModel(provider.models().slab("block/" + ctx.getName().replace("slab", ""),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+			};
+		});
 	}
 
-	public static <T extends Block> void simpleSlab(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get()).forAllStates(
-				state -> {
-					SlabType TYPE = state.getValue(BlockStateProperties.SLAB_TYPE);
+	public static <T extends Block> void simpleSlab(DataGenContext<Block, T> ctx,
+			RegistrateBlockstateProvider provider) {
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
+			SlabType TYPE = state.getValue(BlockStateProperties.SLAB_TYPE);
 
-					return switch (TYPE) {
-						case TOP -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName() + "_top",
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+			return switch (TYPE) {
+				case TOP ->
+					new ConfiguredModel[]{new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_top",
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
 
-						case BOTTOM -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName() + "_bottom",
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+				case BOTTOM -> new ConfiguredModel[]{
+						new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_bottom",
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
 
-						default -> new ConfiguredModel[]{new ConfiguredModel(
-								provider.models().slab("block/" + ctx.getName().replace("slab", ""),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-										new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
-					};
-				}
-		);
+				default -> new ConfiguredModel[]{
+						new ConfiguredModel(provider.models().slab("block/" + ctx.getName().replace("slab", ""),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
+								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+			};
+		});
 	}
 
-	public static <T extends Block> void simpleTrapdoor(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get()).forAllStates(
-				state -> {
+	public static <T extends Block> void simpleTrapdoor(DataGenContext<Block, T> ctx,
+			RegistrateBlockstateProvider provider) {
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
 
-					Boolean OPEN = state.getValue(BlockStateProperties.OPEN);
+			Boolean OPEN = state.getValue(BlockStateProperties.OPEN);
 
-					Half HALF = state.getValue(BlockStateProperties.HALF);
+			Half HALF = state.getValue(BlockStateProperties.HALF);
 
-					Direction FACING = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+			Direction FACING = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
-					return trapdoor(OPEN, HALF, FACING, ctx.getName());
-				}
-		);
+			return trapdoor(OPEN, HALF, FACING, ctx.getName());
+		});
 	}
 
-	public static <T extends Block> void controlPanel(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider provider) {
-		provider.getVariantBuilder(ctx.get()).forAllStates(
-				state -> {
+	public static <T extends Block> void controlPanel(DataGenContext<Block, T> ctx,
+			RegistrateBlockstateProvider provider) {
+		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
 
-					int PRESSED = state.getValue(ChameleonCircuitPanel.PRESSED_BUTTON);
+			int PRESSED = state.getValue(ChameleonCircuitPanel.PRESSED_BUTTON);
 
-					Direction FACING = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+			Direction FACING = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
-					return controlPanel(FACING, PRESSED, ctx.getName());
-				}
-		);
+			return controlPanel(FACING, PRESSED, ctx.getName());
+		});
 	}
 
 	public static ConfiguredModel[] trapdoor(Boolean OPEN, Half HALF, Direction FACING, String Name) {
@@ -555,12 +550,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			}
 		}
 
-		return new ConfiguredModel[]{new ConfiguredModel(
-                new ModelFile.UncheckedModelFile(modelPath),
-                x,
-                y,
-                false
-        )};
+		return new ConfiguredModel[]{new ConfiguredModel(new ModelFile.UncheckedModelFile(modelPath), x, y, false)};
 	}
 
 	public static ConfiguredModel[] controlPanel(Direction FACING, int PRESSED, String blockName) {
@@ -621,8 +611,8 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			default -> throw new IllegalArgumentException("Oops: " + PRESSED);
 		}
 
-        int y = switch (FACING) {
-            case SOUTH -> 180;
+		int y = switch (FACING) {
+			case SOUTH -> 180;
 			case WEST -> 270;
 			case EAST -> 90;
 			default -> 0;
@@ -630,12 +620,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 		System.gc();
 
-		return new ConfiguredModel[]{new ConfiguredModel(
-                new ModelFile.UncheckedModelFile(modelPath),
-                0,
-                y,
-                false
-        )};
+		return new ConfiguredModel[]{new ConfiguredModel(new ModelFile.UncheckedModelFile(modelPath), 0, y, false)};
 	}
 
 }

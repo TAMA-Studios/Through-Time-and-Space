@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
+import java.util.ArrayList;
+
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.EmergencyStopProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.UrgentStopProtocol;
 import com.mojang.serialization.Codec;
-
-import java.util.ArrayList;
 
 public class FlightTerminationProtocolRegistry {
 	public static final Codec<FlightTerminationProtocol> CODEC = Codec.STRING

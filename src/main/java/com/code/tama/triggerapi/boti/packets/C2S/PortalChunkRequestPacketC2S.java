@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti.packets.C2S;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
+import java.util.function.Supplier;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,7 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
 
 public class PortalChunkRequestPacketC2S {
 	private final int chunks;

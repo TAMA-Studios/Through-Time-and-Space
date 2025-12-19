@@ -1,16 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
-import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
-import com.code.tama.triggerapi.networking.ImAPacket;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
+
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
+import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
 /** Used to sync the TARDIS Cap data between the server and the client */
 public class SyncTARDISFlightEventPacketS2C implements ImAPacket {
@@ -21,7 +23,8 @@ public class SyncTARDISFlightEventPacketS2C implements ImAPacket {
 		this.flightEvent = event;
 	}
 	public static SyncTARDISFlightEventPacketS2C decode(FriendlyByteBuf buffer) {
-		return new SyncTARDISFlightEventPacketS2C(FriendlyByteBufOps.Helper.readWithCodec(buffer, DataFlightEvent.CODEC));
+		return new SyncTARDISFlightEventPacketS2C(
+				FriendlyByteBufOps.Helper.readWithCodec(buffer, DataFlightEvent.CODEC));
 	}
 
 	public static void encode(SyncTARDISFlightEventPacketS2C packet, FriendlyByteBuf buffer) {

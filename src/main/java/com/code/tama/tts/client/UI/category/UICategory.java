@@ -6,6 +6,7 @@ import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,14 +21,14 @@ public class UICategory {
 	protected int ID;
 	ResourceLocation overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
 
-
 	public UICategory() {
 		this.ID = UICategoryRegistry.getID();
 	}
 
-	public static void RenderText(AbstractMonitorTile tile, String text, PoseStack stack, MultiBufferSource builder, int x, int y) {
-		Minecraft.getInstance().font.drawInBatch(Component.literal(text).withStyle(style(tile)), x, y, 0xFFFFFF, false, stack.last().pose(), builder,
-				Font.DisplayMode.NORMAL, 0, 0xf000f0);
+	public static void RenderText(AbstractMonitorTile tile, String text, PoseStack stack, MultiBufferSource builder,
+			int x, int y) {
+		Minecraft.getInstance().font.drawInBatch(Component.literal(text).withStyle(style(tile)), x, y, 0xFFFFFF, false,
+				stack.last().pose(), builder, Font.DisplayMode.NORMAL, 0, 0xf000f0);
 	}
 
 	public void Render(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,

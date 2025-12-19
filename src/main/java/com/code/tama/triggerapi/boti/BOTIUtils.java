@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
-import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
-import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.geom.ModelPart;
@@ -38,10 +39,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
+import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")

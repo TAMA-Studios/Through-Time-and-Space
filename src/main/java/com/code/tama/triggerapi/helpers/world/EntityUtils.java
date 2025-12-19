@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.UUID;
+
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.UUID;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class EntityUtils {
 	public static void applyEffect(LivingEntity entity, MobEffect effect, int Duration, int Potency) {

@@ -5,9 +5,10 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
 public class PhysicalStateManager {
 
@@ -65,10 +66,11 @@ public class PhysicalStateManager {
 		float initialAmp = 1.0f;
 		float decay = 0.05f;
 		float freq = 0.3f;
-		if(this.exteriorTile == null) itardisLevel.Fly();
+		if (this.exteriorTile == null)
+			itardisLevel.Fly();
 
 		while (this.exteriorTile.state.equals(ExteriorState.TAKINGOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
-																		// {
+																			// {
 			if (!server) { // If it's client side, actually do the animation
 				assert exteriorTile.getLevel() != null;
 				long tick = exteriorTile.getLevel().getGameTime() - startTick;

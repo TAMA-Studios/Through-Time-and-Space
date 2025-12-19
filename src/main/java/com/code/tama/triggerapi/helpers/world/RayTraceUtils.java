@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
+import java.util.Optional;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.*;
-
-import java.util.Optional;
 
 public class RayTraceUtils {
 	public static BlockHitResult getLookingAtBlock(double reachDistance) {
@@ -62,17 +62,17 @@ public class RayTraceUtils {
 		float playerRotX = player.getXRot();
 		float playerRotY = player.getYRot();
 		Vec3 startPos = player.getEyePosition();
-		float f2 = Mth.cos(-playerRotY * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f3 = Mth.sin(-playerRotY * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f4 = -Mth.cos(-playerRotX * ((float)Math.PI / 180F));
-		float additionY = Mth.sin(-playerRotX * ((float)Math.PI / 180F));
+		float f2 = Mth.cos(-playerRotY * ((float) Math.PI / 180F) - (float) Math.PI);
+		float f3 = Mth.sin(-playerRotY * ((float) Math.PI / 180F) - (float) Math.PI);
+		float f4 = -Mth.cos(-playerRotX * ((float) Math.PI / 180F));
+		float additionY = Mth.sin(-playerRotX * ((float) Math.PI / 180F));
 		float additionX = f3 * f4;
 		float additionZ = f2 * f4;
 		double d0 = 250;
-		Vec3 endVec = startPos.add((double)additionX * d0, (double)additionY * d0, (double)additionZ * d0);
+		Vec3 endVec = startPos.add((double) additionX * d0, (double) additionY * d0, (double) additionZ * d0);
 		AABB startEndBox = new AABB(startPos, endVec);
 		Entity entity = null;
-		for(Entity entity1 : player.level().getEntities(player, startEndBox, (val) -> true)) {
+		for (Entity entity1 : player.level().getEntities(player, startEndBox, (val) -> true)) {
 			AABB aabb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
 			Optional<Vec3> optional = aabb.clip(startPos, endVec);
 			if (aabb.contains(startPos)) {
@@ -99,6 +99,6 @@ public class RayTraceUtils {
 			}
 		}
 
-		return (entity == null) ? null:new EntityHitResult(entity);
+		return (entity == null) ? null : new EntityHitResult(entity);
 	}
 }

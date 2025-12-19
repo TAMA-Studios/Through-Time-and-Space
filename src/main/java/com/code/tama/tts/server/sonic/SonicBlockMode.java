@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 import com.code.tama.tts.server.misc.progressable.IWeldable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+
 public class SonicBlockMode extends SonicMode {
 	public Item getIcon() {
 		return Blocks.GRASS_BLOCK.asItem();
@@ -30,7 +32,8 @@ public class SonicBlockMode extends SonicMode {
 	}
 
 	public void onUse(UseOnContext context) {
-		if(context.getHand().equals(InteractionHand.OFF_HAND)) return;
+		if (context.getHand().equals(InteractionHand.OFF_HAND))
+			return;
 		Player player = context.getPlayer();
 		Level level = context.getLevel();
 

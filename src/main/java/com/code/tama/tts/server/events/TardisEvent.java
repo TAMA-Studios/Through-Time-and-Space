@@ -4,6 +4,7 @@ package com.code.tama.tts.server.events;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -107,8 +108,6 @@ public class TardisEvent extends Event {
 			this.state = state;
 		}
 	}
-
-
 
 	/**
 	 * Two params, START, and END, let's use takeoff as an example, START is called

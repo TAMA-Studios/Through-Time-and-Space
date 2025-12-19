@@ -1,14 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json.lists;
 
-import com.code.tama.triggerapi.helpers.OxygenHelper;
-import com.code.tama.tts.server.data.json.dataHolders.DataDimOxygen;
-import lombok.Getter;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.code.tama.tts.server.data.json.dataHolders.DataDimOxygen;
+import lombok.Getter;
+
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 
 public class DataDimOxygenList {
 	@Getter

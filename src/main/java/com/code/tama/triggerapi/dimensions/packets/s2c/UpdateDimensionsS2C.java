@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions.packets.s2c;
 
-import com.code.tama.triggerapi.networking.ImAPacket;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
@@ -12,10 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
 /**
  * @param keys

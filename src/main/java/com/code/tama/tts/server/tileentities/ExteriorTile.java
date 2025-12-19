@@ -1,11 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -25,6 +28,9 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import com.code.tama.tts.server.worlds.TStemCreation;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -45,16 +51,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -77,7 +79,6 @@ public class ExteriorTile extends AbstractPortalTile {
 	public boolean ThreadWorking = false;
 
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
-
 
 	public ExteriorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -199,7 +200,8 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.getLevel() == null || this.getLevel().isClientSide || this.INTERIOR_DIMENSION == null)
 			return;
 
-		// Don't teleport if the entity in question is viewing the exterior via Environment Scanner
+		// Don't teleport if the entity in question is viewing the exterior via
+		// Environment Scanner
 		if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent()
 				&& !Objects.equals(EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY)
 						.orElse(new PlayerCapability(EntityToTeleport)).GetViewingTARDIS(), ""))
@@ -210,10 +212,12 @@ public class ExteriorTile extends AbstractPortalTile {
 		assert Interior != null;
 		Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 
-			TardisEvent.EntityEnterTARDIS event = new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport);
+			TardisEvent.EntityEnterTARDIS event = new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START,
+					EntityToTeleport);
 			MinecraftForge.EVENT_BUS.post(event);
 
-			if (event.isCanceled()) return;
+			if (event.isCanceled())
+				return;
 
 			float X, Y, Z;
 
@@ -233,7 +237,8 @@ public class ExteriorTile extends AbstractPortalTile {
 
 			EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
 
-			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
+			MinecraftForge.EVENT_BUS
+					.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
 		});
 	}
 
@@ -312,12 +317,16 @@ public class ExteriorTile extends AbstractPortalTile {
 	public void onChunkUnloaded() {
 		assert this.level != null;
 		if (!this.level.isClientSide) {
-			if(this.state.equals(ExteriorState.SHOULDNTEXIST) || this.state.equals(ExteriorState.TAKINGOFF)) {
+			if (this.state.equals(ExteriorState.SHOULDNTEXIST) || this.state.equals(ExteriorState.TAKINGOFF)) {
 				this.UtterlyDestroy();
 				return;
 			}
-			if(UniversalServerOnly.getServer() == null || UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION) == null) return;
-			TARDISLevelCapability.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(tardis -> {
+			if (UniversalServerOnly.getServer() == null
+					|| UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION) == null)
+				return;
+			TARDISLevelCapability
+					.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION))
+					.ifPresent(tardis -> {
 						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight())
 							this.UtterlyDestroy();
 					});
@@ -380,7 +389,8 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	@Override
 	public void tick() {
-		if(this.state.equals(ExteriorState.SHOULDNTEXIST)) this.UtterlyDestroy();
+		if (this.state.equals(ExteriorState.SHOULDNTEXIST))
+			this.UtterlyDestroy();
 
 		if (this.INTERIOR_DIMENSION == null) {
 			if (!this.IsEmptyShell)

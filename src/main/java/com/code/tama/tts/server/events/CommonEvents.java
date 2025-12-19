@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import com.code.tama.triggerapi.helpers.OxygenHelper;
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -9,6 +12,7 @@ import com.code.tama.tts.server.data.json.loaders.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.registries.forge.TTSDamageSources;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
@@ -27,9 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -147,15 +149,14 @@ public class CommonEvents {
 
 		event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
 
+			if (entity instanceof LivingEntity livingEntity) {
+				// TODO: REAL Oxygen implementation
+				float O2 = OxygenHelper.getO2(event.level) * 10;
 
-				if (entity instanceof LivingEntity livingEntity) {
-					// TODO: REAL Oxygen implementation
-					float O2 = OxygenHelper.getO2(event.level) * 10;
-
-					if(O2 != 10 && event.level.getGameTime() % O2 == 0) {
-						entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
-					}
+				if (O2 != 10 && event.level.getGameTime() % O2 == 0) {
+					entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
 				}
+			}
 		}));
 	}
 

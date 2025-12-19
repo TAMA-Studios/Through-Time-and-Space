@@ -14,8 +14,7 @@ import lombok.Setter;
 @Setter
 public class ControlParameters {
 	public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(
-					Codec.FLOAT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
+			.group(Codec.FLOAT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
 					Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
 					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isBrakes),
 					Codec.BOOL.fieldOf("anchor").forGetter(ControlParameters::isVortexAnchor),
@@ -31,8 +30,9 @@ public class ControlParameters {
 	public int ArtronPacketOutput;
 	public float HelmicRegulator;
 
-	public ControlParameters(Float helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor, Boolean simpleMode, Boolean coordinateLock,
-			Integer artronPacketOutput, FlightTerminationProtocol flightTerminationProtocol) {
+	public ControlParameters(Float helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor,
+			Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
+			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.APCState = apcState;
 		this.Brakes = brakes;

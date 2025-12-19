@@ -1,20 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class FlightStatusUICategory extends UICategory {
 	public FlightStatusUICategory() {
@@ -46,13 +47,13 @@ public class FlightStatusUICategory extends UICategory {
 			else
 				flightState = "N/A";
 
-			fontRenderer.drawInBatch(OS_VER.copy().setStyle(style(monitor)), -40, 5, white, false, poseStack.last().pose(),
-					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch(OS_VER.copy().setStyle(style(monitor)), -40, 5, white, false,
+					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
 			poseStack.pushPose();
 			poseStack.scale(0.9f, 0.9f, 0f);
-			fontRenderer.drawInBatch(Component.literal("Flight Status").withStyle(style(monitor)), -32.5f, 17, white, false,
-					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch(Component.literal("Flight Status").withStyle(style(monitor)), -32.5f, 17, white,
+					false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 			poseStack.popPose();
 
 			poseStack.pushPose();
@@ -70,39 +71,35 @@ public class FlightStatusUICategory extends UICategory {
 
 			drawDriftBar(poseStack, cap.GetFlightData().getDrift() + ThreadLocalRandom.current().nextFloat(3) - 1.5f);
 
-//			poseStack.pushPose();
-//
-////			poseStack.translate(25, 70, 0);
+			// poseStack.pushPose();
+			//
+			////			poseStack.translate(25, 70, 0);
 ////			poseStack.scale(20, 20, 20);
 ////			poseStack.mulPose(Axis.YP.rotationDegrees(180));
-//
-////			poseStack.mulPose(Axis.XP.rotationDegrees(45));
-//			BufferBuilder builder = Tesselator.getInstance().getBuilder();
-//
-//			builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//
-//
-//			builder.vertex(poseStack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
-//			builder.vertex(poseStack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
-//			builder.vertex(poseStack.last().pose(), 1, 1, 0).color(0xFFFFFF).endVertex();
-//			builder.vertex(poseStack.last().pose(), 0, 1, 0).color(0xFFFFFF).endVertex();
-//
-//Tesselator.getInstance().end();
-//			poseStack.popPose();
+			//
+			////			poseStack.mulPose(Axis.XP.rotationDegrees(45));
+			// BufferBuilder builder = Tesselator.getInstance().getBuilder();
+			//
+			// builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+			//
+			//
+			// builder.vertex(poseStack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
+			// builder.vertex(poseStack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
+			// builder.vertex(poseStack.last().pose(), 1, 1, 0).color(0xFFFFFF).endVertex();
+			// builder.vertex(poseStack.last().pose(), 0, 1, 0).color(0xFFFFFF).endVertex();
+			//
+			// Tesselator.getInstance().end();
+			// poseStack.popPose();
 		});
 	}
 
 	public void drawDriftBar(PoseStack stack, float rot) {
 		stack.pushPose();
 
-
 		BufferBuilder builder = Tesselator.getInstance().getBuilder();
-
 
 		stack.scale(2.5f, 2.5f, 0);
 		stack.translate(-5, 30, 1);
-
-
 
 		stack.pushPose();
 		stack.translate(-7, -10, 0);
@@ -117,7 +114,7 @@ public class FlightStatusUICategory extends UICategory {
 		Tesselator.getInstance().end();
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
-stack.popPose();
+		stack.popPose();
 
 		stack.pushPose();
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);

@@ -1,19 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.universal.UniversalClientOnly;
+import java.util.Set;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Set;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.universal.UniversalClientOnly;
 
 @OnlyIn(Dist.CLIENT)
 public class SyncDimensionsClientHandler {
 	/**
-	 * Doesn't work when this code is called from the packet so it gets its own class
+	 * Doesn't work when this code is called from the packet so it gets its own
+	 * class
 	 */
 	public static void handleDimSyncPacket(SyncDimensionsS2C mes) {
 

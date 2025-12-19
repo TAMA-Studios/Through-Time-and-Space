@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions.packets.s2c;
 
-import com.code.tama.triggerapi.dimensions.SyncDimensionsClientHandler;
-import com.code.tama.triggerapi.networking.ImAPacket;
+import java.util.function.Supplier;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.dimensions.SyncDimensionsClientHandler;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
 public record SyncDimensionsS2C(ResourceKey<Level> level, boolean add) implements ImAPacket {
 

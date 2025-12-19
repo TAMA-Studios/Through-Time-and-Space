@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,6 +16,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+
 public class SonicEntityMode extends SonicMode {
 
 	@Override
@@ -31,14 +32,17 @@ public class SonicEntityMode extends SonicMode {
 
 	@Override
 	public void onUse(UseOnContext context) {
-		if(context.getLevel().isClientSide() || context.getHand().equals(InteractionHand.OFF_HAND)) return;
-		if(context.getLevel().isClientSide()) return;
+		if (context.getLevel().isClientSide() || context.getHand().equals(InteractionHand.OFF_HAND))
+			return;
+		if (context.getLevel().isClientSide())
+			return;
 		Player player = context.getPlayer();
 		Level level = context.getLevel();
 
-        assert player != null;
-        EntityHitResult result = RayTraceUtils.getPlayerPOVHitResult(player);
-		if(result.getEntity() == null) return;
+		assert player != null;
+		EntityHitResult result = RayTraceUtils.getPlayerPOVHitResult(player);
+		if (result.getEntity() == null)
+			return;
 		Entity lookingAtEntity = result.getEntity();
 
 		if (lookingAtEntity instanceof Creeper creeper) {

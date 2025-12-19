@@ -5,6 +5,7 @@ import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.createmod.ponder.foundation.instruction.RotateSceneInstruction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -20,8 +21,8 @@ public class SubsystemPonderings {
 		BlockPos gadgetPos = util.grid().at(3, 3, 3);
 
 		scene.idle(10);
-		scene.overlay().showText(60).text("blibbity blah")
-				.attachKeyFrame().pointAt(util.vector().blockSurface(gadgetPos, Direction.WEST)).placeNearTarget();
+		scene.overlay().showText(60).text("blibbity blah").attachKeyFrame()
+				.pointAt(util.vector().blockSurface(gadgetPos, Direction.WEST)).placeNearTarget();
 	}
 
 	public static void dematCircuit(SceneBuilder scene, SceneBuildingUtil util) {

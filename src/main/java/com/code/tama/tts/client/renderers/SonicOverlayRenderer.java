@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class SonicOverlayRenderer {
 	public static int light = 0xf00f0;
@@ -103,20 +105,18 @@ public class SonicOverlayRenderer {
 						Minecraft.getInstance().font
 								.drawInBatch(
 										Component.literal(String.format("FE: %s",
-														ent.getCapability(ForgeCapabilities.ENERGY).orElseGet(null)
-																.getEnergyStored()))
+												ent.getCapability(ForgeCapabilities.ENERGY).orElseGet(null)
+														.getEnergyStored()))
 												.withStyle(ChatFormatting.WHITE),
 										0, -15, white, false, stack.last().pose(), bufferSource,
 										Font.DisplayMode.NORMAL, 0, light);
 
 					if (ent != null && ent instanceof IWeldable weldable)
-						Minecraft.getInstance().font
-								.drawInBatch(
-										Component.literal(String.format("Weld: %s",
-														weldable.getWeldProgress()))
-												.withStyle(ChatFormatting.WHITE),
-										0, -15, white, false, stack.last().pose(), bufferSource,
-										Font.DisplayMode.NORMAL, 0, light);
+						Minecraft.getInstance().font.drawInBatch(
+								Component.literal(String.format("Weld: %s", weldable.getWeldProgress()))
+										.withStyle(ChatFormatting.WHITE),
+								0, -15, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0,
+								light);
 
 					// stack.translate(0, 5, 0);
 

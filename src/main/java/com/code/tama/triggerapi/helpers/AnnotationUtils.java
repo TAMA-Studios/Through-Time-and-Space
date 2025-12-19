@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
-import com.code.tama.triggerapi.Logger;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import com.code.tama.triggerapi.Logger;
 
 public class AnnotationUtils {
 	public static boolean fieldHasAnnotation(Class<?> clazz, String fieldName,
@@ -44,7 +44,6 @@ public class AnnotationUtils {
 
 		return false;
 	}
-
 
 	public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
 		if (clazz == null || annotationClass == null)

@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json.lists;
 
-import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
-import com.code.tama.tts.server.registries.tardis.ARSRegistry;
-import lombok.Getter;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
+import com.code.tama.tts.server.registries.tardis.ARSRegistry;
+import lombok.Getter;
 
 public class DataARSList {
 	@Getter

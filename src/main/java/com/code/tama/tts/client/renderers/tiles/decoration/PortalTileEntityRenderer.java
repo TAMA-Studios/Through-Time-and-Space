@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.decoration;
 
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -19,7 +19,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
 	private final Minecraft mc = Minecraft.getInstance();

@@ -1,11 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.rendering;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.IHelpWithFBOs;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
+
+import java.util.function.BiConsumer;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
@@ -20,6 +19,9 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -35,12 +37,12 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
-import java.util.function.BiConsumer;
-
-import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.IHelpWithFBOs;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
@@ -378,7 +380,8 @@ public class FBOHelper {
 			RenderType.CompositeState parameters = RenderType.CompositeState.builder()
 					.setTextureState(ReflectionBuddy.RenderStateShardAccess.BLOCK_SHEET_MIPPED.apply(null)) // RenderStateShard.class.getDeclaredField("BLOCK_SHEET_MIPPED").get(null)
 					.setTransparencyState(ReflectionBuddy.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY.apply(null))
-					.setLayeringState(ReflectionBuddy.RenderStateShardAccess.NO_LAYERING.apply(null)).createCompositeState(false);
+					.setLayeringState(ReflectionBuddy.RenderStateShardAccess.NO_LAYERING.apply(null))
+					.createCompositeState(false);
 			return RenderType.create("boti", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, QUADS, 256, false, true,
 					parameters);
 		}

@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
-import com.code.tama.triggerapi.boti.packets.BOTIPackets;
-import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
@@ -23,6 +24,7 @@ import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -38,15 +40,17 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.boti.packets.BOTIPackets;
+import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class Networking {
 	public static int ID = 0;
 
-//	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"),
-//			() -> Networking.NET_VERSION, Networking.NET_VERSION::equals, Networking.NET_VERSION::equals);
+	// public static final SimpleChannel INSTANCE =
+	// NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"),
+	// () -> Networking.NET_VERSION, Networking.NET_VERSION::equals,
+	// Networking.NET_VERSION::equals);
 	public static final SimpleChannel INSTANCE = UniversalCommon.Networking.getInstance();
 	public static final String NET_VERSION = "1.0";
 

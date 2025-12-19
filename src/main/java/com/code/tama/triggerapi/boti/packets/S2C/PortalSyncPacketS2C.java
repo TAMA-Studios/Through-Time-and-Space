@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti.packets.S2C;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -16,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 
 public class PortalSyncPacketS2C {
 	private final ResourceKey<DimensionType> dimensionTypeId;

@@ -1,15 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.networking.Networking;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -45,17 +52,14 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
+import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 
 /**
- * TriggerAPI Dynamic Dimension Registration implementation */
+ * TriggerAPI Dynamic Dimension Registration implementation
+ */
 @SuppressWarnings("deprecation")
 public final class DimensionManager implements DimensionAPI {
 
@@ -176,24 +180,24 @@ public final class DimensionManager implements DimensionAPI {
 				ServerLevel dest = server.getLevel(respawn != null ? respawn : Level.OVERWORLD);
 				BlockPos pos = player.getRespawnPosition();
 				if (pos == null) {
-                    assert dest != null;
-                    pos = dest.getSharedSpawnPos();
-                }
-                assert dest != null;
-                player.teleportTo(dest, pos.getX(), pos.getY(), pos.getZ(), player.getRespawnAngle(), 0f);
+					assert dest != null;
+					pos = dest.getSharedSpawnPos();
+				}
+				assert dest != null;
+				player.teleportTo(dest, pos.getX(), pos.getY(), pos.getZ(), player.getRespawnAngle(), 0f);
 			}
 
 			removedLevel.save(null, false, removedLevel.noSave());
 			MinecraftForge.EVENT_BUS.post(new LevelEvent.Unload(removedLevel));
 
 			// Remove border listener
-            assert overworld != null;
-            overworld.getWorldBorder().removeListener(Objects.requireNonNull(ReflectionBuddy.WorldBorderAccess.listeners
-                    .apply(overworld.getWorldBorder()).stream()
-                    .filter(l -> l instanceof BorderChangeListener.DelegateBorderChangeListener delegate
-                            && ReflectionBuddy.DelegateBorderChangeListenerAccess.worldBorder
-                            .apply(delegate) == removedLevel.getWorldBorder())
-                    .findFirst().orElse(null)));
+			assert overworld != null;
+			overworld.getWorldBorder().removeListener(Objects.requireNonNull(ReflectionBuddy.WorldBorderAccess.listeners
+					.apply(overworld.getWorldBorder()).stream()
+					.filter(l -> l instanceof BorderChangeListener.DelegateBorderChangeListener delegate
+							&& ReflectionBuddy.DelegateBorderChangeListenerAccess.worldBorder
+									.apply(delegate) == removedLevel.getWorldBorder())
+					.findFirst().orElse(null)));
 
 			removedKeys.add(levelKey);
 		}

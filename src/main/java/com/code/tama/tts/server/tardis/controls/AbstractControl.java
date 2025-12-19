@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.config.FlightType;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
@@ -13,6 +12,8 @@ import com.code.tama.tts.server.registries.forge.TTSParticles;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,7 +25,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public abstract class AbstractControl {
 	private float AnimationState = 0.0f;
@@ -73,7 +75,8 @@ public abstract class AbstractControl {
 
 	public void RenderFlightEvent(PoseStack stack, MultiBufferSource source, ModularControl control) {
 		assert control.consoleTile.getLevel() != null;
-		if(control.level() == null) return;
+		if (control.level() == null)
+			return;
 		TARDISLevelCapability.GetTARDISCapSupplier(control.level()).ifPresent((cap) -> {
 			if (cap.getCurrentFlightEvent().RequiredControls.contains(this.id())) {
 				assert Minecraft.getInstance().level != null;
@@ -106,40 +109,64 @@ public abstract class AbstractControl {
 					double maxZ = control.size.maxZ;
 
 					// FRONT (Z = maxZ)
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
 					// BACK (Z = minZ)
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
 					// LEFT (X = minX)
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
 					// RIGHT (X = maxX)
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
 					// TOP (Y = maxY)
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
 					// BOTTOM (Y = minY)
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
 					tesselator.end();
 

@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.component.int_props;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.UI.component.core.ComponentTypes;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
 import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
-import net.minecraft.world.entity.player.Player;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import net.minecraft.world.entity.player.Player;
 
 public class UIComponentLightUp extends UIComponent {
 	public UIComponentLightUp(Float[] x, Float[] y, ComponentTypes type) {

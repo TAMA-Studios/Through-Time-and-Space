@@ -1,19 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.dimensions;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 public interface DimensionAPI {
 	/**
-	 * @return The API. Avoid caching this, and only use while the
-	 *         server is running.
+	 * @return The API. Avoid caching this, and only use while the server is
+	 *         running.
 	 */
 	static DimensionAPI get() {
 		return DimensionManager.INSTANCE;
