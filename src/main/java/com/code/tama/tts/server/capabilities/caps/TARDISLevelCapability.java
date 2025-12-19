@@ -120,7 +120,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void setCurrentFlightEvent(DataFlightEvent event) {
-		this.GetFlightData().setFlightEvent(event);
+		this.GetFlightData().setFlightEvent(event.copy());
 	}
 
 	@Override
@@ -331,7 +331,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		int eventIndex = Math.max(ThreadLocalRandom.current().nextInt(0, DataFlightEventList.getList().size()), 0);
 
-		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex).copy());
+		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex));
 
 		this.level.players().forEach(
 				p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name)));
