@@ -4,6 +4,7 @@ package com.code.tama.tts.server.data.json.lists;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DataFlightEventList {
 	@Getter
-	private static List<DataFlightEvent> List;
+	private static List<DataFlightEvent> List = new ArrayList<>();
 
 	public static void setList(List<DataFlightEvent> list) {
 		List = removeDuplicates(list);

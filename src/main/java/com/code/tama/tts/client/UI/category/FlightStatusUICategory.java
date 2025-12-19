@@ -3,12 +3,15 @@ package com.code.tama.tts.client.UI.category;
 
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
@@ -46,9 +49,15 @@ public class FlightStatusUICategory extends UICategory {
 			fontRenderer.drawInBatch(OS_VER.copy().setStyle(style(monitor)), -40, 5, white, false, poseStack.last().pose(),
 					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(Component.literal("Flight Status").withStyle(style(monitor)), -22.5f, 15, white, false,
+			poseStack.pushPose();
+			poseStack.scale(0.9f, 0.9f, 0f);
+			fontRenderer.drawInBatch(Component.literal("Flight Status").withStyle(style(monitor)), -32.5f, 17, white, false,
 					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			poseStack.popPose();
 
+			poseStack.pushPose();
+			poseStack.scale(0.7f, 0.7f, 0.7f);
+			poseStack.translate(-15, 12.5, 0);
 			RenderText(monitor, String.format("Flight Status: %s", flightState), poseStack, bufferSource, -40, 25);
 			if (!flightState.equals("Landed")) {
 				RenderText(monitor, String.format("Time in Flight: %s T | %s S | %s M", flightTicks, flightTicks / 60,
@@ -56,6 +65,76 @@ public class FlightStatusUICategory extends UICategory {
 				RenderText(monitor, String.format("Time until Destination reached: %s T | %s S | %s M", destTicks,
 						destTicks / 60, (destTicks / 60) / 60), poseStack, bufferSource, -40, 45);
 			}
+
+			poseStack.popPose();
+
+			drawDriftBar(poseStack, cap.GetFlightData().getDrift() + ThreadLocalRandom.current().nextFloat(3) - 1.5f);
+
+//			poseStack.pushPose();
+//
+////			poseStack.translate(25, 70, 0);
+////			poseStack.scale(20, 20, 20);
+////			poseStack.mulPose(Axis.YP.rotationDegrees(180));
+//
+////			poseStack.mulPose(Axis.XP.rotationDegrees(45));
+//			BufferBuilder builder = Tesselator.getInstance().getBuilder();
+//
+//			builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+//
+//
+//			builder.vertex(poseStack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
+//			builder.vertex(poseStack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
+//			builder.vertex(poseStack.last().pose(), 1, 1, 0).color(0xFFFFFF).endVertex();
+//			builder.vertex(poseStack.last().pose(), 0, 1, 0).color(0xFFFFFF).endVertex();
+//
+//Tesselator.getInstance().end();
+//			poseStack.popPose();
 		});
+	}
+
+	public void drawDriftBar(PoseStack stack, float rot) {
+		stack.pushPose();
+
+
+		BufferBuilder builder = Tesselator.getInstance().getBuilder();
+
+
+		stack.scale(2.5f, 2.5f, 0);
+		stack.translate(-5, 30, 1);
+
+
+
+		stack.pushPose();
+		stack.translate(-7, -10, 0);
+
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		RenderSystem.setShaderColor(1, 1, 0, 1);
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0x00FFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, 10, 0).color(0x00FFFF).endVertex();
+		builder.vertex(stack.last().pose(), 15, 10, 0).color(0x00FFFF).endVertex();
+		builder.vertex(stack.last().pose(), 15, 0, 0).color(0x00FFFF).endVertex();
+
+		Tesselator.getInstance().end();
+
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+stack.popPose();
+
+		stack.pushPose();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+		stack.mulPose(Axis.ZN.rotationDegrees(rot));
+
+		stack.translate(0, -10, 0);
+
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, 10, 0).color(0xFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 1, 10, 0).color(0xFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
+
+		Tesselator.getInstance().end();
+
+		stack.popPose();
+
+		stack.popPose();
 	}
 }

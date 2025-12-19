@@ -16,6 +16,7 @@ import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExter
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS2C;
@@ -61,6 +62,8 @@ public class Networking {
 	public static void registerPackets() {
 		DimensionPacketsRegistration.registerPackets();
 		BOTIPackets.registerPackets();
+
+		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
 
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,

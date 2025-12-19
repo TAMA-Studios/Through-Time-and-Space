@@ -3,6 +3,8 @@ package com.code.tama.tts.server.data.tardis.data;
 
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.registries.tardis.FlightSoundSchemesRegistry;
 import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
@@ -19,7 +21,9 @@ import lombok.Setter;
 @Setter
 public class TARDISFlightData {
 	public static final Codec<TARDISFlightData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
+			.group(DataFlightEvent.CODEC.fieldOf("flight_event").forGetter(TARDISFlightData::getFlightEvent),
+					Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
+					Codec.INT.fieldOf("drift").forGetter(TARDISFlightData::getDrift),
 					Codec.INT.fieldOf("ticksTillDestination").forGetter(TARDISFlightData::getTicksTillDestination),
 					FlightTerminationProtocolRegistry.CODEC.fieldOf("flightTerminationProtocol")
 							.forGetter(TARDISFlightData::getFlightTerminationProtocol),
@@ -32,7 +36,8 @@ public class TARDISFlightData {
 	AbstractSoundScheme FlightSoundScheme = new SmithSoundScheme();
 
 	ITARDISLevel TARDIS;
-	int TicksInFlight, TicksTillDestination;
+	private DataFlightEvent flightEvent = new DecoyFlightEvent();
+	int TicksInFlight, TicksTillDestination, Drift;
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 	boolean inFlight, PlayRotorAnimation;
 
@@ -40,15 +45,16 @@ public class TARDISFlightData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISFlightData(int ticksInFlight, int ticksTillDestination,
+	public TARDISFlightData(DataFlightEvent flightEvent, int ticksInFlight, int drift, int ticksTillDestination,
 			FlightTerminationProtocol flightTerminationProtocol, AbstractSoundScheme flightSoundScheme,
 			boolean inFlight, boolean playRotorAnimation) {
-		TicksInFlight = ticksInFlight;
-		TicksTillDestination = ticksTillDestination;
+		this.TicksInFlight = ticksInFlight;
+		this.Drift = drift;
+		this.TicksTillDestination = ticksTillDestination;
 		this.flightTerminationProtocol = flightTerminationProtocol;
-		FlightSoundScheme = flightSoundScheme;
+		this.FlightSoundScheme = flightSoundScheme;
 		this.inFlight = inFlight;
-		PlayRotorAnimation = playRotorAnimation;
+		this.PlayRotorAnimation = playRotorAnimation;
 	}
 
 	public boolean IsTakingOff() {

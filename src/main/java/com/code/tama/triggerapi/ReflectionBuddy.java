@@ -77,6 +77,9 @@ public class ReflectionBuddy {
 
 	public static class RenderStateShardAccess {
 		public static final Function<RenderStateShard, RenderStateShard.TextureStateShard> BLOCK_SHEET_MIPPED = getInstanceFieldGetter(RenderStateShard.class, "BLOCK_SHEET_MIPPED");
+		public static final Function<RenderStateShard, RenderStateShard.TransparencyStateShard> TRANSLUCENT_TRANSPARENCY = getInstanceFieldGetter(RenderStateShard.class, "TRANSLUCENT_TRANSPARENCY");
+		public static final Function<RenderStateShard, RenderStateShard.LayeringStateShard> NO_LAYERING = getInstanceFieldGetter(RenderStateShard.class, "NO_LAYERING");
+
 	}
 
 	public static class BlockBehaviorAccess {

@@ -22,6 +22,8 @@ public class SyncTARDISCapPacketS2C {
 
 	TARDISNavigationalData navigationalData;
 
+	String flightEvent;
+
 	int toUpdate;
 	public SyncTARDISCapPacketS2C(TARDISData data, TARDISNavigationalData navigationalData, TARDISFlightData flightData,
 			int toUpdate) {

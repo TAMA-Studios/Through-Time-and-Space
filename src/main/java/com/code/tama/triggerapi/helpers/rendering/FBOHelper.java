@@ -9,7 +9,6 @@ import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.mixin.client.RenderStateShardAccessor;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlConst;
@@ -378,8 +377,8 @@ public class FBOHelper {
 		public static RenderType getRenderType() {
 			RenderType.CompositeState parameters = RenderType.CompositeState.builder()
 					.setTextureState(ReflectionBuddy.RenderStateShardAccess.BLOCK_SHEET_MIPPED.apply(null)) // RenderStateShard.class.getDeclaredField("BLOCK_SHEET_MIPPED").get(null)
-					.setTransparencyState(RenderStateShardAccessor.getTRANSLUCENT_TRANSPARENCY())
-					.setLayeringState(RenderStateShardAccessor.getNO_LAYERING()).createCompositeState(false);
+					.setTransparencyState(ReflectionBuddy.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY.apply(null))
+					.setLayeringState(ReflectionBuddy.RenderStateShardAccess.NO_LAYERING.apply(null)).createCompositeState(false);
 			return RenderType.create("boti", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, QUADS, 256, false, true,
 					parameters);
 		}

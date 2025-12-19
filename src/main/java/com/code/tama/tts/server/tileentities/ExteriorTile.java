@@ -316,6 +316,7 @@ public class ExteriorTile extends AbstractPortalTile {
 				this.UtterlyDestroy();
 				return;
 			}
+			if(UniversalServerOnly.getServer() == null || UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION) == null) return;
 			TARDISLevelCapability.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(tardis -> {
 						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight())
 							this.UtterlyDestroy();

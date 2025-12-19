@@ -5,10 +5,7 @@ import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.data.json.loaders.ARSDataLoader;
-import com.code.tama.tts.server.data.json.loaders.DataDimGravityLoader;
-import com.code.tama.tts.server.data.json.loaders.ExteriorDataLoader;
-import com.code.tama.tts.server.data.json.loaders.RecipeDataLoader;
+import com.code.tama.tts.server.data.json.loaders.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.registries.forge.TTSDamageSources;
@@ -125,6 +122,7 @@ public class CommonEvents {
 	public static void onAddReloadListeners(AddReloadListenerEvent event) {
 		event.addListener(new ExteriorDataLoader());
 		event.addListener(new ARSDataLoader());
+		event.addListener(new DataFlightEventLoader());
 		event.addListener(new DataDimGravityLoader());
 		event.addListener(new RecipeDataLoader());
 	}
@@ -133,18 +131,19 @@ public class CommonEvents {
 	public static void onWorldTick(TickEvent.LevelTickEvent event) {
 		if (event.phase != TickEvent.Phase.END)
 			return;
-		if (event.level.isClientSide)
-			return;
-		if (event.level.getServer() == null)
-			return;
-		if (event.level.getServer().getLevel(event.level.dimension()) == null)
-			return;
 
 		GetTARDISCapSupplier(event.level).ifPresent(level -> {
 			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff()
 					|| !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
 				level.Tick();
 		});
+
+		if (event.level.isClientSide)
+			return;
+		if (event.level.getServer() == null)
+			return;
+		if (event.level.getServer().getLevel(event.level.dimension()) == null)
+			return;
 
 		event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
 

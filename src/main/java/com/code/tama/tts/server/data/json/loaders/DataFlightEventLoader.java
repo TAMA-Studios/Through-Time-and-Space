@@ -4,7 +4,7 @@ package com.code.tama.tts.server.data.json.loaders;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.CrashFailureAction;
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventAction;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventFailureAction;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.TakeArtronAction;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.google.gson.JsonArray;
@@ -31,7 +31,7 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 	private final List<DataFlightEvent> dataFlightEvent = new ArrayList<>(); // List to store objects
 
 	private boolean isValidJson(JsonObject jsonObject) {
-		if (jsonObject.has("values") && jsonObject.get("values").isJsonObject() && jsonObject.has("time") && jsonObject.has("fail_action") && jsonObject.has("name")) {
+		if (jsonObject.has("values")) {
 			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
 			// Validate grav and structure fields
@@ -87,7 +87,7 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 							int time = valuesObject.get("time").getAsInt();
 							String name = valuesObject.get("name").getAsString();
 
-							FlightEventAction action;
+							FlightEventFailureAction action;
 
 							JsonObject jsonAction = valuesObject.get("fail_action").getAsJsonObject();
 

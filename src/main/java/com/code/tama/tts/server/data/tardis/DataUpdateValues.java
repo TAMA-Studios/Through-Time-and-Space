@@ -11,14 +11,16 @@ public class DataUpdateValues {
 
 	/**
 	 * General Data, stuff like light levels, disco mode, door data, subsystems, etc
-	 * *
 	 */
 	public static final int DATA = 0x3;
 
-	/** Update only Flight data (is in flight, ticks in flight, etc) * */
+	/** Update only Flight data (is in flight, ticks in flight, etc) **/
 	public static final int FLIGHT = 0x2;
 
-	/** Update only Navigational data (Mainly destination/location data) * */
+	/** Update only Flight events **/
+	public static final int FLIGHT_EVENTS = 0x5;
+
+	/** Update only Navigational data (Mainly destination/location data) **/
 	public static final int NAVIGATIONAL = 0x1;
 
 	/**

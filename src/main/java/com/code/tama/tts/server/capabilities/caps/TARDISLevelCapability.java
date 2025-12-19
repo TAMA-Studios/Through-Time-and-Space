@@ -7,6 +7,7 @@ import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.data.*;
@@ -17,11 +18,11 @@ import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
-import com.code.tama.tts.server.threads.CrashThread;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -47,12 +48,11 @@ import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	private DataFlightEvent flightEvent;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
@@ -116,12 +116,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void setCurrentFlightEvent(DataFlightEvent event) {
-		this.flightEvent = event;
+		this.GetFlightData().setFlightEvent(event);
 	}
 
 	@Override
 	public DataFlightEvent getCurrentFlightEvent() {
-		return this.flightEvent;
+		return this.GetFlightData().getFlightEvent();
 	}
 
 	@Override
@@ -284,6 +284,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.GetFlightData().setTicksInFlight(
 				this.GetFlightData().getTicksInFlight() + 1);
 
+		if(this.GetData().getControlData().isVortexAnchor()) return;
+
+
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
 		SpaceTimeCoordinate delta = distanceToLoc();
 
@@ -300,7 +303,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		this.GetNavigationalData().setLocation(current);
 
-		HandleFlightEvents();
+		if(!level.isClientSide)
+			HandleFlightEvents();
 	}
 
 
@@ -310,23 +314,32 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	public void HandleFlightEvents() {
-		if(this.getCurrentFlightEvent() != null && (this.level.getGameTime() - (this.lastFlightEvent + this.getCurrentFlightEvent().Time()) > TTSConfig.ServerConfig.FLIGHT_EVENT_DURATION.get())) {
-			this.getCurrentFlightEvent().action().Action.accept(this);
-			this.setCurrentFlightEvent(null);
-			this.lastFlightEvent = ticks;
+		if(!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) {
+			if(this.getCurrentFlightEvent().RequiredControls.isEmpty()) {
+				this.setCurrentFlightEvent(new DecoyFlightEvent());
+				this.lastFlightEvent = ticks;
+				this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
+			}
+			if ((this.ticks - (this.lastFlightEvent + this.getCurrentFlightEvent().Time) > TTSConfig.ServerConfig.FLIGHT_EVENT_DURATION.get())) {
+				this.getCurrentFlightEvent().action.Action.accept(this);
+				this.setCurrentFlightEvent(new DecoyFlightEvent());
+				this.lastFlightEvent = ticks;
+				this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
+			}
 		}
 
 		if(!(this.ticks % TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get() == 1 &&
-				this.level.getGameTime() - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())
+				this.ticks - this.lastFlightEvent > TTSConfig.ServerConfig.TICKS_BETWEEN_FLIGHT_EVENT.get())
 		|| this.GetFlightData().getTicksInFlight() < 80) return;
 
-		int eventIndex = new Random(this.level.getGameTime()).nextInt(DataFlightEventList.getList().size()) - 1;
+		int eventIndex = Math.max(ThreadLocalRandom.current().nextInt(0, DataFlightEventList.getList().size()), 0);
 
 		this.setCurrentFlightEvent(DataFlightEventList.getList().get(eventIndex));
 
-		this.level.players().forEach(p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name())));
+		this.level.players().forEach(p -> p.sendSystemMessage(Component.literal("Flight event: " + this.getCurrentFlightEvent().name)));
 
 		this.lastFlightEvent = this.ticks;
+		this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
 	}
 
 	@Override
@@ -447,11 +460,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		if (event.isCanceled()) return;
 
-		this.flightData.setInFlight(false);
+//		this.flightData.setInFlight(false);
 		this.data.setSparking(true);
 		this.environmentalData.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
-		new CrashThread(this).start();
-		this.NullExteriorChecksAndFixes();
+
+		this.Rematerialize();
+		//		new CrashThread(this).start();
+//		this.NullExteriorChecksAndFixes();
 	}
 
 	public static Rotation DirectionToRotation(Direction direction) {
@@ -479,14 +494,21 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				Networking.sendPacketToDimension(cap.level.dimension(),
 						new TriggerSyncCapPacketC2S(cap.level.dimension(), toUpdate));
 			else {
-				Networking.sendPacketToDimension(cap.level.dimension(),
-						new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
+				if(toUpdate == DataUpdateValues.FLIGHT_EVENTS) {
+					Networking.sendPacketToDimension(cap.level.dimension(),
+							new SyncTARDISFlightEventPacketS2C(cap.GetFlightData().getFlightEvent()));
+				}
+				else {
 
-				if (this.GetExteriorTile() != null) {
-					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
-					Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
-					Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
-					Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
+					Networking.sendPacketToDimension(cap.level.dimension(),
+							new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
+
+					if (this.GetExteriorTile() != null) {
+						Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
+						Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
+						Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
+						Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
+					}
 				}
 			}
 //		}, this, toUpdate, "tardis_update_thread");

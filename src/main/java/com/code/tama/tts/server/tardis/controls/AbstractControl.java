@@ -73,9 +73,9 @@ public abstract class AbstractControl {
 
 	public void RenderFlightEvent(PoseStack stack, MultiBufferSource source, ModularControl control) {
 		assert control.consoleTile.getLevel() != null;
-		if(control.getConsoleTile() == null) return;
-		TARDISLevelCapability.GetTARDISCapSupplier(control.getConsoleTile().getLevel()).ifPresent((cap) -> {
-			if (cap.getCurrentFlightEvent().RequiredControls().contains(this.id())) {
+		if(control.level() == null) return;
+		TARDISLevelCapability.GetTARDISCapSupplier(control.level()).ifPresent((cap) -> {
+			if (cap.getCurrentFlightEvent().RequiredControls.contains(this.id())) {
 				assert Minecraft.getInstance().level != null;
 				if (Minecraft.getInstance().level.random.nextInt(100000) <= 5) {
 					Spark(Minecraft.getInstance().level, control.position());
@@ -175,6 +175,11 @@ public abstract class AbstractControl {
 
 	public String getTranslationKey() {
 		return id().getNamespace() + ".controls." + id().getPath();
+	}
+
+	@Deprecated
+	public String name() {
+		return id().getPath();
 	}
 
 	public void render(PoseStack stack, MultiBufferSource source, int combinedLight, ModularControl control) {

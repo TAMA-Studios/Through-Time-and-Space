@@ -1,7 +1,9 @@
 package com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions;
 
-public class CrashFailureAction extends FlightEventAction {
+import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+
+public class CrashFailureAction extends FlightEventFailureAction {
     public CrashFailureAction() {
-        super((cap) -> cap.Crash(), "crash");
+        super(ITARDISLevel::Crash, "crash");
     }
 }

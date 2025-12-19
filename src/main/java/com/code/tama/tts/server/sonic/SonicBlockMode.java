@@ -30,7 +30,7 @@ public class SonicBlockMode extends SonicMode {
 	}
 
 	public void onUse(UseOnContext context) {
-		if(context.getLevel().isClientSide || context.getHand().equals(InteractionHand.OFF_HAND)) return;
+		if(context.getHand().equals(InteractionHand.OFF_HAND)) return;
 		Player player = context.getPlayer();
 		Level level = context.getLevel();
 

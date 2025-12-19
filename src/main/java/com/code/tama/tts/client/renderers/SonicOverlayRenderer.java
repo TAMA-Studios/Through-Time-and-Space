@@ -102,7 +102,7 @@ public class SonicOverlayRenderer {
 					if (ent != null && ent.getCapability(ForgeCapabilities.ENERGY).isPresent())
 						Minecraft.getInstance().font
 								.drawInBatch(
-										Component.literal(String.format("Weld: %s",
+										Component.literal(String.format("FE: %s",
 														ent.getCapability(ForgeCapabilities.ENERGY).orElseGet(null)
 																.getEnergyStored()))
 												.withStyle(ChatFormatting.WHITE),
@@ -112,7 +112,7 @@ public class SonicOverlayRenderer {
 					if (ent != null && ent instanceof IWeldable weldable)
 						Minecraft.getInstance().font
 								.drawInBatch(
-										Component.literal(String.format("FE: %s",
+										Component.literal(String.format("Weld: %s",
 														weldable.getWeldProgress()))
 												.withStyle(ChatFormatting.WHITE),
 										0, -15, white, false, stack.last().pose(), bufferSource,

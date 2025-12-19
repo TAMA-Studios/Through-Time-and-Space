@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -45,7 +46,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	public Vec3 Position;
 	public AbstractConsoleTile consoleTile;
-	private final BlockPos consolePos;
+	private BlockPos consolePos;
 	public AABB size;
 
 	/**
@@ -55,7 +56,6 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	@ApiStatus.Internal
 	public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
 		super(modularControlEntityType, level);
-		this.consolePos = BlockPos.ZERO;
 	}
 
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
@@ -157,8 +157,15 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void OnControlClicked(ITARDISLevel capability, Player player) {
-		if (player.getUsedItemHand() == InteractionHand.OFF_HAND || player.level().isClientSide)
+		if (player.getUsedItemHand() == InteractionHand.OFF_HAND)
 			return;
+
+		if(capability.getCurrentFlightEvent().RequiredControls.contains(this.GetControl().id())) {
+			capability.getCurrentFlightEvent().RequiredControls.remove(this.GetControl().id());
+			capability.GetLevel().playLocalSound(this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f, true);
+			return;
+		}
+
 		if (player.getMainHandItem().getItem() instanceof SonicItem) {
 			if (player.isCrouching()) {
 				this.CycleControlBackward();
@@ -187,9 +194,15 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void OnControlHit(ITARDISLevel capability, Entity entity) {
-		if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND
-				|| entity.level().isClientSide)
+		if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND)
 			return;
+
+		if(capability.getCurrentFlightEvent().RequiredControls.contains(this.GetControl().id())) {
+			capability.getCurrentFlightEvent().RequiredControls.remove(this.GetControl().id());
+			capability.GetLevel().playLocalSound(this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f, true);
+			return;
+		}
+
 		InteractionResult interactionResult = this.GetControl().OnLeftClick(capability, entity);
 
 		this.level().playSound(null, this.blockPosition(),
