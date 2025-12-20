@@ -70,7 +70,7 @@ public class FlightStatusUICategory extends UICategory {
 
 			poseStack.popPose();
 
-			drawDriftBar(poseStack, cap.GetFlightData().getDrift() + ThreadLocalRandom.current().nextFloat(3) - 1.5f);
+			drawDriftBar(poseStack, cap.GetFlightData().getDrift() + (cap.GetFlightData().isInFlight() ? ThreadLocalRandom.current().nextFloat(3) - 1.5f : 0), cap.GetData().getControlData().getHelmicRegulator());
 
 			// poseStack.pushPose();
 			//
@@ -94,7 +94,7 @@ public class FlightStatusUICategory extends UICategory {
 		});
 	}
 
-	public void drawDriftBar(PoseStack stack, float rot) {
+	public void drawDriftBar(PoseStack stack, float rot, float slide) {
 		stack.pushPose();
 
 		BufferBuilder builder = Tesselator.getInstance().getBuilder();
@@ -103,27 +103,22 @@ public class FlightStatusUICategory extends UICategory {
 		stack.translate(-5, 30, 1);
 
 		stack.pushPose();
-		stack.translate(-7, -10, 0);
+		stack.translate(-9.5, -10, 0);
 
 
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
 
 		RenderSystem.setShaderTexture(0, SPEEDOMETER);
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 
-		//		builder.vertex(stack.last().pose(), 0, 0, 0).uv(0, 0).endVertex();
-//		builder.vertex(stack.last().pose(), 0, 10, 0).uv(1, 0).endVertex();
-//		builder.vertex(stack.last().pose(), 15, 10, 0).uv(1, 1).endVertex();
-//		builder.vertex(stack.last().pose(), 15, 0, 0).uv(0, 1).endVertex();
-
-		builder.vertex(stack.last().pose(), 15, 0, 0).uv(0, 0).endVertex();
-		builder.vertex(stack.last().pose(), 0, 0, 0).uv(1, 0).endVertex();
-		builder.vertex(stack.last().pose(), 0, 10, 0).uv(1, 1).endVertex();
-		builder.vertex(stack.last().pose(), 15, 10, 0).uv(0, 1).endVertex();
+		builder.vertex(stack.last().pose(), 20, 0, 0).color(0xFF00569F).uv(0, 0).endVertex();
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFF00569F).uv(1, 0).endVertex();
+		builder.vertex(stack.last().pose(), 0, 10, 0).color(0xFF00569F).uv(1, 1).endVertex();
+		builder.vertex(stack.last().pose(), 20, 10, 0).color(0xFF00569F).uv(0, 1).endVertex();
 
 
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 //		BufferUploader.drawWithShader(builder.end());
 		Tesselator.getInstance().end();
 
@@ -138,27 +133,26 @@ public class FlightStatusUICategory extends UICategory {
 		stack.translate(0, -10, 0);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 
-		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 0, 10, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, 10, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFF00FFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0XFF005AA7).endVertex();
+		builder.vertex(stack.last().pose(), 0, 10, 0).color(0XFF005AA7).endVertex();
+		builder.vertex(stack.last().pose(), 1, 10, 0).color(0XFF005AA7).endVertex();
+		builder.vertex(stack.last().pose(), 1, 0, 0).color(0XFF005AA7).endVertex();
 
 		Tesselator.getInstance().end();
 
 		stack.popPose();
 
-		stack.translate(0, 5, 0);
+		stack.translate(-slide + 5, 1.5, 0);
 
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-		stack.translate(0, -10, 0);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 
-		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 0, 1, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, 1, 0).color(0xFF00FFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFF00FFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0XFF0062B6).endVertex();
+		builder.vertex(stack.last().pose(), 0, 1, 0).color(0XFF0062B6).endVertex();
+		builder.vertex(stack.last().pose(), 1, 1, 0).color(0XFF0062B6).endVertex();
+		builder.vertex(stack.last().pose(), 1, 0, 0).color(0XFF0062B6).endVertex();
 
 		Tesselator.getInstance().end();
 

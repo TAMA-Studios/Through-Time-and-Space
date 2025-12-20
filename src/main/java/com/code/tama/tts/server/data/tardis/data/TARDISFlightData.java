@@ -73,7 +73,7 @@ public class TARDISFlightData {
 		SpaceTimeCoordinate delta = this.distanceToLoc();
 
 		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get()
-				+ Math.max(1, this.TARDIS.GetData().getControlData().GetArtronPacketOutput() * 10);
+				+ this.TARDIS.GetData().getControlData().GetArtronPacketOutput();
 
 		if (speed <= 0)
 			return Long.MAX_VALUE;

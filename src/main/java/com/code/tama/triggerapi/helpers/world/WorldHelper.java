@@ -1,11 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joml.Vector3d;
-
+import com.code.tama.triggerapi.Logger;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -23,10 +21,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import org.joml.Vector3d;
 
-import com.code.tama.triggerapi.Logger;
-import com.code.tama.triggerapi.ReflectionBuddy;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldHelper {
 	public static boolean CanCollide(BlockState state) {
@@ -34,9 +32,9 @@ public class WorldHelper {
 	}
 
 	public static boolean IsDragonDead() {
-		assert ServerLifecycleHooks.getCurrentServer().getLevel(Level.END) != null;
+		assert UniversalServerOnly.getServer().getLevel(Level.END) != null;
 		return ReflectionBuddy.EndDragonFightAccess.dragonKilled
-				.apply(ServerLifecycleHooks.getCurrentServer().getLevel(Level.END).getDragonFight());
+				.apply(UniversalServerOnly.getServer().getLevel(Level.END).getDragonFight());
 	}
 
 	public static boolean IsSolid(BlockState floor, BlockState block1, BlockState block2) {
@@ -177,8 +175,9 @@ public class WorldHelper {
 				effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
 	}
 
-	public static ResourceKey<Level> cycleDimension(MinecraftServer server, ResourceKey<Level> current,
+	public static ResourceKey<Level> cycleDimension(ResourceKey<Level> current,
 			boolean forward) {
+		MinecraftServer server = UniversalServerOnly.getServer();
 		List<ResourceKey<Level>> keys = new ArrayList<>(server.levelKeys());
 		if (keys.isEmpty())
 			return current;
@@ -197,14 +196,15 @@ public class WorldHelper {
 
 		// Skip The End if the dragon is alive
 		if (next.equals(Level.END) && !IsDragonDead()) {
-			newIndex = forward ? newIndex + 1 : newIndex - 1;
-
-			if (newIndex >= keys.size())
-				newIndex = 0;
-			else if (newIndex < 0)
-				newIndex = keys.size() - 1;
-
-			next = keys.get(newIndex);
+//			newIndex = forward ? newIndex + 1 : newIndex - 1;
+//
+//			if (newIndex >= keys.size())
+//				newIndex = 0;
+//			else if (newIndex < 0)
+//				newIndex = keys.size() - 1;
+//
+//			next = keys.get(newIndex);
+			next = cycleDimension(next, forward); // Hopefully this doesn't stackoverflow. It SHOULDN'T, assuming the end isn't the only dimension that exists... in which case something is incredibly wrong.
 		}
 
 		return next;

@@ -36,11 +36,14 @@ public class ControlsRegistry {
 	public static final RegistryObject<VariantControl> VARIANT_CONTROL = CONTROLS.register("variant_control",
 			VariantControl::new);
 
-	public static final RegistryObject<X_Control> X_CONTROL = CONTROLS.register("x_control", X_Control::new);
+	public static final RegistryObject<XControl> X_CONTROL = CONTROLS.register("x_control", XControl::new);
 
-	public static final RegistryObject<Y_Control> Y_CONTROL = CONTROLS.register("y_control", Y_Control::new);
+	public static final RegistryObject<YControl> Y_CONTROL = CONTROLS.register("y_control", YControl::new);
 
-	public static final RegistryObject<Z_Control> Z_CONTROL = CONTROLS.register("z_control", Z_Control::new);
+	public static final RegistryObject<ZControl> Z_CONTROL = CONTROLS.register("z_control", ZControl::new);
+
+	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS
+			.register("fast_return", FastReturnControl::new);
 
 	public static final RegistryObject<DimensionControl> DIMENSION_CYCLE = CONTROLS.register("dimension_cycle",
 			DimensionControl::new);
@@ -82,7 +85,7 @@ public class ControlsRegistry {
 	@SuppressWarnings("unchecked")
 	public static AbstractControl CycleBackwards(AbstractControl control) {
 		int ordinal = (getOrdinal(control) - 1);
-		if(ordinal <= CONTROLS.getEntries().size())
+		if(ordinal <= 0)
 			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[CONTROLS.getEntries().size() - 1]).get();
 		else {
 			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[ordinal]).get();

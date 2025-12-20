@@ -259,6 +259,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (!this.CanFly() || this.GetLevel().isClientSide())
 			return;
 
+		this.GetNavigationalData().setPreviousLocation(this.GetNavigationalData().getLocation());
+
 		if (this.GetExteriorTile() != null) {
 			ExteriorTile ext = this.GetExteriorTile();
 
@@ -287,7 +289,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
 		SpaceTimeCoordinate delta = flightData.distanceToLoc();
 
-		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get() + (Math.max(1, this.data.getControlData().GetArtronPacketOutput() * 10)); // blocks per tick, calculated using default config value, + Artron packet output * 10 (where artron packet output is a float from 0-1)
+		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get() + this.data.getControlData().GetArtronPacketOutput(); // blocks per tick, calculated using default config value, + Artron packet output * 10 (where artron packet output is a float from 0-1)
 
 		double dx = Math.signum(delta.GetX()) * speed;
 		double dy = Math.signum(delta.GetY()) * speed;
@@ -304,7 +306,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void HandleFlightEvents() {
 		if(ticks % (80 + ThreadLocalRandom.current().nextInt(120)) == 1) {
 			this.data.getControlData().setHelmicRegulator(
-					this.data.getControlData().getHelmicRegulator() + ThreadLocalRandom.current().nextFloat(0.2f) - 0.1f
+					this.data.getControlData().getHelmicRegulator() + ThreadLocalRandom.current().nextInt(2) - 1
 			);
 			this.UpdateClient(DataUpdateValues.DATA);
 		}

@@ -1,14 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -28,9 +25,6 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import com.code.tama.tts.server.worlds.TStemCreation;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -51,12 +45,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -398,52 +396,8 @@ public class ExteriorTile extends AbstractPortalTile {
 		} else
 			this.IsEmptyShell = false;
 
-		if (this.ShouldMakeDimOnNextTick) {
-			assert level != null;
-			if (level.isClientSide || level.getServer() == null)
-				return;
-			level.getServer().execute(() -> {
-				ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
-						new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
-								+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
-
-				ServerLevel tardisLevel;
-
-				if (isArtificial)
-					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
-							() -> TStemCreation.createArtificialTARDISLevelStem(level.getServer()));
-				else
-					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
-							() -> TStemCreation.createNaturalTARDISLevelStem(level.getServer()));
-
-				((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
-
-				GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
-					cap.SetExteriorTile(this);
-					assert this.getLevel() != null;
-					cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
-					cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
-					BlockPos loc = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos();
-					cap.GetNavigationalData().setDestination(new SpaceTimeCoordinate(
-							level.getBlockRandomPos(loc.getX(), loc.getY(), loc.getZ(), 50000)));
-					cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
-					cap.GetData().setOwnerUUID(this.PlacerUUID);
-				});
-
-				this.INTERIOR_DIMENSION = tardisLevel.dimension();
-				this.PlaceInterior(Structures.CleanInterior);
-
-				ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
-						.getPlayer(this.PlacerUUID);
-
-				if (player != null) {
-					player.getCapability(Capabilities.PLAYER_CAPABILITY)
-							.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));
-				}
-			});
-			this.ShouldMakeDimOnNextTick = false;
-			this.IsEmptyShell = false;
-		}
+		if (this.ShouldMakeDimOnNextTick)
+			makeInterior();
 
 		if (this.GetInterior() == null)
 			return;
@@ -465,6 +419,53 @@ public class ExteriorTile extends AbstractPortalTile {
 						}
 					});
 		}
+	}
+
+	private void makeInterior() {
+		assert level != null;
+		if (level.isClientSide || level.getServer() == null)
+			return;
+		level.getServer().execute(() -> {
+			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
+					new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
+							+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
+
+			ServerLevel tardisLevel;
+
+			if (isArtificial)
+				tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
+						() -> TStemCreation.createArtificialTARDISLevelStem(level.getServer()));
+			else
+				tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
+						() -> TStemCreation.createNaturalTARDISLevelStem(level.getServer()));
+
+			((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
+
+			GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
+				cap.SetExteriorTile(this);
+				assert this.getLevel() != null;
+				cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
+				cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+				BlockPos loc = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos();
+				cap.GetNavigationalData().setDestination(new SpaceTimeCoordinate(
+						level.getBlockRandomPos(loc.getX(), loc.getY(), loc.getZ(), 500000).atY(64)));
+				cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
+				cap.GetData().setOwnerUUID(this.PlacerUUID);
+			});
+
+			this.INTERIOR_DIMENSION = tardisLevel.dimension();
+			this.PlaceInterior(Structures.CleanInterior);
+
+			ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+					.getPlayer(this.PlacerUUID);
+
+			if (player != null) {
+				player.getCapability(Capabilities.PLAYER_CAPABILITY)
+						.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));
+			}
+		});
+		this.ShouldMakeDimOnNextTick = false;
+		this.IsEmptyShell = false;
 	}
 
 }

@@ -24,12 +24,13 @@ public class TARDISNavigationalData {
 							.forGetter(TARDISNavigationalData::getDestinationDimensionKey),
 					SpaceTimeCoordinate.CODEC.fieldOf("destination").forGetter(TARDISNavigationalData::getDestination),
 					SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(TARDISNavigationalData::getLocation),
+					SpaceTimeCoordinate.CODEC.fieldOf("previous_location").forGetter(TARDISNavigationalData::GetPreviousLocation),
 					Direction.CODEC.fieldOf("facing").forGetter(TARDISNavigationalData::getFacing),
 					Direction.CODEC.fieldOf("destinationFacing")
 							.forGetter(TARDISNavigationalData::getDestinationFacing))
 			.apply(instance, TARDISNavigationalData::new));
 
-	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate();
+	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(), PreviousLocation = new SpaceTimeCoordinate();
 
 	ResourceKey<Level> ExteriorDimensionKey = Level.OVERWORLD, DestinationDimensionKey = Level.OVERWORLD;
 
@@ -42,7 +43,7 @@ public class TARDISNavigationalData {
 	}
 
 	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey,
-			ResourceKey<Level> destinationDimensionKey, SpaceTimeCoordinate destination, SpaceTimeCoordinate location,
+			ResourceKey<Level> destinationDimensionKey, SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
 			Direction facing, Direction destinationFacing) {
 		this.Increment = Increment;
 		ExteriorDimensionKey = exteriorDimensionKey;
@@ -51,10 +52,15 @@ public class TARDISNavigationalData {
 		Location = location;
 		Facing = facing;
 		DestinationFacing = destinationFacing;
+		PreviousLocation = previousLocation;
 	}
 
 	public SpaceTimeCoordinate GetExteriorLocation() {
 		return this.Location.copy();
+	}
+
+	public SpaceTimeCoordinate GetPreviousLocation() {
+		return this.PreviousLocation.copy();
 	}
 
 	public int GetNextIncrement() {

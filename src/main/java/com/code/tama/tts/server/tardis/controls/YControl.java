@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -12,9 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
-
-public class Z_Control extends AbstractControl {
+public class YControl extends AbstractControl {
 	@Override
 	public SoundEvent GetFailSound() {
 		return SoundEvents.DISPENSER_FAIL;
@@ -29,7 +27,7 @@ public class Z_Control extends AbstractControl {
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
 		itardisLevel.GetNavigationalData()
 				.setDestination(itardisLevel.GetNavigationalData().getDestination()
-						.AddZ(entity.isCrouching()
+						.AddY(entity.isCrouching()
 								? itardisLevel.GetNavigationalData().getIncrement()
 								: -itardisLevel.GetNavigationalData().getIncrement()));
 		if (entity instanceof Player player)
@@ -43,7 +41,7 @@ public class Z_Control extends AbstractControl {
 	public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
 		itardisLevel.GetNavigationalData()
 				.setDestination(itardisLevel.GetNavigationalData().getDestination()
-						.AddZ(player.isCrouching()
+						.AddY(player.isCrouching()
 								? -itardisLevel.GetNavigationalData().getIncrement()
 								: itardisLevel.GetNavigationalData().getIncrement()));
 		player.displayClientMessage(Component.literal(
@@ -53,6 +51,6 @@ public class Z_Control extends AbstractControl {
 
 	@Override
 	public ResourceLocation id() {
-		return UniversalCommon.modRL("z_control");
+		return UniversalCommon.modRL("y_control");
 	}
 }

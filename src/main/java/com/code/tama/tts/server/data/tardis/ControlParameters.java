@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class ControlParameters {
 	public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
+			.group(Codec.INT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
 					Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
 					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isBrakes),
 					Codec.BOOL.fieldOf("anchor").forGetter(ControlParameters::isVortexAnchor),
@@ -28,9 +28,9 @@ public class ControlParameters {
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 	public boolean APCState, Brakes, SimpleMode, CoordinateLock, VortexAnchor;
 	public int ArtronPacketOutput;
-	public float HelmicRegulator;
+	public int HelmicRegulator;
 
-	public ControlParameters(Float helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor,
+	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor,
 			Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
 			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
@@ -51,7 +51,7 @@ public class ControlParameters {
 	 * flight, and will shut down just prior to landing. This can result in violent
 	 * jerks or shudders occurring during a materialization sequence. If the TARDIS
 	 * is stuck in a tractor beam, a non-APC flight might be able to break the
-	 * tractor beam a non-APC landing may enable the TARDIS to be snared out of the
+	 * tractor beam. a non-APC landing may enable the TARDIS to be snared out of the
 	 * vortex to an undesirable landing coordinate.
 	 */
 	public boolean GetAPC() {
