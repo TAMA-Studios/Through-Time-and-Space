@@ -1,13 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.core.LayeredRegistryAccess;
@@ -19,15 +12,24 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class ReflectionBuddy {
 	@SuppressWarnings("unchecked")
@@ -73,6 +75,11 @@ public class ReflectionBuddy {
 		public static final Function<Block, Boolean> hasCollision = getInstanceFieldGetter(Block.class, "hasCollision");
 		public static final Function<Block, Item.Properties> properties = getInstanceFieldGetter(Block.class,
 				"properties");
+	}
+
+
+	public static class FallingBlockEntityAccess {
+		public static final Function<FallingBlockEntity, BlockState> blockState = getInstanceFieldGetter(FallingBlockEntity.class, "blockState");
 	}
 
 	public static class RenderStateShardAccess {

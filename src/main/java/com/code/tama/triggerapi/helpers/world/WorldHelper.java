@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class WorldHelper {
@@ -210,6 +211,31 @@ public class WorldHelper {
 		return next;
 	}
 
+	public static ResourceKey<Level> getNextDimension(
+			ResourceKey<Level> current
+	) {
+		// Collect all loaded dimension keys
+		List<ResourceKey<Level>> dimensions = new ArrayList<>(
+				UniversalServerOnly.getServer().levelKeys()
+		);
+
+		// Sort for deterministic order
+		dimensions.sort(Comparator.comparing(key -> key.location().toString()));
+
+		if (dimensions.isEmpty()) {
+			return current;
+		}
+
+		int index = dimensions.indexOf(current);
+
+		// If current isn't found, just return the first
+		if (index == -1) {
+			return dimensions.get(0);
+		}
+
+		// Wrap around
+		return dimensions.get((index + 1) >= dimensions.size() ? 0 : index + 1);
+	}
 	// public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos,
 	// ResourceLocation
 	// structure) {

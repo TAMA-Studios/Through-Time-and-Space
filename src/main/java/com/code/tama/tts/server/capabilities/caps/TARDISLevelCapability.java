@@ -196,7 +196,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		return this.navigationalData.getExteriorDimensionKey() == null
 				? Level.OVERWORLD
-				: this.navigationalData.getDestinationDimensionKey();
+				: this.navigationalData.getExteriorDimensionKey();
 	}
 
 	/**

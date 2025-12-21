@@ -12,6 +12,7 @@ import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRende
 import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
+import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.*;
@@ -37,7 +38,7 @@ public class TTSTileEntities {
 			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL).register();
 
 	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
-			.validBlocks(TTSBlocks.DOOR_BLOCK).register();
+			.validBlocks(TTSBlocks.DOOR_BLOCK).renderer(() -> InteriorDoorRenderer::new).register();
 
 	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();

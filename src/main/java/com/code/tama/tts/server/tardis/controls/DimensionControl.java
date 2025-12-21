@@ -5,6 +5,8 @@ import com.code.tama.triggerapi.GrammarNazi;
 import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -27,12 +29,18 @@ public class DimensionControl extends AbstractControl {
 	@Override
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
 		if (!itardisLevel.GetLevel().isClientSide()) {
-			itardisLevel.GetNavigationalData()
-					.setDestinationDimensionKey(WorldHelper.cycleDimension(itardisLevel.GetNavigationalData().getDestinationDimensionKey(), true));
+			if(itardisLevel.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated()) return InteractionResult.FAIL;
+
+			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().getDestination();
+			coordinate.setLevel(WorldHelper.getNextDimension(itardisLevel.GetNavigationalData().getDestination().getLevelKey()));
+			itardisLevel.GetNavigationalData().setDestination(coordinate);
+
+			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
+
 			if (entity instanceof Player player)
 				player.displayClientMessage(
 						Component.literal("Destination Level = " + GrammarNazi.CleanString(
-								itardisLevel.GetNavigationalData().getExteriorDimensionKey().location().getPath())),
+								itardisLevel.GetNavigationalData().getDestination().getLevelKey().location().getPath())),
 						false);
 		}
 		return InteractionResult.SUCCESS;
@@ -41,11 +49,16 @@ public class DimensionControl extends AbstractControl {
 	@Override
 	public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
 		if (!itardisLevel.GetLevel().isClientSide()) {
-			itardisLevel.GetNavigationalData()
-					.setDestinationDimensionKey(WorldHelper.cycleDimension(itardisLevel.GetNavigationalData().getDestinationDimensionKey(), false));
+			if(itardisLevel.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated()) return InteractionResult.FAIL;
+
+			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().getDestination();
+			coordinate.setLevel(WorldHelper.getNextDimension(itardisLevel.GetNavigationalData().getDestination().getLevelKey()));
+			itardisLevel.GetNavigationalData().setDestination(coordinate);
+
+			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 
 			player.displayClientMessage(Component.literal("Destination Level = " + GrammarNazi
-					.CleanString(itardisLevel.GetNavigationalData().getExteriorDimensionKey().location().getPath())),
+					.CleanString(itardisLevel.GetNavigationalData().getDestination().getLevelKey().location().getPath())),
 					true);
 		}
 		return InteractionResult.SUCCESS;

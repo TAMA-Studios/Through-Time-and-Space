@@ -20,8 +20,6 @@ public class TARDISNavigationalData {
 			.group(Codec.INT.fieldOf("increment").forGetter(TARDISNavigationalData::getIncrement),
 					ResourceKey.codec(Registries.DIMENSION).fieldOf("exteriorDimensionKey")
 							.forGetter(TARDISNavigationalData::getExteriorDimensionKey),
-					ResourceKey.codec(Registries.DIMENSION).fieldOf("destinationDimensionKey")
-							.forGetter(TARDISNavigationalData::getDestinationDimensionKey),
 					SpaceTimeCoordinate.CODEC.fieldOf("destination").forGetter(TARDISNavigationalData::getDestination),
 					SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(TARDISNavigationalData::getLocation),
 					SpaceTimeCoordinate.CODEC.fieldOf("previous_location").forGetter(TARDISNavigationalData::GetPreviousLocation),
@@ -32,7 +30,7 @@ public class TARDISNavigationalData {
 
 	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(), PreviousLocation = new SpaceTimeCoordinate();
 
-	ResourceKey<Level> ExteriorDimensionKey = Level.OVERWORLD, DestinationDimensionKey = Level.OVERWORLD;
+	ResourceKey<Level> ExteriorDimensionKey = Level.OVERWORLD;
 
 	Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
 	int Increment = 1;
@@ -42,12 +40,10 @@ public class TARDISNavigationalData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey,
-			ResourceKey<Level> destinationDimensionKey, SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
+	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey, SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
 			Direction facing, Direction destinationFacing) {
 		this.Increment = Increment;
 		ExteriorDimensionKey = exteriorDimensionKey;
-		DestinationDimensionKey = destinationDimensionKey;
 		Destination = destination;
 		Location = location;
 		Facing = facing;
@@ -99,8 +95,6 @@ public class TARDISNavigationalData {
 	}
 
 	public SpaceTimeCoordinate getDestination() {
-		if (this.Destination.getLevel() == null)
-			this.Destination.setLevel(this.DestinationDimensionKey);
 		return this.Destination.copy();
 	}
 
