@@ -5,7 +5,6 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,8 +25,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	public InteriorDoorRenderer(BlockEntityRendererProvider.Context context) {

@@ -4,11 +4,14 @@ package com.code.tama.tts.server.tardis.controls;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class EmptyControl extends AbstractControl {
 	@Override
@@ -34,7 +37,7 @@ public class EmptyControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "empty";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("empty");
 	}
 }

@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -26,8 +27,8 @@ import net.minecraft.world.level.Level;
 public class TemporalImprintReaderItem extends PowerableItem {
 	private boolean firstTick = true;
 	BlockPos pos;
-	public TemporalImprintReaderItem() {
-		super(new Properties().stacksTo(1), 256);
+	public TemporalImprintReaderItem(Item.Properties properties) {
+		super(properties, 256);
 	}
 
 	@Override

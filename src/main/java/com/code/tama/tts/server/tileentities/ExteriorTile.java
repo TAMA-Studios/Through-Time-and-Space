@@ -1,13 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -18,20 +16,15 @@ import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
+import com.code.tama.tts.server.worlds.TStemCreation;
 import lombok.Getter;
 import lombok.Setter;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -48,16 +41,22 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.dimensions.DimensionManager;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-public class ExteriorTile extends AbstractPortalTile implements IWeldable {
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
@@ -79,10 +78,8 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
-	public int PlasmicShellPlates, StructuralBeams, Weld;
-
-	public ExteriorTile(BlockPos pos, BlockState state) {
-		super(TTSTileEntities.EXTERIOR_TILE.get(), pos, state);
+	public ExteriorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override
@@ -198,9 +195,7 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	}
 
 	public void TeleportToInterior(Entity EntityToTeleport) {
-		if (this.getLevel() == null || this.getLevel().isClientSide)
-			return;
-		if (this.INTERIOR_DIMENSION == null)
+		if (this.getLevel() == null || this.getLevel().isClientSide || this.INTERIOR_DIMENSION == null)
 			return;
 
 		// Don't teleport if the entity in question is viewing the exterior via
@@ -211,22 +206,35 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 			return;
 
 		ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
+
 		assert Interior != null;
 		Interior.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-			MinecraftForge.EVENT_BUS
-					.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START, EntityToTeleport));
+
+			TardisEvent.EntityEnterTARDIS event = new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.START,
+					EntityToTeleport);
+			MinecraftForge.EVENT_BUS.post(event);
+
+			if (event.isCanceled())
+				return;
+
 			float X, Y, Z;
+
 			BlockPos pos = cap.GetData().getDoorData().getLocation().GetBlockPos()
 					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
+
 			X = pos.getX() + 0.5f;
 			Y = pos.getY() == 0 ? 128 : pos.getY();
 			Z = pos.getZ() + 0.5f;
+
 			float yRot = cap.GetData().getDoorData().getYRot() + EntityToTeleport.getYRot();
+
 			if (EntityToTeleport instanceof ServerPlayer player) {
 				player.getAbilities().flying = false;
 				player.onUpdateAbilities();
 			}
+
 			EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
+
 			MinecraftForge.EVENT_BUS
 					.post(new TardisEvent.EntityEnterTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
 		});
@@ -307,14 +315,20 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 	public void onChunkUnloaded() {
 		assert this.level != null;
 		if (!this.level.isClientSide) {
-			Capabilities
-					.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
-							ServerLifecycleHooks.getCurrentServer().getLevel(this.INTERIOR_DIMENSION))
+			if (this.state.equals(ExteriorState.SHOULDNTEXIST) || this.state.equals(ExteriorState.TAKINGOFF)) {
+				this.UtterlyDestroy();
+				return;
+			}
+			if (UniversalServerOnly.getServer() == null
+					|| UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION) == null)
+				return;
+			TARDISLevelCapability
+					.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(this.INTERIOR_DIMENSION))
 					.ifPresent(tardis -> {
-						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight()) {
+						if (tardis.GetFlightData().IsTakingOff() || tardis.GetFlightData().isInFlight())
 							this.UtterlyDestroy();
-						}
 					});
+
 			super.onChunkUnloaded();
 		}
 	}
@@ -373,55 +387,17 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 
 	@Override
 	public void tick() {
+		if (this.state.equals(ExteriorState.SHOULDNTEXIST))
+			this.UtterlyDestroy();
+
 		if (this.INTERIOR_DIMENSION == null) {
 			if (!this.IsEmptyShell)
 				this.UtterlyDestroy();
 		} else
 			this.IsEmptyShell = false;
 
-		if (this.ShouldMakeDimOnNextTick) {
-			assert level != null;
-			if (level.isClientSide || level.getServer() == null)
-				return;
-			level.getServer().execute(() -> {
-				ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
-						new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
-								+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
-
-				ServerLevel tardisLevel;
-
-				if (isArtificial)
-					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
-							() -> DimensionManager.createArtificialTARDISLevelStem(level.getServer()));
-				else
-					tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
-							() -> DimensionManager.createNaturalTARDISLevelStem(level.getServer()));
-
-				((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
-
-				tardisLevel.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
-					cap.SetExteriorTile(this);
-					assert this.getLevel() != null;
-					cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
-					cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
-					cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
-					cap.GetData().setOwnerUUID(this.PlacerUUID);
-				});
-
-				this.INTERIOR_DIMENSION = tardisLevel.dimension();
-				this.PlaceInterior(Structures.CleanInterior);
-
-				ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
-						.getPlayer(this.PlacerUUID);
-
-				if (player != null) {
-					player.getCapability(Capabilities.PLAYER_CAPABILITY)
-							.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));
-				}
-			});
-			this.ShouldMakeDimOnNextTick = false;
-			this.IsEmptyShell = false;
-		}
+		if (this.ShouldMakeDimOnNextTick)
+			makeInterior();
 
 		if (this.GetInterior() == null)
 			return;
@@ -445,21 +421,51 @@ public class ExteriorTile extends AbstractPortalTile implements IWeldable {
 		}
 	}
 
-	/**
-	 * @return The max weld, PlasmicShellPlates * 40 - 40 weld per plate
-	 */
-	@Override
-	public int getMaxWeld() {
-		return this.PlasmicShellPlates * 40;
+	private void makeInterior() {
+		assert level != null;
+		if (level.isClientSide || level.getServer() == null)
+			return;
+		level.getServer().execute(() -> {
+			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
+					new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
+							+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
+
+			ServerLevel tardisLevel;
+
+			if (isArtificial)
+				tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
+						() -> TStemCreation.createArtificialTARDISLevelStem(level.getServer()));
+			else
+				tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
+						() -> TStemCreation.createNaturalTARDISLevelStem(level.getServer()));
+
+			((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
+
+			GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
+				cap.SetExteriorTile(this);
+				assert this.getLevel() != null;
+				cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
+				cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
+				BlockPos loc = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos();
+				cap.GetNavigationalData().setDestination(new SpaceTimeCoordinate(
+						level.getBlockRandomPos(loc.getX(), loc.getY(), loc.getZ(), 500000).atY(64)));
+				cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
+				cap.GetData().setOwnerUUID(this.PlacerUUID);
+			});
+
+			this.INTERIOR_DIMENSION = tardisLevel.dimension();
+			this.PlaceInterior(Structures.CleanInterior);
+
+			ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList()
+					.getPlayer(this.PlacerUUID);
+
+			if (player != null) {
+				player.getCapability(Capabilities.PLAYER_CAPABILITY)
+						.ifPresent(cap -> cap.AddOwnedTARDIS(this.INTERIOR_DIMENSION.location().getPath()));
+			}
+		});
+		this.ShouldMakeDimOnNextTick = false;
+		this.IsEmptyShell = false;
 	}
 
-	@Override
-	public int getWeld() {
-		return this.Weld;
-	}
-
-	@Override
-	public void setWeld(int weld) {
-		this.Weld = MathHelper.clamp(weld, 0, this.getMaxWeld());
-	}
 }

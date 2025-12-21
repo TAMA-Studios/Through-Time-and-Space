@@ -2,6 +2,7 @@
 package com.code.tama.tts.client.renderers;
 
 import com.code.tama.tts.server.items.gadgets.SonicItem;
+import com.code.tama.tts.server.misc.progressable.IWeldable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -95,7 +96,7 @@ public class SonicOverlayRenderer {
 
 			stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
 
-			BlockHitResult hit = RayTraceUtils.getLookingAtBlock(10);
+			BlockHitResult hit = RayTraceUtils.getLookingAtBlock(25);
 			assert Minecraft.getInstance().level != null;
 			if (hit != null)
 				if (Minecraft.getInstance().level.getBlockState(hit.getBlockPos()) != null) {
@@ -109,6 +110,13 @@ public class SonicOverlayRenderer {
 												.withStyle(ChatFormatting.WHITE),
 										0, -15, white, false, stack.last().pose(), bufferSource,
 										Font.DisplayMode.NORMAL, 0, light);
+
+					if (ent != null && ent instanceof IWeldable weldable)
+						Minecraft.getInstance().font.drawInBatch(
+								Component.literal(String.format("Weld: %s", weldable.getWeldProgress()))
+										.withStyle(ChatFormatting.WHITE),
+								0, -15, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0,
+								light);
 
 					// stack.translate(0, 5, 0);
 

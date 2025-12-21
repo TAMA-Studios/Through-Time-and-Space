@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.serialization.Codec;
@@ -8,7 +9,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,10 +38,11 @@ public class ProtocolData {
 			});
 
 			if (tardis.GetExteriorTile() != null) {
-				tardis.GetData().getControlData().setHelmicRegulator(0.6f);
+				tardis.GetData().getControlData().setHelmicRegulator(5);
 				tardis.GetData().getControlData().setSimpleMode(true);
-				tardis.GetNavigationalData().setDestination(
-						new SpaceTimeCoordinate(tardis.GetExteriorTile().getLevel().getSharedSpawnPos()));
+				tardis.GetNavigationalData().forceSetDestination(
+						new SpaceTimeCoordinate(UniversalServerOnly.getServer().overworld().getSharedSpawnPos()));
+				tardis.GetData().getControlData().setCoordinateLock(true);
 			}
 
 			tardis.Dematerialize();

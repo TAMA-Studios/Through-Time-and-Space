@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,6 @@ public class PortalBlock extends Block implements EntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-		return new PortalTileEntity(pos, state);
+		return new PortalTileEntity(TTSTileEntities.PORTAL_TILE_ENTITY.get(), pos, state);
 	}
 }

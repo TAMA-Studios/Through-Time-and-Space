@@ -5,13 +5,11 @@ import static com.code.tama.tts.TTSMod.MODID;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -35,11 +33,11 @@ public class DataItemTagGenerator extends ItemTagsProvider {
 		// this.tag(ItemTags.CREEPER_DROP_MUSIC_DISCS)
 		// .add(MItems.BAR_BRAWL_MUSIC_DISC.get());
 
-		this.tag(ItemTags.LOGS_THAT_BURN).add(TTSBlocks.GALLIFREYAN_OAK_LOG.get().asItem())
-				.add(TTSBlocks.GALLIFREYAN_OAK_WOOD.get().asItem())
-				.add(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get().asItem())
-				.add(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD.get().asItem());
+		// this.tag(ItemTags.LOGS_THAT_BURN).add(TTSBlocks.GALLIFREYAN_OAK_LOG.get().asItem())
+		// .add(TTSBlocks.GALLIFREYAN_OAK_WOOD.get().asItem())
+		// .add(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_LOG.get().asItem())
+		// .add(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD.get().asItem());
 
-		this.tag(ItemTags.PLANKS).add(TTSBlocks.GALLIFREYAN_OAK_PLANKS.get().asItem());
+		// this.tag(ItemTags.PLANKS).add(TTSBlocks.GALLIFREYAN_OAK_PLANKS.get().asItem());
 	}
 }

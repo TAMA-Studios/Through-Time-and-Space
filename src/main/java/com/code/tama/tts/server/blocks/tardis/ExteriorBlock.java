@@ -1,20 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.entities.FallingExteriorEntity;
-import com.code.tama.tts.server.registries.forge.TTSItems;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -43,8 +37,13 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends FallingBlock implements EntityBlock {
@@ -176,7 +175,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		}
 
 		if (isFree(level.getBlockState(pos.below())) && pos.getY() >= level.getMinBuildHeight()) {
-			FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, pos, state);
+			FallingExteriorEntity fallingblockentity = FallingExteriorEntity.fall(level, pos, state);
 			this.falling(fallingblockentity);
 		}
 
@@ -189,40 +188,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		if (level.getBlockEntity(blockPos) != null
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
 
-			if (exteriorTile.IsEmptyShell && exteriorTile.getWeldProgress() != 100
-					&& exteriorTile.GetInterior() == null) {
-				ItemStack used = player.getItemInHand(interactionHand);
-				if (used.getItem().equals(TTSItems.GROWTH_CAKE.get())) {
-					used.shrink(1);
-					exteriorTile.ShouldMakeDimOnNextTick = true;
-				}
-
-				if (used.getItem().equals(TTSItems.STRUCTURAL_BEAMS.get()) && exteriorTile.StructuralBeams < 4) {
-					exteriorTile.StructuralBeams++;
-					used.shrink(1);
-				}
-
-				if (used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get())
-						&& exteriorTile.PlasmicShellPlates < 5) {
-					// Make sure you have more structural beams than you do plasmic shell plates
-					if (exteriorTile.StructuralBeams - exteriorTile.PlasmicShellPlates >= 1) {
-						exteriorTile.PlasmicShellPlates++;
-						used.shrink(1);
-					}
-				}
-
-				if (exteriorTile.PlasmicShellPlates == 4 && exteriorTile.StructuralBeams == 4
-						&& exteriorTile.getWeldProgress() == 100) {
-					exteriorTile.ShouldMakeDimOnNextTick = true;
-				}
-
-				System.out.printf("Beams: %s, Plates: %s, Weld: %s%n", exteriorTile.StructuralBeams,
-						exteriorTile.PlasmicShellPlates, exteriorTile.getWeldProgress());
-
-				return InteractionResult.SUCCESS;
-			}
-
-			else if (!level.isClientSide && exteriorTile.GetInterior() != null)
+			if (!level.isClientSide && exteriorTile.GetInterior() != null)
 				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior()))
 						.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
 
@@ -260,17 +226,16 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		// Called when it lands and breaks - TODO: This
 	}
 
-	@Override
 	public void onLand(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
-			@NotNull BlockState replacedState, @NotNull FallingBlockEntity entity) {
+			@NotNull BlockState replacedState, @NotNull FallingExteriorEntity fallingExteriorEntity) {
 
-		if (entity instanceof FallingExteriorEntity fallingExteriorEntity) {
-			if (fallingExteriorEntity.getTileData() != null && level.getBlockEntity(pos) instanceof ExteriorTile tile) {
-				tile.load(fallingExteriorEntity.getTileData()); // restore data
-				tile.setChanged();
-			}
+		if (fallingExteriorEntity.blockData != null && level.getBlockEntity(pos) instanceof ExteriorTile tile) {
+//			tile.load(fallingExteriorEntity.blockData); // restore data
+			tile.setChanged();
+			TARDISLevelCapability.GetTARDISCapSupplier(UniversalServerOnly.getServer().getLevel(tile.GetInterior())).ifPresent(cap -> {
+				cap.GetNavigationalData().setLocation(new SpaceTimeCoordinate(pos));
+			});
 		}
-		super.onLand(level, pos, state, replacedState, entity);
 	}
 
 	@Override
@@ -278,8 +243,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
-	@Override
-	protected void falling(FallingBlockEntity be) {
+	protected void falling(FallingExteriorEntity be) {
 		BlockPos pos = be.blockPosition();
 		Level level = be.level();
 		BlockState state = be.getBlockState();
@@ -289,12 +253,10 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 			exteriorTile.getLevel().removeBlockEntity(exteriorTile.getBlockPos()); // remove TE before spawning
 			exteriorTile.getLevel().removeBlock(exteriorTile.getBlockPos(), false);
 
-			var entity = new FallingExteriorEntity(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, state,
-					exteriorTile);
+			var entity = FallingExteriorEntity.fall(level, pos, state);
 
 			level.addFreshEntity(entity);
 		} else {
-			super.falling(be);
 		}
 	}
 

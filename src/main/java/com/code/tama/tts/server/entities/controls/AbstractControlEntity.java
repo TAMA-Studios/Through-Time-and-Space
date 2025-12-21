@@ -1,11 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities.controls;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPacketC2S;
-import com.code.tama.tts.server.networking.packets.C2S.entities.ControlHitPacketC2S;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.network.chat.Component;
@@ -74,17 +72,18 @@ public abstract class AbstractControlEntity extends Entity {
 			source.getEntity().level();
 		}
 
-		Networking.sendToServer(new ControlHitPacketC2S(this.uuid));
-		source.getEntity().level().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.ifPresent(c -> this.OnControlHit(c, source.getEntity()));
+		// Networking.sendToServer(new ControlHitPacketC2S(this.uuid));
+		GetTARDISCapSupplier(source.getEntity().level()).ifPresent(c -> this.OnControlHit(c, source.getEntity()));
 		return false;
 	}
 
 	@Override
 	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
-		if (player.level().isClientSide) {
-			Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
-		}
+		// if (player.level().isClientSide) {
+		// Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
+		// }
+
+		GetTARDISCapSupplier(player.level()).ifPresent(cap -> this.OnControlClicked(cap, player));
 		return InteractionResult.SUCCESS;
 	}
 

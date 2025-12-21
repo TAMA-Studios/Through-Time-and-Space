@@ -4,6 +4,7 @@ package com.code.tama.tts.server.registries.misc;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.UI.category.*;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +26,9 @@ public class UICategoryRegistry {
 	public static final RegistryObject<UICategory> CURRENT_LOC = UI_CATEGORIES.register("current_location",
 			LocationUICategory::new);
 
+	public static final RegistryObject<UICategory> EXTERIOR_DIAGNOSTIC_READOUT = UI_CATEGORIES
+			.register("exterior_diagnostic_readout", ExteriorStatsUICategory::new);
+
 	public static final RegistryObject<UICategory> FLIGHT_STATUS = UI_CATEGORIES.register("flight_status",
 			FlightStatusUICategory::new);
 
@@ -42,6 +46,7 @@ public class UICategoryRegistry {
 	 * THIS IS ONLY TO BE USED DURING REGISTRATION OF AN ID DO <i>NOT</i> USE IT!
 	 * USE {@link UICategoryRegistry#getMaxID()}}
 	 */
+	@ApiStatus.Internal
 	public static int getID() {
 		return ID++;
 	}

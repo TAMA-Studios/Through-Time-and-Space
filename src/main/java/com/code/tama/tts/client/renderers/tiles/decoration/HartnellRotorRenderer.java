@@ -3,6 +3,7 @@ package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.client.models.HartnellRotorModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,8 +27,9 @@ public class HartnellRotorRenderer<T extends HartnellRotorTile, C extends Hierar
 	public static ResourceLocation TEXTURE;
 	public final C MODEL;
 
-	public HartnellRotorRenderer(BlockEntityRendererProvider.Context context, C model) {
-		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
+	@SuppressWarnings("unchecked")
+	public HartnellRotorRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new HartnellRotorModel<>(context.bakeLayer(HartnellRotorModel.LAYER_LOCATION));
 	}
 
 	@Override

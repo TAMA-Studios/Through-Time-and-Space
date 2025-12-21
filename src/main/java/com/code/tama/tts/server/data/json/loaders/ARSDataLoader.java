@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.code.tama.tts.server.data.json.DataARSList;
+import com.code.tama.tts.server.data.json.lists.DataARSList;
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

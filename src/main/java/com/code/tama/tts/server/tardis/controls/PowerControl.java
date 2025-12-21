@@ -3,11 +3,14 @@ package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class PowerControl extends AbstractControl {
 	@Override
@@ -33,7 +36,7 @@ public class PowerControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "power_control";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("power_control");
 	}
 }

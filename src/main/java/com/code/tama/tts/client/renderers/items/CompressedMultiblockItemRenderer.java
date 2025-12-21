@@ -23,7 +23,8 @@ public class CompressedMultiblockItemRenderer extends BlockEntityWithoutLevelRen
 
 	public CompressedMultiblockItemRenderer(BlockState state) {
 		super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-		this.CompressedMultiblockTile = TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get().create(BlockPos.ZERO, state);
+		this.CompressedMultiblockTile = (CompressedMultiblockTile) TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get()
+				.create(BlockPos.ZERO, state);
 	}
 
 	@Override

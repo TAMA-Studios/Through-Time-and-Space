@@ -51,10 +51,12 @@ public record ExteriorStatePacket(BlockPos pos, ExteriorState state, long startT
 
 		@Override
 		public void run() {
-			PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
-			if (state == ExteriorState.TAKEOFF) {
+			if (state == ExteriorState.TAKINGOFF) {
+				PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
 				manager.clientTakeOff(StartTick);
-			} else {
+			}
+			if (state == ExteriorState.LANDING) {
+				PhysicalStateManager manager = new PhysicalStateManager(exteriorTile);
 				manager.clientLand(StartTick);
 			}
 			super.run();

@@ -1,17 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSItems.DIMENSIONAL_ITEMS;
-import static com.code.tama.tts.server.registries.forge.TTSItems.ITEMS;
-
-import java.util.function.Supplier;
-
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
+import com.code.tama.tts.server.blocks.EmptyShellBlock;
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
 import com.code.tama.tts.server.blocks.core.*;
 import com.code.tama.tts.server.blocks.cosmetic.*;
 import com.code.tama.tts.server.blocks.gadgets.CompressedMultiblockBlock;
+import com.code.tama.tts.server.blocks.gadgets.FaultLocatorBlock;
 import com.code.tama.tts.server.blocks.gadgets.SonicConfiguratorBlock;
 import com.code.tama.tts.server.blocks.gadgets.WorkbenchBlock;
 import com.code.tama.tts.server.blocks.monitor.CRTMonitorBlock;
@@ -21,20 +19,27 @@ import com.code.tama.tts.server.blocks.subsystems.DematerializationCircuitCoreBl
 import com.code.tama.tts.server.blocks.subsystems.NetherReactorCoreBlock;
 import com.code.tama.tts.server.blocks.tardis.*;
 import com.code.tama.tts.server.blocks.tardis.DoorBlock;
+import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
+import com.code.tama.tts.server.items.blocks.ConsoleItem;
+import com.code.tama.tts.server.items.blocks.ExteriorItem;
 import com.code.tama.tts.server.items.tabs.DimensionalTab;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.items.tabs.Roundel;
+import com.code.tama.tts.server.registries.TTSBlockBuilder;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
-
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -42,260 +47,292 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
+
+@SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
-	public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, MODID);
+	// public static final DeferredRegister<Block> BLOCKS =
+	// DeferredRegister.create(Registries.BLOCK, MODID);
 
-	// Set this \/ to your block class
-	// \/ this too
-	public static RegistryObject<ExampleTileBlock> EXAMPLE_TILE_BLOCK = RegisterWithItemSpecial("example_tile_block",
-			() -> new ExampleTileBlock(BlockBehaviour.Properties.of()));
+	public static final BlockEntry<ExampleTileBlock> EXAMPLE_TILE_BLOCK = registrate()
+			.block("example_tile_block", ExampleTileBlock::new).simpleItem().defaultBlockstate().register();
 
-	// This uses a custom BlockItem so we just do BLOCKS.register()
-	public static RegistryObject<CompressedMultiblockBlock> COMPRESSED_MULTIBLOCK = BLOCKS.register(
-			"compressed_multiblock_block", () -> new CompressedMultiblockBlock(BlockBehaviour.Properties.of()));
+	public static final BlockEntry<FaultLocatorBlock> FAULT_LOCATOR = registrate()
+			.block("fault_locator", FaultLocatorBlock::new).simpleItem().defaultBlockstate().register();
 
-	@MainTab
-	public static RegistryObject<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = RegisterWithItemSpecial(
-			"sonic_configurator", () -> new SonicConfiguratorBlock(BlockBehaviour.Properties.of()));
+	public static final BlockEntry<CompressedMultiblockBlock> COMPRESSED_MULTIBLOCK = registrate()
+			.block("compressed_multiblock_block", CompressedMultiblockBlock::new).item(CompressedMultiblockItem::new)
+			.build().defaultBlockstate().register();
 
 	@MainTab
-	public static final RegistryObject<Block> SKY_BLOCK = RegisterWithItemSpecial("sky_block", SkyBlock::new);
+	public static final BlockEntry<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = Builder("sonic_configurator",
+			SonicConfiguratorBlock::new).simpleItem().defaultBlockstate().register();
 
 	@MainTab
-	public static final RegistryObject<Block> VOID_BLOCK = RegisterWithItemSpecial("void_block",
-			SkyBlock.VoidBlock::new);
+	public static final BlockEntry<SkyBlock> SKY_BLOCK = Builder("sky_block", SkyBlock::new).simpleItem()
+			.defaultBlockstate().register();
+
+	@MainTab
+	public static final BlockEntry<SkyBlock.VoidBlock> VOID_BLOCK = Builder("void_block", SkyBlock.VoidBlock::new)
+			.simpleItem().defaultBlockstate().register();
 
 	@Roundel
-	public static final RegistryObject<Block> QUARTZ_ROUNDEL = SetupRoundel("quartz_block");
+	public static final BlockEntry<Block> QUARTZ_ROUNDEL = SetupRoundel("quartz_block");
 
 	@Roundel
-	public static final RegistryObject<Block> POLISHED_BLACKSTONE_ROUNDEL = SetupRoundel("polished_blackstone");
-
-	@Roundel
-	public static final RegistryObject<Block> CHROMIUM_ROUNDEL = SetupRoundel("chromium_block");
+	public static final BlockEntry<Block> POLISHED_BLACKSTONE_ROUNDEL = SetupRoundel("polished_blackstone");
 
 	@MainTab
-	public static final RegistryObject<Block> CHROMIUM_BLOCK = RegisterWithItem("chromium_block",
-			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL)));
+	public static final BlockEntry<Block> CHROMIUM_BLOCK = registrate()
+			.block("chromium_block", Block::new).properties((properties) -> properties
+					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
+			.simpleItem().defaultBlockstate().register();
 
 	@MainTab
-	public static final RegistryObject<Block> BRUSHED_STRUCTURAL_STEEL = RegisterWithItem(
+	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL = Builder(
 			"decoration/structural_steel_brushed/structural_steel",
-			() -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of()
-					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).noOcclusion().sound(SoundType.METAL)));
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> BRUSHED_STRUCTURAL_STEEL_WEATHERED = RegisterWithItem(
+	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_WEATHERED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_weathered",
-			() -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, BlockBehaviour.Properties.of()
-					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).noOcclusion().sound(SoundType.METAL)));
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.WEATHERED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> BRUSHED_STRUCTURAL_STEEL_RUSTED = RegisterWithItem(
+	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL_RUSTED = Builder(
 			"decoration/structural_steel_brushed/structural_steel_rusted",
-			() -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, BlockBehaviour.Properties.of()
-					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).noOcclusion().sound(SoundType.METAL)));
+			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.RUSTED, prop)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> BRUSHED_STEEL = RegisterWithItem("brushed_steel",
-			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL)));
+	public static final BlockEntry<Block> BRUSHED_STEEL = Builder("brushed_steel", Block::new)
+			.properties(prop -> prop.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
+			.defaultBlockstate().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL_LADDER = RegisterWithItem("carbon_steel_ladder",
-			() -> new LadderBlock(BlockBehaviour.Properties.of().forceSolidOff().strength(0.8F).sound(SoundType.LADDER)
-					.noOcclusion().pushReaction(PushReaction.DESTROY)));
+	public static final BlockEntry<LadderBlock> CARBON_STEEL_LADDER = Builder("carbon_steel_ladder", LadderBlock::new)
+			.properties(p -> p.forceSolidOff().strength(0.8F).sound(SoundType.LADDER).noOcclusion()
+					.pushReaction(PushReaction.DESTROY))
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL = RegisterWithItem("carbon_steel",
-			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL)));
+	public static final BlockEntry<Block> CARBON_STEEL = Builder("carbon_steel", Block::new)
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
+			.simpleItem().defaultBlockstate().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL_GRATE_SLAB = RegisterWithItem("carbon_steel_grate_slab",
-			() -> new SlabBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL).noOcclusion()));
+	public static final BlockEntry<SlabBlock> CARBON_STEEL_GRATE_SLAB = Builder("carbon_steel_grate_slab",
+			SlabBlock::new).simpleSlabStateAndModel()
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
+					.noOcclusion())
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL_GRATE = RegisterWithItem("carbon_steel_grate",
-			() -> new SlabBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL).noOcclusion()));
+	public static final BlockEntry<SlabBlock> CARBON_STEEL_GRATE = Builder("carbon_steel_grate", SlabBlock::new)
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
+					.noOcclusion())
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL_SLAB = RegisterWithItem("carbon_steel_slab",
-			() -> new SlabBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL).noOcclusion()));
+	public static final BlockEntry<SlabBlock> CARBON_STEEL_SLAB = Builder("carbon_steel_slab", SlabBlock::new)
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL)
+					.noOcclusion())
+			.simpleSlabStateAndModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CARBON_STEEL_TRAPDOOR = RegisterWithItem("carbon_steel_trapdoor",
-			() -> new TrapDoorBlock(BlockBehaviour.Properties.of().noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY)
-					.strength(5.0F, 6.0F).sound(SoundType.METAL), BlockSetType.POLISHED_BLACKSTONE));
+	public static final BlockEntry<TrapDoorBlock> CARBON_STEEL_TRAPDOOR = Builder("carbon_steel_trapdoor",
+			(prop) -> new TrapDoorBlock(prop, BlockSetType.IRON))
+			.properties(p -> p.noOcclusion().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL))
+			.simpleTrapdoor().simpleItem().register();
 
 	@MainTab
-	public static RegistryObject<HartnellRotor> HARTNELL_ROTOR = RegisterWithItemSpecial("hartnell_rotor",
-			() -> new HartnellRotor(BlockBehaviour.Properties.copy(Blocks.GLASS)));
+	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
+			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem()
+			.register();
 
 	@MainTab
-	public static RegistryObject<Block> HARD_LIGHT = RegisterWithItem("hard_light",
-			() -> new HardLightBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel(BlockState -> 8)));
+	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).airState().simpleItem().register();
 
 	@MainTab
-	public static RegistryObject<ExteriorBlock> EXTERIOR_BLOCK = BLOCKS.register("exterior_block",
-			() -> new ExteriorBlock(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.EXTERIOR_TILE));
+	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
+			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
-	public static RegistryObject<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = BLOCKS
-			.register("hudolin_console_block", () -> new ConsoleBlock<>(BlockBehaviour.Properties.of().noOcclusion(),
-					TTSTileEntities.HUDOLIN_CONSOLE_TILE));
+	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().simpleItem().register();
 
 	@MainTab
-	public static RegistryObject<ConsoleBlock<NESSConsoleTile>> NESS_CONSOLE_BLOCK = BLOCKS.register(
-			"ness_console_block",
-			() -> new ConsoleBlock<>(BlockBehaviour.Properties.of().noOcclusion(), TTSTileEntities.NESS_CONSOLE_TILE));
+	public static final BlockEntry<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = Builder(
+			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
 
 	@MainTab
-	public static RegistryObject<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = RegisterWithItemSpecial(
-			"chameleon_circuit_panel", () -> new ChameleonCircuitPanel(BlockBehaviour.Properties.of().noOcclusion(),
-					TTSTileEntities.CHAMELEON_CIRCUIT_PANEL));
+	public static final BlockEntry<ConsoleBlock<NESSConsoleTile>> NESS_CONSOLE_BLOCK = Builder("ness_console_block",
+			p -> new ConsoleBlock<NESSConsoleTile>(p, TTSTileEntities.NESS_CONSOLE_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.NESS_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
 
 	@MainTab
-	public static RegistryObject<DoorBlock> DOOR_BLOCK = RegisterWithItemSpecial("door_block",
-			() -> new DoorBlock(BlockBehaviour.Properties.of().noOcclusion().noCollission(),
-					TTSTileEntities.DOOR_TILE));
+	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
+			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL)).controlPanelState()
+			.properties(BlockBehaviour.Properties::noOcclusion).simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> MONITOR_BLOCK = RegisterWithItem("monitor_block",
-			() -> new MonitorBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
+			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> CRT_MONITOR_BLOCK = RegisterWithItem("crt_monitor_block",
-			() -> new CRTMonitorBlock(BlockBehaviour.Properties.copy(Blocks.TERRACOTTA)));
+	public static final BlockEntry<MonitorBlock> MONITOR_BLOCK = Builder("monitor_block", MonitorBlock::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> MONITOR_PANEL = RegisterWithItem("monitor_panel",
-			() -> new MonitorPanel(BlockBehaviour.Properties.of().strength(1f).sound(SoundType.GLASS)));
+	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
+			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel().simpleItem()
+			.register();
 
 	@MainTab
-	public static final RegistryObject<Block> COORDINATE_PANEL = RegisterWithItem("coordinate_panel",
-			() -> new CoordinatePanelBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<MonitorPanel> MONITOR_PANEL = Builder("monitor_panel", MonitorPanel::new)
+			.properties(p -> p.strength(1f).sound(SoundType.GLASS)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> BLUE_ROTOR = RegisterWithItem("rotor/blue",
-			() -> new RotorBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.GLASS).noOcclusion()));
+	public static final BlockEntry<CoordinatePanelBlock> COORDINATE_PANEL = Builder("coordinate_panel",
+			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> AMETHYST_ROTOR = RegisterWithItem("rotor/amethyst",
-			() -> new RotorBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.GLASS).noOcclusion()));
+	public static final BlockEntry<RotorBlock> BLUE_ROTOR = Builder("rotor/blue", RotorBlock::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> COPPER_ROTOR = RegisterWithItem("rotor/copper",
-			() -> new RotorBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.GLASS).noOcclusion()));
+	public static final BlockEntry<RotorBlock> AMETHYST_ROTOR = Builder("rotor/amethyst", RotorBlock::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> LIGHT_PANEL = RegisterWithItem("light_panel",
-			() -> new LightPanel(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<RotorBlock> COPPER_ROTOR = Builder("rotor/copper", RotorBlock::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.GLASS).noOcclusion()).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> ARS_PANEL = RegisterWithItem("ars_panel",
-			() -> new ARSPanel(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<LightPanel> LIGHT_PANEL = Builder("light_panel", LightPanel::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> THROTTLE = RegisterWithItem("throttle",
-			() -> new ThrottleBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<ARSPanel> ARS_PANEL = Builder("ars_panel", ARSPanel::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> TOYOTA_THROTTLE = RegisterWithItem("toyota_throttle",
-			() -> new ToyotaThrottleBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<ThrottleBlock> THROTTLE = Builder("throttle", ThrottleBlock::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> POWER_LEVER = RegisterWithItem("power_lever",
-			() -> new PowerLever(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<ToyotaThrottleBlock> TOYOTA_THROTTLE = Builder("toyota_throttle",
+			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> DESTINATION_INFO_PANEL = RegisterWithItem("destination_info_panel",
-			() -> new DestinationInfoBlock(BlockBehaviour.Properties.of().strength(1.25f).sound(SoundType.STONE)));
+	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<HartnellDoor> HARTNELL_DOOR = RegisterWithItemSpecial("hartnell_door",
-			() -> new HartnellDoor(TTSTileEntities.HARTNELL_DOOR));
+	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
+			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<WorkbenchBlock> TEMPORAL_FABRICATOR = RegisterWithItemSpecial(
-			"temporal_fabricator", WorkbenchBlock::new);
+	public static final BlockEntry<HartnellDoor> HARTNELL_DOOR = TTSBlocks
+			.Builder("hartnell_door", p -> new HartnellDoor(p, TTSTileEntities.HARTNELL_DOOR)).airState()
+			.defaultBlockstate().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> FRAGMENT_LINKS = RegisterWithItem("fragment_links",
-			() -> new FragmentLinksBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_WIRE)));
+	public static final BlockEntry<WorkbenchBlock> TEMPORAL_FABRICATOR = TTSBlocks
+			.Builder("temporal_fabricator", WorkbenchBlock::new).airState().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> DEMATERIALIZATION_CIRCUIT_CORE = RegisterWithItem(
-			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new);
+	public static final BlockEntry<FragmentLinksBlock> FRAGMENT_LINKS = Builder("fragment_links",
+			FragmentLinksBlock::new).stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> NETHER_REACTOR_CORE = RegisterWithItem("nether_reactor_core",
-			() -> new NetherReactorCoreBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+	public static final BlockEntry<DematerializationCircuitCoreBlock> DEMATERIALIZATION_CIRCUIT_CORE = Builder(
+			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> TARDIS_ENGINE_INTERFACE = RegisterWithItem("tardis_engine_interface",
-			() -> new EngineInterfaceBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",
+			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE))
+			.stateWithExistingModel().simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> TARDIS_ENGINES = RegisterWithItem("tardis_engines",
-			() -> new EnginesBlock(BlockBehaviour.Properties.of().strength(1.5f).sound(SoundType.STONE)));
+	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
+			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).stateWithExistingModel()
+			.simpleItem().register();
 
 	@MainTab
-	public static final RegistryObject<Block> PORTAL_BLOCK = RegisterWithItem("portal_block",
-			() -> new PortalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(5.0F)
-					.noOcclusion().lightLevel(state -> 10)));
+	public static final BlockEntry<EnginesBlock> TARDIS_ENGINES = Builder("tardis_engines", EnginesBlock::new)
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
+
+	@MainTab
+	public static final BlockEntry<PortalBlock> PORTAL_BLOCK = Builder("portal_block", PortalBlock::new)
+			.properties(p -> p.mapColor(MapColor.COLOR_PURPLE).strength(5.0F).noOcclusion().lightLevel(state -> 10))
+			.airState().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> INTERIOR_ROCK = RegisterWithItem("organic/interior_rock", () -> new Block(
-			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL)));
+	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("organic/interior_rock", Block::new)
+			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL))
+			.defaultBlockstate().simpleItem().register();
 
 	/* Moon Block */
 	@DimensionalTab
-	public static final RegistryObject<Block> MOON_ROCK = RegisterWithItem("dimensional/moon/moon_rock",
-			() -> new SandBlock(0, BlockBehaviour.Properties.of().strength(1.0f)), DIMENSIONAL_ITEMS, BLOCKS);
+	public static final BlockEntry<SandBlock> MOON_ROCK = Builder("dimensional/moon/moon_rock",
+			properties -> new SandBlock(0, properties)).properties(p -> p.strength(1.0f)).defaultBlockstate()
+			.simpleItem().register();
 
 	/* Gallifrey Blocks */
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_LOG = RegisterWithItem(
+	public static final BlockEntry<FlammableRotatedPillarBlock> GALLIFREYAN_OAK_LOG = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_log",
-			() -> new FlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG).strength(3f)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new FlammableRotatedPillarBlock(copy(Blocks.OAK_LOG, properties).strength(3f)))
+			.defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_SAND = RegisterWithItem(
-			"dimensional/gallifreyan/gallifreyan_sand", () -> new SandBlock(10634503, BlockBehaviour.Properties.of()),
-			DIMENSIONAL_ITEMS, BLOCKS);
+	public static final BlockEntry<SandBlock> GALLIFREYAN_SAND = Builder("dimensional/gallifreyan/gallifreyan_sand",
+			p -> new SandBlock(10634503, p)).defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_WOOD = RegisterWithItem(
+	public static final BlockEntry<FlammableRotatedPillarBlock> GALLIFREYAN_OAK_WOOD = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_wood",
-			() -> new FlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).strength(3f)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new FlammableRotatedPillarBlock(copy(Blocks.OAK_WOOD, properties).strength(3f)))
+			.defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_LOG = RegisterWithItem(
+	public static final BlockEntry<FlammableRotatedPillarBlock> STRIPPED_GALLIFREYAN_OAK_LOG = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_log_stripped",
-			() -> new FlammableRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG).strength(3f)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new FlammableRotatedPillarBlock(copy(Blocks.STRIPPED_OAK_LOG, properties).strength(3f)))
+			.defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> STRIPPED_GALLIFREYAN_OAK_WOOD = RegisterWithItem(
-			"dimensional/gallifreyan/gallifreyan_oak_wood_stripped", () -> new FlammableRotatedPillarBlock(
-					BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD).strength(3f)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+	public static final BlockEntry<FlammableRotatedPillarBlock> STRIPPED_GALLIFREYAN_OAK_WOOD = Builder(
+			"dimensional/gallifreyan/gallifreyan_oak_wood_stripped",
+			properties -> new FlammableRotatedPillarBlock(copy(Blocks.STRIPPED_OAK_WOOD, properties).strength(3f)))
+			.defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_PLANKS = RegisterWithItem(
+	public static final BlockEntry<? extends Block> GALLIFREYAN_OAK_PLANKS = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_planks",
-			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)) {
+			properties -> new Block(copy(Blocks.OAK_PLANKS, properties)) {
 				@Override
 				public boolean isFlammable(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
 					return true;
@@ -310,12 +347,12 @@ public class TTSBlocks {
 				public int getFireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
 					return 5;
 				}
-			}, DIMENSIONAL_ITEMS, BLOCKS);
+			}).defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_LEAVES = RegisterWithItem(
+	public static final BlockEntry<? extends Block> GALLIFREYAN_OAK_LEAVES = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_leaves",
-			() -> new LeavesBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LEAVES)) {
+			properties -> new LeavesBlock(copy(Blocks.OAK_LEAVES, properties)) {
 				@Override
 				public boolean isFlammable(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
 					return true;
@@ -330,163 +367,195 @@ public class TTSBlocks {
 				public int getFireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
 					return 30;
 				}
-			}, DIMENSIONAL_ITEMS, BLOCKS);
+			}).defaultBlockstate().simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_SAPLING = RegisterWithItem(
+	public static final BlockEntry<SaplingBlock> GALLIFREYAN_SAPLING = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_sapling",
-			() -> new SaplingBlock(new GallifreyanOakTreeGrower(), BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new SaplingBlock(new GallifreyanOakTreeGrower(), copy(Blocks.OAK_SAPLING, properties)))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_STAIRS = RegisterWithItem(
+	public static final BlockEntry<StairBlock> GALLIFREYAN_OAK_STAIRS = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_stairs",
-			() -> new StairBlock(() -> TTSBlocks.ZEITON_BLOCK.get().defaultBlockState(),
-					BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.AMETHYST)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new StairBlock(() -> GALLIFREYAN_OAK_PLANKS.get().defaultBlockState(),
+					copy(Blocks.OAK_PLANKS, properties).sound(SoundType.WOOD)))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_SLAB = RegisterWithItem(
+	public static final BlockEntry<SlabBlock> GALLIFREYAN_OAK_SLAB = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_slab",
-			() -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new SlabBlock(copy(Blocks.OAK_PLANKS, properties).sound(SoundType.WOOD))).simpleItem()
+			.register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_BUTTON = RegisterWithItem(
+	public static final BlockEntry<ButtonBlock> GALLIFREYAN_OAK_BUTTON = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_button",
-			() -> new ButtonBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BUTTON).sound(SoundType.WOOD),
-					BlockSetType.IRON, 10, true),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			properties -> new ButtonBlock(copy(Blocks.STONE_BUTTON, properties).sound(SoundType.WOOD),
+					BlockSetType.IRON, 10, true))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_PRESSURE_PLATE = RegisterWithItem(
+	public static final BlockEntry<PressurePlateBlock> GALLIFREYAN_OAK_PRESSURE_PLATE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_pressure_plate",
-			() -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING,
-					BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD), BlockSetType.IRON),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			prop -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING,
+					copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD), BlockSetType.OAK))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_FENCE = RegisterWithItem(
+	public static final BlockEntry<FenceBlock> GALLIFREYAN_OAK_FENCE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_fence",
-			() -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			prop -> new FenceBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_FENCE_GATE = RegisterWithItem(
+	public static final BlockEntry<FenceGateBlock> GALLIFREYAN_OAK_FENCE_GATE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_fence_gate",
-			() -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD),
-					SoundEvents.CHAIN_PLACE, SoundEvents.ANVIL_BREAK));
+			prop -> new FenceGateBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD), SoundEvents.CHAIN_PLACE,
+					SoundEvents.ANVIL_BREAK))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_WALL = RegisterWithItem(
+	public static final BlockEntry<WallBlock> GALLIFREYAN_OAK_WALL = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_wall",
-			() -> new WallBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD)),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			prop -> new WallBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_DOOR = RegisterWithItem(
+	public static final BlockEntry<net.minecraft.world.level.block.DoorBlock> GALLIFREYAN_OAK_DOOR = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_door",
-			() -> new net.minecraft.world.level.block.DoorBlock(
-					BlockBehaviour.Properties.copy(Blocks.OAK_WOOD).sound(SoundType.WOOD).noOcclusion(),
-					BlockSetType.IRON),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			prop -> new net.minecraft.world.level.block.DoorBlock(
+					copy(Blocks.OAK_DOOR, prop).sound(SoundType.WOOD).noOcclusion(), BlockSetType.IRON))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> GALLIFREYAN_OAK_TRAPDOOR = RegisterWithItem(
+	public static final BlockEntry<TrapDoorBlock> GALLIFREYAN_OAK_TRAPDOOR = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_trapdoor",
-			() -> new TrapDoorBlock(
-					BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.WOOD).noOcclusion(),
-					BlockSetType.IRON),
-			DIMENSIONAL_ITEMS, BLOCKS);
+			prop -> new TrapDoorBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD).noOcclusion(),
+					BlockSetType.IRON))
+			.simpleItem().register();
 
 	@DimensionalTab
-	public static final RegistryObject<Block> VAROS_ROCKS = RegisterWithItem("dimensional/varos/rocks",
-			() -> new Block(BlockBehaviour.Properties.copy(Blocks.COBBLESTONE)), DIMENSIONAL_ITEMS, BLOCKS);
+	public static final BlockEntry<Block> VAROS_ROCKS = Builder("dimensional/varos/rocks",
+			prop -> new Block(copy(Blocks.COBBLESTONE, prop))).defaultBlockstate().simpleItem().register();
 
 	/** Ores */
-	public static final RegistryObject<Block> ZEITON_BLOCK = RegisterWithItem("zeiton/zeiton_block",
-			() -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.STONE)));
+	public static final BlockEntry<Block> ZEITON_BLOCK = Builder("zeiton/zeiton_block",
+			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
+			.register();
 
-	public static final RegistryObject<Block> RAW_ZEITON_BLOCK = RegisterWithItem("zeiton/raw_zeiton_block",
-			() -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.STONE)));
+	public static final BlockEntry<Block> RAW_ZEITON_BLOCK = Builder("zeiton/raw_zeiton_block",
+			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
+			.register();
 
-	public static final RegistryObject<Block> ZEITON_ORE = RegisterWithItem("zeiton/zeiton_ore",
-			() -> new DropExperienceBlock(
-					BlockBehaviour.Properties.copy(Blocks.STONE).strength(2f).requiresCorrectToolForDrops(),
-					UniformInt.of(3, 6)));
+	public static final BlockEntry<DropExperienceBlock> ZEITON_ORE = Builder("zeiton/zeiton_ore",
+			prop -> new DropExperienceBlock(copy(Blocks.STONE, prop).strength(2f).requiresCorrectToolForDrops(),
+					UniformInt.of(3, 6)))
+			.defaultBlockstate().simpleItem().register();
 
-	public static final RegistryObject<Block> DEEPSLATE_ZEITON_ORE = RegisterWithItem("zeiton/deepslate_zeiton_ore",
-			() -> new DropExperienceBlock(
-					BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).strength(3f).requiresCorrectToolForDrops(),
-					UniformInt.of(3, 7)));
+	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_ZEITON_ORE = Builder("zeiton/deepslate_zeiton_ore",
+			prop -> new DropExperienceBlock(copy(Blocks.DEEPSLATE, prop).strength(3f).requiresCorrectToolForDrops(),
+					UniformInt.of(3, 7)))
+			.defaultBlockstate().simpleItem().register();
 
-	public static final RegistryObject<Block> NETHER_ZEITON_ORE = RegisterWithItem("zeiton/nether_zeiton_ore",
-			() -> new DropExperienceBlock(
-					BlockBehaviour.Properties.copy(Blocks.NETHERRACK).strength(1f).requiresCorrectToolForDrops(),
-					UniformInt.of(3, 7)));
+	public static final BlockEntry<DropExperienceBlock> NETHER_ZEITON_ORE = Builder("zeiton/nether_zeiton_ore",
+			prop -> new DropExperienceBlock(copy(Blocks.NETHERRACK, prop).strength(1f).requiresCorrectToolForDrops(),
+					UniformInt.of(3, 7)))
+			.defaultBlockstate().simpleItem().register();
 
-	public static final RegistryObject<Block> END_STONE_ZEITON_ORE = RegisterWithItem("zeiton/end_stone_zeiton_ore",
-			() -> new DropExperienceBlock(
-					BlockBehaviour.Properties.copy(Blocks.END_STONE).strength(5f).requiresCorrectToolForDrops(),
-					UniformInt.of(3, 7)));
+	public static final BlockEntry<DropExperienceBlock> END_STONE_ZEITON_ORE = Builder("zeiton/end_stone_zeiton_ore",
+			prop -> new DropExperienceBlock(copy(Blocks.END_STONE, prop).strength(5f).requiresCorrectToolForDrops(),
+					UniformInt.of(3, 7)))
+			.defaultBlockstate().simpleItem().register();
 
-	public static final RegistryObject<HartnellDoorMultiBlock> HARTNELL_DOOR_PLACEHOLDER = RegisterWithItemSpecial(
-			"hartnell_door_placeholder", () -> new HartnellDoorMultiBlock(TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER));
-
-	/** For registering "Special" blocks, like an {@link ExteriorBlock} */
-	public static <T extends Block> RegistryObject<T> RegisterWithItemSpecial(String name, final Supplier<T> block) {
-
-		final RegistryObject<T> reg = BLOCKS.register(name, block);
-
-		ITEMS.register(name, () -> new BlockItem(reg.get(), new Item.Properties()));
-
-		return reg;
-	}
+	public static final BlockEntry<HartnellDoorMultiBlock> HARTNELL_DOOR_PLACEHOLDER = Builder(
+			"hartnell_door_placeholder", prop -> new HartnellDoorMultiBlock(copy(Blocks.WHITE_CONCRETE, prop),
+					TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER))
+			.defaultBlockstate().simpleItem().register();
 
 	/**
 	 * Automatically handles registering the block and item for you, all you do is
 	 * pass in the name
 	 */
-	public static RegistryObject<Block> SetupBlock(String name) {
-		return RegisterWithItem(name, () -> new Block(BlockBehaviour.Properties.of().strength(1.25f)));
+	public static BlockEntry<Block> SetupBlock(String name) {
+		return Builder(name, Block::new).properties(p -> p.strength(1.25f)).register();
 	}
 
 	/** Registers the block and a {@link BlockItem} */
-	public static RegistryObject<Block> SetupRoundel(String name) {
-		return RegisterWithItem("roundel/" + name,
-				() -> new Block(BlockBehaviour.Properties.of().strength(1.25f).lightLevel(BlockState -> 15)),
-				new Item.Properties());
-	}
-
-	/** Registers the block and a {@link BlockItem} */
-	public static RegistryObject<Block> RegisterWithItem(String name, Supplier<Block> supplier) {
-		return RegisterWithItem(name, supplier, new Item.Properties());
+	public static BlockEntry<Block> SetupRoundel(String name) {
+		return Builder("roundel/" + name, Block::new).properties(p -> p.strength(1.25f).lightLevel(BlockState -> 15))
+				.register();
 	}
 
 	/**
-	 * Registers the block and a {@link BlockItem} to a specific registry (for tab
-	 * compat)
+	 * Registers the block and a {@link BlockItem}
 	 */
-	public static RegistryObject<Block> RegisterWithItem(String name, Supplier<Block> supplier,
-			DeferredRegister<Item> reg, DeferredRegister<Block> reg1) {
-		RegistryObject<Block> block = reg1.register(name, supplier);
-		reg.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
-		return block;
-	}
-
-	/**
-	 * Registers the block and a {@link BlockItem} with custom
-	 * {@link Item.Properties}
-	 */
-	public static RegistryObject<Block> RegisterWithItem(String name, Supplier<Block> supplier,
-			Item.Properties itemProperties) {
-		RegistryObject<Block> block = Register(name, supplier);
-		ITEMS.register(name, () -> new BlockItem(block.get(), itemProperties));
-		return block;
+	public static <T extends Block> BlockEntry<T> RegisterWithItem(String name, T supplier) {
+		return registrate().block(name, (prop) -> supplier).simpleItem().defaultBlockstate().defaultLang().register();
 	}
 
 	/** Registers a block */
-	public static RegistryObject<Block> Register(String name, Supplier<Block> supplier) {
-		return BLOCKS.register(name, supplier);
+	public static BlockBuilder<Block, TTSRegistrate> Builder(String name, Block block) {
+		return registrate().block(name, (properties) -> block);
+	}
+
+	public static <T extends Block> TTSBlockBuilder<T, TTSRegistrate> Builder(String name,
+			NonNullFunction<BlockBehaviour.Properties, T> block) {
+		return registrate().block(name, block);
+	}
+
+	public static List<RegistryEntry<Block>> AllValues() {
+		return registrate().getAll(Registries.BLOCK).stream().toList();
+	}
+
+	public static RegistryEntry<Block> entryFromBlock(Block block) {
+		for (RegistryEntry<Block> b : AllValues()) {
+			if (b.get().equals(block))
+				return b;
+		}
+		return null;
+	}
+
+	/**
+	 * @param toCopy
+	 *            Block to copy Properties from
+	 * @param copyTo
+	 *            Properties to copy to
+	 * @return A Properties copied from the blockToCopy
+	 */
+	public static BlockBehaviour.Properties copy(Block toCopy, BlockBehaviour.Properties copyTo) {
+		BlockBehaviour.Properties propertiesToCopy = ReflectionBuddy.BlockBehaviorAccess.properties.apply(toCopy);
+
+		BlockBehaviourPropertiesAccessor accessor = (BlockBehaviourPropertiesAccessor) propertiesToCopy;
+		BlockBehaviourPropertiesAccessor copyAccessor = (BlockBehaviourPropertiesAccessor) copyTo;
+
+		// God, I love accessors
+		copyAccessor.setDestroyTime(accessor.getDestroyTime());
+		copyAccessor.setExplosionResistance(accessor.getExplosionResistance());
+		copyAccessor.setHasCollision(accessor.getHasCollision());
+		copyAccessor.setIsRandomlyTicking(accessor.getIsRandomlyTicking());
+		copyAccessor.setLightEmission(accessor.getLightEmission());
+		copyAccessor.setMapColor(accessor.getMapColor());
+		copyAccessor.setSoundType(accessor.getSoundType());
+		copyAccessor.setFriction(accessor.getFriction());
+		copyAccessor.setSpeedFactor(accessor.getSpeedFactor());
+		copyAccessor.setDynamicShape(accessor.getDynamicShape());
+		copyAccessor.setCanOcclude(accessor.getCanOcclude());
+		copyAccessor.setIsAir(accessor.getIsAir());
+		copyAccessor.setIgnitedByLava(accessor.getIgnitedByLava());
+		copyAccessor.setLiquid(accessor.getLiquid());
+		copyAccessor.setForceSolidOff(accessor.getForceSolidOff());
+		copyAccessor.setForceSolidOn(accessor.getForceSolidOn());
+		copyAccessor.setPushReaction(accessor.getPushReaction());
+		copyAccessor.setRequiresCorrectToolForDrops(accessor.getRequiresCorrectToolForDrops());
+		copyAccessor.setOffsetFunction(accessor.getOffsetFunction());
+		copyAccessor.setSpawnParticlesOnBreak(accessor.getSpawnParticlesOnBreak());
+		copyAccessor.setRequiredFeatures(accessor.getRequiredFeatures());
+		copyAccessor.setEmissiveRendering(accessor.getEmissiveRendering());
+		copyAccessor.setInstrument(accessor.getInstrument());
+		copyAccessor.setReplaceable(accessor.getReplaceable());
+
+		return copyTo;
+	}
+
+	public static void register() {
 	}
 }

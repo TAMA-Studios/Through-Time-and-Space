@@ -3,8 +3,6 @@ package com.code.tama.tts.client.UI.category;
 
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-import java.util.Locale;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,22 +26,17 @@ public class DestinationUICategory extends UICategory {
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			Font fontRenderer = Minecraft.getInstance().font;
 
-			String line1 = cap.GetCurrentLevel().location().getPath().substring(0, 1).toUpperCase(Locale.ROOT)
-					+ cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " ");
-
 			String line3 = cap.GetNavigationalData().getDestination().ReadableStringShort();
-
-			int white = 0xFFFFFF;
 
 			RenderSystem.disableDepthTest();
 
-			fontRenderer.drawInBatch("TARDISOS - 1.0", -40, 5, white, false, poseStack.last().pose(), bufferSource,
-					Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch("TARDISOS - 1.0", -40, 5, color(monitor), false, poseStack.last().pose(),
+					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch("Destination", -27f, 15, white, false, poseStack.last().pose(), bufferSource,
-					Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch("Destination", -27f, 15, color(monitor), false, poseStack.last().pose(),
+					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
-			fontRenderer.drawInBatch(line3, -40, 25, white, false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch(line3, -40, 25, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);
 		});
 	}

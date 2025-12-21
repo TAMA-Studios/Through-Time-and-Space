@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 
-public class CompressedMultiblockRenderer implements BlockEntityRenderer<CompressedMultiblockTile> {
+public class CompressedMultiblockRenderer<T extends CompressedMultiblockTile> implements BlockEntityRenderer<T> {
 	public static final int fullBright = 0xf000f0;
 	public final BlockEntityRendererProvider.Context context;
 
@@ -22,7 +22,7 @@ public class CompressedMultiblockRenderer implements BlockEntityRenderer<Compres
 	}
 
 	@Override
-	public void render(@NotNull CompressedMultiblockTile tile, // Make sure this is the Tile Entity class
+	public void render(@NotNull T tile, // Make sure this is the Tile Entity class
 			float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource,
 			int combinedOverlay, int combinedLight) {
 		poseStack.pushPose();

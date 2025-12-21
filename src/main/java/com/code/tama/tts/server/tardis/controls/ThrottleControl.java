@@ -5,11 +5,14 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class ThrottleControl extends AbstractControl {
 	ITARDISLevel itardisLevel;
@@ -31,11 +34,11 @@ public class ThrottleControl extends AbstractControl {
 		this.itardisLevel = itardisLevel;
 		this.SetNeedsUpdate(true);
 		this.SetAnimationState(0.0f);
-		if (itardisLevel.GetFlightData().isInFlight()) {
-			itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().Play(itardisLevel.GetLevel(),
-					player.blockPosition());
-			itardisLevel.Rematerialize();
-		}
+		// if (itardisLevel.GetFlightData().isInFlight()) {
+		itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().Play(itardisLevel.GetLevel(),
+				player.blockPosition());
+		itardisLevel.Rematerialize();
+		// }
 
 		return InteractionResult.SUCCESS;
 	}
@@ -45,7 +48,7 @@ public class ThrottleControl extends AbstractControl {
 		this.itardisLevel = itardisLevel;
 		this.SetAnimationState(1.0f);
 
-		if (!itardisLevel.GetFlightData().isInFlight() && !itardisLevel.GetFlightData().isPlayRotorAnimation()) {
+		if (!itardisLevel.GetFlightData().IsTakingOff()) {
 			itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().SetFinished(true);
 			itardisLevel.Dematerialize();
 			itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().Play(itardisLevel.GetLevel(),
@@ -57,7 +60,7 @@ public class ThrottleControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "throttle";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("throttle");
 	}
 }

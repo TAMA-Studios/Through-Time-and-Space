@@ -3,6 +3,7 @@ package com.code.tama.tts.client.renderers.tiles.console;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.client.models.NESSConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,6 +35,11 @@ public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends Hierarchic
 
 	public NESSConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
 		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
+	}
+
+	@SuppressWarnings("unchecked")
+	public NESSConsoleRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new NESSConsoleModel<>(context.bakeLayer(NESSConsoleModel.LAYER_LOCATION));
 	}
 
 	@Override

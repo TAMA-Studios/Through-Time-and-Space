@@ -10,17 +10,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 import com.code.tama.triggerapi.dimensions.SyncDimensionsClientHandler;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
-public class SyncDimensionsS2C {
-
-	public boolean add;
-
-	public ResourceKey<Level> level;
-
-	public SyncDimensionsS2C(ResourceKey<Level> level, boolean add) {
-		this.level = level;
-		this.add = add;
-	}
+public record SyncDimensionsS2C(ResourceKey<Level> level, boolean add) implements ImAPacket {
 
 	public static SyncDimensionsS2C decode(FriendlyByteBuf buf) {
 		return new SyncDimensionsS2C(buf.readResourceKey(Registries.DIMENSION), buf.readBoolean());

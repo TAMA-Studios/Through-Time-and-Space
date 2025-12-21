@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 @Mixin(Block.class)
 public interface BlockAccessor {
 	@Accessor("OCCLUSION_CACHE")
-	public static ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>> getOcclusionCache() {
+	static ThreadLocal<Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey>> getOcclusionCache() {
 		throw new AssertionError();
 	}
 }

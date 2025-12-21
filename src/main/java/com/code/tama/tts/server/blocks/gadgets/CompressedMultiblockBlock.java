@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.gadgets;
 
-import com.code.tama.tts.server.registries.forge.TTSItems;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.CompressedMultiblockTile;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public class CompressedMultiblockBlock extends Block implements EntityBlock {
 
 			level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
 
-			ItemStack item = TTSItems.COMPRESSED_MULTIBLOCK_ITEM.get().getDefaultInstance().copy();
+			ItemStack item = TTSBlocks.COMPRESSED_MULTIBLOCK.asItem().getDefaultInstance().copy();
 			compressedMultiblock.saveToItem(item);
 			ItemEntity entity = EntityType.ITEM.create(level);
 

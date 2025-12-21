@@ -5,11 +5,14 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class IncrementControl extends AbstractControl {
 	@Override
@@ -43,7 +46,7 @@ public class IncrementControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "increment_control";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("increment_control");
 	}
 }

@@ -36,8 +36,8 @@ public class HartnellDoor extends Block implements EntityBlock {
 	private boolean IsOpen = false;
 	private final Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> tile;
 
-	public HartnellDoor(Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> factory) {
-		super(Properties.of().strength(3.0F).requiresCorrectToolForDrops());
+	public HartnellDoor(Properties p, Supplier<? extends BlockEntityType<? extends HartnellDoorTile>> factory) {
+		super(p.strength(3.0F).requiresCorrectToolForDrops());
 		this.tile = factory;
 	}
 

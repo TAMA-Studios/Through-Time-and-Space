@@ -25,35 +25,6 @@ public abstract class LivingEntityGravityMixin extends Entity
 
 	@ModifyVariable(method = "travel", at = @At("STORE"), ordinal = 0)
 	private double injected(double d0) {
-		return (double) GravityHelper.getGravity(this.level());
+		return GravityHelper.getGravity(this.level());
 	}
-
-	// @ModifyConstant(
-	// method = "travel",
-	// constant = @Constant(doubleValue = 0.08D)
-	// ) private double injected(double d0) {
-	// return d0 * (double) GravityHelper.getGravity(this.level());
-	// }
-
-	// @Inject(method = "travel", at = @At("HEAD"))
-	// private void tts$applyCustomGravity(Vec3 travelVector, CallbackInfo ci) {
-	// LivingEntity self = (LivingEntity) (Object) this;
-	//
-	// // Skip gravity if flagged no-gravity
-	// if (self.isNoGravity())
-	// return;
-	//
-	// // Skip creative/spectator flight
-	// if (self instanceof Player player) {
-	// if (player.getAbilities().flying || player.isSpectator())
-	// return;
-	// }
-	//
-	// // Optional: skip when submerged or grounded
-	// if (self.isInWater() || self.isInLava() || self.onGround())
-	// return;
-	//
-	// double gravity = GravityHelper.getGravity(self.level());
-	// self.setDeltaMovement(self.getDeltaMovement().add(0.0D, -gravity, 0.0D));
-	// }
 }

@@ -5,11 +5,9 @@ import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 import java.util.function.BiConsumer;
 
-import com.code.tama.tts.TTSConfig;
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.mixin.client.RenderStateShardAccessor;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlConst;
@@ -40,9 +38,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.boti.IHelpWithFBOs;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
@@ -378,9 +378,10 @@ public class FBOHelper {
 
 		public static RenderType getRenderType() {
 			RenderType.CompositeState parameters = RenderType.CompositeState.builder()
-					.setTextureState(RenderStateShardAccessor.getBLOCK_SHEET_MIPPED())
-					.setTransparencyState(RenderStateShardAccessor.getTRANSLUCENT_TRANSPARENCY())
-					.setLayeringState(RenderStateShardAccessor.getNO_LAYERING()).createCompositeState(false);
+					.setTextureState(ReflectionBuddy.RenderStateShardAccess.BLOCK_SHEET_MIPPED.apply(null)) // RenderStateShard.class.getDeclaredField("BLOCK_SHEET_MIPPED").get(null)
+					.setTransparencyState(ReflectionBuddy.RenderStateShardAccess.TRANSLUCENT_TRANSPARENCY.apply(null))
+					.setLayeringState(ReflectionBuddy.RenderStateShardAccess.NO_LAYERING.apply(null))
+					.createCompositeState(false);
 			return RenderType.create("boti", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, QUADS, 256, false, true,
 					parameters);
 		}

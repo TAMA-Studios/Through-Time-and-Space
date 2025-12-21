@@ -39,10 +39,8 @@ public class CrashThread extends Thread {
 		BlockPos pos = BlockHelper.snapToGround(this.itardisLevel.GetLevel(),
 				this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos());
 
-		this.itardisLevel.GetFlightData().getFlightTerminationProtocol().getTerminationProtocolHandler()
-				.OnLand(this.itardisLevel, pos, CurrentLevel);
-		pos = this.itardisLevel.GetFlightData().getFlightTerminationProtocol().getTerminationProtocolHandler()
-				.GetLandPos();
+		this.itardisLevel.GetFlightData().getFlightTerminationProtocol().OnLand(this.itardisLevel, pos, CurrentLevel);
+		pos = this.itardisLevel.GetFlightData().getFlightTerminationProtocol().GetLandPos();
 
 		pos = BlockHelper.snapToGround(this.itardisLevel.GetLevel(), pos);
 

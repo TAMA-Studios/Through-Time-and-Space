@@ -5,7 +5,7 @@
     "defaultRequire" : 1
   },
   "minVersion" : "0.8",
-  "mixins" : [ "BlockAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin" ],
+  "mixins" : [ "BlockAccessor", "BlockBehaviourPropertiesAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin" ],
   "package" : "com.code.tama.tts.mixin",
   "refmap" : "mixins.tts.refmap.json",
   "required" : true

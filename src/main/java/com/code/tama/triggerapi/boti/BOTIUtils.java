@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.code.tama.tts.TTSConfig;
-import com.code.tama.tts.client.BotiChunkContainer;
-import com.code.tama.tts.client.FluidQuadCollector;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
-import com.code.tama.tts.server.tileentities.AbstractPortalTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -43,8 +39,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
+import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.triggerapi.rendering.BotiPortalModel;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")

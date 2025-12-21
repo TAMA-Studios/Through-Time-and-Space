@@ -6,6 +6,7 @@ import com.code.tama.tts.server.misc.progressable.IWeldable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,18 +32,22 @@ public class SonicBlockMode extends SonicMode {
 	}
 
 	public void onUse(UseOnContext context) {
+		if (context.getHand().equals(InteractionHand.OFF_HAND))
+			return;
 		Player player = context.getPlayer();
+		Level level = context.getLevel();
+
 		BlockHitResult hitResult = RayTraceUtils.getLookingAtBlock(25);
 		if (hitResult == null)
 			return;
 		BlockPos usedPos = hitResult.getBlockPos(); // context.getClickedPos();
 		assert player != null;
 		BlockState state = player.level().getBlockState(usedPos);
-		Level level = player.level();
 
 		if (state.hasBlockEntity() && level.getBlockEntity(usedPos) instanceof IWeldable weldable) {
-
 			weldable.setWeld(weldable.getWeld() + 1);
+			System.out.println(weldable.getWeld());
+			return;
 		}
 
 		// if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {

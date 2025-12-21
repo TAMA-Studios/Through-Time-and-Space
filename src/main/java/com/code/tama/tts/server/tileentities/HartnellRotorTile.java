@@ -4,19 +4,21 @@ package com.code.tama.tts.server.tileentities;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
 
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import lombok.Getter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 
 @Getter
 public class HartnellRotorTile extends TickingTile {
 	private final AnimationState RotorAnimationState = new AnimationState();
 
-	public HartnellRotorTile(BlockPos pos, BlockState state) {
-		super(TTSTileEntities.HARTNELL_ROTOR.get(), pos, state);
+	public HartnellRotorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override

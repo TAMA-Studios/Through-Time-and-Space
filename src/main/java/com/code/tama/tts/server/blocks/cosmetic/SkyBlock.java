@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.cosmetic;
 
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.SkyTile;
 
 import net.minecraft.core.BlockPos;
@@ -16,15 +17,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
 
 public class SkyBlock extends BaseEntityBlock {
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-	public SkyBlock() {
-		super(Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
-				.requiresCorrectToolForDrops().strength(1.5F, 6.0F));
+	public SkyBlock(Properties properties) {
+		super(properties);
+		// Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)
+		// .requiresCorrectToolForDrops().strength(1.5F, 6.0F));
 		registerDefaultState(defaultBlockState().setValue(ACTIVE, true));
 	}
 
@@ -72,7 +72,7 @@ public class SkyBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-		return new SkyTile(SkyTile.SkyType.Overworld, blockPos, blockState);
+		return new SkyTile(SkyTile.SkyType.Overworld, TTSTileEntities.SKY_TILE.get(), blockPos, blockState);
 	}
 
 	@Override
@@ -95,6 +95,10 @@ public class SkyBlock extends BaseEntityBlock {
 
 	public static class VoidBlock extends SkyBlock {
 
+		public VoidBlock(Properties properties) {
+			super(properties);
+		}
+
 		@Override
 		public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
 			if (state.isSolidRender(world, pos)) {
@@ -106,7 +110,7 @@ public class SkyBlock extends BaseEntityBlock {
 
 		@Override
 		public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-			return new SkyTile(SkyTile.SkyType.Void, blockPos, blockState);
+			return new SkyTile(SkyTile.SkyType.Void, TTSTileEntities.SKY_TILE_VOID.get(), blockPos, blockState);
 		}
 	}
 }

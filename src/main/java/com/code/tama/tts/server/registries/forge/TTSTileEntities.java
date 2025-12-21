@@ -1,112 +1,131 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSBlocks.*;
-
+import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
+import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
+import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
+import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
+import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
+import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
+import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
+import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.*;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
-
-import net.minecraft.core.registries.Registries;
+import com.tterrag.registrate.builders.BlockEntityBuilder;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
+@SuppressWarnings("unchecked")
 public class TTSTileEntities {
 
-	public static final RegistryObject<BlockEntityType<ChameleonCircuitPanelTileEntity>> CHAMELEON_CIRCUIT_PANEL;
-	public static final RegistryObject<BlockEntityType<DoorTile>> DOOR_TILE;
-	// \/ Change this to be the Tile Entity Class
-	public static final RegistryObject<BlockEntityType<ExampleTileEntity>> EXAMPLE_TILE;
-	public static final RegistryObject<BlockEntityType<SonicConfiguratorTileEntity>> SONIC_CONFIGURATOR;
-	// Define this RegistryObject in the static block down below
-	public static final RegistryObject<BlockEntityType<ExteriorTile>> EXTERIOR_TILE;
-	public static final RegistryObject<BlockEntityType<HartnellRotorTile>> HARTNELL_ROTOR;
-	public static final RegistryObject<BlockEntityType<HartnellDoorTile>> HARTNELL_DOOR;
-	public static final RegistryObject<BlockEntityType<HartnellDoorTilePlaceholder>> HARTNELL_DOOR_PLACEHOLDER;
-	public static final RegistryObject<BlockEntityType<HudolinConsoleTile>> HUDOLIN_CONSOLE_TILE;
-	public static final RegistryObject<BlockEntityType<NESSConsoleTile>> NESS_CONSOLE_TILE;
-	public static final RegistryObject<BlockEntityType<MonitorPanelTile>> MONITOR_PANEL_TILE;
-	public static final RegistryObject<BlockEntityType<MonitorTile>> MONITOR_TILE;
-	public static final RegistryObject<BlockEntityType<CRTMonitorTile>> CRT_MONITOR_TILE;
-	public static final RegistryObject<BlockEntityType<FragmentLinksTile>> FRAGMENT_LINKS_TILE;
-	public static final RegistryObject<BlockEntityType<PortalTileEntity>> PORTAL_TILE_ENTITY;
-	public static final RegistryObject<BlockEntityType<WorkbenchTile>> WORKBENCH_TILE;
-	public static final RegistryObject<BlockEntityType<ChromiumBlockEntity>> CHROMIUM_BLOCK_ENTITY;
-	public static final RegistryObject<BlockEntityType<SkyTile>> SKY_TILE;
-	public static final RegistryObject<BlockEntityType<CompressedMultiblockTile>> COMPRESSED_MULTIBLOCK_TILE;
-	public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES;
+	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
+			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
+			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
-	static {
-		TILE_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
+			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL).register();
 
-		// They all get defined right here
-		EXAMPLE_TILE = TILE_ENTITIES.register("example_tile", () -> create(ExampleTileEntity::new, // Tile entity class
-				TTSBlocks.EXAMPLE_TILE_BLOCK.get())); // The RegistryObject of the block
+	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
+			.validBlocks(TTSBlocks.DOOR_BLOCK).renderer(() -> InteriorDoorRenderer::new).register();
 
-		COMPRESSED_MULTIBLOCK_TILE = TILE_ENTITIES.register("compressed_multiblock_tile",
-				() -> create(CompressedMultiblockTile::new, // Tile entity class
-						COMPRESSED_MULTIBLOCK.get())); // The RegistryObject of the block
+	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
+			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
 
-		SONIC_CONFIGURATOR = TILE_ENTITIES.register("sonic_configurator", () -> create(SonicConfiguratorTileEntity::new, // Tile
-																															// entity
-																															// class
-				TTSBlocks.SONIC_CONFIGURATOR_BLOCK.get())); // The RegistryObject of the block
+	public static final BlockEntityEntry<FaultLocatorTile> FAULT_LOCATOR = registrate()
+			.blockEntity("fault_locator", FaultLocatorTile::new).validBlocks(TTSBlocks.FAULT_LOCATOR).renderer(() -> FaultLocatorRenderer::new).register();
 
-		SKY_TILE = TILE_ENTITIES.register("sky_block", () -> create(SkyTile::new, SKY_BLOCK.get(), VOID_BLOCK.get()));
+	public static final BlockEntityEntry<SonicConfiguratorTileEntity> SONIC_CONFIGURATOR = registrate()
+			.blockEntity("sonic_configurator", SonicConfiguratorTileEntity::new)
+			.validBlocks(TTSBlocks.SONIC_CONFIGURATOR_BLOCK).register();
 
-		FRAGMENT_LINKS_TILE = TILE_ENTITIES.register("fragment_links_tile",
-				() -> create(FragmentLinksTile::new, FRAGMENT_LINKS.get()));
+	public static final BlockEntityEntry<ExteriorTile> EXTERIOR_TILE = registrate()
+			.blockEntity("exterior_tile", ExteriorTile::new).validBlocks(TTSBlocks.EXTERIOR_BLOCK)
+			.renderer(() -> TardisExteriorRenderer::new).register();
 
-		PORTAL_TILE_ENTITY = TILE_ENTITIES.register("portal_tile_entity",
-				() -> create(PortalTileEntity::new, PORTAL_BLOCK.get()));
+	public static final BlockEntityEntry<HartnellRotorTile> HARTNELL_ROTOR = registrate()
+			.blockEntity("hartnell_rotor", HartnellRotorTile::new).validBlocks(TTSBlocks.HARTNELL_ROTOR)
+			.renderer(() -> HartnellRotorRenderer::new).register();
 
-		CHROMIUM_BLOCK_ENTITY = TILE_ENTITIES.register("chromium_block_entity",
-				() -> create(ChromiumBlockEntity::new, TTSBlocks.CHROMIUM_BLOCK.get()));
+	public static final BlockEntityEntry<HartnellDoorTile> HARTNELL_DOOR = registrate()
+			.blockEntity("hartnell_door", HartnellDoorTile::new).validBlocks(TTSBlocks.HARTNELL_DOOR).register();
 
-		HARTNELL_ROTOR = TILE_ENTITIES.register("hartnell_rotor",
-				() -> create(HartnellRotorTile::new, TTSBlocks.HARTNELL_ROTOR.get()));
+	public static final BlockEntityEntry<HartnellDoorTilePlaceholder> HARTNELL_DOOR_PLACEHOLDER = registrate()
+			.blockEntity("hartnell_door_placeholder", HartnellDoorTilePlaceholder::new)
+			.validBlocks(TTSBlocks.HARTNELL_DOOR_PLACEHOLDER).register();
 
-		HUDOLIN_CONSOLE_TILE = TILE_ENTITIES.register("hudolin_console_tile",
-				() -> create(HudolinConsoleTile::new, TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get()));
+	public static final BlockEntityEntry<HudolinConsoleTile> HUDOLIN_CONSOLE_TILE = registrate()
+			.blockEntity("hudolin_console_tile", HudolinConsoleTile::new).validBlocks(TTSBlocks.HUDOLIN_CONSOLE_BLOCK)
+			.renderer(() -> HudolinConsoleRenderer::new).register();
 
-		NESS_CONSOLE_TILE = TILE_ENTITIES.register("ness_console_tile",
-				() -> create(NESSConsoleTile::new, TTSBlocks.NESS_CONSOLE_BLOCK.get()));
+	public static final BlockEntityEntry<NESSConsoleTile> NESS_CONSOLE_TILE = registrate()
+			.blockEntity("ness_console_tile", NESSConsoleTile::new).validBlocks(TTSBlocks.NESS_CONSOLE_BLOCK)
+			.renderer(() -> NESSConsoleRenderer::new).register();
 
-		MONITOR_TILE = TILE_ENTITIES.register("monitor_tile",
-				() -> create(MonitorTile::new, TTSBlocks.MONITOR_BLOCK.get()));
+	public static final BlockEntityEntry<MonitorTile> MONITOR_TILE = registrate()
+			.blockEntity("monitor_tile", MonitorTile::new).validBlocks(TTSBlocks.MONITOR_BLOCK)
+			.renderer(() -> MonitorRenderer::new).register();
 
-		CRT_MONITOR_TILE = TILE_ENTITIES.register("crt_monitor_tile",
-				() -> create(CRTMonitorTile::new, TTSBlocks.CRT_MONITOR_BLOCK.get()));
+	public static final BlockEntityEntry<CRTMonitorTile> CRT_MONITOR_TILE = registrate()
+			.blockEntity("crt_monitor_tile", CRTMonitorTile::new).validBlocks(TTSBlocks.CRT_MONITOR_BLOCK)
+			.renderer(() -> CRTMonitorRenderer::new).register();
 
-		MONITOR_PANEL_TILE = TILE_ENTITIES.register("monitor_panel_tile",
-				() -> create(MonitorPanelTile::new, TTSBlocks.MONITOR_PANEL.get()));
+	public static final BlockEntityEntry<MonitorPanelTile> MONITOR_PANEL_TILE = registrate()
+			.blockEntity("monitor_panel_tile", MonitorPanelTile::new).validBlocks(TTSBlocks.MONITOR_PANEL)
+			.renderer(() -> MonitorPanelRenderer::new).register();
 
-		EXTERIOR_TILE = TILE_ENTITIES.register("exterior_tile",
-				() -> create(ExteriorTile::new, TTSBlocks.EXTERIOR_BLOCK.get()));
+	public static final BlockEntityEntry<FragmentLinksTile> FRAGMENT_LINKS_TILE = registrate()
+			.blockEntity("fragment_links_tile", FragmentLinksTile::new).validBlocks(TTSBlocks.FRAGMENT_LINKS)
+			.register();
 
-		DOOR_TILE = TILE_ENTITIES.register("door_tile", () -> create(DoorTile::new, TTSBlocks.DOOR_BLOCK.get()));
+	public static final BlockEntityEntry<PortalTileEntity> PORTAL_TILE_ENTITY = registrate()
+			.blockEntity("portal_tile_entity", PortalTileEntity::new).validBlocks(TTSBlocks.PORTAL_BLOCK)
+			.renderer(() -> PortalTileEntityRenderer::new).register();
 
-		CHAMELEON_CIRCUIT_PANEL = TILE_ENTITIES.register("chameleon_circuit_panel",
-				() -> create(ChameleonCircuitPanelTileEntity::new, TTSBlocks.CHAMELEON_CIRCUIT_BLOCK.get()));
+	public static final BlockEntityEntry<ChromiumBlockEntity> CHROMIUM_BLOCK_ENTITY = registrate()
+			.blockEntity("chromium_block_entity", ChromiumBlockEntity::new).validBlocks(TTSBlocks.CHROMIUM_BLOCK)
+			.register();
 
-		HARTNELL_DOOR = TILE_ENTITIES.register("hartnell_door",
-				() -> create(HartnellDoorTile::new, TTSBlocks.HARTNELL_DOOR.get()));
+	public static final BlockEntityEntry<BlockEntity> SKY_TILE = builder("sky_block_overworld",
+			(t, p, e) -> new SkyTile(SkyTile.SkyType.Overworld, t, p, e), TTSBlocks.SKY_BLOCK)
+			.renderer(() -> (context) -> new SkyTileRenderer(context)).register();
 
-		HARTNELL_DOOR_PLACEHOLDER = TILE_ENTITIES.register("hartnell_door_placeholder",
-				() -> create(HartnellDoorTilePlaceholder::new, TTSBlocks.HARTNELL_DOOR_PLACEHOLDER.get()));
+	public static final BlockEntityEntry<BlockEntity> SKY_TILE_VOID = builder("sky_block_void",
+			(t, p, e) -> new SkyTile(SkyTile.SkyType.Void, t, p, e), TTSBlocks.VOID_BLOCK)
+			.renderer(() -> (context) -> new SkyTileRenderer(context)).register();
 
-		WORKBENCH_TILE = TILE_ENTITIES.register("celestial_workbench",
-				() -> create(WorkbenchTile::new, TTSBlocks.TEMPORAL_FABRICATOR.get()));
+	public static final BlockEntityEntry<BlockEntity> COMPRESSED_MULTIBLOCK_TILE = builder("compressed_multiblock_tile",
+			CompressedMultiblockTile::new, TTSBlocks.COMPRESSED_MULTIBLOCK)
+			.renderer(() -> (ctx) -> new CompressedMultiblockRenderer(ctx)).register();
+
+	public static final BlockEntityEntry<WorkbenchTile> WORKBENCH_TILE = registrate()
+			.blockEntity("celestial_workbench", WorkbenchTile::new).validBlocks(TTSBlocks.TEMPORAL_FABRICATOR)
+			.register();
+
+	@SafeVarargs
+	public static <P extends Block, T extends BlockEntity> BlockEntityEntry<T> registerTile(String name,
+			BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
+		return registrate().blockEntity(name, factory).validBlocks(blocks).register();
 	}
 
-	public static <T extends BlockEntity> BlockEntityType<T> create(BlockEntityType.BlockEntitySupplier<T> factory,
-			Block... blocks) {
-		return BlockEntityType.Builder.of(factory, blocks).build(null);
+	@SafeVarargs
+	public static <P extends Block, T extends BlockEntity> BlockEntityBuilder<T, TTSRegistrate> builder(String name,
+			BlockEntityBuilder.BlockEntityFactory<T> factory, NonNullSupplier<P>... blocks) {
+		return registrate().blockEntity(name, factory).validBlocks(blocks);
+	}
+
+	public static void register() {
+		// Trigger static class load
 	}
 }

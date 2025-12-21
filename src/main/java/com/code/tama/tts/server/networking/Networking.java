@@ -1,13 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
@@ -16,23 +14,20 @@ import com.code.tama.tts.server.networking.packets.C2S.entities.ControlClickedPa
 import com.code.tama.tts.server.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
-import com.code.tama.tts.server.networking.packets.C2S.portal.PortalChunkRequestPacketC2S;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalChunkDataPacketS2C;
-import com.code.tama.tts.server.networking.packets.S2C.portal.PortalSyncPacketS2C;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -42,18 +37,21 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
-import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
+import com.code.tama.triggerapi.boti.packets.BOTIPackets;
+import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class Networking {
 	public static int ID = 0;
 
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"),
-			() -> Networking.NET_VERSION, Networking.NET_VERSION::equals, Networking.NET_VERSION::equals);
+	// public static final SimpleChannel INSTANCE =
+	// NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"),
+	// () -> Networking.NET_VERSION, Networking.NET_VERSION::equals,
+	// Networking.NET_VERSION::equals);
+	public static final SimpleChannel INSTANCE = UniversalCommon.Networking.getInstance();
 	public static final String NET_VERSION = "1.0";
 
 	public static int id() {
@@ -66,6 +64,11 @@ public class Networking {
 	}
 
 	public static void registerPackets() {
+		DimensionPacketsRegistration.registerPackets();
+		BOTIPackets.registerPackets();
+
+		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
+
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,
 				ControlClickedPacketC2S::handle);
@@ -87,11 +90,6 @@ public class Networking {
 				SyncTransparencyPacketS2C::handle);
 
 		// Cap Data
-		register(SyncDimensionsS2C.class, SyncDimensionsS2C::encode, SyncDimensionsS2C::decode,
-				SyncDimensionsS2C::handle);
-
-		register(UpdateDimensionsS2C.class, UpdateDimensionsS2C::encode, UpdateDimensionsS2C::decode,
-				UpdateDimensionsS2C::handle);
 
 		register(SyncCapLightLevelPacketS2C.class, SyncCapLightLevelPacketS2C::encode,
 				SyncCapLightLevelPacketS2C::decode, SyncCapLightLevelPacketS2C::handle);
@@ -137,18 +135,7 @@ public class Networking {
 		// register(PortalChunkDataPacket.class, PortalChunkDataPacket::encode,
 		// PortalChunkDataPacket::decode, PortalChunkDataPacket::handle);
 
-		INSTANCE.registerMessage(id(), PortalSyncPacketS2C.class, PortalSyncPacketS2C::encode,
-				PortalSyncPacketS2C::decode, PortalSyncPacketS2C::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-
-		INSTANCE.registerMessage(id(), PortalChunkRequestPacketC2S.class, PortalChunkRequestPacketC2S::encode,
-				PortalChunkRequestPacketC2S::decode, PortalChunkRequestPacketC2S::handle,
-				Optional.of(NetworkDirection.PLAY_TO_SERVER));
-
-		INSTANCE.registerMessage(id(), PortalChunkDataPacketS2C.class, PortalChunkDataPacketS2C::encode,
-				PortalChunkDataPacketS2C::decode, PortalChunkDataPacketS2C::handle,
-				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-
-		System.out.println("Network packets registered: Sync=0, Request=1, Data=2");
+		TTSMod.LOGGER.info("${} Network packets registered", ID);
 	}
 
 	public static void sendNear(ResourceKey<Level> level, Vec3i pos, double range, Object message) {

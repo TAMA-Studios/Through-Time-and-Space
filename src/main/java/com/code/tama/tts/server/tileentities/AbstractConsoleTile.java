@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
@@ -44,7 +44,7 @@ public class AbstractConsoleTile extends BlockEntity {
 
 	public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
 		if (blockEntity instanceof AbstractConsoleTile tile) {
-			level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+			TARDISLevelCapability.GetTARDISCapSupplier(level).ifPresent(cap -> {
 				if (level.isClientSide)
 					tile.GetRotorAnimation().animateWhen(cap.GetFlightData().isPlayRotorAnimation(),
 							(int) level.getGameTime());

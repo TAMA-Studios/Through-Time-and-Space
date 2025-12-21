@@ -4,6 +4,7 @@ package com.code.tama.tts.client.renderers.worlds.helper;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
@@ -11,6 +12,8 @@ import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.TardisSkyRenderer;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.Tags;
+import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -20,12 +23,23 @@ import org.joml.Quaternionf;
 import org.joml.Vector4i;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class CustomLevelRenderer {
 	private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
@@ -110,7 +124,7 @@ public class CustomLevelRenderer {
 	// Returns an array: [r, g, b], each in 0..1
 	public static float[] getCyclingRGB(float time, float speed) {
 		float hue = (time * speed) % 1.0f; // cycles from 0 to 1
-		int rgb = java.awt.Color.HSBtoRGB(hue, 1.0f, 1.0f);
+		int rgb = Color.HSBtoRGB(hue, 1.0f, 1.0f);
 		float r = ((rgb >> 16) & 0xFF) / 255.0f;
 		float g = ((rgb >> 8) & 0xFF) / 255.0f;
 		float b = (rgb & 0xFF) / 255.0f;
@@ -120,6 +134,56 @@ public class CustomLevelRenderer {
 	@SubscribeEvent
 	public static void onRenderGUI(RenderGuiEvent event) {
 		SonicOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
+	}
+
+	private static final ResourceLocation CUSTOM_CROSSHAIR = new ResourceLocation(MODID,
+			"textures/gui/sonic_crosshair.png");
+
+	@SubscribeEvent
+	public static void onRenderCrosshair(RenderGuiOverlayEvent.Pre event) {
+		if (event.getOverlay().id().equals(VanillaGuiOverlay.CROSSHAIR.id())) {
+			Player player = Minecraft.getInstance().player;
+
+			if (player == null)
+				return;
+			ItemStack stack = player.getMainHandItem();
+
+			if (!(stack.getItem() instanceof SonicItem))
+				return;
+
+			BlockHitResult result = RayTraceUtils.getLookingAtBlock(25);
+			assert Minecraft.getInstance().level != null;
+			if (result != null) {
+				Minecraft.getInstance().level.getBlockState(result.getBlockPos());
+				BlockState state = Minecraft.getInstance().level.getBlockState(result.getBlockPos());
+				if (state.getTags().toList().contains(Tags.Blocks.SONICABLE)) {
+					event.setCanceled(true);
+
+					renderCustomCrosshair(event.getGuiGraphics(), event.getPartialTick());
+					return;
+				}
+			}
+
+			EntityHitResult entityHitResult = RayTraceUtils.getPlayerPOVHitResult(Minecraft.getInstance().player);
+			if (entityHitResult != null) {
+				Entity entity = entityHitResult.getEntity();
+				if (entity.getType().getTags().toList().contains(Tags.Entities.SONICABLE)) {
+					event.setCanceled(true);
+
+					renderCustomCrosshair(event.getGuiGraphics(), event.getPartialTick());
+				}
+			}
+		}
+	}
+
+	private static void renderCustomCrosshair(GuiGraphics guiGraphics, float partialTick) {
+		int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+		int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+
+		int x = width / 2 - 8;
+		int y = height / 2 - 8;
+
+		guiGraphics.blit(CUSTOM_CROSSHAIR, x, y, 0, 0, 16, 16, 16, 16);
 	}
 
 	// This method will handle the rendering event

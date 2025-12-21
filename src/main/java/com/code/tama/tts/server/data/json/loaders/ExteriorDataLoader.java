@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.code.tama.tts.server.data.json.DataExteriorList;
 import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
+import com.code.tama.tts.server.data.json.lists.DataExteriorList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;

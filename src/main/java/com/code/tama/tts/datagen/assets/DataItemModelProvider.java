@@ -6,6 +6,8 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.util.LinkedHashMap;
 
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -76,7 +79,7 @@ public class DataItemModelProvider extends ItemModelProvider {
 		// evenSimplerBlockItem(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_LOG);
 		// evenSimplerBlockItem(TTSBlocks.STRIPPED_GALLIFREYAN_OAK_WOOD);
 		// evenSimplerBlockItem(TTSBlocks.GALLIFREYAN_SAND);
-		for (RegistryObject<Block> block : TTSBlocks.BLOCKS.getEntries()) {
+		for (RegistryEntry<Block> block : TTSBlocks.AllValues().stream().toList()) {
 			ResourceLocation outputLoc = extendWithFolder(
 					new ResourceLocation(modid, ("item/" + block.getId().getPath())));
 			if (!this.generatedModels.containsValue(outputLoc))
@@ -124,7 +127,7 @@ public class DataItemModelProvider extends ItemModelProvider {
 		}
 	}
 
-	private ItemModelBuilder saplingItem(RegistryObject<Block> item) {
+	private ItemModelBuilder saplingItem(BlockEntry<SaplingBlock> item) {
 		return withExistingParent(item.getId().getPath(), new ResourceLocation("item/generated")).texture("layer0",
 				new ResourceLocation(MODID, "block/" + item.getId().getPath()));
 	}
@@ -134,29 +137,29 @@ public class DataItemModelProvider extends ItemModelProvider {
 				new ResourceLocation(MODID, "item/" + item.getId().getPath()));
 	}
 
-	public void evenSimplerBlockItem(RegistryObject<Block> block) {
+	public void evenSimplerBlockItem(RegistryEntry<Block> block) {
 		this.withExistingParent(MODID + ":" + ForgeRegistries.BLOCKS.getKey(block.get()).getPath(),
 				modLoc("block/" + ForgeRegistries.BLOCKS.getKey(block.get()).getPath()));
 	}
 
-	public void trapdoorItem(RegistryObject<Block> block) {
+	public void trapdoorItem(RegistryEntry<Block> block) {
 		this.withExistingParent(ForgeRegistries.BLOCKS.getKey(block.get()).getPath(),
 				modLoc("block/" + ForgeRegistries.BLOCKS.getKey(block.get()).getPath() + "_bottom"));
 	}
 
-	public void fenceItem(RegistryObject<Block> block, RegistryObject<Block> baseBlock) {
+	public void fenceItem(RegistryEntry<Block> block, RegistryEntry<Block> baseBlock) {
 		this.withExistingParent(ForgeRegistries.BLOCKS.getKey(block.get()).getPath(), mcLoc("block/fence_inventory"))
 				.texture("texture", new ResourceLocation(MODID,
 						"block/" + ForgeRegistries.BLOCKS.getKey(baseBlock.get()).getPath()));
 	}
 
-	public void buttonItem(RegistryObject<Block> block, RegistryObject<Block> baseBlock) {
+	public void buttonItem(RegistryEntry<Block> block, RegistryEntry<Block> baseBlock) {
 		this.withExistingParent(ForgeRegistries.BLOCKS.getKey(block.get()).getPath(), mcLoc("block/button_inventory"))
 				.texture("texture", new ResourceLocation(MODID,
 						"block/" + ForgeRegistries.BLOCKS.getKey(baseBlock.get()).getPath()));
 	}
 
-	public void wallItem(RegistryObject<Block> block, RegistryObject<Block> baseBlock) {
+	public void wallItem(RegistryEntry<Block> block, RegistryEntry<Block> baseBlock) {
 		this.withExistingParent(ForgeRegistries.BLOCKS.getKey(block.get()).getPath(), mcLoc("block/wall_inventory"))
 				.texture("wall", new ResourceLocation(MODID,
 						"block/" + ForgeRegistries.BLOCKS.getKey(baseBlock.get()).getPath()));
@@ -167,12 +170,12 @@ public class DataItemModelProvider extends ItemModelProvider {
 				new ResourceLocation(MODID, "item/" + item.getId().getPath()));
 	}
 
-	private ItemModelBuilder simpleBlockItem(RegistryObject<Block> item) {
+	private ItemModelBuilder simpleBlockItem(RegistryEntry<Block> item) {
 		return withExistingParent(item.getId().getPath(), new ResourceLocation("item/generated")).texture("layer0",
 				new ResourceLocation(MODID, "item/" + item.getId().getPath()));
 	}
 
-	private ItemModelBuilder simplestBlockItem(RegistryObject<Block> item) {
+	private ItemModelBuilder simplestBlockItem(RegistryEntry<Block> item) {
 		assert item.getId() != null;
 		ResourceLocation resourceLocation = item.getId();
 		try {
@@ -184,7 +187,7 @@ public class DataItemModelProvider extends ItemModelProvider {
 		return null;
 	}
 
-	private ItemModelBuilder simpleBlockItemBlockTexture(RegistryObject<Block> item) {
+	private ItemModelBuilder simpleBlockItemBlockTexture(RegistryEntry<Block> item) {
 		try {
 			return withExistingParent(item.getId().getPath(), new ResourceLocation("item/generated")).texture("layer0",
 					new ResourceLocation(MODID, "block/" + item.getId().getPath()));

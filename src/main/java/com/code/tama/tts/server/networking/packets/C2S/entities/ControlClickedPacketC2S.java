@@ -11,6 +11,8 @@ import com.code.tama.tts.server.entities.controls.ModularControl;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
+
 public class ControlClickedPacketC2S {
 
 	public UUID control;
@@ -29,7 +31,7 @@ public class ControlClickedPacketC2S {
 
 	public static void handle(ControlClickedPacketC2S mes, Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
-			ModularControl control = (ModularControl) context.get().getSender().level().getServer()
+			ModularControl control = (ModularControl) UniversalServerOnly.getServer()
 					.getLevel(context.get().getSender().level().dimension()).getEntity(mes.control);
 			assert control != null;
 			control.OnControlClicked(GetTARDISCap(context.get().getSender().level()), context.get().getSender());

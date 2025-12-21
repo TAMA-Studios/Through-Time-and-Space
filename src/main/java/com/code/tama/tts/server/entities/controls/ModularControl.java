@@ -10,6 +10,7 @@ import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -46,12 +48,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	public Vec3 Position;
 	public AbstractConsoleTile consoleTile;
+	private BlockPos consolePos;
 	public AABB size;
 
 	/**
 	 * DO NOT CALL THIS! Use
 	 * {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}*
 	 */
+	@ApiStatus.Internal
 	public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
 		super(modularControlEntityType, level);
 	}
@@ -59,6 +63,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
 		assert consoleTile.getLevel() != null;
+		this.consolePos = consoleTile.getBlockPos();
 		float offs;
 		if (level.getBlockState(consoleTile.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
 			offs = -1;
@@ -154,8 +159,16 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void OnControlClicked(ITARDISLevel capability, Player player) {
-		if (player.getUsedItemHand() == InteractionHand.OFF_HAND || player.level().isClientSide)
+		if (player.getUsedItemHand() == InteractionHand.OFF_HAND)
 			return;
+
+		if (capability.getCurrentFlightEvent().RequiredControls.contains(this.GetControl().id())) {
+			capability.getCurrentFlightEvent().RequiredControls.remove(this.GetControl().id());
+			capability.GetLevel().playLocalSound(this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.get(),
+					SoundSource.BLOCKS, 1f, 1f, true);
+			return;
+		}
+
 		if (player.getMainHandItem().getItem() instanceof SonicItem) {
 			if (player.isCrouching()) {
 				this.CycleControlBackward();
@@ -184,9 +197,16 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void OnControlHit(ITARDISLevel capability, Entity entity) {
-		if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND
-				|| entity.level().isClientSide)
+		if (entity instanceof Player player && player.getUsedItemHand() == InteractionHand.OFF_HAND)
 			return;
+
+		if (capability.getCurrentFlightEvent().RequiredControls.contains(this.GetControl().id())) {
+			capability.getCurrentFlightEvent().RequiredControls.remove(this.GetControl().id());
+			capability.GetLevel().playLocalSound(this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.get(),
+					SoundSource.BLOCKS, 1f, 1f, true);
+			return;
+		}
+
 		InteractionResult interactionResult = this.GetControl().OnLeftClick(capability, entity);
 
 		this.level().playSound(null, this.blockPosition(),
@@ -266,5 +286,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		if (this.GetControl() != null)
 			buf.writeInt(ControlsRegistry.getOrdinal(this.GetControl()));
 		buf.writeInt(this.Identifier());
+	}
+
+	public AbstractConsoleTile getConsoleTile() {
+		return (AbstractConsoleTile) this.level().getBlockEntity(this.consolePos);
 	}
 }

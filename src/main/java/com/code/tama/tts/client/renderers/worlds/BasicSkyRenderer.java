@@ -4,7 +4,7 @@ package com.code.tama.tts.client.renderers.worlds;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.renderPlanet;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.code.tama.tts.client.renderers.worlds.helper.AbstractLevelRenderer;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
@@ -48,8 +48,8 @@ public abstract class BasicSkyRenderer extends AbstractLevelRenderer {
 
 		for (int i = 0; i < 1000; ++i) {
 			assert Minecraft.getInstance().level != null;
-			float x = 190 - new Random(Minecraft.getInstance().level.getGameTime()).nextFloat() * (190 * 2);
-			float z = 190 - new Random(Minecraft.getInstance().level.getGameTime()).nextFloat() * (190 * 2);
+			float x = 190 - ThreadLocalRandom.current().nextFloat() * (190 * 2);
+			float z = 190 - ThreadLocalRandom.current().nextFloat() * (190 * 2);
 			float y = 190;
 			buffer.vertex(matrix, x, y, z).color(1F, 1, 1, 1).endVertex();
 			buffer.vertex(matrix, x, y + size, z).color(1F, 1, 1, 1).endVertex();

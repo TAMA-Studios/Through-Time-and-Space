@@ -53,6 +53,19 @@ public class MathUtils {
 	}
 
 	/**
+	 * @param value
+	 *            The value to clamp
+	 * @param min
+	 *            the minimum allowed amount (inclusive)
+	 * @param max
+	 *            the maximum allowed amount (inclusive)
+	 * @return a value that is no less than min, and also no greater than max
+	 */
+	public static double clamp(double value, double min, double max) {
+		return Math.max(min, Math.min(max, value));
+	}
+
+	/**
 	 * Adjusts the slope based on the desired rotation around the Y-axis.
 	 *
 	 * @param slope

@@ -27,8 +27,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBlock {
 	int size = 0;
 
-	public WorkbenchBlock() {
-		super(Properties.of().strength(3.0F));
+	public WorkbenchBlock(Properties properties) {
+		super(properties.strength(3.0F));
 	}
 
 	@Override

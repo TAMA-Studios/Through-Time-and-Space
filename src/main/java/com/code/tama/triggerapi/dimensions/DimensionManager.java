@@ -10,10 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.dimensions.TARDISArtificialDimensionChunkGenerator;
-import com.code.tama.tts.server.dimensions.TARDISNaturalDimensionChunkGenerator;
 import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.worlds.dimension.TDimensions;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;
@@ -60,7 +57,9 @@ import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.triggerapi.dimensions.packets.s2c.SyncDimensionsS2C;
 import com.code.tama.triggerapi.dimensions.packets.s2c.UpdateDimensionsS2C;
 
-/** DimensionAPI internal implementation */
+/**
+ * TriggerAPI Dynamic Dimension Registration implementation
+ */
 @SuppressWarnings("deprecation")
 public final class DimensionManager implements DimensionAPI {
 
@@ -119,16 +118,6 @@ public final class DimensionManager implements DimensionAPI {
 		Networking.sendPacketToAll(new SyncDimensionsS2C(levelKey, true));
 
 		return newLevel;
-	}
-
-	public static LevelStem createArtificialTARDISLevelStem(MinecraftServer server) {
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(TDimensions.TARDIS_DIM_TYPE), new TARDISArtificialDimensionChunkGenerator());
-	}
-
-	public static LevelStem createNaturalTARDISLevelStem(MinecraftServer server) {
-		return new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-				.getHolderOrThrow(TDimensions.TARDIS_DIM_TYPE), new TARDISNaturalDimensionChunkGenerator());
 	}
 
 	public static void prepareWorld(ChunkProgressListener chunkProgress, ServerLevel level) {
@@ -190,8 +179,11 @@ public final class DimensionManager implements DimensionAPI {
 					respawn = Level.OVERWORLD;
 				ServerLevel dest = server.getLevel(respawn != null ? respawn : Level.OVERWORLD);
 				BlockPos pos = player.getRespawnPosition();
-				if (pos == null)
+				if (pos == null) {
+					assert dest != null;
 					pos = dest.getSharedSpawnPos();
+				}
+				assert dest != null;
 				player.teleportTo(dest, pos.getX(), pos.getY(), pos.getZ(), player.getRespawnAngle(), 0f);
 			}
 
@@ -199,12 +191,13 @@ public final class DimensionManager implements DimensionAPI {
 			MinecraftForge.EVENT_BUS.post(new LevelEvent.Unload(removedLevel));
 
 			// Remove border listener
-			overworld.getWorldBorder().removeListener(ReflectionBuddy.WorldBorderAccess.listeners
+			assert overworld != null;
+			overworld.getWorldBorder().removeListener(Objects.requireNonNull(ReflectionBuddy.WorldBorderAccess.listeners
 					.apply(overworld.getWorldBorder()).stream()
 					.filter(l -> l instanceof BorderChangeListener.DelegateBorderChangeListener delegate
 							&& ReflectionBuddy.DelegateBorderChangeListenerAccess.worldBorder
 									.apply(delegate) == removedLevel.getWorldBorder())
-					.findFirst().orElse(null));
+					.findFirst().orElse(null)));
 
 			removedKeys.add(levelKey);
 		}
@@ -278,7 +271,7 @@ public final class DimensionManager implements DimensionAPI {
 			Registry<LevelStem> reg = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
 			reg.entrySet().stream().filter(e -> e.getKey().location().getNamespace().equals(MODID))
 					.forEach(e -> DimensionManager.INSTANCE.getOrCreateLevel(server,
-							ResourceKey.create(Registries.DIMENSION, e.getKey().location()), () -> e.getValue()));
+							ResourceKey.create(Registries.DIMENSION, e.getKey().location()), e::getValue));
 		}
 
 		@SubscribeEvent

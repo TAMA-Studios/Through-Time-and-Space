@@ -30,18 +30,6 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 	@Override
 	public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext context,
 			@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		// if(dummyState == null)
-		// dummyState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
-		// if(dummyBlockEntity == null) {
-		// dummyBlockEntity = new ExteriorTile(BlockPos.ZERO, dummyState);
-		// dummyBlockEntity.ShouldMakeDimOnNextTick = false;
-		// dummyBlockEntity.setTransparency(1);
-		// dummyBlockEntity.Model = ExteriorsRegistry.Get(0);
-		// }
-		//
-		// if(renderer == null) renderer = (TardisExteriorRenderer<ExteriorTile>)
-		// Minecraft.getInstance()
-		// .getBlockEntityRenderDispatcher().getRenderer(dummyBlockEntity);
 		if (exteriorModelContainer == null) {
 			exteriorModelContainer = ExteriorsRegistry.Get(0);
 			model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))

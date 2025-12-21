@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import java.util.Set;
@@ -14,6 +13,7 @@ import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +48,9 @@ public class DoorBlock extends Block implements EntityBlock {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	private final Supplier<? extends BlockEntityType<? extends DoorTile>> doorBlock;
 
-	public DoorBlock(Properties p_49795_, Supplier<? extends BlockEntityType<? extends DoorTile>> factory) {
+	public DoorBlock(Properties p_49795_) {
 		super(p_49795_);
-		this.doorBlock = factory;
+		this.doorBlock = TTSTileEntities.DOOR_TILE;
 	}
 
 	@Nullable @Override
@@ -105,14 +105,18 @@ public class DoorBlock extends Block implements EntityBlock {
 	}
 
 	public void TeleportToExterior(Entity EntityToTeleport, Level Interior) {
-		if (GetTARDISCapSupplier(Interior).isPresent())
-			// TODO: Move this to onLevelLeave (or whatever it's called) event
-			MinecraftForge.EVENT_BUS.post(new TardisEvent.EntityExitTARDIS(GetTARDISCap(Interior),
-					TardisEvent.State.START, EntityToTeleport));
-		if (EntityToTeleport.level().isClientSide)
-			return;
-		try {
-			GetTARDISCapSupplier(Interior).ifPresent((cap) -> {
+		GetTARDISCapSupplier(Interior).ifPresent(cap -> {
+			if (EntityToTeleport.level().isClientSide)
+				return;
+
+			TardisEvent.EntityExitTARDIS event = new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.START,
+					EntityToTeleport);
+			MinecraftForge.EVENT_BUS.post(event);
+
+			if (event.isCanceled())
+				return;
+
+			try {
 				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
@@ -127,10 +131,10 @@ public class DoorBlock extends Block implements EntityBlock {
 				((ServerPlayer) EntityToTeleport).onUpdateAbilities();
 				MinecraftForge.EVENT_BUS
 						.post(new TardisEvent.EntityExitTARDIS(cap, TardisEvent.State.END, EntityToTeleport));
-			});
-		} catch (Exception e) {
-			TTSMod.LOGGER.error("EXTERIOR NOT FOUND");
-		}
+			} catch (Exception e) {
+				TTSMod.LOGGER.error("EXTERIOR NOT FOUND");
+			}
+		});
 	}
 
 	public BlockPos GetPosForTeleport(BlockState state, BlockPos pos) {

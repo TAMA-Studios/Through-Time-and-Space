@@ -4,10 +4,10 @@ package com.code.tama.tts.server.registries.tardis;
 import java.util.ArrayList;
 
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
-import com.code.tama.tts.server.tardis.terminationprotocol.EmergencyStopProtocolHandler;
-import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocolHandler;
-import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocolHandler;
-import com.code.tama.tts.server.tardis.terminationprotocol.UrgentStopProtocolHandler;
+import com.code.tama.tts.server.tardis.terminationprotocol.EmergencyStopProtocol;
+import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocol;
+import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocol;
+import com.code.tama.tts.server.tardis.terminationprotocol.UrgentStopProtocol;
 import com.mojang.serialization.Codec;
 
 public class FlightTerminationProtocolRegistry {
@@ -16,34 +16,26 @@ public class FlightTerminationProtocolRegistry {
 
 	public static ArrayList<FlightTerminationProtocol> FLIGHT_TERMINATION_PROTOCOLS = new ArrayList<>();
 
-	public static final FlightTerminationProtocol POLITE_TERMINUS = AddProtocol(FlightTerminationProtocol.builder()
-			.name("polite_terminus").LandShakeAmount(0.3f).TakeoffShakeAmount(0.3f).Accuracy(0.8f).Speed(0.5f)
-			.Selectable(true).terminationProtocolHandler(new PoliteTerminusProtocolHandler()).build());
+	public static final FlightTerminationProtocol POLITE_TERMINUS = AddProtocol(new PoliteTerminusProtocol());
 
-	public static final FlightTerminationProtocol EMERGENCY_STOP = AddProtocol(
-			FlightTerminationProtocol.builder().name("emergency_stop").LandShakeAmount(1.0f).Accuracy(0.3f)
-					.terminationProtocolHandler(new EmergencyStopProtocolHandler()).build());
+	public static final FlightTerminationProtocol EMERGENCY_STOP = AddProtocol(new EmergencyStopProtocol());
 
-	public static final FlightTerminationProtocol QUICK_STOP = AddProtocol(FlightTerminationProtocol.builder()
-			.name("quick_stop").LandShakeAmount(0.9f).TakeoffShakeAmount(0.7f).Accuracy(0.7f).Speed(0.7f)
-			.Selectable(true).terminationProtocolHandler(new QuickStopProtocolHandler()).build());
+	public static final FlightTerminationProtocol QUICK_STOP = AddProtocol(new QuickStopProtocol());
 
-	public static final FlightTerminationProtocol URGENT_STOP = AddProtocol(FlightTerminationProtocol.builder()
-			.name("urgent_stop").LandShakeAmount(0.7f).TakeoffShakeAmount(1.0f).Accuracy(1.0f).Speed(0.9f)
-			.Selectable(true).terminationProtocolHandler(new UrgentStopProtocolHandler()).build());
+	public static final FlightTerminationProtocol URGENT_STOP = AddProtocol(new UrgentStopProtocol());
 
 	public static FlightTerminationProtocol GetProtocol(int ID) {
 		return FLIGHT_TERMINATION_PROTOCOLS.get(ID);
 	}
 
-	public static FlightTerminationProtocol AddProtocol(FlightTerminationProtocol structure) {
-		FLIGHT_TERMINATION_PROTOCOLS.add(structure);
-		return structure;
+	public static FlightTerminationProtocol AddProtocol(FlightTerminationProtocol prot) {
+		FLIGHT_TERMINATION_PROTOCOLS.add(prot);
+		return prot;
 	}
 
-	public static FlightTerminationProtocol CycleProt(FlightTerminationProtocol structure) {
+	public static FlightTerminationProtocol CycleProt(FlightTerminationProtocol prot) {
 		for (int i = 0; i < FLIGHT_TERMINATION_PROTOCOLS.size() - 1; i++) {
-			if (GetProtocol(i).equals(structure))
+			if (GetProtocol(i).equals(prot))
 				return GetProtocol(i + 1);
 		}
 		return GetProtocol(0);

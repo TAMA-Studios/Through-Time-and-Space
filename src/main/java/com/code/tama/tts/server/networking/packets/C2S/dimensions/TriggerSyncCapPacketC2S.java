@@ -1,16 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.dimensions;
 
-import java.util.function.Supplier;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
+import java.util.function.Supplier;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 /** Tells the server to sync the TARDIS cap with the client */
 public class TriggerSyncCapPacketC2S {
@@ -34,9 +33,7 @@ public class TriggerSyncCapPacketC2S {
 	public static void handle(TriggerSyncCapPacketC2S packet, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			ServerLifecycleHooks.getCurrentServer().getLevel(packet.TARDISLevel)
-					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-					.ifPresent(cap -> cap.UpdateClient(packet.toUpdate));
+			GetTARDISCapSupplier(packet.TARDISLevel).ifPresent(cap -> cap.UpdateClient(packet.toUpdate));
 		});
 		context.setPacketHandled(true);
 	}

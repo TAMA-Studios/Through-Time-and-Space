@@ -3,14 +3,8 @@ package com.code.tama.tts.datagen.loot;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.loots.AddItemModifier;
-import com.code.tama.tts.server.registries.forge.TTSItems;
-
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
-import net.minecraftforge.common.loot.LootTableIdCondition;
 
 public class DataGlobalLootModifiersProvider extends GlobalLootModifierProvider {
 	public DataGlobalLootModifiersProvider(PackOutput output) {
@@ -28,10 +22,11 @@ public class DataGlobalLootModifiersProvider extends GlobalLootModifierProvider 
 		// new LootTableIdCondition.Builder(new
 		// ResourceLocation("entities/creeper")).build() }, ModItems.PINE_CONE.get()));
 
-		add("zeiton_from_jungle_temples",
-				new AddItemModifier(
-						new LootItemCondition[]{
-								new LootTableIdCondition.Builder(new ResourceLocation("chests/jungle_temple")).build()},
-						TTSItems.ZEITON.get()));
+		// add("zeiton_from_jungle_temples",
+		// new AddItemModifier(
+		// new LootItemCondition[]{
+		// new LootTableIdCondition.Builder(new
+		// ResourceLocation("chests/jungle_temple")).build()},
+		// TTSItems.ZEITON.asItem()));
 	}
 }

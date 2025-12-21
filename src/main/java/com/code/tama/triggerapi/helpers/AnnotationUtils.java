@@ -25,20 +25,23 @@ public class AnnotationUtils {
 		return field.getAnnotation(annotationClass);
 	}
 
-	public static boolean hasAnnotation(Class<? extends Annotation> clazz, Object object) {
-		for (Field f : clazz.getDeclaredFields()) {
-			try {
-				Object TestField = f.get(Object.class);
+	public static boolean hasAnnotation(Class<? extends Annotation> annotation, Object instance) {
+		Class<?> objClass = instance.getClass();
 
-				if (TestField == object) {
-					if (f.isAnnotationPresent(clazz)) {
-						return true;
-					}
+		for (Field f : objClass.getDeclaredFields()) {
+			try {
+				f.setAccessible(true);
+				Object fieldValue = f.get(instance);
+
+				if (fieldValue == instance && f.isAnnotationPresent(annotation)) {
+					return true;
 				}
+
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
+
 		return false;
 	}
 

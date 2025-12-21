@@ -14,38 +14,33 @@ import lombok.Setter;
 @Setter
 public class ControlParameters {
 	public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
+			.group(Codec.INT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
 					Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
 					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isBrakes),
+					Codec.BOOL.fieldOf("anchor").forGetter(ControlParameters::isVortexAnchor),
 					Codec.BOOL.fieldOf("simple_mode").forGetter(ControlParameters::isSimpleMode),
+					Codec.BOOL.fieldOf("coordinate_lock").forGetter(ControlParameters::isCoordinateLock),
 					Codec.INT.fieldOf("artron_packet_output").forGetter(ControlParameters::GetArtronPacketOutput),
 					FlightTerminationProtocolRegistry.CODEC.fieldOf("flight_termination_protocol")
 							.forGetter(ControlParameters::getFlightTerminationProtocol))
 			.apply(instance, ControlParameters::new));
 
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
-	public boolean APCState, Brakes, SimpleMode;
+	public boolean APCState, Brakes, SimpleMode, CoordinateLock, VortexAnchor;
 	public int ArtronPacketOutput;
-	public float HelmicRegulator;
+	public int HelmicRegulator;
 
-	public ControlParameters(FlightTerminationProtocol flightTerminationProtocol, boolean APCState, boolean brakes,
-			boolean simpleMode, int artronPacketOutput, float helmicRegulator) {
-		this.flightTerminationProtocol = flightTerminationProtocol;
-		this.APCState = APCState;
-		Brakes = brakes;
-		SimpleMode = simpleMode;
-		ArtronPacketOutput = artronPacketOutput;
-		HelmicRegulator = helmicRegulator;
-	}
-
-	public ControlParameters(Float helmicRegulator, Boolean apcState, Boolean brakes, Boolean simpleMode,
-			Integer artronPacketOutput, FlightTerminationProtocol flightTerminationProtocol) {
+	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor,
+			Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
+			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.APCState = apcState;
-		Brakes = brakes;
-		SimpleMode = simpleMode;
-		ArtronPacketOutput = artronPacketOutput;
-		HelmicRegulator = helmicRegulator;
+		this.Brakes = brakes;
+		this.VortexAnchor = anchor;
+		this.SimpleMode = simpleMode;
+		this.CoordinateLock = coordinateLock;
+		this.ArtronPacketOutput = artronPacketOutput;
+		this.HelmicRegulator = helmicRegulator;
 	}
 
 	// TODO: Implement Automatic Power Cue
@@ -56,14 +51,13 @@ public class ControlParameters {
 	 * flight, and will shut down just prior to landing. This can result in violent
 	 * jerks or shudders occurring during a materialization sequence. If the TARDIS
 	 * is stuck in a tractor beam, a non-APC flight might be able to break the
-	 * tractor beam a non-APC landing may enable the TARDIS to be snared out of the
+	 * tractor beam. a non-APC landing may enable the TARDIS to be snared out of the
 	 * vortex to an undesirable landing coordinate.
 	 */
 	public boolean GetAPC() {
 		return this.APCState;
 	}
 
-	// TODO: Implement Artron Frequency Controller
 	/**
 	 * Higher packet output = Smaller Artron Packets = Slower Flight Speed + Slower
 	 * power drain <br>

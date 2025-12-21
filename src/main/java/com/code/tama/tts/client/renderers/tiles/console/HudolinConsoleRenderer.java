@@ -3,6 +3,7 @@ package com.code.tama.tts.client.renderers.tiles.console;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,26 +20,31 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.phys.Vec3;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
 			BlockEntityRenderer<T> {
-	public static ResourceLocation EMMISIVE;
-	public static ResourceLocation TEXTURE;
+	public static final ResourceLocation EMMISIVE = new ResourceLocation(MODID,
+			"textures/tiles/console/hudolin_emmisives.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID,
+			"textures/tiles/console/hudolin_console.png");
 	public final C MODEL;
 
 	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
 		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
 	}
 
+	@SuppressWarnings("unchecked")
+	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION));
+	}
+
 	@Override
 	public void render(@NotNull T ConsoleTile, float partialTicks, @NotNull PoseStack poseStack,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-
-		TEXTURE = new ResourceLocation(MODID, "textures/tiles/console/hudolin_console.png");
-		EMMISIVE = new ResourceLocation(MODID, "textures/tiles/console/hudolin_emmisives.png");
 
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
@@ -65,5 +71,20 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(EMMISIVE)), 0xf000f0,
 				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 		poseStack.popPose();
+	}
+
+	@Override
+	public boolean shouldRenderOffScreen(@NotNull T p_112306_) {
+		return true;
+	}
+
+	@Override
+	public boolean shouldRender(T p_173568_, Vec3 p_173569_) {
+		return true;
+	}
+
+	@Override
+	public int getViewDistance() {
+		return BlockEntityRenderer.super.getViewDistance();
 	}
 }

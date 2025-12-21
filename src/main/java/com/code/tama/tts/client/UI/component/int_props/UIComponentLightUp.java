@@ -20,7 +20,7 @@ public class UIComponentLightUp extends UIComponent {
 		super.onInteract(player, monitor);
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			if (cap.GetLightLevel() < 1.5f)
-				cap.GetData().SetLightLevel(cap.GetLightLevel() + 0.1f);
+				cap.GetEnvironmentalData().SetLightLevel(cap.GetLightLevel() + 0.1f);
 		});
 	}
 }

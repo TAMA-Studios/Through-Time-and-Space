@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.tts.config.FlightType;
+import com.code.tama.tts.config.TTSConfig;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.entities.controls.ModularControl;
 import com.code.tama.tts.server.networking.Networking;
@@ -14,6 +17,7 @@ import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -70,75 +74,111 @@ public abstract class AbstractControl {
 	public abstract InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player);
 
 	public void RenderFlightEvent(PoseStack stack, MultiBufferSource source, ModularControl control) {
-		assert Minecraft.getInstance().level != null;
-		if (Minecraft.getInstance().level.random.nextInt(100000) <= 5) {
-			Spark(Minecraft.getInstance().level, control.position());
-		}
-		PoseStack.Pose pose = stack.last();
+		assert control.consoleTile.getLevel() != null;
+		if (control.level() == null)
+			return;
+		TARDISLevelCapability.GetTARDISCapSupplier(control.level()).ifPresent((cap) -> {
+			if (cap.getCurrentFlightEvent().RequiredControls.contains(this.id())) {
+				assert Minecraft.getInstance().level != null;
+				if (Minecraft.getInstance().level.random.nextInt(100000) <= 5) {
+					Spark(Minecraft.getInstance().level, control.position());
+				}
 
-		Matrix4f matrix = pose.pose();
+				if (!TTSConfig.ClientConfig.FLIGHT_TYPE.get().equals(FlightType.ADVANCED)) {
+					PoseStack.Pose pose = stack.last();
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferBuilder = tesselator.getBuilder();
+					Matrix4f matrix = pose.pose();
 
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableCull();
+					Tesselator tesselator = Tesselator.getInstance();
+					BufferBuilder bufferBuilder = tesselator.getBuilder();
 
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		RenderSystem.setShaderColor(1, 0, 0, 0.5f);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+					RenderSystem.enableDepthTest();
+					RenderSystem.disableCull();
 
-		float r = 1f, g = 0f, b = 0f, a = 0.5f;
+					RenderSystem.setShader(GameRenderer::getPositionColorShader);
+					RenderSystem.setShaderColor(1, 0, 0, 0.5f);
+					bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-		double minX = control.size.minX;
-		double minY = control.size.minY;
-		double minZ = control.size.minZ;
-		double maxX = control.size.maxX;
-		double maxY = control.size.maxY;
-		double maxZ = control.size.maxZ;
+					float r = 1f, g = 0f, b = 0f, a = 0.5f;
 
-		// FRONT (Z = maxZ)
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
+					double minX = control.size.minX;
+					double minY = control.size.minY;
+					double minZ = control.size.minZ;
+					double maxX = control.size.maxX;
+					double maxY = control.size.maxY;
+					double maxZ = control.size.maxZ;
 
-		// BACK (Z = minZ)
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					// FRONT (Z = maxZ)
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
-		// LEFT (X = minX)
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					// BACK (Z = minZ)
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
-		// RIGHT (X = maxX)
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
+					// LEFT (X = minX)
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
-		// TOP (Y = maxY)
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a).endVertex();
+					// RIGHT (X = maxX)
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
-		// BOTTOM (Y = minY)
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
-		bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a).endVertex();
+					// TOP (Y = maxY)
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) maxY, (float) minZ).color(r, g, b, a)
+							.endVertex();
 
-		tesselator.end();
+					// BOTTOM (Y = minY)
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) minZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
+					bufferBuilder.vertex(matrix, (float) minX, (float) minY, (float) maxZ).color(r, g, b, a)
+							.endVertex();
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+					tesselator.end();
 
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableCull();
+					RenderSystem.setShaderColor(1, 1, 1, 1);
+
+					RenderSystem.disableDepthTest();
+					RenderSystem.enableCull();
+				} else {
+				}
+
+			}
+		});
 	}
 
 	public void SetAnimationState(float state) {
@@ -158,10 +198,15 @@ public abstract class AbstractControl {
 		this.NeedsUpdate = false;
 	}
 
-	public abstract String name();
+	public abstract ResourceLocation id();
 
 	public String getTranslationKey() {
-		return "tts.controls." + name();
+		return id().getNamespace() + ".controls." + id().getPath();
+	}
+
+	@Deprecated
+	public String name() {
+		return id().getPath();
 	}
 
 	public void render(PoseStack stack, MultiBufferSource source, int combinedLight, ModularControl control) {

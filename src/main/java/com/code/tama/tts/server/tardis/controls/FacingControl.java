@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
@@ -23,7 +24,7 @@ public class FacingControl extends AbstractControl {
 
 	@Override
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	@Override
@@ -35,7 +36,7 @@ public class FacingControl extends AbstractControl {
 	}
 
 	@Override
-	public String name() {
-		return "facing_control";
+	public ResourceLocation id() {
+		return UniversalCommon.modRL("facing_control");
 	}
 }

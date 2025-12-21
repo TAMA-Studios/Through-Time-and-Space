@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.S2C.dimensions;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
+
 import java.util.function.Supplier;
 
-import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.data.tardis.TARDISData;
-import com.code.tama.tts.server.data.tardis.TARDISFlightData;
-import com.code.tama.tts.server.data.tardis.TARDISNavigationalData;
+import com.code.tama.tts.server.data.tardis.data.TARDISData;
+import com.code.tama.tts.server.data.tardis.data.TARDISFlightData;
+import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,6 +23,8 @@ public class SyncTARDISCapPacketS2C {
 	TARDISFlightData flightData;
 
 	TARDISNavigationalData navigationalData;
+
+	String flightEvent;
 
 	int toUpdate;
 	public SyncTARDISCapPacketS2C(TARDISData data, TARDISNavigationalData navigationalData, TARDISFlightData flightData,
@@ -84,7 +87,7 @@ public class SyncTARDISCapPacketS2C {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
 			if (Minecraft.getInstance().level != null) {
-				Minecraft.getInstance().level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+				GetClientTARDISCapSupplier().ifPresent(cap -> {
 					switch (packet.toUpdate) {
 						case DataUpdateValues.DATA, DataUpdateValues.RENDERING : {
 							cap.setData(packet.data);

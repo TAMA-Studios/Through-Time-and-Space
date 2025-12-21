@@ -161,13 +161,15 @@ public class LightPanel extends HorizontalDirectionalBlock {
 		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MINUS :
-					tardisLevelCapability.GetData().SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
+					tardisLevelCapability.GetEnvironmentalData()
+							.SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case PLUS :
-					tardisLevelCapability.GetData().SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
+					tardisLevelCapability.GetEnvironmentalData()
+							.SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

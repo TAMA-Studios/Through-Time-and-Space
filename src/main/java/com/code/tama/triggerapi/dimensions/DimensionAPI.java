@@ -12,8 +12,8 @@ import net.minecraft.world.level.dimension.LevelStem;
 
 public interface DimensionAPI {
 	/**
-	 * @return The API. For best results, avoid caching this, and only use while the
-	 *         server is running.
+	 * @return The API. Avoid caching this, and only use while the server is
+	 *         running.
 	 */
 	static DimensionAPI get() {
 		return DimensionManager.INSTANCE;
