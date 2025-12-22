@@ -43,7 +43,7 @@ public class TardisEvent extends Event {
 
 	public static class FlightEventSucceed extends TardisEvent {
 		public boolean isCancelable() {
-			return true;
+			return false;
 		}
 		public FlightEventSucceed(ITARDISLevel level) {
 			super(level);

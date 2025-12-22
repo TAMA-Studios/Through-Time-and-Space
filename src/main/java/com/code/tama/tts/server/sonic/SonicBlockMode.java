@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
@@ -37,11 +38,11 @@ public class SonicBlockMode extends SonicMode {
 		Player player = context.getPlayer();
 		Level level = context.getLevel();
 
-		BlockHitResult hitResult = RayTraceUtils.getLookingAtBlock(25);
-		if (hitResult == null)
-			return;
-		BlockPos usedPos = hitResult.getBlockPos(); // context.getClickedPos();
 		assert player != null;
+		HitResult hitResult = RayTraceUtils.rayTraceFromEntity(player, 25, false);
+		if (!(hitResult instanceof BlockHitResult))
+			return;
+		BlockPos usedPos = ((BlockHitResult) hitResult).getBlockPos(); // context.getClickedPos();
 		BlockState state = player.level().getBlockState(usedPos);
 
 		if (state.hasBlockEntity() && level.getBlockEntity(usedPos) instanceof IWeldable weldable) {
@@ -65,7 +66,7 @@ public class SonicBlockMode extends SonicMode {
 
 		if (state.getBlock() instanceof GlassBlock) {
 			level.removeBlock(usedPos, false);
-			level.playSound(player, usedPos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F,
+			level.playSound(null, usedPos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F,
 					level.getRandom().nextFloat() * 0.1F + 0.9F);
 			return;
 		}
@@ -115,6 +116,6 @@ public class SonicBlockMode extends SonicMode {
 		// return InteractionResult.PASS;
 
 		assert context.getPlayer() != null;
-		state.use(context.getLevel(), context.getPlayer(), context.getHand(), hitResult);
+		state.use(context.getLevel(), context.getPlayer(), context.getHand(), (BlockHitResult) hitResult);
 	}
 }

@@ -13,23 +13,23 @@ public class Speak {
 		System.out.println(message);
 		switch (message) {
 			case "taking_off" : {
-				level.playSound(null, null, TTSSounds.THUD.get(), SoundSource.BLOCKS);
+				level.playSound(null, pos, TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				break;
 			}
 			case "landing" : {
-				level.playSound(null, null, TTSSounds.THUD.get(), SoundSource.BLOCKS);
+				level.playSound(null, pos, TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				break;
 			}
 			case "in_flight" : {
-				level.playSound(null, null, TTSSounds.THUD.get(), SoundSource.BLOCKS);
+				level.playSound(null, pos, TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				break;
 			}
 			case "limbo" : {
-				level.playSound(null, null, TTSSounds.THUD.get(), SoundSource.BLOCKS);
+				level.playSound(null, pos, TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				break;
 			}
 			case "landed" : {
-				level.playSound(null, null, TTSSounds.THUD.get(), SoundSource.BLOCKS);
+				level.playSound(null, pos, TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				break;
 			}
 		}

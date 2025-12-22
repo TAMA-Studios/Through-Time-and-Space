@@ -1,9 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import com.code.tama.triggerapi.Logger;
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import org.joml.Vector3d;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -21,11 +24,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.joml.Vector3d;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import com.code.tama.triggerapi.Logger;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class WorldHelper {
 	public static boolean CanCollide(BlockState state) {
@@ -176,8 +178,7 @@ public class WorldHelper {
 				effect -> player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect)));
 	}
 
-	public static ResourceKey<Level> cycleDimension(ResourceKey<Level> current,
-			boolean forward) {
+	public static ResourceKey<Level> cycleDimension(ResourceKey<Level> current, boolean forward) {
 		MinecraftServer server = UniversalServerOnly.getServer();
 		List<ResourceKey<Level>> keys = new ArrayList<>(server.levelKeys());
 		if (keys.isEmpty())
@@ -197,27 +198,25 @@ public class WorldHelper {
 
 		// Skip The End if the dragon is alive
 		if (next.equals(Level.END) && !IsDragonDead()) {
-//			newIndex = forward ? newIndex + 1 : newIndex - 1;
-//
-//			if (newIndex >= keys.size())
-//				newIndex = 0;
-//			else if (newIndex < 0)
-//				newIndex = keys.size() - 1;
-//
-//			next = keys.get(newIndex);
-			next = cycleDimension(next, forward); // Hopefully this doesn't stackoverflow. It SHOULDN'T, assuming the end isn't the only dimension that exists... in which case something is incredibly wrong.
+			// newIndex = forward ? newIndex + 1 : newIndex - 1;
+			//
+			// if (newIndex >= keys.size())
+			// newIndex = 0;
+			// else if (newIndex < 0)
+			// newIndex = keys.size() - 1;
+			//
+			// next = keys.get(newIndex);
+			next = cycleDimension(next, forward); // Hopefully this doesn't stackoverflow. It SHOULDN'T, assuming the
+													// end isn't the only dimension that exists... in which case
+													// something is incredibly wrong.
 		}
 
 		return next;
 	}
 
-	public static ResourceKey<Level> getNextDimension(
-			ResourceKey<Level> current
-	) {
+	public static ResourceKey<Level> getNextDimension(ResourceKey<Level> current) {
 		// Collect all loaded dimension keys
-		List<ResourceKey<Level>> dimensions = new ArrayList<>(
-				UniversalServerOnly.getServer().levelKeys()
-		);
+		List<ResourceKey<Level>> dimensions = new ArrayList<>(UniversalServerOnly.getServer().levelKeys());
 
 		// Sort for deterministic order
 		dimensions.sort(Comparator.comparing(key -> key.location().toString()));

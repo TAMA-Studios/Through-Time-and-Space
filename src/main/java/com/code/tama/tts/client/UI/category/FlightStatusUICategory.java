@@ -1,21 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class FlightStatusUICategory extends UICategory {
 	public static final ResourceLocation SPEEDOMETER = new ResourceLocation(MODID, "textures/gui/speedometer.png");
@@ -70,7 +71,10 @@ public class FlightStatusUICategory extends UICategory {
 
 			poseStack.popPose();
 
-			drawDriftBar(poseStack, cap.GetFlightData().getDrift() + (cap.GetFlightData().isInFlight() ? ThreadLocalRandom.current().nextFloat(3) - 1.5f : 0), cap.GetData().getControlData().getHelmicRegulator());
+			drawDriftBar(poseStack,
+					cap.GetFlightData().getDrift()
+							+ (cap.GetFlightData().isInFlight() ? ThreadLocalRandom.current().nextFloat(3) - 1.5f : 0),
+					cap.GetData().getControlData().getHelmicRegulator());
 
 			// poseStack.pushPose();
 			//
@@ -105,7 +109,6 @@ public class FlightStatusUICategory extends UICategory {
 		stack.pushPose();
 		stack.translate(-9.5, -10, 0);
 
-
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
 
 		RenderSystem.setShaderTexture(0, SPEEDOMETER);
@@ -117,9 +120,8 @@ public class FlightStatusUICategory extends UICategory {
 		builder.vertex(stack.last().pose(), 0, 10, 0).color(0xFF00569F).uv(1, 1).endVertex();
 		builder.vertex(stack.last().pose(), 20, 10, 0).color(0xFF00569F).uv(0, 1).endVertex();
 
-
 		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
-//		BufferUploader.drawWithShader(builder.end());
+		// BufferUploader.drawWithShader(builder.end());
 		Tesselator.getInstance().end();
 
 		stack.popPose();

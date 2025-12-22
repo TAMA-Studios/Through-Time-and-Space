@@ -22,7 +22,7 @@ public class TTSConfig {
 			builder.push("BOTI Related Configs");
 
 			builder.comment("BOTI Render Distance (Default 6)");
-			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
+			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 64);
 			builder.comment("Is BOTI Enabled (values: true/false. Default false)");
 			BOTI_ENABLED = builder.define("boti_enabled", false);
 
@@ -52,7 +52,7 @@ public class TTSConfig {
 		}
 
 		private static void setupConfig(ForgeConfigSpec.Builder builder) {
-			builder.comment("Through Time and Space - A Config");
+			builder.comment("	Through Time and Space - A Config");
 			builder.comment("""
 					We trust you have received the usual lecture from the local System Administrator.
 
@@ -65,7 +65,7 @@ public class TTSConfig {
 			builder.push("BOTI Config Values");
 
 			builder.comment("BOTI Render Distance (Default 6)");
-			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 16);
+			BOTI_RENDER_DISTANCE = builder.defineInRange("boti_render_distance", 6, 0, 64);
 			builder.comment("Is BOTI Enabled (Values: true/false. Default true)");
 			BOTI_ENABLED = builder.define("boti_enabled", true);
 
@@ -77,7 +77,7 @@ public class TTSConfig {
 			builder.comment("The default length for a flight event");
 			FLIGHT_EVENT_DURATION = builder.defineInRange("flight_event_duration", 60, 0, Integer.MAX_VALUE);
 			builder.comment("The default speed at which the TARDIS flies (measured in blocks per tick)");
-			BLOCKS_PER_TICK = builder.defineInRange("blocks_per_tick", 0.1f, 0.0f, Float.MAX_VALUE);
+			BLOCKS_PER_TICK = builder.defineInRange("blocks_per_tick", 0.1, 0, Double.MAX_VALUE);
 
 			builder.pop();
 		}

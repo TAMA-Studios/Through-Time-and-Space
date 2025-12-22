@@ -1,11 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.subsystems;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.code.tama.tts.server.blocks.tardis.FragmentLinksBlock;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,9 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter

@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.serialization.Codec;
@@ -9,11 +8,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 @NoArgsConstructor
 @AllArgsConstructor

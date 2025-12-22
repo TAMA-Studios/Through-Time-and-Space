@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
 import com.code.tama.tts.server.tardis.controls.*;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -9,8 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -42,8 +43,8 @@ public class ControlsRegistry {
 
 	public static final RegistryObject<ZControl> Z_CONTROL = CONTROLS.register("z_control", ZControl::new);
 
-	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS
-			.register("fast_return", FastReturnControl::new);
+	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS.register("fast_return",
+			FastReturnControl::new);
 
 	public static final RegistryObject<DimensionControl> DIMENSION_CYCLE = CONTROLS.register("dimension_cycle",
 			DimensionControl::new);
@@ -57,25 +58,28 @@ public class ControlsRegistry {
 	public static final RegistryObject<CoordinateLockControl> APC_STATE = CONTROLS.register("apc_state",
 			CoordinateLockControl::new);
 
-	public static final RegistryObject<ArtronPacketOutput> ARTRON_PACKET_OUTPUT = CONTROLS.register("artron_packet_output",
-			ArtronPacketOutput::new);
+	public static final RegistryObject<ArtronPacketOutput> ARTRON_PACKET_OUTPUT = CONTROLS
+			.register("artron_packet_output", ArtronPacketOutput::new);
 
 	public static final RegistryObject<TerminationProtocolControl> TERMINATION_PROTOCOL = CONTROLS
 			.register("termination_protocol", TerminationProtocolControl::new);
 
 	@SuppressWarnings("unchecked")
 	public static AbstractControl Cycle(AbstractControl control) {
-//		for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
-//			if (control.equals(((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[i]).get())) {
-//				if (i >= CONTROLS.getEntries().size() - 1)
-//					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
-//				else
-//					return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[++i]).get();
-//			}
-//		}
+		// for (int i = 0; i < CONTROLS.getEntries().size(); i++) {
+		// if (control.equals(((RegistryObject<AbstractControl>)
+		// CONTROLS.getEntries().toArray()[i]).get())) {
+		// if (i >= CONTROLS.getEntries().size() - 1)
+		// return ((RegistryObject<AbstractControl>)
+		// CONTROLS.getEntries().toArray()[0]).get();
+		// else
+		// return ((RegistryObject<AbstractControl>)
+		// CONTROLS.getEntries().toArray()[++i]).get();
+		// }
+		// }
 
 		int ordinal = (getOrdinal(control) + 1);
-		if(ordinal >= CONTROLS.getEntries().size())
+		if (ordinal >= CONTROLS.getEntries().size())
 			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[0]).get();
 		else {
 			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[ordinal]).get();
@@ -85,8 +89,9 @@ public class ControlsRegistry {
 	@SuppressWarnings("unchecked")
 	public static AbstractControl CycleBackwards(AbstractControl control) {
 		int ordinal = (getOrdinal(control) - 1);
-		if(ordinal <= 0)
-			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[CONTROLS.getEntries().size() - 1]).get();
+		if (ordinal <= 0)
+			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[CONTROLS.getEntries().size() - 1])
+					.get();
 		else {
 			return ((RegistryObject<AbstractControl>) CONTROLS.getEntries().toArray()[ordinal]).get();
 		}

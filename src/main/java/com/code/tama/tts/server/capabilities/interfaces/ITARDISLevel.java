@@ -16,7 +16,13 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
-	/** Returns whether the TARDIS is capable of flight in its current state */
+	/** Returns whether the TARDIS is capable of taking off in its current state */
+	boolean CanTakeoff();
+
+	/**
+	 * Returns whether the TARDIS is capable of continuing a flight in its current
+	 * state
+	 **/
 	boolean CanFly();
 
 	/**
@@ -105,7 +111,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	void SetExteriorTile(ExteriorTile tile);
 
-	/** Does what it says on the tin * */
+	/** Does what it says on the tin */
 	void Tick();
 
 	void UpdateClient(int toUpdate);

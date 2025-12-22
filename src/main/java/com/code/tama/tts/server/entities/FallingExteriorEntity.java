@@ -1,10 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.entities;
 
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.registries.forge.TTSEntities;
 import com.mojang.logging.LogUtils;
 import lombok.Getter;
+import org.slf4j.Logger;
+
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,10 +46,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
-
-import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 @Getter
 public class FallingExteriorEntity extends Entity {
@@ -55,15 +57,16 @@ public class FallingExteriorEntity extends Entity {
 	private boolean hurtEntities;
 	private int fallDamageMax = 40;
 	private float fallDamagePerDistance;
-	@Nullable
-	public CompoundTag blockData;
-	protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData.defineId(FallingExteriorEntity.class, EntityDataSerializers.BLOCK_POS);
+	@Nullable public CompoundTag blockData;
+	protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData
+			.defineId(FallingExteriorEntity.class, EntityDataSerializers.BLOCK_POS);
 
 	public FallingExteriorEntity(EntityType<? extends FallingExteriorEntity> p_31950_, Level p_31951_) {
 		super(p_31950_, p_31951_);
 	}
 
-	private FallingExteriorEntity(Level p_31953_, double p_31954_, double p_31955_, double p_31956_, BlockState p_31957_) {
+	private FallingExteriorEntity(Level p_31953_, double p_31954_, double p_31955_, double p_31956_,
+			BlockState p_31957_) {
 		this(TTSEntities.FALLING_EXTERIOR.get(), p_31953_);
 		this.blockState = p_31957_;
 		this.blocksBuilding = true;
@@ -76,7 +79,11 @@ public class FallingExteriorEntity extends Entity {
 	}
 
 	public static FallingExteriorEntity fall(Level p_201972_, BlockPos p_201973_, BlockState p_201974_) {
-		FallingExteriorEntity FallingExteriorEntity = new FallingExteriorEntity(p_201972_, (double)p_201973_.getX() + 0.5D, (double)p_201973_.getY(), (double)p_201973_.getZ() + 0.5D, p_201974_.hasProperty(BlockStateProperties.WATERLOGGED) ? p_201974_.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(false)) : p_201974_);
+		FallingExteriorEntity FallingExteriorEntity = new FallingExteriorEntity(p_201972_,
+				(double) p_201973_.getX() + 0.5D, (double) p_201973_.getY(), (double) p_201973_.getZ() + 0.5D,
+				p_201974_.hasProperty(BlockStateProperties.WATERLOGGED)
+						? p_201974_.setValue(BlockStateProperties.WATERLOGGED, Boolean.valueOf(false))
+						: p_201974_);
 		p_201972_.setBlock(p_201973_, p_201974_.getFluidState().createLegacyBlock(), 3);
 		p_201972_.addFreshEntity(FallingExteriorEntity);
 		return FallingExteriorEntity;
@@ -120,18 +127,27 @@ public class FallingExteriorEntity extends Entity {
 			if (!this.level().isClientSide) {
 				BlockPos blockpos = this.blockPosition();
 				boolean flag = this.blockState.getBlock() instanceof ConcretePowderBlock;
-				boolean flag1 = flag && this.blockState.canBeHydrated(this.level(), blockpos, this.level().getFluidState(blockpos), blockpos);
+				boolean flag1 = flag && this.blockState.canBeHydrated(this.level(), blockpos,
+						this.level().getFluidState(blockpos), blockpos);
 				double d0 = this.getDeltaMovement().lengthSqr();
 				if (flag && d0 > 1.0D) {
-					BlockHitResult blockhitresult = this.level().clip(new ClipContext(new Vec3(this.xo, this.yo, this.zo), this.position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, this));
-					if (blockhitresult.getType() != HitResult.Type.MISS && this.blockState.canBeHydrated(this.level(), blockpos, this.level().getFluidState(blockhitresult.getBlockPos()), blockhitresult.getBlockPos())) {
+					BlockHitResult blockhitresult = this.level()
+							.clip(new ClipContext(new Vec3(this.xo, this.yo, this.zo), this.position(),
+									ClipContext.Block.COLLIDER, ClipContext.Fluid.SOURCE_ONLY, this));
+					if (blockhitresult.getType() != HitResult.Type.MISS && this.blockState.canBeHydrated(this.level(),
+							blockpos, this.level().getFluidState(blockhitresult.getBlockPos()),
+							blockhitresult.getBlockPos())) {
 						blockpos = blockhitresult.getBlockPos();
 						flag1 = true;
 					}
 				}
 
 				if (!this.onGround() && !flag1) {
-					if (!this.level().isClientSide && (this.time > 100 && (blockpos.getY() <= this.level().getMinBuildHeight() || blockpos.getY() > this.level().getMaxBuildHeight()) || this.time > 600)) {
+					if (!this.level().isClientSide
+							&& (this.time > 100
+									&& (blockpos.getY() <= this.level().getMinBuildHeight()
+											|| blockpos.getY() > this.level().getMaxBuildHeight())
+									|| this.time > 600)) {
 						if (this.dropItem && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
 							this.spawnAtLocation(block);
 						}
@@ -143,32 +159,37 @@ public class FallingExteriorEntity extends Entity {
 					this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 					if (!blockstate.is(Blocks.MOVING_PISTON)) {
 						if (!this.cancelDrop) {
-							boolean flag2 = blockstate.canBeReplaced(new DirectionalPlaceContext(this.level(), blockpos, Direction.DOWN, ItemStack.EMPTY, Direction.UP));
-							boolean flag3 = FallingBlock.isFree(this.level().getBlockState(blockpos.below())) && (!flag || !flag1);
+							boolean flag2 = blockstate.canBeReplaced(new DirectionalPlaceContext(this.level(), blockpos,
+									Direction.DOWN, ItemStack.EMPTY, Direction.UP));
+							boolean flag3 = FallingBlock.isFree(this.level().getBlockState(blockpos.below()))
+									&& (!flag || !flag1);
 							boolean flag4 = this.blockState.canSurvive(this.level(), blockpos) && !flag3;
 							if (flag2 && flag4) {
-								if (this.blockState.hasProperty(BlockStateProperties.WATERLOGGED) && this.level().getFluidState(blockpos).getType() == Fluids.WATER) {
+								if (this.blockState.hasProperty(BlockStateProperties.WATERLOGGED)
+										&& this.level().getFluidState(blockpos).getType() == Fluids.WATER) {
 									this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, true);
 								}
 
 								if (this.level().setBlock(blockpos, this.blockState, 3)) {
-									((ServerLevel)this.level()).getChunkSource().chunkMap.broadcast(this, new ClientboundBlockUpdatePacket(blockpos, this.level().getBlockState(blockpos)));
+									((ServerLevel) this.level()).getChunkSource().chunkMap.broadcast(this,
+											new ClientboundBlockUpdatePacket(blockpos,
+													this.level().getBlockState(blockpos)));
 									this.discard();
-
 
 									if (this.blockData != null && this.blockState.hasBlockEntity()) {
 										BlockEntity blockentity = this.level().getBlockEntity(blockpos);
 										if (blockentity != null) {
 											CompoundTag compoundtag = blockentity.saveWithoutMetadata();
 
-											for(String s : this.blockData.getAllKeys()) {
+											for (String s : this.blockData.getAllKeys()) {
 												compoundtag.put(s, this.blockData.get(s).copy());
 											}
 
 											try {
 												blockentity.load(compoundtag);
 											} catch (Exception exception) {
-												LOGGER.error("Failed to load block entity from falling block", (Throwable)exception);
+												LOGGER.error("Failed to load block entity from falling block",
+														(Throwable) exception);
 											}
 
 											blockentity.setChanged();
@@ -179,14 +200,16 @@ public class FallingExteriorEntity extends Entity {
 										exteriorBlock.onLand(this.level(), blockpos, this.blockState, blockstate, this);
 									}
 
-								} else if ( false && this.dropItem && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-//									this.discard();
-//									this.callOnBrokenAfterFall(block, blockpos);
-//									this.spawnAtLocation(block);
+								} else if (false && this.dropItem
+										&& this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+									// this.discard();
+									// this.callOnBrokenAfterFall(block, blockpos);
+									// this.spawnAtLocation(block);
 								}
 							} else {
 								this.discard();
-								if (false && this.dropItem && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+								if (false && this.dropItem
+										&& this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
 									this.spawnAtLocation(block);
 								}
 							}
@@ -209,23 +232,24 @@ public class FallingExteriorEntity extends Entity {
 			if (i < 0) {
 				return false;
 			} else {
-				Predicate<Entity> predicate = EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
+				Predicate<Entity> predicate = EntitySelector.NO_CREATIVE_OR_SPECTATOR
+						.and(EntitySelector.LIVING_ENTITY_STILL_ALIVE);
 				Block $$8 = this.blockState.getBlock();
 				DamageSource damagesource1;
 				if ($$8 instanceof Fallable) {
-					Fallable fallable = (Fallable)$$8;
+					Fallable fallable = (Fallable) $$8;
 					damagesource1 = fallable.getFallDamageSource(this);
 				} else {
 					damagesource1 = this.damageSources().fallingBlock(this);
 				}
 
 				DamageSource damagesource = damagesource1;
-				float f = (float)Math.min(Mth.floor((float)i * this.fallDamagePerDistance), this.fallDamageMax);
+				float f = (float) Math.min(Mth.floor((float) i * this.fallDamagePerDistance), this.fallDamageMax);
 				this.level().getEntities(this, this.getBoundingBox(), predicate).forEach((p_149649_) -> {
 					p_149649_.hurt(damagesource, f);
 				});
 				boolean flag = this.blockState.is(BlockTags.ANVIL);
-				if (flag && f > 0.0F && this.random.nextFloat() < 0.05F + (float)i * 0.05F) {
+				if (flag && f > 0.0F && this.random.nextFloat() < 0.05F + (float) i * 0.05F) {
 					BlockState blockstate = AnvilBlock.damage(this.blockState);
 					if (blockstate == null) {
 						this.cancelDrop = true;
@@ -254,7 +278,8 @@ public class FallingExteriorEntity extends Entity {
 	}
 
 	protected void readAdditionalSaveData(CompoundTag p_31964_) {
-		this.blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), p_31964_.getCompound("BlockState"));
+		this.blockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK),
+				p_31964_.getCompound("BlockState"));
 		this.time = p_31964_.getInt("Time");
 		if (p_31964_.contains("HurtEntities", 99)) {
 			this.hurtEntities = p_31964_.getBoolean("HurtEntities");

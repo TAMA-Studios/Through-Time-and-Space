@@ -117,8 +117,10 @@ public class UniversalCommon {
 
 		@SuppressWarnings("unchecked")
 		public static <MSG extends ImAPacket> void registerMsg(Class<MSG> packet) {
-			register((Class<Object>) (Object) packet); // This works by casting packet into an object (which it is) and
-														// casting that to Class<Object>, Prob shouldn't do this.
+			register((Class<Object>) (Object) packet); // This works by casting packet down to an object (which it is)
+														// and
+														// casting that to Class<Object>, Prob shouldn't do this, but it
+														// works.
 		}
 
 		private static void register(Class<Object> packet) {

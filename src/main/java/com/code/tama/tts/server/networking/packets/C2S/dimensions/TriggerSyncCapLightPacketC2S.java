@@ -19,12 +19,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  * Tells the server to sync the interior Light Level with the client level
  * capability
  */
-public class TriggerSyncCapLightPacketC2S {
-	ResourceKey<Level> TARDISLevel;
-
-	public TriggerSyncCapLightPacketC2S(ResourceKey<Level> TARDISLevel) {
-		this.TARDISLevel = TARDISLevel;
-	}
+public record TriggerSyncCapLightPacketC2S(ResourceKey<Level> TARDISLevel) {
 
 	public static TriggerSyncCapLightPacketC2S decode(FriendlyByteBuf buffer) {
 		return new TriggerSyncCapLightPacketC2S(buffer.readResourceKey(Registries.DIMENSION));

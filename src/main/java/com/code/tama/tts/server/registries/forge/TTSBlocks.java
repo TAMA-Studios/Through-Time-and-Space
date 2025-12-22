@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
 import com.code.tama.tts.server.blocks.HardLightBlock;
@@ -34,6 +37,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -48,9 +52,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
+import com.code.tama.triggerapi.ReflectionBuddy;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -194,12 +196,13 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<MonitorBlock> MONITOR_BLOCK = Builder("monitor_block", MonitorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("block/monitor").simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("monitor").simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
-			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel().simpleItem()
-			.register();
+			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel("crt_monitor")
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<MonitorPanel> MONITOR_PANEL = Builder("monitor_panel", MonitorPanel::new)
@@ -207,8 +210,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<CoordinatePanelBlock> COORDINATE_PANEL = Builder("coordinate_panel",
-			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
-			.stateWithExistingModel().simpleItem().register();
+			CoordinatePanelBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).controlPanelState()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<RotorBlock> BLUE_ROTOR = Builder("rotor/blue", RotorBlock::new)
@@ -227,20 +230,21 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<LightPanel> LIGHT_PANEL = Builder("light_panel", LightPanel::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).controlPanelState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ARSPanel> ARS_PANEL = Builder("ars_panel", ARSPanel::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).controlPanelState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ThrottleBlock> THROTTLE = Builder("throttle", ThrottleBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("control/throttle")
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ToyotaThrottleBlock> TOYOTA_THROTTLE = Builder("toyota_throttle",
-			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel()
-			.simpleItem().register();
+			ToyotaThrottleBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
+			.stateWithExistingModel("control/toyota_throttle").simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
@@ -248,8 +252,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
-			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE))
-			.stateWithExistingModel().simpleItem().register();
+			DestinationInfoBlock::new).properties(p -> p.strength(1.25f).sound(SoundType.STONE)).controlPanelState()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HartnellDoor> HARTNELL_DOOR = TTSBlocks

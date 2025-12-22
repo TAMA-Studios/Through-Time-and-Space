@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -23,17 +25,16 @@ import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
 
 	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
-			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new).renderer(() -> ChameleonCircuitRenderer::new)
-			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
+			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
+			.renderer(() -> ChameleonCircuitRenderer::new).validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
 	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
 			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL).register();
@@ -45,7 +46,8 @@ public class TTSTileEntities {
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
 
 	public static final BlockEntityEntry<FaultLocatorTile> FAULT_LOCATOR = registrate()
-			.blockEntity("fault_locator", FaultLocatorTile::new).validBlocks(TTSBlocks.FAULT_LOCATOR).renderer(() -> FaultLocatorRenderer::new).register();
+			.blockEntity("fault_locator", FaultLocatorTile::new).validBlocks(TTSBlocks.FAULT_LOCATOR)
+			.renderer(() -> FaultLocatorRenderer::new).register();
 
 	public static final BlockEntityEntry<SonicConfiguratorTileEntity> SONIC_CONFIGURATOR = registrate()
 			.blockEntity("sonic_configurator", SonicConfiguratorTileEntity::new)

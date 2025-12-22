@@ -1,14 +1,22 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.assets;
 
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.ChameleonCircuitPanel;
+import com.code.tama.tts.server.blocks.Panels.CoordinatePanelBlock;
+import com.code.tama.tts.server.blocks.Panels.LightPanel;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -21,11 +29,6 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
 
 public class DataBlockStateProvider extends BlockStateProvider {
 	private final List<Block> states = new ArrayList<>();
@@ -408,12 +411,15 @@ public class DataBlockStateProvider extends BlockStateProvider {
 		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
 			int y = 0;
 
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
-			} else if (state.hasProperty(BlockStateProperties.FACING)) {
-				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+			try {
+				if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+					y = (int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot();
+				} else if (state.hasProperty(BlockStateProperties.FACING)) {
+					y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
 			return new ConfiguredModel[]{new ConfiguredModel(
 					provider.models().getExistingFile(new ResourceLocation(TTSMod.MODID, "block/" + path)), 0, y,
 					false)};
@@ -496,7 +502,15 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			RegistrateBlockstateProvider provider) {
 		provider.getVariantBuilder(ctx.get()).forAllStates(state -> {
 
-			int PRESSED = state.getValue(ChameleonCircuitPanel.PRESSED_BUTTON);
+			int PRESSED = 0;
+			if (state.hasProperty(ChameleonCircuitPanel.PRESSED_BUTTON))
+				PRESSED = state.getValue(ChameleonCircuitPanel.PRESSED_BUTTON);
+
+			if (state.hasProperty(CoordinatePanelBlock.PRESSED_BUTTON))
+				PRESSED = state.getValue(CoordinatePanelBlock.PRESSED_BUTTON);
+
+			if (state.hasProperty(LightPanel.PRESSED_BUTTON))
+				PRESSED = state.getValue(LightPanel.PRESSED_BUTTON);
 
 			Direction FACING = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 

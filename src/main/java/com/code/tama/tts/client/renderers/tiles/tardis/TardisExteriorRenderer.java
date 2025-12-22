@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.ForcefieldRenderer;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
@@ -15,6 +10,8 @@ import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -29,7 +26,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.client.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
 

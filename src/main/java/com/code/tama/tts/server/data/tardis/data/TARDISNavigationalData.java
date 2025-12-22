@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -22,13 +23,15 @@ public class TARDISNavigationalData {
 							.forGetter(TARDISNavigationalData::getExteriorDimensionKey),
 					SpaceTimeCoordinate.CODEC.fieldOf("destination").forGetter(TARDISNavigationalData::getDestination),
 					SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(TARDISNavigationalData::getLocation),
-					SpaceTimeCoordinate.CODEC.fieldOf("previous_location").forGetter(TARDISNavigationalData::GetPreviousLocation),
+					SpaceTimeCoordinate.CODEC.fieldOf("previous_location")
+							.forGetter(TARDISNavigationalData::GetPreviousLocation),
 					Direction.CODEC.fieldOf("facing").forGetter(TARDISNavigationalData::getFacing),
 					Direction.CODEC.fieldOf("destinationFacing")
 							.forGetter(TARDISNavigationalData::getDestinationFacing))
 			.apply(instance, TARDISNavigationalData::new));
 
-	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(), PreviousLocation = new SpaceTimeCoordinate();
+	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(),
+			PreviousLocation = new SpaceTimeCoordinate();
 
 	ResourceKey<Level> ExteriorDimensionKey = Level.OVERWORLD;
 
@@ -40,7 +43,8 @@ public class TARDISNavigationalData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey, SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
+	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey,
+			SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
 			Direction facing, Direction destinationFacing) {
 		this.Increment = Increment;
 		ExteriorDimensionKey = exteriorDimensionKey;
@@ -108,7 +112,7 @@ public class TARDISNavigationalData {
 	 * Sets the TARDIS Destination IF the coordinate lock is NOT on
 	 */
 	public void setDestination(SpaceTimeCoordinate destination) {
-		if(!this.TARDIS.GetData().getControlData().isCoordinateLock())
+		if (!this.TARDIS.GetData().getControlData().isCoordinateLock())
 			Destination = destination.copy();
 	}
 
