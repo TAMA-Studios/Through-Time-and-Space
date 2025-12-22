@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.datagen.assets;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.Panels.ChameleonCircuitPanel;
 import com.code.tama.tts.server.blocks.Panels.PowerLever;
@@ -14,7 +9,6 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +21,11 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class DataBlockStateProvider extends BlockStateProvider {
 	private final List<Block> states = new ArrayList<>();
@@ -393,7 +392,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			int y = 0;
 
 			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
+				y = (int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot();
 			} else if (state.hasProperty(BlockStateProperties.FACING)) {
 				y = (int) state.getValue(BlockStateProperties.FACING).toYRot();
 			}

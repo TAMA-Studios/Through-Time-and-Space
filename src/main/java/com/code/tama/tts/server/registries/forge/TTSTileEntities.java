@@ -4,6 +4,7 @@ package com.code.tama.tts.server.registries.forge;
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
+import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
 import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
@@ -31,7 +32,7 @@ import static com.code.tama.tts.TTSMod.registrate;
 public class TTSTileEntities {
 
 	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
-			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
+			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new).renderer(() -> ChameleonCircuitRenderer::new)
 			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
 	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()

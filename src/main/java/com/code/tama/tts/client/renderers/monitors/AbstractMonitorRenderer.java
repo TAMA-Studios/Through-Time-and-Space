@@ -65,7 +65,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 			this.ApplyDefaultTransforms(pose, monitor);
 
-			if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+			if (this.category.getID() != monitor.categoryID) {
 				UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
 					if (reg.get().getID() == monitor.getCategoryID()) {
 						this.category = reg.get();
@@ -119,7 +119,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		RenderSystem.enableDepthTest();
 		RenderSystem.setShaderTexture(0, texture);
 
-		float rotationAngle = (monitor.getLevel().getGameTime() % 360) + Minecraft.getInstance().getFrameTime();
+        assert monitor.getLevel() != null;
+        float rotationAngle = (monitor.getLevel().getGameTime() % 360) + Minecraft.getInstance().getFrameTime();
 
 		poseStack.translate(25, 70, 0);
 		poseStack.scale(20, 20, 20);

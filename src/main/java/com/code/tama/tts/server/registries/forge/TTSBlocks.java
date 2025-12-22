@@ -194,7 +194,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<MonitorBlock> MONITOR_BLOCK = Builder("monitor_block", MonitorBlock::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("block/monitor").simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
