@@ -8,6 +8,7 @@ import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
@@ -181,6 +182,14 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 				pose.translate(-0.5, -0.5, -0.5);
 				pose.mulPose(Axis.XP.rotationDegrees(180));
 				BOTIUtils.RenderScene(pose, exteriorTile);
+
+				RenderSystem.disableDepthTest();
+
+				parsed.getPart("LeftDoor").render(stack,
+						bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
+						OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				RenderSystem.enableDepthTest();
+
 				pose.popPose();
 			});
 			stack.popPose();

@@ -183,7 +183,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		}
 		InteractionResult interactionResult = this.GetControl().OnRightClick(capability, player);
 
-		this.level().playSound(null, this.blockPosition(),
+		this.level().playSound(player, this.blockPosition(),
 				interactionResult == InteractionResult.SUCCESS
 						? this.GetControl().GetSuccessSound()
 						: this.GetControl().GetFailSound(),
@@ -209,11 +209,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 		InteractionResult interactionResult = this.GetControl().OnLeftClick(capability, entity);
 
-		this.level().playSound(null, this.blockPosition(),
-				interactionResult == InteractionResult.SUCCESS
-						? this.GetControl().GetSuccessSound()
-						: this.GetControl().GetFailSound(),
-				SoundSource.BLOCKS);
+		if (entity instanceof Player player)
+			this.level().playSound(player, this.blockPosition(),
+					interactionResult == InteractionResult.SUCCESS
+							? this.GetControl().GetSuccessSound()
+							: this.GetControl().GetFailSound(),
+					SoundSource.BLOCKS);
+		else
+			this.level().playSound(null, this.blockPosition(),
+					interactionResult == InteractionResult.SUCCESS
+							? this.GetControl().GetSuccessSound()
+							: this.GetControl().GetFailSound(),
+					SoundSource.BLOCKS);
 
 		if (this.GetControl().NeedsUpdate() && !this.level().isClientSide) {
 			System.out.println("Needs Update!");

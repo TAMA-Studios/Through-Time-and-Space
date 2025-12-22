@@ -95,9 +95,12 @@ public class AbstractConsoleTile extends BlockEntity {
 			level.addFreshEntity(entity);
 			this.ControlSize++;
 			this.ControlAnimationMap.put(record.ID(), 0.0f);
+			if (this.GetControlList().GetDefaultControlAssignment().containsKey(entity.Identifier())) {
+				entity.SetControl(this.GetControlList().GetDefaultControlAssignment().get(entity.Identifier()));
+			}
 			this.ControlMap.put(summonPos, entity.getUUID());
-			level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 		});
+		level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 	}
 
 	public void Destroy() {

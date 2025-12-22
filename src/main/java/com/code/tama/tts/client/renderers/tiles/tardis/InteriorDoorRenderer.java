@@ -72,7 +72,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 				if (cap.GetFlightData().isInFlight() || cap.GetFlightData().IsTakingOff()) {
 					pose.pushPose();
 					if (cap.GetFlightData().IsTakingOff()) {
-						double transperency = Math.sin(((double) (Minecraft.getInstance().level.getGameTime() % 10)));
+						double transperency = Math.sin(((double) (Minecraft.getInstance().level.getGameTime() % 40)));
 						RenderSystem.setShaderColor(1F, 1F, 1F, (float) transperency);
 					}
 					pose.mulPose(
@@ -87,6 +87,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					pose.translate(0, 0, 1);
 					renderBOTI(poseStack, doorTile, buf);
 				}
+				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 			});
 			renderBone(door, poseStack,
 					bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())),

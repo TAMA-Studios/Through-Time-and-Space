@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -33,7 +34,7 @@ public class SyncExteriorPacketS2C {
 	private final int variant;
 
 	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, boolean artificial, int variant,
-			ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
+			@NotNull ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
 		this.state = state;
 		this.artificial = artificial;
 		this.variant = variant;

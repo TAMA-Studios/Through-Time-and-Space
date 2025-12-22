@@ -165,7 +165,10 @@ public class ExteriorTile extends AbstractPortalTile {
 			return;
 		if (this.level.isClientSide)
 			return;
+
+		this.setChanged();
 		this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+		this.UpdateVariant();
 	}
 
 	public void PlaceInterior(Structures structure) {

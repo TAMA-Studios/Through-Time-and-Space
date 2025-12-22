@@ -30,16 +30,14 @@ public class CoordinateLockControl extends AbstractControl {
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity player) {
 		itardisLevel.GetData().getControlData()
 				.setCoordinateLock(!itardisLevel.GetData().getControlData().isCoordinateLock());
-		player.playSound(GetSuccessSound());
-		return InteractionResult.PASS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
 		itardisLevel.GetData().getControlData()
 				.setCoordinateLock(!itardisLevel.GetData().getControlData().isCoordinateLock());
-		player.playSound(GetSuccessSound());
-		return InteractionResult.PASS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -1,6 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.control_lists;
 
+import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.server.tardis.controls.AbstractControl;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class HudolinControlList extends AbstractControlList {
 	public HudolinControlList() {
 		AddControl(0.72f, 1.03f, 0.39f, 0.13f, 0.06f, 0.13f);
@@ -82,5 +88,27 @@ public class HudolinControlList extends AbstractControlList {
 		AddControl(-0.73f, 1.03f, 0.59f, 0.06f, 0.06f, 0.06f);
 		AddControl(-0.89f, 1.06f, -0.36f, 0.06f, 0.06f, 0.06f);
 		AddControl(-0.79f, 1.06f, -0.54f, 0.06f, 0.06f, 0.06f);
+	}
+
+	@Override
+	public Map<Integer, AbstractControl> GetDefaultControlAssignment() {
+		Map<Integer, AbstractControl> map = new HashMap<>();
+		map.put(71, ControlsRegistry.THROTTLE.get());
+		map.put(50, ControlsRegistry.HELMIC_REGULATOR.get());
+		map.put(51, ControlsRegistry.X_CONTROL.get());
+		map.put(0, ControlsRegistry.Y_CONTROL.get());
+		map.put(70, ControlsRegistry.Z_CONTROL.get());
+		map.put(53, ControlsRegistry.COORDINATE_LOCK.get());
+		map.put(66, ControlsRegistry.DIMENSION_CYCLE.get());
+		map.put(52, ControlsRegistry.INCREMENT_CONTROL.get());
+		map.put(1, ControlsRegistry.FACING_CONTROL.get());
+		map.put(28, ControlsRegistry.ENVIRONMENT_SCANNER.get());
+		map.put(39, ControlsRegistry.TERMINATION_PROTOCOL.get());
+		map.put(31, ControlsRegistry.APC_STATE.get());
+		map.put(32, ControlsRegistry.ARTRON_PACKET_OUTPUT.get());
+		map.put(42, ControlsRegistry.VARIANT_CONTROL.get());
+		map.put(50, ControlsRegistry.FAST_RETURN.get());
+
+		return map;
 	}
 }

@@ -24,6 +24,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -149,5 +150,13 @@ public class TARDISData {
 			return ExteriorsRegistry.EXTERIORS.get(0);
 		}
 		return this.ExteriorModel;
+	}
+
+	public void setExteriorModel(@NotNull ExteriorModelContainer container) {
+		this.ExteriorModel = container;
+		if (this.TARDIS.GetExteriorTile() == null)
+			return;
+		this.TARDIS.GetExteriorTile().Model = container;
+		this.TARDIS.GetExteriorTile().NeedsClientUpdate();
 	}
 }
