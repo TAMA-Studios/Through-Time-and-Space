@@ -107,7 +107,7 @@ public class HudolinControlList extends AbstractControlList {
 		map.put(31, ControlsRegistry.APC_STATE.get());
 		map.put(32, ControlsRegistry.ARTRON_PACKET_OUTPUT.get());
 		map.put(42, ControlsRegistry.VARIANT_CONTROL.get());
-		map.put(50, ControlsRegistry.FAST_RETURN.get());
+		map.put(41, ControlsRegistry.FAST_RETURN.get());
 
 		return map;
 	}

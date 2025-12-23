@@ -1,27 +1,24 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FlightSoundThread extends Thread {
 	static Map<BlockPos, Level> lockedIn = new HashMap<>();
 	private long OTicks = 0;
-	private int id = 0;
-	private boolean jumpstarted = false;
-	private boolean run = true;
+	public boolean running = false;
 	BlockPos blockPos;
 	Level level;
 	AbstractFlightSound sound;
 
 	public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound) {
-		this.setName("Flight Sound Thread");
+		this.setName("flight_sound_thread-" + sound.GetSound().getLocation());
 		this.level = level;
 		this.blockPos = blockPos;
 		this.sound = sound;
@@ -29,10 +26,7 @@ public class FlightSoundThread extends Thread {
 
 	@Override
 	public void run() {
-		if (!this.run) {
-			// this.stop();
-			return;
-		}
+		this.running = true;
 		int ticks = 0;
 		while (!this.sound.IsFinished()) {
 			if (ticks == 0)
@@ -40,13 +34,14 @@ public class FlightSoundThread extends Thread {
 			if (this.level.getGameTime() != OTicks) {
 				if (ticks >= this.sound.GetLength()) {
 					this.sound.SetFinished(true);
+					this.running = false;
+					this.stop(); // IDGAF if it's deprecated, if it works, I'm using it
 					break;
 				}
 				ticks++;
 				OTicks = (int) this.level.getGameTime();
 			}
 		}
-		// jumpstarted = false;
 		super.run();
 	}
 }

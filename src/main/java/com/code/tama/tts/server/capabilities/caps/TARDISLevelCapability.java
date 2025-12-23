@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
@@ -29,10 +24,6 @@ import com.code.tama.tts.server.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,6 +44,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private TARDISData data = new TARDISData(this);
@@ -252,10 +251,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void SetExteriorTile(ExteriorTile exteriorTile) {
 		this.exteriorTile = exteriorTile;
 		this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
-		this.exteriorTile.IsEmptyShell = false;
 		assert exteriorTile.getLevel() != null;
 		this.navigationalData
 				.setLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension()));
+		this.exteriorTile.updateModel();
 		assert exteriorTile.getLevel() != null;
 		this.navigationalData.setExteriorDimensionKey(exteriorTile.getLevel().dimension());
 	}

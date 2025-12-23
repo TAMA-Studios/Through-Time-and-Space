@@ -1,14 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -28,9 +26,6 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import com.code.tama.tts.server.worlds.TStemCreation;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -51,12 +46,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -74,7 +72,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	public String PlacerName;
 	public UUID PlacerUUID;
 
-	public boolean ShouldMakeDimOnNextTick = false, IsEmptyShell = true, isArtificial = false;
+	public boolean ShouldMakeDimOnNextTick = false, isArtificial;
 
 	public boolean ThreadWorking = false;
 
@@ -90,23 +88,25 @@ public class ExteriorTile extends AbstractPortalTile {
 			tag.putUUID("placerUUID", this.PlacerUUID);
 		if (this.PlacerName != null)
 			tag.putString("placerName", this.PlacerName);
-		tag.putBoolean("IsEmptyShell", this.IsEmptyShell);
 		tag.putInt("FlightState", this.state.ordinal());
 		tag.putBoolean("artificial", this.isArtificial);
 
-		if (this.INTERIOR_DIMENSION != null)
-			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
-					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
-						if (cap.GetExteriorTile() == this) {
-							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
-							this.Model = cap.GetData().getExteriorModel();
-						}
-					});
+		if (this.INTERIOR_DIMENSION != null) {
+            assert this.level != null;
+            Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
+                    this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
+                        if (cap.GetExteriorTile() == this) {
+                            this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+                            this.Model = cap.GetData().getExteriorModel();
+                        }
+                    });
+        }
 		tag.putString("modelPath", this.getModelIndex().getPath());
 		tag.putString("modelNamespace", this.getModelIndex().getNamespace());
 		tag.putFloat("Transparency", this.transparency);
 		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
-		if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
+        assert this.level != null;
+        if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
 			if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
 					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
 				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
@@ -120,6 +120,11 @@ public class ExteriorTile extends AbstractPortalTile {
 		super.saveAdditional(tag);
 	}
 
+	@Override
+	public BlockPos getTargetPos() {
+		return super.getTargetPos();
+	}
+
 	public int CycleDoors() {
 		this.SetDoorsOpen(switch (this.DoorsOpen()) {
 			case 0 -> 1;
@@ -130,11 +135,13 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public int DoorsOpen() {
-		if (this.level != null && this.GetInterior() != null && !this.level.isClientSide)
-			return this.level.getServer().getLevel(this.GetInterior())
-					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-					.orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION)))
-					.GetData().getInteriorDoorData().getDoorsOpen();
+		if (this.level != null && this.GetInterior() != null && !this.level.isClientSide) {
+            assert this.getLevel() != null;
+            return this.level.getServer().getLevel(this.GetInterior())
+                    .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+                    .orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION)))
+                    .GetData().getInteriorDoorData().getDoorsOpen();
+        }
 		else
 			return this.DoorState;
 	}
@@ -166,6 +173,8 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.level.isClientSide)
 			return;
 
+		this.updateModel();
+		this.updateTargetPos();
 		this.setChanged();
 		this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
 		this.UpdateVariant();
@@ -191,12 +200,22 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	public void SetInteriorAndSyncWithBlock(ResourceKey<Level> INTERIOR_DIMENSION) {
 		this.INTERIOR_DIMENSION = INTERIOR_DIMENSION;
-		this.IsEmptyShell = false;
 		assert this.level != null;
 		if (this.level.getBlockState(this.getBlockPos()).getBlock() instanceof ExteriorBlock exteriorBlock) {
 			exteriorBlock.SetInteriorKey(this.INTERIOR_DIMENSION);
 			this.setChanged();
 		}
+	}
+
+	public void updateTargetPos() {
+        assert this.getLevel() != null;
+        ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
+
+        assert Interior != null;
+        TARDISLevelCapability.GetTARDISCapSupplier(Interior).ifPresent(cap ->
+				this.setTargetLevel(cap.GetLevel().dimension(),
+                cap.GetData().getDoorData().getLocation().GetBlockPos(),
+                cap.GetData().getDoorData().getYRot(), true));
 	}
 
 	public void TeleportToInterior(Entity EntityToTeleport) {
@@ -302,15 +321,10 @@ public class ExteriorTile extends AbstractPortalTile {
 			this.Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, tag.get("model")).get().orThrow();
 		}
 
-		if (tag.contains("IsEmptyShell")) {
-			this.IsEmptyShell = tag.getBoolean("IsEmptyShell");
-		}
-
 		if (tag.contains("interior")) {
 			this.INTERIOR_DIMENSION = ResourceKey.create(Registries.DIMENSION,
 					new ResourceLocation(MODID + "-tardis", tag.getString("interior")));
 			this.targetLevel = this.INTERIOR_DIMENSION;
-			this.IsEmptyShell = false;
 		}
 
 		super.load(tag);
@@ -372,6 +386,25 @@ public class ExteriorTile extends AbstractPortalTile {
 		}
 	}
 
+	public void updateModel() {
+
+		if (this.level instanceof ServerLevel serverLevel) {
+			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
+			if (level1 != null) {
+				level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+					this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+					this.Model = cap.GetData().getExteriorModel();
+					cap.UpdateClient(DataUpdateValues.RENDERING);
+					// Networking.sendPacketToDimension(this.level.dimension(), new
+					// SyncExteriorVariantPacketS2C(this.ModelIndex,
+					// ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(),
+					// worldPosition.getY(), worldPosition.getZ()));
+					this.setChanged();
+				});
+			}
+		}
+	}
+
 	public void setTransparency(float alpha) {
 		this.transparency = alpha;
 		setChanged();
@@ -395,14 +428,11 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.state.equals(ExteriorState.SHOULDNTEXIST))
 			this.UtterlyDestroy();
 
-		if (this.INTERIOR_DIMENSION == null) {
-			if (!this.IsEmptyShell)
+		if (this.INTERIOR_DIMENSION == null)
 				this.UtterlyDestroy();
-		} else
-			this.IsEmptyShell = false;
 
 		if (this.ShouldMakeDimOnNextTick)
-			makeInterior();
+			makeInterior(this.isArtificial);
 
 		if (this.GetInterior() == null)
 			return;
@@ -415,24 +445,22 @@ public class ExteriorTile extends AbstractPortalTile {
 							this.UtterlyDestroy();
 
 						if (this.targetLevel == null) {
-							if (this.INTERIOR_DIMENSION != null)
-								this.targetLevel = this.INTERIOR_DIMENSION;
-							else
 								this.setTargetLevel(cap.GetLevel().dimension(),
 										cap.GetData().getDoorData().getLocation().GetBlockPos(),
 										cap.GetData().getDoorData().getYRot(), true);
+							BOTIUtils.updateChunkModel(this);
 						}
 					});
 		}
 	}
 
-	private void makeInterior() {
+	private void makeInterior(boolean isArtificial) {
 		assert level != null;
 		if (level.isClientSide || level.getServer() == null)
 			return;
 		level.getServer().execute(() -> {
 			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
-					new ResourceLocation(MODID + "-tardis", "created-" + LocalDate.now() + "-by-"
+					new ResourceLocation(MODID + "-tardis", "owner-"
 							+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
 
 			ServerLevel tardisLevel;
@@ -469,7 +497,6 @@ public class ExteriorTile extends AbstractPortalTile {
 			}
 		});
 		this.ShouldMakeDimOnNextTick = false;
-		this.IsEmptyShell = false;
 	}
 
 }
