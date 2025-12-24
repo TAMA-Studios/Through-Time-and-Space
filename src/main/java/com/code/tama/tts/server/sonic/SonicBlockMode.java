@@ -1,8 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.misc.progressable.IWeldable;
-
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.tileentities.ExteriorTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,8 +24,7 @@ import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class SonicBlockMode extends SonicMode {
 	public Item getIcon() {
@@ -51,13 +54,19 @@ public class SonicBlockMode extends SonicMode {
 			return;
 		}
 
-		// if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
-		// if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
-		// if (exteriorTile.GetInterior() != null)
-		// ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
-		// .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(ITARDISLevel::Dematerialize);
-		// }
-		// }
+		 if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
+			 if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
+				 if (exteriorTile.GetInterior() != null)
+					 ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
+							 .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+								 cap.GetNavigationalData().forceSetDestination(new SpaceTimeCoordinate(ServerLifecycleHooks.getCurrentServer().overworld().getSharedSpawnPos()));
+								 cap.GetData().getControlData().setCoordinateLock(true);
+								 cap.GetData().getControlData().setAPCState(false);
+								 cap.GetData().getControlData().setSimpleMode(true);
+								 cap.Dematerialize();
+							 });
+			 }
+		 }
 
 		if (state.getBlock() instanceof SandBlock) {
 			level.setBlockAndUpdate(usedPos, Blocks.GLASS.defaultBlockState());

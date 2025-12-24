@@ -21,6 +21,7 @@ import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapP
 import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -399,6 +400,15 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void Dematerialize() {
+		if(this.GetData().getControlData().isSimpleMode()) {
+			this.GetData().getControlData().setCoordinateLock(true);
+			this.GetData().getControlData().setAPCState(true);
+			this.GetData().getDoorData().setDoorsOpen(0);
+			this.GetData().getControlData().setVortexAnchor(false);
+			this.GetData().getControlData().setArtronPacketOutput(1);
+			this.GetData().getControlData().setFlightTerminationProtocol(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
+			this.GetData().getControlData().setBrakes(false);
+		}
 		if (!this.CanTakeoff())
 			return;
 

@@ -1,11 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.misc;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.client.UI.category.*;
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +9,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.ApiStatus;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class UICategoryRegistry {
 	public static final ResourceKey<Registry<UICategory>> UI_CATEGORY_REGISTRY_KEY = ResourceKey
@@ -39,6 +38,9 @@ public class UICategoryRegistry {
 
 	public static final RegistryObject<UICategory> INTERIOR_PROPS = UI_CATEGORIES.register("int_props",
 			InteriorPropsUICategory::new);
+
+	public static final RegistryObject<UICategory> PREFLIGHT_CHECKLIST = UI_CATEGORIES.register("preflight_checklist",
+			PreflightChecklistCategory::new);
 
 	private static int ID = 0;
 
