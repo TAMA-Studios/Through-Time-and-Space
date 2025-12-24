@@ -1,10 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.tardis;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
 import com.code.tama.tts.server.tardis.controls.*;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +9,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -42,6 +41,21 @@ public class ControlsRegistry {
 	public static final RegistryObject<YControl> Y_CONTROL = CONTROLS.register("y_control", YControl::new);
 
 	public static final RegistryObject<ZControl> Z_CONTROL = CONTROLS.register("z_control", ZControl::new);
+
+	public static final RegistryObject<SimplestControl> VORTEX_ANCHOR_CONTROL = CONTROLS.register("vortex_anchor",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
+					tardis -> tardis.GetData().getControlData().setVortexAnchor(false)));
+
+	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().getControlData().setSimpleMode(true),
+					tardis -> tardis.GetData().getControlData().setSimpleMode(false)));
+
+	public static final RegistryObject<SimplestControl> BRAKES = CONTROLS.register("brakes",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().getControlData().setBrakes(true),
+					tardis -> tardis.GetData().getControlData().setBrakes(false)));
 
 	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS.register("fast_return",
 			FastReturnControl::new);
