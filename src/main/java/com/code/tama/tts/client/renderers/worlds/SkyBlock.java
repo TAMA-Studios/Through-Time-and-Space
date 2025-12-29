@@ -11,13 +11,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 
 public class SkyBlock {
 	private static boolean isRenderingSky = false;
@@ -83,7 +84,8 @@ public class SkyBlock {
 		}
 
 		RenderSystem.depthMask(false);
-		((ILevelRendererAccessor) levelRenderer).RenderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y, cameraPos.z);
+		((ILevelRendererAccessor) levelRenderer).RenderSnowAndRain(lightTexture, delta, cameraPos.x, cameraPos.y,
+				cameraPos.z);
 
 		RenderSystem.depthMask(true);
 		RenderSystem.disableBlend();
