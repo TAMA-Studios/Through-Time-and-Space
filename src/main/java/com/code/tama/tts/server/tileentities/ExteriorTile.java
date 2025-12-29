@@ -1,12 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tileentities;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -26,6 +27,9 @@ import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import com.code.tama.tts.server.worlds.TStemCreation;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -46,15 +50,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -92,21 +94,21 @@ public class ExteriorTile extends AbstractPortalTile {
 		tag.putBoolean("artificial", this.isArtificial);
 
 		if (this.INTERIOR_DIMENSION != null) {
-            assert this.level != null;
-            Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
-                    this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
-                        if (cap.GetExteriorTile() == this) {
-                            this.ModelIndex = cap.GetData().getExteriorModel().getModel();
-                            this.Model = cap.GetData().getExteriorModel();
-                        }
-                    });
-        }
+			assert this.level != null;
+			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
+					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
+						if (cap.GetExteriorTile() == this) {
+							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
+							this.Model = cap.GetData().getExteriorModel();
+						}
+					});
+		}
 		tag.putString("modelPath", this.getModelIndex().getPath());
 		tag.putString("modelNamespace", this.getModelIndex().getNamespace());
 		tag.putFloat("Transparency", this.transparency);
 		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
-        assert this.level != null;
-        if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
+		assert this.level != null;
+		if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
 			if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
 					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
 				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
@@ -136,13 +138,12 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	public int DoorsOpen() {
 		if (this.level != null && this.GetInterior() != null && !this.level.isClientSide) {
-            assert this.getLevel() != null;
-            return this.level.getServer().getLevel(this.GetInterior())
-                    .getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-                    .orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION)))
-                    .GetData().getInteriorDoorData().getDoorsOpen();
-        }
-		else
+			assert this.getLevel() != null;
+			return this.level.getServer().getLevel(this.GetInterior())
+					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+					.orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION)))
+					.GetData().getInteriorDoorData().getDoorsOpen();
+		} else
 			return this.DoorState;
 	}
 
@@ -208,14 +209,14 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void updateTargetPos() {
-        assert this.getLevel() != null;
-        ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
+		assert this.getLevel() != null;
+		ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
 
-        assert Interior != null;
-        TARDISLevelCapability.GetTARDISCapSupplier(Interior).ifPresent(cap ->
-				this.setTargetLevel(cap.GetLevel().dimension(),
-                cap.GetData().getDoorData().getLocation().GetBlockPos(),
-                cap.GetData().getDoorData().getYRot(), true));
+		assert Interior != null;
+		TARDISLevelCapability.GetTARDISCapSupplier(Interior)
+				.ifPresent(cap -> this.setTargetLevel(cap.GetLevel().dimension(),
+						cap.GetData().getDoorData().getLocation().GetBlockPos(), cap.GetData().getDoorData().getYRot(),
+						true));
 	}
 
 	public void TeleportToInterior(Entity EntityToTeleport) {
@@ -429,7 +430,7 @@ public class ExteriorTile extends AbstractPortalTile {
 			this.UtterlyDestroy();
 
 		if (this.INTERIOR_DIMENSION == null)
-				this.UtterlyDestroy();
+			this.UtterlyDestroy();
 
 		if (this.ShouldMakeDimOnNextTick)
 			makeInterior(this.isArtificial);
@@ -445,9 +446,9 @@ public class ExteriorTile extends AbstractPortalTile {
 							this.UtterlyDestroy();
 
 						if (this.targetLevel == null) {
-								this.setTargetLevel(cap.GetLevel().dimension(),
-										cap.GetData().getDoorData().getLocation().GetBlockPos(),
-										cap.GetData().getDoorData().getYRot(), true);
+							this.setTargetLevel(cap.GetLevel().dimension(),
+									cap.GetData().getDoorData().getLocation().GetBlockPos(),
+									cap.GetData().getDoorData().getYRot(), true);
 							BOTIUtils.updateChunkModel(this);
 						}
 					});
@@ -459,9 +460,8 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (level.isClientSide || level.getServer() == null)
 			return;
 		level.getServer().execute(() -> {
-			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
-					new ResourceLocation(MODID + "-tardis", "owner-"
-							+ this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
+			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(
+					MODID + "-tardis", "owner-" + this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
 
 			ServerLevel tardisLevel;
 

@@ -1,6 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
@@ -25,6 +30,9 @@ import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegis
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,13 +53,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private TARDISData data = new TARDISData(this);
@@ -121,7 +122,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void setCurrentFlightEvent(@Nullable DataFlightEvent event) {
-		if(event == null) event = new DecoyFlightEvent();
+		if (event == null)
+			event = new DecoyFlightEvent();
 		this.GetFlightData().setFlightEvent(event.copy());
 	}
 
@@ -179,7 +181,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public boolean CanTakeoff() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
-				&& !this.data.getControlData().isVortexAnchor() && this.data.getFuel() > 0 && !this.data.getControlData().isEngineBrake();
+				&& !this.data.getControlData().isVortexAnchor() && this.data.getFuel() > 0
+				&& !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
@@ -292,7 +295,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void FlightTick() {
 		this.GetFlightData().setTicksInFlight(this.GetFlightData().getTicksInFlight() + 1);
 
-		if(!this.CanFly()) this.Crash();
+		if (!this.CanFly())
+			this.Crash();
 
 		if (this.GetData().getControlData().isVortexAnchor())
 			return;
@@ -300,10 +304,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		SpaceTimeCoordinate current = this.GetNavigationalData().getLocation();
 		SpaceTimeCoordinate delta = flightData.distanceToLoc();
 
-		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get()
-				+ this.data.getControlData().GetArtronPacketOutput()
+		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get() + this.data.getControlData().GetArtronPacketOutput()
 				+ (this.data.getControlData().isAPCState() ? 10 : 0); // speed in blocks per tick, calculated using
-																		// default config value, + Artron packet output + APC on ? 10 : 0
+																		// default config value, + Artron packet output
+																		// + APC on ? 10 : 0
 
 		double dx = Math.signum(delta.GetX()) * speed;
 		double dy = Math.signum(delta.GetY()) * speed;
@@ -313,15 +317,21 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		this.GetNavigationalData().setLocation(current);
 
-		this.data.setFuel(Math.max(this.data.getFuel() - ((long) speed + (this.data.getControlData().Stabilizers ? 5 : 0) + ((this.GetFlightData().getTicksInFlight() / 1000))), 0)); // The longer you're in flight for, the faster fuel drains, for every 50 seconds you're in flight, it'll drain 1 fuel unit faster
+		this.data
+				.setFuel(Math.max(this.data.getFuel() - ((long) speed + (this.data.getControlData().Stabilizers ? 5 : 0)
+						+ ((this.GetFlightData().getTicksInFlight() / 1000))), 0)); // The longer you're in flight for,
+																					// the faster fuel drains, for every
+																					// 50 seconds you're in flight,
+																					// it'll drain 1 fuel unit faster
 
 		if (!level.isClientSide)
 			HandleFlightEvents();
 	}
 
 	public void HandleFlightEvents() {
-		if(this.data.getControlData().Stabilizers) {
-			if(!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) this.setCurrentFlightEvent(null);
+		if (this.data.getControlData().Stabilizers) {
+			if (!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent))
+				this.setCurrentFlightEvent(null);
 			return;
 		}
 
@@ -409,13 +419,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void Dematerialize() {
-		if(this.GetData().getControlData().isSimpleMode()) {
+		if (this.GetData().getControlData().isSimpleMode()) {
 			this.GetData().getControlData().setCoordinateLock(true);
 			this.GetData().getControlData().setAPCState(true);
 			this.GetData().getDoorData().setDoorsOpen(0);
 			this.GetData().getControlData().setVortexAnchor(false);
 			this.GetData().getControlData().setArtronPacketOutput(1);
-			this.GetData().getControlData().setFlightTerminationProtocol(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
+			this.GetData().getControlData()
+					.setFlightTerminationProtocol(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
 			this.GetData().getControlData().setBrakes(false);
 		}
 		if (!this.CanTakeoff())
@@ -597,8 +608,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Tick() {
 		this.ticks++;
-		if(this.data.isRefueling() && !this.flightData.isInFlight()) {
-			if(this.level.getGameTime() % 20 == 1)
+		if (this.data.isRefueling() && !this.flightData.isInFlight()) {
+			if (this.level.getGameTime() % 20 == 1)
 				this.data.setFuel(this.data.getFuel() + 1);
 		}
 

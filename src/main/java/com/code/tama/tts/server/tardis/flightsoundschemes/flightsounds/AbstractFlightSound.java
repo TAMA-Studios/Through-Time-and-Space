@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds;
 
 import com.code.tama.tts.server.threads.FlightSoundThread;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -50,7 +51,8 @@ public abstract class AbstractFlightSound {
 			this.Finished = false;
 			this.startedTime = 0;
 			// level.playSound(null, blockPos, this.GetSound(), SoundSource.BLOCKS);
-			if(this.flightSoundThread != null) this.flightSoundThread.stop();
+			if (this.flightSoundThread != null)
+				this.flightSoundThread.stop();
 			this.flightSoundThread = null;
 			Thread(level, blockPos);
 			// Minecraft.getInstance().player.playSound(this.GetSound());
@@ -66,7 +68,8 @@ public abstract class AbstractFlightSound {
 		if (this.flightSoundThread == null)
 			this.flightSoundThread = new FlightSoundThread(level, pos, this);
 
-		if(this.flightSoundThread.running || !this.IsFinished()) return; // Keep it from starting/running it while it's already running
+		if (this.flightSoundThread.running || !this.IsFinished())
+			return; // Keep it from starting/running it while it's already running
 
 		if (!this.flightSoundThread.isAlive())
 			this.flightSoundThread.start();

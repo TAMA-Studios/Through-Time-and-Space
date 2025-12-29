@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -20,16 +24,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.codec.Codecs;
 
 @Getter
 @Setter
@@ -38,7 +40,7 @@ public class TARDISData {
 
 	public static final Codec<TARDISData> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.unboundedMap(Codecs.UUID_CODEC, PlayerPosition.CODEC).fieldOf("viewingPlayerPositions")
-							.forGetter(TARDISData::getViewingPlayerMap),
+					.forGetter(TARDISData::getViewingPlayerMap),
 					Codecs.UUID_CODEC.optionalFieldOf("ownerUUID").xmap(opt -> opt.orElse(null), Optional::ofNullable)
 							.forGetter(TARDISData::getOwnerUUID),
 					ExteriorModelContainer.CODEC.optionalFieldOf("exteriorModelContainer", ExteriorsRegistry.Get(0))
@@ -57,7 +59,6 @@ public class TARDISData {
 					SpaceTimeCoordinate.CODEC.fieldOf("doorBlock").forGetter(TARDISData::getDoorBlock),
 					ResourceLocation.CODEC.fieldOf("vortex").forGetter(TARDISData::getVortex))
 			.apply(instance, TARDISData::new));
-
 
 	private long ticks = 0, fuel;
 	ControlParameters ControlData = new ControlParameters();
@@ -78,8 +79,9 @@ public class TARDISData {
 
 	public TARDISData(Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
 			ExteriorModelContainer exteriorModelID, boolean powered, boolean isDiscoMode, boolean isSparking,
-					  boolean alarms, boolean refueling, DoorData interiorDoorData, SubsystemsData subSystemsData, ControlParameters controlData,
-			ProtocolData protocolsData, long ticks, long fuel, SpaceTimeCoordinate doorBlock, ResourceLocation vortex) {
+			boolean alarms, boolean refueling, DoorData interiorDoorData, SubsystemsData subSystemsData,
+			ControlParameters controlData, ProtocolData protocolsData, long ticks, long fuel,
+			SpaceTimeCoordinate doorBlock, ResourceLocation vortex) {
 		ViewingPlayerMap = new HashMap<>(viewingPlayerMap);
 		OwnerUUID = ownerUUID;
 		ExteriorModel = exteriorModelID;

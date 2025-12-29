@@ -1,9 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.util.function.Consumer;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -11,7 +13,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.function.Consumer;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class SimplestControl extends AbstractControl {
 	private final Consumer<ITARDISLevel> onInteract;

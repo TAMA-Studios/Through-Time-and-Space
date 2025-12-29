@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.control_lists;
 
-import com.code.tama.tts.server.tardis.controls.AbstractControl;
-import lombok.Getter;
-import org.joml.Vector3f;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.code.tama.tts.server.tardis.controls.AbstractControl;
+import lombok.Getter;
+import org.joml.Vector3f;
 
 public abstract class AbstractControlList {
 	private int ID = 0;

@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking.packets.C2S.entities;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.UUID;
-import java.util.function.Supplier;
 
 /** Stops viewing the exterior */
 public class StopViewingExteriorC2S {

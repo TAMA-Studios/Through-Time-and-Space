@@ -4,6 +4,7 @@ package com.code.tama.tts.client.ponder;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -50,7 +51,8 @@ public class GadgetPonderings {
 				.attachKeyFrame().pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
 		scene.idle(20);
 
-		scene.overlay().showText(60).text("The function of a consoles control may be changed via use of the Sonic Screwdriver")
+		scene.overlay().showText(60)
+				.text("The function of a consoles control may be changed via use of the Sonic Screwdriver")
 				.pointAt(util.vector().blockSurface(consolePos, Direction.WEST)).placeNearTarget();
 
 		scene.idle(70);

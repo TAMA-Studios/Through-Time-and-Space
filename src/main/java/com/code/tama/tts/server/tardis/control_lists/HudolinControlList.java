@@ -1,11 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.control_lists;
 
-import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
-import com.code.tama.tts.server.tardis.controls.AbstractControl;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.server.tardis.controls.AbstractControl;
 
 public class HudolinControlList extends AbstractControlList {
 	public HudolinControlList() {

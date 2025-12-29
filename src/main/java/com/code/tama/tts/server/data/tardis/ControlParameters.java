@@ -32,8 +32,8 @@ public class ControlParameters {
 	public int ArtronPacketOutput;
 	public int HelmicRegulator;
 
-	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean engineBrake, Boolean brakes, Boolean anchor, Boolean stabilizers,
-			Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
+	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean engineBrake, Boolean brakes,
+			Boolean anchor, Boolean stabilizers, Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
 			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.APCState = apcState;
