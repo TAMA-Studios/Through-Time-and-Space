@@ -22,7 +22,7 @@ public class InteriorPropsUICategory extends UICategory {
 
 			int light = (int) (cap.GetLightLevel() * 10);
 			light -= 1;
-			StringBuilder line1 = new StringBuilder();
+			long line1 = cap.GetData().getFuel();
 			// for (int i = 1; i < 15; i++) {
 			// if (i <= light) {
 			// line1.append("▀");
@@ -44,8 +44,8 @@ public class InteriorPropsUICategory extends UICategory {
 
 			poseStack.scale(1f, 0.5f, 0.5f);
 			poseStack.mulPose(ZN.rotationDegrees(90));
-			fontRenderer.drawInBatch(line1.toString(), -150, -30, color(monitor), false, poseStack.last().pose(),
-					bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
+			fontRenderer.drawInBatch("Stored Energy: " + line1 + "AU", -150, -30, color(monitor), false,
+					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, combinedLight);
 
 			poseStack.popPose();
 
@@ -60,17 +60,15 @@ public class InteriorPropsUICategory extends UICategory {
 
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
-		builder.vertex(stack.last().pose(), 0, Max, 0).color(0xFFFFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, Max, 0).color(0xFFFFFF).endVertex();
-		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF00).endVertex();
+		builder.vertex(stack.last().pose(), 0, Max, 0).color(0xFFFFFF00).endVertex();
+		builder.vertex(stack.last().pose(), 1, Max, 0).color(0xFFFFFF00).endVertex();
+		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF00).endVertex();
 
-		for (int i = 0; i < Progress; i++) {
-			builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF).endVertex();
-			builder.vertex(stack.last().pose(), 0, i, 0).color(0xFFFFFF).endVertex();
-			builder.vertex(stack.last().pose(), 1, i, 0).color(0xFFFFFF).endVertex();
-			builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF).endVertex();
-		}
+		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 0, Progress, 0).color(0xFFFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 1, Progress, 0).color(0xFFFFFFFF).endVertex();
+		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFFFF).endVertex();
 
 		Tesselator.getInstance().end();
 

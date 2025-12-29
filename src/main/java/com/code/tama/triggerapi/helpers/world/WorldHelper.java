@@ -4,6 +4,7 @@ package com.code.tama.triggerapi.helpers.world;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.joml.Vector3d;
 
@@ -29,12 +30,13 @@ import com.code.tama.triggerapi.Logger;
 import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
+@SuppressWarnings({"deprecation", "unused"})
 public class WorldHelper {
 
 	public static boolean IsDragonDead() {
 		assert UniversalServerOnly.getServer().getLevel(Level.END) != null;
 		return ReflectionBuddy.EndDragonFightAccess.dragonKilled
-				.apply(UniversalServerOnly.getServer().getLevel(Level.END).getDragonFight());
+				.apply(Objects.requireNonNull(UniversalServerOnly.getServer().getLevel(Level.END)).getDragonFight());
 	}
 
 	public static boolean IsSolid(BlockState floor, BlockState block1, BlockState block2) {
@@ -195,14 +197,6 @@ public class WorldHelper {
 
 		// Skip The End if the dragon is alive
 		if (next.equals(Level.END) && !IsDragonDead()) {
-			// newIndex = forward ? newIndex + 1 : newIndex - 1;
-			//
-			// if (newIndex >= keys.size())
-			// newIndex = 0;
-			// else if (newIndex < 0)
-			// newIndex = keys.size() - 1;
-			//
-			// next = keys.get(newIndex);
 			next = cycleDimension(next, forward); // Hopefully this doesn't stackoverflow. It SHOULDN'T, assuming the
 													// end isn't the only dimension that exists... in which case
 													// something is incredibly wrong.
@@ -232,90 +226,4 @@ public class WorldHelper {
 		// Wrap around
 		return dimensions.get((index + 1) >= dimensions.size() ? 0 : index + 1);
 	}
-	// public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos,
-	// ResourceLocation
-	// structure) {
-	// StructureTemplate template =
-	// serverLevel.getStructureManager().getOrCreate(structure);
-	//
-	// int sizeX = template.getSize().getX();
-	// int sizeY = template.getSize().getY();
-	// int sizeZ = template.getSize().getZ();
-	//
-	// BlockPos offset = new BlockPos(-sizeX / 2, -sizeY / 2, -sizeZ / 2);
-	// BlockPos structureStartPos = pos.offset(offset);
-	//
-	// StructurePlaceSettings settings = new StructurePlaceSettings()
-	// .setIgnoreEntities(false)
-	// .setRotation(Rotation.NONE)
-	// .setMirror(Mirror.NONE);
-	//
-	// // Get all blocks from the template
-	// List<StructureTemplate.StructureBlockInfo> blocks = template.filterBlocks(
-	// structureStartPos,
-	// settings,
-	// net.minecraft.world.level.block.Blocks.AIR
-	// );
-	//
-	// // Sort blocks by Y coordinate (bottom to top)
-	// blocks.sort(Comparator.comparingInt(block -> block.pos().getY()));
-	//
-	// // Group blocks by Y level
-	// List<List<StructureTemplate.StructureBlockInfo>> layers = new ArrayList<>();
-	// int currentY = blocks.get(0).pos().getY();
-	// List<StructureTemplate.StructureBlockInfo> currentLayer = new ArrayList<>();
-	//
-	// for (StructureTemplate.StructureBlockInfo block : blocks) {
-	// if (block.pos().getY() != currentY) {
-	// layers.add(currentLayer);
-	// currentLayer = new ArrayList<>();
-	// currentY = block.pos().getY();
-	// }
-	// currentLayer.add(block);
-	// }
-	// layers.add(currentLayer);
-	//
-	// // Schedule block placement layer by layer
-	// final int[] layerIndex = {0};
-	//
-	// Runnable placeNextLayer = new Runnable() {
-	// @Override
-	// public void run() {
-	// if (layerIndex[0] < layers.size()) {
-	// List<StructureTemplate.StructureBlockInfo> layer =
-	// layers.get(layerIndex[0]);
-	//
-	// // Place all blocks in current layer
-	// for (StructureTemplate.StructureBlockInfo block :
-	// ReflectionBuddy.StructureTemplateAccess.palettes.apply(template).get(0).blocks())
-	// {
-	// if(block.state().isAir()) continue;
-	// serverLevel.setBlock(block.pos(), block.state(), 3);
-	// if (block.nbt() != null) {
-	// template.placeInWorld(serverLevel, block.pos(), block.pos(),
-	// settings,
-	// serverLevel.getRandom(), 3);
-	// }
-	// }
-	//
-	// layerIndex[0]++;
-	//
-	// // Schedule next layer (5 ticks delay)
-	// if (layerIndex[0] < layers.size()) {
-	// serverLevel.getServer().execute(new TickTask(5, this));
-	// } else {
-	// System.out.println("Finished placing structure at: " +
-	// structureStartPos);
-	// }
-	// }
-	// }
-	// };
-	//
-	// // Start the animation
-	// serverLevel.getServer().execute(new TickTask(5, placeNextLayer));
-	//
-	// System.out.println("Started animated structure placement at: " +
-	// structureStartPos);
-	// }
-
 }
