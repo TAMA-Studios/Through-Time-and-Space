@@ -47,6 +47,11 @@ public class ControlsRegistry {
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(false)));
 
+	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().getControlData().setEngineBrake(true),
+					tardis -> tardis.GetData().getControlData().setEngineBrake(false)));
+
 	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
 			() -> new SimplestControl(
 					tardis -> tardis.GetData().getControlData().setSimpleMode(true),
@@ -56,6 +61,16 @@ public class ControlsRegistry {
 			() -> new SimplestControl(
 					tardis -> tardis.GetData().getControlData().setBrakes(true),
 					tardis -> tardis.GetData().getControlData().setBrakes(false)));
+
+	public static final RegistryObject<SimplestControl> REFUEL = CONTROLS.register("refuel",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().setRefueling(true),
+					tardis -> tardis.GetData().setRefueling(true)));
+
+	public static final RegistryObject<SimplestControl> STABILIZERS = CONTROLS.register("stabilizers",
+			() -> new SimplestControl(
+					tardis -> tardis.GetData().getControlData().setStabilizers(true),
+					tardis -> tardis.GetData().getControlData().setStabilizers(true)));
 
 	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS.register("fast_return",
 			FastReturnControl::new);

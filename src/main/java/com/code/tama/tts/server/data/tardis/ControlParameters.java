@@ -16,8 +16,10 @@ public class ControlParameters {
 	public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
 					Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
-					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isBrakes),
+					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isEngineBrake),
+					Codec.BOOL.fieldOf("engine_brake").forGetter(ControlParameters::isBrakes),
 					Codec.BOOL.fieldOf("anchor").forGetter(ControlParameters::isVortexAnchor),
+					Codec.BOOL.fieldOf("stabilizers").forGetter(ControlParameters::isStabilizers),
 					Codec.BOOL.fieldOf("simple_mode").forGetter(ControlParameters::isSimpleMode),
 					Codec.BOOL.fieldOf("coordinate_lock").forGetter(ControlParameters::isCoordinateLock),
 					Codec.INT.fieldOf("artron_packet_output").forGetter(ControlParameters::GetArtronPacketOutput),
@@ -26,17 +28,19 @@ public class ControlParameters {
 			.apply(instance, ControlParameters::new));
 
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
-	public boolean APCState, Brakes, SimpleMode, CoordinateLock, VortexAnchor;
+	public boolean APCState, Brakes, EngineBrake, SimpleMode, CoordinateLock, VortexAnchor, Stabilizers;
 	public int ArtronPacketOutput;
 	public int HelmicRegulator;
 
-	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean brakes, Boolean anchor,
+	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean engineBrake, Boolean brakes, Boolean anchor, Boolean stabilizers,
 			Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
 			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.APCState = apcState;
+		this.EngineBrake = engineBrake;
 		this.Brakes = brakes;
 		this.VortexAnchor = anchor;
+		this.Stabilizers = stabilizers;
 		this.SimpleMode = simpleMode;
 		this.CoordinateLock = coordinateLock;
 		this.ArtronPacketOutput = artronPacketOutput;
@@ -67,4 +71,5 @@ public class ControlParameters {
 	public int GetArtronPacketOutput() {
 		return this.ArtronPacketOutput;
 	}
+
 }

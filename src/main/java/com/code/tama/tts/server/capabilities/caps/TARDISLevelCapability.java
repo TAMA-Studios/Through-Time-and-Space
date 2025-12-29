@@ -46,7 +46,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -121,7 +120,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public void setCurrentFlightEvent(@NotNull DataFlightEvent event) {
+	public void setCurrentFlightEvent(@Nullable DataFlightEvent event) {
+		if(event == null) event = new DecoyFlightEvent();
 		this.GetFlightData().setFlightEvent(event.copy());
 	}
 
@@ -179,13 +179,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public boolean CanTakeoff() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
-				&& !this.data.getControlData().isVortexAnchor();
+				&& !this.data.getControlData().isVortexAnchor() && this.data.getFuel() > 0 && !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
 	public boolean CanFly() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered();
+				&& this.data.isPowered() && this.data.getFuel() > 0 && !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
@@ -292,6 +292,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void FlightTick() {
 		this.GetFlightData().setTicksInFlight(this.GetFlightData().getTicksInFlight() + 1);
 
+		if(!this.CanFly()) this.Crash();
+
 		if (this.GetData().getControlData().isVortexAnchor())
 			return;
 
@@ -299,8 +301,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		SpaceTimeCoordinate delta = flightData.distanceToLoc();
 
 		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get()
-				+ this.data.getControlData().GetArtronPacketOutput(); // speed in blocks per tick, calculated using
-																		// default config value, + Artron packet output
+				+ this.data.getControlData().GetArtronPacketOutput()
+				+ (this.data.getControlData().isAPCState() ? 10 : 0); // speed in blocks per tick, calculated using
+																		// default config value, + Artron packet output + APC on ? 10 : 0
 
 		double dx = Math.signum(delta.GetX()) * speed;
 		double dy = Math.signum(delta.GetY()) * speed;
@@ -310,11 +313,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		this.GetNavigationalData().setLocation(current);
 
+		this.data.setFuel(Math.max(this.data.getFuel() - ((long) speed + (this.data.getControlData().Stabilizers ? 5 : 0) + ((this.GetFlightData().getTicksInFlight() / 1000))), 0)); // The longer you're in flight for, the faster fuel drains, for every 50 seconds you're in flight, it'll drain 1 fuel unit faster
+
 		if (!level.isClientSide)
 			HandleFlightEvents();
 	}
 
 	public void HandleFlightEvents() {
+		if(this.data.getControlData().Stabilizers) {
+			if(!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) this.setCurrentFlightEvent(null);
+			return;
+		}
 
 		// Sometimes just add a little helmic drift
 		if (ticks % (80 + ThreadLocalRandom.current().nextInt(120)) == 1) {
@@ -345,7 +354,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		if (!(this.getCurrentFlightEvent() instanceof DecoyFlightEvent)) { // If there's an actual flight event
 			if (this.getCurrentFlightEvent().RequiredControls.isEmpty()) { // And it's completed
-				this.setCurrentFlightEvent(new DecoyFlightEvent()); // Clear the flight event
+				this.setCurrentFlightEvent(null); // Clear the flight event
 
 				// Post the forge event
 				TardisEvent.FlightEventSucceed event = new TardisEvent.FlightEventSucceed(this);
@@ -368,7 +377,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				this.getCurrentFlightEvent().action.Action.accept(this);
 
 				// Clear the flight event
-				this.setCurrentFlightEvent(new DecoyFlightEvent());
+				this.setCurrentFlightEvent(null);
 				this.lastFlightEvent = ticks;
 				this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
 			}
@@ -387,7 +396,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		TardisEvent.FlightEventStart event = new TardisEvent.FlightEventStart(this);
 		MinecraftForge.EVENT_BUS.post(event);
 		if (event.isCanceled()) {
-			this.setCurrentFlightEvent(new DecoyFlightEvent());
+			this.setCurrentFlightEvent(null);
 			return;
 		}
 
@@ -588,6 +597,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Tick() {
 		this.ticks++;
+		if(this.data.isRefueling() && !this.flightData.isInFlight()) {
+			if(this.level.getGameTime() % 20 == 1)
+				this.data.setFuel(this.data.getFuel() + 1);
+		}
+
 		if (this.flightData.isInFlight()) {
 			this.FlightTick();
 		}
