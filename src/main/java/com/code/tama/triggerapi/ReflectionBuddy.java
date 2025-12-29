@@ -19,11 +19,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.progress.ChunkProgressListenerFactory;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
@@ -71,30 +67,19 @@ public class ReflectionBuddy {
 		return getInstanceFieldGetter(field);
 	}
 
-	public static class BlockAccess {
-		public static final Function<Block, Boolean> hasCollision = getInstanceFieldGetter(Block.class, "hasCollision");
-		public static final Function<Block, Item.Properties> properties = getInstanceFieldGetter(Block.class,
-				"properties");
-	}
-
-	public static class FallingBlockEntityAccess {
-		public static final Function<FallingBlockEntity, BlockState> blockState = getInstanceFieldGetter(
-				FallingBlockEntity.class, "blockState");
-	}
-
 	public static class RenderStateShardAccess {
 		public static final Function<RenderStateShard, RenderStateShard.TextureStateShard> BLOCK_SHEET_MIPPED = getInstanceFieldGetter(
-				RenderStateShard.class, "BLOCK_SHEET_MIPPED");
+				RenderStateShard.class, "f_110145_");
 		public static final Function<RenderStateShard, RenderStateShard.TransparencyStateShard> TRANSLUCENT_TRANSPARENCY = getInstanceFieldGetter(
-				RenderStateShard.class, "TRANSLUCENT_TRANSPARENCY");
+				RenderStateShard.class, "f_110139_");
 		public static final Function<RenderStateShard, RenderStateShard.LayeringStateShard> NO_LAYERING = getInstanceFieldGetter(
-				RenderStateShard.class, "NO_LAYERING");
+				RenderStateShard.class, "f_110117_");
 
 	}
 
 	public static class BlockBehaviorAccess {
 		public static final Function<BlockBehaviour, BlockBehaviour.Properties> properties = getInstanceFieldGetter(
-				BlockBehaviour.class, "properties");
+				BlockBehaviour.class, "f_60439_");
 	}
 
 	public static class DelegateBorderChangeListenerAccess {

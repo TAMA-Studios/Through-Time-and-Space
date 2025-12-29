@@ -30,9 +30,6 @@ import com.code.tama.triggerapi.ReflectionBuddy;
 import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class WorldHelper {
-	public static boolean CanCollide(BlockState state) {
-		return ReflectionBuddy.BlockAccess.hasCollision.apply(state.getBlock());
-	}
 
 	public static boolean IsDragonDead() {
 		assert UniversalServerOnly.getServer().getLevel(Level.END) != null;
