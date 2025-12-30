@@ -5,14 +5,13 @@ import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEve
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
@@ -113,6 +112,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	/** Does what it says on the tin */
 	void Tick();
+
+	void FlightTick();
 
 	void UpdateClient(int toUpdate);
 

@@ -1,12 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.code.tama.tts.config.TTSConfig;
+import com.code.tama.tts.server.CommonThreads;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -30,9 +26,6 @@ import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegis
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,8 +46,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
+	private final Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
@@ -69,6 +70,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	public TARDISLevelCapability(Level level) {
 		this.level = level;
+		this.TickThread = CommonThreads.TARDISTickThread(this);
 	}
 
 	@Override
@@ -608,14 +610,21 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Tick() {
 		this.ticks++;
-		if (this.data.isRefueling() && !this.flightData.isInFlight()) {
-			if (this.level.getGameTime() % 20 == 1)
-				this.data.setFuel(this.data.getFuel() + 1);
-		}
 
-		if (this.flightData.isInFlight()) {
-			this.FlightTick();
-		}
+		if(TickThread.isAlive()) TickThread.run();
+		else TickThread.start();
+
+
+//		if (GetData().getSubSystemsData().DynamorphicController.isActivated(level)
+//				&& !GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty() && this.data.isRefueling()
+//				&& !this.flightData.isInFlight()) {
+//			if (this.level.getGameTime() % 20 == 1)
+//				this.data.setFuel(this.data.getFuel() + 1);
+//		}
+//
+//		if (this.flightData.isInFlight()) {
+//			this.FlightTick();
+//		}
 	}
 
 	@Override

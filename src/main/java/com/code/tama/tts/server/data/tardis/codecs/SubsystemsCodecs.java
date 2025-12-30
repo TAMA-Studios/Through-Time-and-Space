@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.codecs;
 
-import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
-import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
-import com.code.tama.tts.server.tardis.subsystems.DynamorphicController;
-import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.code.tama.tts.server.tardis.subsystems.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -25,4 +25,13 @@ public class SubsystemsCodecs {
 			.group(BlockPos.CODEC.fieldOf("pos").forGetter(AbstractSubsystem::getBlockPos),
 					Codec.BOOL.fieldOf("active").forGetter(AbstractSubsystem::isActivated))
 			.apply(instance, DynamorphicController::new));
+
+	public static Codec<DynamorphicGeneratorStack> DYNAMORPHIC_STACK = RecordCodecBuilder.create(instance -> instance
+			.group(BlockPos.CODEC.fieldOf("pos").forGetter(AbstractSubsystem::getBlockPos),
+					Codec.BOOL.fieldOf("active").forGetter(AbstractSubsystem::isActivated))
+			.apply(instance, DynamorphicGeneratorStack::new));
+
+	public static Codec<List<DynamorphicGeneratorStack>> DYNAMORPHIC_STACK_LIST = RecordCodecBuilder
+			.create(instance -> instance.group(DYNAMORPHIC_STACK.listOf().fieldOf("list").forGetter((l) -> l))
+					.apply(instance, ArrayList<DynamorphicGeneratorStack>::new));
 }

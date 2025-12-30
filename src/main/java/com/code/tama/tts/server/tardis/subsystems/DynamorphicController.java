@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NoArgsConstructor
@@ -48,11 +47,11 @@ public class DynamorphicController extends AbstractSubsystem {
 
 		if (Map == null || Map.isEmpty()) {
 			HashMap<Character, BlockState> key = new HashMap<>();
-			String map[] = new String[]{"   \n # \n   ", "MNM\nNMN\nMNM"};
+			String map[] = new String[]{" Z \nZZZ\n Z ", "ZBZ\nBZB\nZBZ", "B B\n # \nB B", "ZBZ\nBZB\nZBZ"};
 
-			key.put('M', Blocks.COPPER_BLOCK.defaultBlockState());
-			key.put('N', Blocks.IRON_BARS.defaultBlockState());
-			key.put('#', TTSBlocks.TARDIS_ENGINES.get().defaultBlockState());
+			key.put('Z', TTSBlocks.ZEITON_BLOCK.get().defaultBlockState());
+			key.put('B', TTSBlocks.BRUSHED_STEEL.get().defaultBlockState());
+			key.put('#', TTSBlocks.DYNAMORPHIC_CONTROLLER_CORE.get().defaultBlockState());
 
 			Map = new SubsystemMapRecipeThing(map, key).getMap();
 		}

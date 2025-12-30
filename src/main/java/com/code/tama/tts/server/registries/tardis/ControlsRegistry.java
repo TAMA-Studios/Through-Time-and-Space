@@ -60,8 +60,11 @@ public class ControlsRegistry {
 					tardis -> tardis.GetData().getControlData().setBrakes(false)));
 
 	public static final RegistryObject<SimplestControl> REFUEL = CONTROLS.register("refuel",
-			() -> new SimplestControl(tardis -> tardis.GetData().setRefueling(true),
-					tardis -> tardis.GetData().setRefueling(true)));
+			() -> new SimplestControl(tardis -> {
+				if (!tardis.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty()
+						&& tardis.GetData().getSubSystemsData().DynamorphicController.isActivated(tardis.GetLevel()))
+					tardis.GetData().setRefueling(true);
+			}, tardis -> tardis.GetData().setRefueling(false)));
 
 	public static final RegistryObject<SimplestControl> STABILIZERS = CONTROLS.register("stabilizers",
 			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setStabilizers(true),

@@ -283,7 +283,13 @@ public class TTSBlocks {
 			.simpleItem().register();
 
 	@MainTab
-	public static final BlockEntry<EnginesBlock> TARDIS_ENGINES = Builder("tardis_engines", EnginesBlock::new)
+	public static final BlockEntry<DynamorphicControllerBlock> DYNAMORPHIC_CONTROLLER_CORE = Builder(
+			"dynamorphic_controller_core", DynamorphicControllerBlock::new)
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
+
+	@MainTab
+	public static final BlockEntry<DynamorphicGeneratorBlock> DYNAMORPHIC_GENERATOR_STACK = Builder(
+			"dynamorphic_generator_stack", DynamorphicGeneratorBlock::new)
 			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
 
 	@MainTab
