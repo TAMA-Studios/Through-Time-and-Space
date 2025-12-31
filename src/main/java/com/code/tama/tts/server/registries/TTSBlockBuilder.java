@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.datagen.assets.DataBlockStateProvider;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
@@ -16,12 +14,14 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	protected TTSBlockBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback,
@@ -39,6 +39,10 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	public TTSBlockBuilder<T, P> stateWithExistingModel() {
 		return this.blockstate(DataBlockStateProvider::existingModel);
+	}
+
+	public TTSBlockBuilder<T, P> verySimpleBlock() {
+		return this.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion().lightLevel(state -> 10)).stateWithExistingModel().simpleItem().defaultLang().defaultLoot();
 	}
 
 	public TTSBlockBuilder<T, P> stateWithExistingModel(String path) {
@@ -115,6 +119,10 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 		}
 
 		return this;
+	}
+
+	public TTSBlockBuilder<T, P> blankBlockstate() {
+		return this.airState();
 	}
 
 	@Override

@@ -1,0 +1,23 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"36": "tts:block/sov/sov_bridge_brown_flat",
+		"42": "tts:block/sov/sov_bridge_brown_divot",
+		"particle": "tts:block/sov/sov_outer_corridor_top_2"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#42"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#42"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#42"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#42"},
+				"up": {"uv": [16, 16, 0, 0], "texture": "#36"},
+				"down": {"uv": [16, 0, 0, 16], "texture": "#36"}
+			}
+		}
+	]
+}

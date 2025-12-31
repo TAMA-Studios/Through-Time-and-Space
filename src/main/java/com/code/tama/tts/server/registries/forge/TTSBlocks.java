@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
@@ -26,9 +22,7 @@ import com.code.tama.tts.server.blocks.tardis.DoorBlock;
 import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
 import com.code.tama.tts.server.items.blocks.ConsoleItem;
 import com.code.tama.tts.server.items.blocks.ExteriorItem;
-import com.code.tama.tts.server.items.tabs.DimensionalTab;
-import com.code.tama.tts.server.items.tabs.MainTab;
-import com.code.tama.tts.server.items.tabs.Roundel;
+import com.code.tama.tts.server.items.tabs.*;
 import com.code.tama.tts.server.registries.TTSBlockBuilder;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
@@ -38,7 +32,6 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -52,6 +45,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -159,7 +156,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
-			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).airState().simpleItem().register();
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).blankBlockstate().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
@@ -247,7 +244,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel().simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("control/power_lever").simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
@@ -275,22 +272,22 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",
 			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE))
-			.stateWithExistingModel().simpleItem().register();
+			.defaultBlockstate().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
-			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).stateWithExistingModel()
+			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).airState()
 			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DynamorphicControllerBlock> DYNAMORPHIC_CONTROLLER_CORE = Builder(
 			"dynamorphic_controller_core", DynamorphicControllerBlock::new)
-			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().register();
 
 	@MainTab
 	public static final BlockEntry<DynamorphicGeneratorBlock> DYNAMORPHIC_GENERATOR_STACK = Builder(
 			"dynamorphic_generator_stack", DynamorphicGeneratorBlock::new)
-			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate().airState().register();
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().register();
 
 	@MainTab
 	public static final BlockEntry<PortalBlock> PORTAL_BLOCK = Builder("portal_block", PortalBlock::new)
@@ -300,7 +297,7 @@ public class TTSBlocks {
 	@DimensionalTab
 	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("organic/interior_rock", Block::new)
 			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL))
-			.defaultBlockstate().simpleItem().register();
+			.blankBlockstate().simpleItem().register();
 
 	/* Moon Block */
 	@DimensionalTab
@@ -447,29 +444,35 @@ public class TTSBlocks {
 			prop -> new Block(copy(Blocks.COBBLESTONE, prop))).defaultBlockstate().simpleItem().register();
 
 	/** Ores */
+	@DimensionalTab
 	public static final BlockEntry<Block> ZEITON_BLOCK = Builder("zeiton/zeiton_block",
 			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
 			.register();
 
+	@DimensionalTab
 	public static final BlockEntry<Block> RAW_ZEITON_BLOCK = Builder("zeiton/raw_zeiton_block",
 			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
 			.register();
 
+	@DimensionalTab
 	public static final BlockEntry<DropExperienceBlock> ZEITON_ORE = Builder("zeiton/zeiton_ore",
 			prop -> new DropExperienceBlock(copy(Blocks.STONE, prop).strength(2f).requiresCorrectToolForDrops(),
 					UniformInt.of(3, 6)))
 			.defaultBlockstate().simpleItem().register();
 
+	@DimensionalTab
 	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_ZEITON_ORE = Builder("zeiton/deepslate_zeiton_ore",
 			prop -> new DropExperienceBlock(copy(Blocks.DEEPSLATE, prop).strength(3f).requiresCorrectToolForDrops(),
 					UniformInt.of(3, 7)))
 			.defaultBlockstate().simpleItem().register();
 
+	@DimensionalTab
 	public static final BlockEntry<DropExperienceBlock> NETHER_ZEITON_ORE = Builder("zeiton/nether_zeiton_ore",
 			prop -> new DropExperienceBlock(copy(Blocks.NETHERRACK, prop).strength(1f).requiresCorrectToolForDrops(),
 					UniformInt.of(3, 7)))
 			.defaultBlockstate().simpleItem().register();
 
+	@DimensionalTab
 	public static final BlockEntry<DropExperienceBlock> END_STONE_ZEITON_ORE = Builder("zeiton/end_stone_zeiton_ore",
 			prop -> new DropExperienceBlock(copy(Blocks.END_STONE, prop).strength(5f).requiresCorrectToolForDrops(),
 					UniformInt.of(3, 7)))
@@ -479,6 +482,73 @@ public class TTSBlocks {
 			"hartnell_door_placeholder", prop -> new HartnellDoorMultiBlock(copy(Blocks.WHITE_CONCRETE, prop),
 					TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER))
 			.defaultBlockstate().simpleItem().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_TOP = Builder("sov/outer_corridor_top", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_MID = Builder("sov/outer_corridor_mid", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_BASE = Builder("sov/outer_corridor_base", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_TOP = Builder("sov/inner_corridor_top", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_MID = Builder("sov/inner_corridor_mid", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_BASE = Builder("sov/inner_corridor_base", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_TOP = Builder("sov/eng_corridor_top", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_MID = Builder("sov/eng_corridor_mid", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_BASE = Builder("sov/eng_corridor_base", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_INTERIOR_LIGHT_FULL = Builder("sov/interior_light_full", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_PANEL = Builder("sov/interior/beige_panel", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL = Builder("sov/interior/beige_fabric_wall", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL_VERT = Builder("sov/interior/beige_fabric_wall_vert", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_PANEL_SPLIT = Builder("sov/interior/beige_panel_split", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL = Builder("sov/interior/beige_raised_panel", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL_VERT = Builder("sov/interior/beige_raised_panel_vert", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("sov/interior/beige_rooflight", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("sov/interior/beige_wall_lamp", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_BASELIGHT = Builder("sov/bridge/brown_baselight", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_BASELIGHT_DIVOT = Builder("sov/bridge/brown_baselight_divot", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_DIVOT = Builder("sov/bridge/brown_divot", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_DIVOT_VERT = Builder("sov/bridge/brown_divot_vert", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL = Builder("sov/bridge/brown_fabric_wall", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL_VERT = Builder("sov/bridge/brown_fabric_wall_vert", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new).verySimpleBlock().register();
+
+	@Decorational @SOV public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new).verySimpleBlock().register();
+
+
+
+
+
+
+
 
 	/**
 	 * Automatically handles registering the block and item for you, all you do is
