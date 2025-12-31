@@ -1,8 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts;
 
-import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.helpers.FileHelper;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
+import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
+import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
+
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.compat.ModCompat;
@@ -26,6 +32,8 @@ import com.code.tama.tts.server.worlds.tree.TTSTrunkPlacerTypes;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,15 +46,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FILE;
-import static com.code.tama.triggerapi.Logger.DATE_FORMAT_FOLDER;
-import static com.code.tama.tts.server.registries.forge.TTSCreativeTabs.CREATIVE_MODE_TABS;
+import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.helpers.FileHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
@@ -169,15 +171,19 @@ public class TTSMod {
 
 							ItemStack stack = entry.get().asItem().getDefaultInstance();
 							stack.setCount(1);
-							if (stack.getCount() != 1 || entry.get().asItem().equals(Items.AIR)) return;
+							if (stack.getCount() != 1 || entry.get().asItem().equals(Items.AIR))
+								return;
 
-							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey() && f.isAnnotationPresent(DimensionalTab.class))
+							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey()
+									&& f.isAnnotationPresent(DimensionalTab.class))
 								event.accept(stack);
 
-							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey() && f.isAnnotationPresent(MainTab.class))
+							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey()
+									&& f.isAnnotationPresent(MainTab.class))
 								event.accept(stack);
 
-							if (event.getTabKey() == TTSCreativeTabs.DECORATIONAL_TAB.getKey() && f.isAnnotationPresent(Decorational.class))
+							if (event.getTabKey() == TTSCreativeTabs.DECORATIONAL_TAB.getKey()
+									&& f.isAnnotationPresent(Decorational.class))
 								event.accept(stack);
 						}
 

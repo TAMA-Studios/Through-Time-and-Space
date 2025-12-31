@@ -1,21 +1,15 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "tts:sov/interior/beige_wall_lamp"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "tts:blocks/sov/interior/beige_wall_lamp"
+  "pools" : [ {
+    "bonus_rolls" : 0.0,
+    "conditions" : [ {
+      "condition" : "minecraft:survives_explosion"
+    } ],
+    "entries" : [ {
+      "name" : "tts:sov/interior/beige_wall_lamp",
+      "type" : "minecraft:item"
+    } ],
+    "rolls" : 1.0
+  } ],
+  "random_sequence" : "tts:blocks/sov/interior/beige_wall_lamp",
+  "type" : "minecraft:block"
 }

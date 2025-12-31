@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/rotor/amethyst"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/rotor/amethyst"
     }
   }
 }

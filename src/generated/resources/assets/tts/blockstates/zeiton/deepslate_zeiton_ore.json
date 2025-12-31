@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:zeiton/deepslate_zeiton_ore"
+  "variants" : {
+    "" : {
+      "model" : "tts:zeiton/deepslate_zeiton_ore"
     }
   }
 }

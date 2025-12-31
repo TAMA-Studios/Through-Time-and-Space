@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
@@ -32,6 +36,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -45,10 +50,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -151,11 +152,13 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
-			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem().register();
+			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
-			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).blankBlockstate().simpleItem().register();
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).blankBlockstate().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
@@ -243,7 +246,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<PowerLever> POWER_LEVER = Builder("power_lever", PowerLever::new)
-			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("control/power_lever").simpleItem().register();
+			.properties(p -> p.strength(1.25f).sound(SoundType.STONE)).stateWithExistingModel("control/power_lever")
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DestinationInfoBlock> DESTINATION_INFO_PANEL = Builder("destination_info_panel",
@@ -270,13 +274,13 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",
-			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE))
-			.defaultBlockstate().simpleItem().register();
+			NetherReactorCoreBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).defaultBlockstate()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
-			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).airState()
-			.simpleItem().register();
+			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).airState().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<DynamorphicControllerBlock> DYNAMORPHIC_CONTROLLER_CORE = Builder(
@@ -410,7 +414,8 @@ public class TTSBlocks {
 	@DimensionalTab
 	public static final BlockEntry<FenceBlock> GALLIFREYAN_OAK_FENCE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_fence",
-			prop -> new FenceBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate().register();
+			prop -> new FenceBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate()
+			.register();
 
 	@DimensionalTab
 	public static final BlockEntry<FenceGateBlock> GALLIFREYAN_OAK_FENCE_GATE = Builder(
@@ -422,7 +427,8 @@ public class TTSBlocks {
 	@DimensionalTab
 	public static final BlockEntry<WallBlock> GALLIFREYAN_OAK_WALL = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_wall",
-			prop -> new WallBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate().register();
+			prop -> new WallBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate()
+			.register();
 
 	@DimensionalTab
 	public static final BlockEntry<net.minecraft.world.level.block.DoorBlock> GALLIFREYAN_OAK_DOOR = Builder(
@@ -482,81 +488,186 @@ public class TTSBlocks {
 					TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER))
 			.airState().simpleItem().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BRIDGE_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_TOP = Builder("sov/outer_corridor_top", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_TOP = Builder("sov/outer_corridor_top", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_MID = Builder("sov/outer_corridor_mid", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_MID = Builder("sov/outer_corridor_mid", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_BASE = Builder("sov/outer_corridor_base", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_BASE = Builder("sov/outer_corridor_base", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_TOP = Builder("sov/inner_corridor_top", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_TOP = Builder("sov/inner_corridor_top", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_MID = Builder("sov/inner_corridor_mid", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_MID = Builder("sov/inner_corridor_mid", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_INNER_CORRIDOR_BASE = Builder("sov/inner_corridor_base", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_BASE = Builder("sov/inner_corridor_base", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_TOP = Builder("sov/eng_corridor_top", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_ENG_CORRIDOR_TOP = Builder("sov/eng_corridor_top", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_MID = Builder("sov/eng_corridor_mid", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_ENG_CORRIDOR_MID = Builder("sov/eng_corridor_mid", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_ENG_CORRIDOR_BASE = Builder("sov/eng_corridor_base", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_ENG_CORRIDOR_BASE = Builder("sov/eng_corridor_base", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_INTERIOR_LIGHT_FULL = Builder("sov/interior_light_full", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_INTERIOR_LIGHT_FULL = Builder("sov/interior_light_full", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_PANEL = Builder("sov/interior/beige_panel", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_PANEL = Builder("sov/interior/beige_panel", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL = Builder("sov/interior/beige_fabric_wall", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL = Builder("sov/interior/beige_fabric_wall", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL_VERT = Builder("sov/interior/beige_fabric_wall_vert", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL_VERT = Builder("sov/interior/beige_fabric_wall_vert",
+			Block::new).verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_PANEL_SPLIT = Builder("sov/interior/beige_panel_split", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_PANEL_SPLIT = Builder("sov/interior/beige_panel_split", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL = Builder("sov/interior/beige_raised_panel", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL = Builder("sov/interior/beige_raised_panel",
+			Block::new).verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("sov/interior/beige_rooflight", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("sov/interior/beige_rooflight", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("sov/interior/beige_wall_lamp", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("sov/interior/beige_wall_lamp", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_BASELIGHT = Builder("sov/bridge/brown_baselight", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT = Builder("sov/bridge/brown_baselight", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_BASELIGHT_DIVOT = Builder("sov/bridge/brown_baselight_divot", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT_DIVOT = Builder("sov/bridge/brown_baselight_divot",
+			Block::new).verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_DIVOT = Builder("sov/bridge/brown_divot", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_DIVOT = Builder("sov/bridge/brown_divot", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_DIVOT_VERT = Builder("sov/bridge/brown_divot_vert", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_DIVOT_VERT = Builder("sov/bridge/brown_divot_vert", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL = Builder("sov/bridge/brown_fabric_wall", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL = Builder("sov/bridge/brown_fabric_wall", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL_VERT = Builder("sov/bridge/brown_fabric_wall_vert", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL_VERT = Builder("sov/bridge/brown_fabric_wall_vert",
+			Block::new).verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_FLAT = Builder("sov/bridge/brown_flat", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new).verySimpleBlock().register();
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_HALVED = Builder("decoration/runner_light_halved", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_LIGHT_HALVED = Builder("decoration/runner_light_halved", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_RAILED = Builder("decoration/runner_light_railed", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_LIGHT_RAILED = Builder("decoration/runner_light_railed", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_SPLIT = Builder("decoration/runner_light_split", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_LIGHT_SPLIT = Builder("decoration/runner_light_split", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_PADDING = Builder("decoration/runner_padding", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_PADDING = Builder("decoration/runner_padding", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_PADDING_PORTRAIT = Builder("decoration/runner_padding_portrait", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_PADDING_PORTRAIT = Builder("decoration/runner_padding_portrait",
+			Block::new).verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_SCREEN = Builder("decoration/runner_screen", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_SCREEN = Builder("decoration/runner_screen", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> RUNNER_SCREEN_UPPER = Builder("decoration/runner_screen_upper", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_SCREEN_UPPER = Builder("decoration/runner_screen_upper", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> TUBE_RUNNER_LIGHT = Builder("decoration/tube_runner_light", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> TUBE_RUNNER_LIGHT = Builder("decoration/tube_runner_light", Block::new)
+			.verySimpleBlock().register();
 
-	@Decorational public static final BlockEntry<Block> TUBE_WALL = Builder("decoration/tube_wall", Block::new).verySimpleBlock().register();
+	@Decorational
+	public static final BlockEntry<Block> TUBE_WALL = Builder("decoration/tube_wall", Block::new).verySimpleBlock()
+			.register();
 
 	/**
 	 * Automatically handles registering the block and item for you, all you do is

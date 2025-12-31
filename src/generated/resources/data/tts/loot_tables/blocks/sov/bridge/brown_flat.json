@@ -1,21 +1,15 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "tts:sov/bridge/brown_flat"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "tts:blocks/sov/bridge/brown_flat"
+  "pools" : [ {
+    "bonus_rolls" : 0.0,
+    "conditions" : [ {
+      "condition" : "minecraft:survives_explosion"
+    } ],
+    "entries" : [ {
+      "name" : "tts:sov/bridge/brown_flat",
+      "type" : "minecraft:item"
+    } ],
+    "rolls" : 1.0
+  } ],
+  "random_sequence" : "tts:blocks/sov/bridge/brown_flat",
+  "type" : "minecraft:block"
 }

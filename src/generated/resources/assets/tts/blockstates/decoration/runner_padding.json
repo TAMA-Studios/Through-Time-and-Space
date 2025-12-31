@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/decoration/runner_padding"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/decoration/runner_padding"
     }
   }
 }

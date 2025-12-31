@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sov/inner_corridor_base"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sov/inner_corridor_base"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/decoration/runner_light_railed"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/decoration/runner_light_railed"
     }
   }
 }

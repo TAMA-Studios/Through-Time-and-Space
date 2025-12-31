@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/hartnell_door"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/hartnell_door"
     }
   }
 }

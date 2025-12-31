@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sov/bridge/brown_divot"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sov/bridge/brown_divot"
     }
   }
 }

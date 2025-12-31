@@ -1,23 +1,39 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
-	"textures": {
-		"23": "tts:block/sov/sov_interior_beige_fabric_wall_vert",
-		"46": "tts:block/sov/sov_interior_beige_fabric",
-		"particle": "tts:block/sov/sov_outer_corridor_top_2"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#23"},
-				"east": {"uv": [0, 0, 16, 16], "texture": "#23"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#23"},
-				"west": {"uv": [0, 0, 16, 16], "texture": "#23"},
-				"up": {"uv": [16, 16, 0, 0], "texture": "#46"},
-				"down": {"uv": [16, 0, 0, 16], "texture": "#46"}
-			}
-		}
-	]
+  "credit" : "Made with Blockbench",
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#46",
+        "uv" : [ 16, 0, 0, 16 ]
+      },
+      "east" : {
+        "texture" : "#23",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "north" : {
+        "texture" : "#23",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "south" : {
+        "texture" : "#23",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "up" : {
+        "texture" : "#46",
+        "uv" : [ 16, 16, 0, 0 ]
+      },
+      "west" : {
+        "texture" : "#23",
+        "uv" : [ 0, 0, 16, 16 ]
+      }
+    },
+    "from" : [ 0, 0, 0 ],
+    "to" : [ 16, 16, 16 ]
+  } ],
+  "format_version" : "1.9.0",
+  "textures" : {
+    "23" : "tts:block/sov/sov_interior_beige_fabric_wall_vert",
+    "46" : "tts:block/sov/sov_interior_beige_fabric",
+    "particle" : "tts:block/sov/sov_outer_corridor_top_2"
+  }
 }

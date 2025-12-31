@@ -1,21 +1,15 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "tts:decoration/runner_padding_portrait"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "tts:blocks/decoration/runner_padding_portrait"
+  "pools" : [ {
+    "bonus_rolls" : 0.0,
+    "conditions" : [ {
+      "condition" : "minecraft:survives_explosion"
+    } ],
+    "entries" : [ {
+      "name" : "tts:decoration/runner_padding_portrait",
+      "type" : "minecraft:item"
+    } ],
+    "rolls" : 1.0
+  } ],
+  "random_sequence" : "tts:blocks/decoration/runner_padding_portrait",
+  "type" : "minecraft:block"
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/nether_reactor_core"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/nether_reactor_core"
     }
   }
 }

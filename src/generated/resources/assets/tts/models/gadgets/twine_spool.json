@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "tts:item/gadgets/twine_spool"
+  "parent" : "minecraft:item/generated",
+  "textures" : {
+    "layer0" : "tts:item/gadgets/twine_spool"
   }
 }

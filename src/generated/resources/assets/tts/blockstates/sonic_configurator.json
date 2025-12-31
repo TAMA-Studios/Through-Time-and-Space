@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sonic_configurator"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sonic_configurator"
     }
   }
 }

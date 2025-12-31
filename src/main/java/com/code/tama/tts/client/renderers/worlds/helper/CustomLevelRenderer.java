@@ -1,7 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.helper;
 
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
+
+import java.awt.*;
+import java.util.ArrayList;
+
 import com.code.tama.tts.client.renderers.DevOverlayRenderer;
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
@@ -13,6 +18,11 @@ import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector4i;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,16 +39,8 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector4i;
 
-import java.awt.*;
-import java.util.ArrayList;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetClientTARDISCapSupplier;
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class CustomLevelRenderer {
 	private static final Vec3 PLANET_POSITION = new Vec3(0, 100, 0); // Position of the cube planet in world coordinates
@@ -132,7 +134,7 @@ public class CustomLevelRenderer {
 
 	@SubscribeEvent
 	public static void onRenderGUI(RenderGuiEvent event) {
-//		ModList.get().getModFileById("aseoha").versionString()
+		// ModList.get().getModFileById("aseoha").versionString()
 		SonicOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
 		DevOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
 	}

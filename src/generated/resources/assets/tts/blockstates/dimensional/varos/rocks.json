@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:dimensional/varos/rocks"
+  "variants" : {
+    "" : {
+      "model" : "tts:dimensional/varos/rocks"
     }
   }
 }

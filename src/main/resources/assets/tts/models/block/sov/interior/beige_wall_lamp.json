@@ -1,24 +1,40 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
-	"textures": {
-		"12": "tts:block/sov/sov_interior_beige_wall_lamp",
-		"17": "tts:block/sov/sov_interior_beige_raised_panel",
-		"36": "tts:block/sov/sov_bridge_brown_flat",
-		"particle": "tts:block/sov/sov_outer_corridor_top_2"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"east": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"west": {"uv": [0, 0, 16, 16], "texture": "#12"},
-				"up": {"uv": [16, 16, 0, 0], "texture": "#17"},
-				"down": {"uv": [16, 0, 0, 16], "texture": "#36"}
-			}
-		}
-	]
+  "credit" : "Made with Blockbench",
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#36",
+        "uv" : [ 16, 0, 0, 16 ]
+      },
+      "east" : {
+        "texture" : "#12",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "north" : {
+        "texture" : "#12",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "south" : {
+        "texture" : "#12",
+        "uv" : [ 0, 0, 16, 16 ]
+      },
+      "up" : {
+        "texture" : "#17",
+        "uv" : [ 16, 16, 0, 0 ]
+      },
+      "west" : {
+        "texture" : "#12",
+        "uv" : [ 0, 0, 16, 16 ]
+      }
+    },
+    "from" : [ 0, 0, 0 ],
+    "to" : [ 16, 16, 16 ]
+  } ],
+  "format_version" : "1.9.0",
+  "textures" : {
+    "12" : "tts:block/sov/sov_interior_beige_wall_lamp",
+    "17" : "tts:block/sov/sov_interior_beige_raised_panel",
+    "36" : "tts:block/sov/sov_bridge_brown_flat",
+    "particle" : "tts:block/sov/sov_outer_corridor_top_2"
+  }
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "tts:block/fault_locator"
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "tts:block/fault_locator"
   }
 }

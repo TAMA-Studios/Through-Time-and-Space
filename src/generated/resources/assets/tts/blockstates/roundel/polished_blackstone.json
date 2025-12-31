@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:roundel/polished_blackstone"
+  "variants" : {
+    "" : {
+      "model" : "tts:roundel/polished_blackstone"
     }
   }
 }

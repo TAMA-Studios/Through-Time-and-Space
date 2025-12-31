@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:zeiton/nether_zeiton_ore"
+  "variants" : {
+    "" : {
+      "model" : "tts:zeiton/nether_zeiton_ore"
     }
   }
 }

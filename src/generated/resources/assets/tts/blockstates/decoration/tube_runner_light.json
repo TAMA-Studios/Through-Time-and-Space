@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/decoration/tube_runner_light"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/decoration/tube_runner_light"
     }
   }
 }

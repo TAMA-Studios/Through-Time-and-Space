@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/decoration/runner_screen_upper"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/decoration/runner_screen_upper"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sov/interior/beige_panel"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sov/interior/beige_panel"
     }
   }
 }

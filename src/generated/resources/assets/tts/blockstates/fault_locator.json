@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/fault_locator"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/fault_locator"
     }
   }
 }

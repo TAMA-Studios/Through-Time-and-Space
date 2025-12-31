@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sov/bridge/trimlight_lower"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sov/bridge/trimlight_lower"
     }
   }
 }

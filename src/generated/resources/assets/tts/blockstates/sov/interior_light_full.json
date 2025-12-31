@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/sov/interior_light_full"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/sov/interior_light_full"
     }
   }
 }

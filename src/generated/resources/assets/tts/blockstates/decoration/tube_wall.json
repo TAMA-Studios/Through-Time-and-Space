@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/decoration/tube_wall"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/decoration/tube_wall"
     }
   }
 }

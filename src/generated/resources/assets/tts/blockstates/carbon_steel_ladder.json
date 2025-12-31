@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "tts:block/carbon_steel_ladder"
+  "variants" : {
+    "" : {
+      "model" : "tts:block/carbon_steel_ladder"
     }
   }
 }

@@ -1,10 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.tts.TTSMod;
+
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 
 public class TriggerAPI {
 	public static String MOD_ID = TTSMod.MODID;

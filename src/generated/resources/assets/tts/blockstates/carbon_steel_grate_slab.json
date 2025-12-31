@@ -1,22 +1,22 @@
 {
-  "variants": {
-    "type=bottom,waterlogged=false": {
-      "model": "tts:block/carbon_steel_grate_slab_bottom"
+  "variants" : {
+    "type=bottom,waterlogged=false" : {
+      "model" : "tts:block/carbon_steel_grate_slab_bottom"
     },
-    "type=bottom,waterlogged=true": {
-      "model": "tts:block/carbon_steel_grate_slab_bottom"
+    "type=bottom,waterlogged=true" : {
+      "model" : "tts:block/carbon_steel_grate_slab_bottom"
     },
-    "type=double,waterlogged=false": {
-      "model": "tts:block/carbon_steel_grate_"
+    "type=double,waterlogged=false" : {
+      "model" : "tts:block/carbon_steel_grate_"
     },
-    "type=double,waterlogged=true": {
-      "model": "tts:block/carbon_steel_grate_"
+    "type=double,waterlogged=true" : {
+      "model" : "tts:block/carbon_steel_grate_"
     },
-    "type=top,waterlogged=false": {
-      "model": "tts:block/carbon_steel_grate_slab_top"
+    "type=top,waterlogged=false" : {
+      "model" : "tts:block/carbon_steel_grate_slab_top"
     },
-    "type=top,waterlogged=true": {
-      "model": "tts:block/carbon_steel_grate_slab_top"
+    "type=top,waterlogged=true" : {
+      "model" : "tts:block/carbon_steel_grate_slab_top"
     }
   }
 }
