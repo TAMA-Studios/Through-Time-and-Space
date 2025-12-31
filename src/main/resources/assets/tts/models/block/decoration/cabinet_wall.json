@@ -1,0 +1,22 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"14": "tts:block/decoration/cabinet_wall",
+		"particle": "tts:block/decoration/tube_wall"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#14"}
+			}
+		}
+	]
+}

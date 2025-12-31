@@ -1,12 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.registries.forge.TTSItems.AllValues;
-
-import com.code.tama.tts.server.items.tabs.DimensionalTab;
-import com.code.tama.tts.server.items.tabs.MainTab;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -14,7 +8,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.code.tama.triggerapi.helpers.AnnotationUtils;
+import static com.code.tama.tts.TTSMod.MODID;
 
 public class TTSCreativeTabs {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister
@@ -23,16 +17,15 @@ public class TTSCreativeTabs {
 	public static final RegistryObject<CreativeModeTab> DIMENSIONAL_TAB = CREATIVE_MODE_TABS.register("dimensional_tab",
 			() -> CreativeModeTab.builder().withTabsBefore(TTSCreativeTabs.MAIN_TAB.getId())
 					.icon(() -> TTSBlocks.EXTERIOR_BLOCK.asItem().getDefaultInstance())
-					.displayItems((parameters, output) -> AllValues().forEach((reg) -> {
-						if (AnnotationUtils.hasAnnotation(DimensionalTab.class, reg))
-							output.accept(reg.get());
-					})).title(Component.translatable("tts.tab.dimensional")).build());
+					.title(Component.translatable("tts.tab.dimensional")).build());
+
+	public static final RegistryObject<CreativeModeTab> DECORATIONAL_TAB = CREATIVE_MODE_TABS.register("decorational_tab",
+			() -> CreativeModeTab.builder().withTabsBefore(TTSCreativeTabs.DIMENSIONAL_TAB.getId())
+					.icon(() -> TTSBlocks.SOV_BEIGE_ROOFLIGHT.asItem().getDefaultInstance())
+					.title(Component.translatable("tts.tab.decorational")).build());
 
 	public static final RegistryObject<CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main_tab",
 			() -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT)
 					.icon(() -> TTSBlocks.EXTERIOR_BLOCK.asItem().getDefaultInstance())
-					.displayItems((parameters, output) -> AllValues().forEach((reg) -> {
-						if (AnnotationUtils.hasAnnotation(MainTab.class, reg))
-							output.accept(reg.get());
-					})).title(Component.translatable("tts.tab.main")).build());
+					.title(Component.translatable("tts.tab.main")).build());
 }

@@ -151,8 +151,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<HartnellRotor> HARTNELL_ROTOR = registrate()
-			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem()
-			.register();
+			.block("hartnell_rotor", HartnellRotor::new).properties(p -> copy(Blocks.GLASS, p)).airState().simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
@@ -519,8 +518,6 @@ public class TTSBlocks {
 
 	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL = Builder("sov/interior/beige_raised_panel", Block::new).verySimpleBlock().register();
 
-	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_RAISED_PANEL_VERT = Builder("sov/interior/beige_raised_panel_vert", Block::new).verySimpleBlock().register();
-
 	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("sov/interior/beige_rooflight", Block::new).verySimpleBlock().register();
 
 	@Decorational @SOV public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("sov/interior/beige_wall_lamp", Block::new).verySimpleBlock().register();
@@ -543,12 +540,23 @@ public class TTSBlocks {
 
 	@Decorational @SOV public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("sov/bridge/trimlight_upper", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_HALVED = Builder("decoration/runner_light_halved", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_RAILED = Builder("decoration/runner_light_railed", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_LIGHT_SPLIT = Builder("decoration/runner_light_split", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_PADDING = Builder("decoration/runner_padding", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_PADDING_PORTRAIT = Builder("decoration/runner_padding_portrait", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_SCREEN = Builder("decoration/runner_screen", Block::new).verySimpleBlock().register();
 
+	@Decorational public static final BlockEntry<Block> RUNNER_SCREEN_UPPER = Builder("decoration/runner_screen_upper", Block::new).verySimpleBlock().register();
+
+	@Decorational public static final BlockEntry<Block> TUBE_RUNNER_LIGHT = Builder("decoration/tube_runner_light", Block::new).verySimpleBlock().register();
+
+	@Decorational public static final BlockEntry<Block> TUBE_WALL = Builder("decoration/tube_wall", Block::new).verySimpleBlock().register();
 
 	/**
 	 * Automatically handles registering the block and item for you, all you do is

@@ -161,5 +161,6 @@
   "tts.sonic_mode.entity_mode" : "Entity Mode",
   "tts.sonic_mode.redstone_pulse" : "Redstone Pulse Mode",
   "tts.tab.dimensional" : "Dimensional Blocks (TTS)",
-  "tts.tab.main" : "Tech Blocks (TTS)"
+  "tts.tab.main" : "Tech Blocks (TTS)",
+  "tts.tab.decorational": "Decorational Blocks (TTS)"
 }

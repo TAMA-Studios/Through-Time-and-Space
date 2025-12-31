@@ -566,61 +566,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
 	public static ConfiguredModel[] controlPanel(Direction FACING, int PRESSED, String blockName) {
 		String modelPath;
-		switch (PRESSED) {
-			case 0 -> modelPath = "tts:block/control/" + blockName + "_0";
-			case 1 -> modelPath = "tts:block/control/" + blockName + "_1";
-			case 2 -> modelPath = "tts:block/control/" + blockName + "_2";
-			case 3 -> modelPath = "tts:block/control/" + blockName + "_3";
-			case 4 -> modelPath = "tts:block/control/" + blockName + "_4";
-			case 5 -> modelPath = "tts:block/control/" + blockName + "_5";
-			case 6 -> modelPath = "tts:block/control/" + blockName + "_6";
-			case 7 -> modelPath = "tts:block/control/" + blockName + "_7";
-			case 8 -> modelPath = "tts:block/control/" + blockName + "_8";
-			case 9 -> modelPath = "tts:block/control/" + blockName + "_9";
-			case 10 -> modelPath = "tts:block/control/" + blockName + "_10";
-			case 11 -> modelPath = "tts:block/control/" + blockName + "_11";
-			case 12 -> modelPath = "tts:block/control/" + blockName + "_12";
-			case 13 -> modelPath = "tts:block/control/" + blockName + "_13";
-			case 14 -> modelPath = "tts:block/control/" + blockName + "_14";
-			case 15 -> modelPath = "tts:block/control/" + blockName + "_15";
-			case 16 -> modelPath = "tts:block/control/" + blockName + "_16";
-			case 17 -> modelPath = "tts:block/control/" + blockName + "_17";
-			case 18 -> modelPath = "tts:block/control/" + blockName + "_18";
-			case 19 -> modelPath = "tts:block/control/" + blockName + "_19";
-			case 20 -> modelPath = "tts:block/control/" + blockName + "_20";
-			case 21 -> modelPath = "tts:block/control/" + blockName + "_21";
-			case 22 -> modelPath = "tts:block/control/" + blockName + "_22";
-			case 23 -> modelPath = "tts:block/control/" + blockName + "_23";
-			case 24 -> modelPath = "tts:block/control/" + blockName + "_24";
-			case 25 -> modelPath = "tts:block/control/" + blockName + "_25";
-			case 26 -> modelPath = "tts:block/control/" + blockName + "_26";
-			case 27 -> modelPath = "tts:block/control/" + blockName + "_27";
-			case 28 -> modelPath = "tts:block/control/" + blockName + "_28";
-			case 29 -> modelPath = "tts:block/control/" + blockName + "_29";
-			case 30 -> modelPath = "tts:block/control/" + blockName + "_30";
-			case 31 -> modelPath = "tts:block/control/" + blockName + "_31";
-			case 32 -> modelPath = "tts:block/control/" + blockName + "_32";
-			case 33 -> modelPath = "tts:block/control/" + blockName + "_33";
-			case 34 -> modelPath = "tts:block/control/" + blockName + "_34";
-			case 35 -> modelPath = "tts:block/control/" + blockName + "_35";
-			case 36 -> modelPath = "tts:block/control/" + blockName + "_36";
-			case 37 -> modelPath = "tts:block/control/" + blockName + "_37";
-			case 38 -> modelPath = "tts:block/control/" + blockName + "_38";
-			case 39 -> modelPath = "tts:block/control/" + blockName + "_39";
-			case 40 -> modelPath = "tts:block/control/" + blockName + "_40";
-			case 41 -> modelPath = "tts:block/control/" + blockName + "_41";
-			case 42 -> modelPath = "tts:block/control/" + blockName + "_42";
-			case 43 -> modelPath = "tts:block/control/" + blockName + "_43";
-			case 44 -> modelPath = "tts:block/control/" + blockName + "_44";
-			case 45 -> modelPath = "tts:block/control/" + blockName + "_45";
-			case 46 -> modelPath = "tts:block/control/" + blockName + "_46";
-			case 47 -> modelPath = "tts:block/control/" + blockName + "_47";
-			case 48 -> modelPath = "tts:block/control/" + blockName + "_48";
-			case 49 -> modelPath = "tts:block/control/" + blockName + "_49";
-			case 50 -> modelPath = "tts:block/control/" + blockName + "_50";
-
-			default -> throw new IllegalArgumentException("Oops: " + PRESSED);
-		}
+		modelPath = "tts:block/control/" + blockName + PRESSED;
 
 		int y = switch (FACING) {
 			case SOUTH -> 180;
@@ -629,7 +575,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			default -> 0;
 		};
 
-		System.gc();
+//		System.gc();
 
 		return new ConfiguredModel[]{new ConfiguredModel(new ModelFile.UncheckedModelFile(modelPath), 0, y, false)};
 	}
