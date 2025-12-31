@@ -386,58 +386,58 @@ public class TTSBlocks {
 			"dimensional/gallifreyan/gallifreyan_oak_stairs",
 			properties -> new StairBlock(() -> GALLIFREYAN_OAK_PLANKS.get().defaultBlockState(),
 					copy(Blocks.OAK_PLANKS, properties).sound(SoundType.WOOD)))
-			.simpleItem().register();
+			.blankBlockstate().simpleItem().register();
 
 	@DimensionalTab
 	public static final BlockEntry<SlabBlock> GALLIFREYAN_OAK_SLAB = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_slab",
 			properties -> new SlabBlock(copy(Blocks.OAK_PLANKS, properties).sound(SoundType.WOOD))).simpleItem()
-			.register();
+			.blankBlockstate().register();
 
 	@DimensionalTab
 	public static final BlockEntry<ButtonBlock> GALLIFREYAN_OAK_BUTTON = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_button",
 			properties -> new ButtonBlock(copy(Blocks.STONE_BUTTON, properties).sound(SoundType.WOOD),
 					BlockSetType.IRON, 10, true))
-			.simpleItem().register();
+			.blankBlockstate().simpleItem().register();
 
 	@DimensionalTab
 	public static final BlockEntry<PressurePlateBlock> GALLIFREYAN_OAK_PRESSURE_PLATE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_pressure_plate",
 			prop -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING,
 					copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD), BlockSetType.OAK))
-			.simpleItem().register();
+			.blankBlockstate().simpleItem().register();
 
 	@DimensionalTab
 	public static final BlockEntry<FenceBlock> GALLIFREYAN_OAK_FENCE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_fence",
-			prop -> new FenceBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().register();
+			prop -> new FenceBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate().register();
 
 	@DimensionalTab
 	public static final BlockEntry<FenceGateBlock> GALLIFREYAN_OAK_FENCE_GATE = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_fence_gate",
 			prop -> new FenceGateBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD), SoundEvents.CHAIN_PLACE,
 					SoundEvents.ANVIL_BREAK))
-			.simpleItem().register();
+			.blankBlockstate().simpleItem().register();
 
 	@DimensionalTab
 	public static final BlockEntry<WallBlock> GALLIFREYAN_OAK_WALL = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_wall",
-			prop -> new WallBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().register();
+			prop -> new WallBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD))).simpleItem().blankBlockstate().register();
 
 	@DimensionalTab
 	public static final BlockEntry<net.minecraft.world.level.block.DoorBlock> GALLIFREYAN_OAK_DOOR = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_door",
 			prop -> new net.minecraft.world.level.block.DoorBlock(
 					copy(Blocks.OAK_DOOR, prop).sound(SoundType.WOOD).noOcclusion(), BlockSetType.IRON))
-			.simpleItem().register();
+			.simpleItem().blankBlockstate().register();
 
 	@DimensionalTab
 	public static final BlockEntry<TrapDoorBlock> GALLIFREYAN_OAK_TRAPDOOR = Builder(
 			"dimensional/gallifreyan/gallifreyan_oak_trapdoor",
 			prop -> new TrapDoorBlock(copy(Blocks.OAK_PLANKS, prop).sound(SoundType.WOOD).noOcclusion(),
 					BlockSetType.IRON))
-			.simpleItem().register();
+			.simpleItem().blankBlockstate().register();
 
 	@DimensionalTab
 	public static final BlockEntry<Block> VAROS_ROCKS = Builder("dimensional/varos/rocks",
@@ -451,7 +451,7 @@ public class TTSBlocks {
 
 	@DimensionalTab
 	public static final BlockEntry<Block> RAW_ZEITON_BLOCK = Builder("zeiton/raw_zeiton_block",
-			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
+			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).blankBlockstate().simpleItem()
 			.register();
 
 	@DimensionalTab
@@ -481,7 +481,7 @@ public class TTSBlocks {
 	public static final BlockEntry<HartnellDoorMultiBlock> HARTNELL_DOOR_PLACEHOLDER = Builder(
 			"hartnell_door_placeholder", prop -> new HartnellDoorMultiBlock(copy(Blocks.WHITE_CONCRETE, prop),
 					TTSTileEntities.HARTNELL_DOOR_PLACEHOLDER))
-			.defaultBlockstate().simpleItem().register();
+			.airState().simpleItem().register();
 
 	@Decorational @SOV public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("sov/bridge/trimlight_lower", Block::new).verySimpleBlock().register();
 
