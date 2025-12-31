@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "powered=true": {
+      "model": "minecraft:block/air"
+    }
+  }
+}

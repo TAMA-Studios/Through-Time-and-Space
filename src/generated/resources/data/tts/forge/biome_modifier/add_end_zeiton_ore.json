@@ -1,0 +1,6 @@
+{
+  "biomes" : "#minecraft:is_end",
+  "features" : "tts:end_zeiton_ore_placed",
+  "step" : "underground_ores",
+  "type" : "forge:add_features"
+}

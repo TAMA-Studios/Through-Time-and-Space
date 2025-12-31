@@ -6,15 +6,15 @@ import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import com.tterrag.registrate.util.nullness.*;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -97,6 +97,13 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	@Override
 	public TTSBlockBuilder<T, P> simpleItem() {
 		return (TTSBlockBuilder<T, P>) super.simpleItem();
+	}
+
+	public TTSBlockBuilder<T, P> simpleItemNoData() {
+		return this.itemNoData(BlockItem::new).build();
+	}
+	public <I extends Item> ItemBuilder<I, TTSBlockBuilder<T, P>> itemNoData(NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
+		return ((ItemBuilder<I, TTSBlockBuilder<T, P>>)this.getOwner().item(this, this.getName(), (p) -> (Item)factory.apply(this.getEntry(), p)));
 	}
 
 	@Override

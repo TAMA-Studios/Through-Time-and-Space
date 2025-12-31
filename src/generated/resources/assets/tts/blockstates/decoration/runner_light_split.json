@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tts:block/decoration/runner_light_split"
+    }
+  }
+}

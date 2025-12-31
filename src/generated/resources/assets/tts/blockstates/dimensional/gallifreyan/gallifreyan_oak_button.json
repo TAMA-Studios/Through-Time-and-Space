@@ -1,0 +1,76 @@
+{
+  "variants": {
+    "face=ceiling,facing=east,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=east,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=north,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=north,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=south,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=south,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=west,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=ceiling,facing=west,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=east,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=east,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=north,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=north,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=south,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=south,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=west,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=floor,facing=west,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=east,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=east,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=north,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=north,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=south,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=south,powered=true": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=west,powered=false": {
+      "model": "minecraft:block/air"
+    },
+    "face=wall,facing=west,powered=true": {
+      "model": "minecraft:block/air"
+    }
+  }
+}

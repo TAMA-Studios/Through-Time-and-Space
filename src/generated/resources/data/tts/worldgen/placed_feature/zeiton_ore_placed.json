@@ -1,0 +1,22 @@
+{
+  "feature" : "tts:zeiton_ore",
+  "placement" : [ {
+    "count" : 48,
+    "type" : "minecraft:count"
+  }, {
+    "type" : "minecraft:in_square"
+  }, {
+    "height" : {
+      "max_inclusive" : {
+        "absolute" : 80
+      },
+      "min_inclusive" : {
+        "absolute" : -63
+      },
+      "type" : "minecraft:uniform"
+    },
+    "type" : "minecraft:height_range"
+  }, {
+    "type" : "minecraft:biome"
+  } ]
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tts:block/monitor_panel",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "tts:block/monitor_panel",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "tts:block/monitor_panel"
+    },
+    "facing=west": {
+      "model": "tts:block/monitor_panel",
+      "y": 90
+    }
+  }
+}

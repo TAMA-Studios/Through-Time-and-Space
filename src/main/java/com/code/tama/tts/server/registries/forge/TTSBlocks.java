@@ -183,11 +183,11 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
 			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL)).controlPanelState()
-			.properties(BlockBehaviour.Properties::noOcclusion).simpleItem().register();
+			.properties(BlockBehaviour.Properties::noOcclusion).simpleItemNoData().register();
 
 	@MainTab
 	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
-			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItem().register();
+			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItemNoData().register();
 
 	@MainTab
 	public static final BlockEntry<MonitorBlock> MONITOR_BLOCK = Builder("monitor_block", MonitorBlock::new)
@@ -281,17 +281,17 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<DynamorphicControllerBlock> DYNAMORPHIC_CONTROLLER_CORE = Builder(
 			"dynamorphic_controller_core", DynamorphicControllerBlock::new)
-			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().register();
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().simpleItemNoData().register();
 
 	@MainTab
 	public static final BlockEntry<DynamorphicGeneratorBlock> DYNAMORPHIC_GENERATOR_STACK = Builder(
 			"dynamorphic_generator_stack", DynamorphicGeneratorBlock::new)
-			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().register();
+			.properties(p -> p.strength(1.5f).sound(SoundType.STONE)).blankBlockstate().simpleItemNoData().register();
 
 	@MainTab
 	public static final BlockEntry<PortalBlock> PORTAL_BLOCK = Builder("portal_block", PortalBlock::new)
 			.properties(p -> p.mapColor(MapColor.COLOR_PURPLE).strength(5.0F).noOcclusion().lightLevel(state -> 10))
-			.airState().simpleItem().register();
+			.airState().simpleItemNoData().register();
 
 	@DimensionalTab
 	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("organic/interior_rock", Block::new)

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tts:block/crt_monitor",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "tts:block/crt_monitor",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "tts:block/crt_monitor"
+    },
+    "facing=west": {
+      "model": "tts:block/crt_monitor",
+      "y": 90
+    }
+  }
+}

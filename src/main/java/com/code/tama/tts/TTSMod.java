@@ -61,6 +61,7 @@ public class TTSMod {
 	public static TriggerAPI triggerAPI;
 
 	public TTSMod() {
+		REGISTRATE.skipErrors(true);
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 		// Register the commonSetup method for modloading
