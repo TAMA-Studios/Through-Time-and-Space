@@ -3,7 +3,6 @@ package com.code.tama.tts.server.threads;
 
 import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
-import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.events.TardisEvent;
@@ -53,9 +52,7 @@ public class CrashThread extends Thread {
 		BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState().setValue(FACING,
 				this.itardisLevel.GetNavigationalData().getFacing());
 
-		ExteriorBlock exteriorBlock = (ExteriorBlock) exteriorBlockState.getBlock();
 		exteriorBlockState.setValue(FACING, this.itardisLevel.GetNavigationalData().getFacing());
-		exteriorBlock.SetInteriorKey(this.itardisLevel.GetLevel().dimension());
 
 		CurrentLevel.setBlock(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
 				TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState(), 3);

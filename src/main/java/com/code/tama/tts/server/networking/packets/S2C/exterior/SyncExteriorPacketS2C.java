@@ -17,21 +17,21 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SyncExteriorPacketS2C {
-	private final boolean artificial;
+	final boolean artificial;
 
-	private final ExteriorState state;
+	final ExteriorState state;
 
-	private final int blockX, blockY, blockZ; // Block position
+	final int blockX, blockY, blockZ; // Block position
 
-	private final ResourceKey<Level> level;
+	final ResourceKey<Level> level;
 
-	private final ResourceLocation model;
+	final ResourceLocation model;
 
-	private final BlockPos targetPos;
+	final BlockPos targetPos;
 
-	private final float targetY;
+	final float targetY;
 
-	private final int variant;
+	final int variant;
 
 	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, boolean artificial, int variant,
 			@NotNull ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {

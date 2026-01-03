@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.renderers.tiles.tardis;
+package com.code.tama.tts.server.tileentities;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -120,7 +120,7 @@ public class DoorBlock extends Block implements EntityBlock {
 				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
-					exteriorTile.SetInteriorAndSyncWithBlock(Interior.dimension());
+					exteriorTile.SetInterior(Interior.dimension());
 				}
 				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot()
 						+ EntityToTeleport.getYRot();

@@ -3,6 +3,7 @@ package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.misc.MiscUtils;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.network.chat.Component;
@@ -35,6 +36,7 @@ public class DimensionControl extends AbstractControl {
 				return InteractionResult.FAIL;
 
 			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().getDestination();
+
 			coordinate.setLevel(
 					WorldHelper.getNextDimension(itardisLevel.GetNavigationalData().getDestination().getLevelKey()));
 			itardisLevel.GetNavigationalData().setDestination(coordinate);
@@ -42,8 +44,8 @@ public class DimensionControl extends AbstractControl {
 			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 
 			if (entity instanceof Player player)
-				player.displayClientMessage(Component.literal("Destination Level = " + GrammarNazi.CleanString(
-						itardisLevel.GetNavigationalData().getDestination().getLevelKey().location().getPath())),
+				player.displayClientMessage(Component.literal("Destination Level = " + MiscUtils
+						.getDimName(itardisLevel.GetNavigationalData().getDestination().getLevelKey().location())),
 						false);
 		}
 		return InteractionResult.SUCCESS;

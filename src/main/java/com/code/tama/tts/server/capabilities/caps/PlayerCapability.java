@@ -31,7 +31,7 @@ public class PlayerCapability implements IPlayerCap {
 		AtomicReference<String> Owned = new AtomicReference<>();
 		this.OwnedTARDISes.forEach(tard -> Owned.set(Owned.get() + "\n" + tard));
 
-		FileHelper.createStoredFile("/pdat/" + player.getDisplayName().getString() + "-data",
+		FileHelper.createStoredFileCustomPath("/pdat/", player.getDisplayName().getString() + "-data",
 				String.format(
 						"This file is to help server owners find info on players and owned TARDISes \n\n"
 								+ "This player currently owns %s TARDISes\n\n" + "Owned TARDISes: %s",

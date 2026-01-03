@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -54,8 +53,6 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public static final VoxelRotatedShape SHAPE_CLOSED = new VoxelRotatedShape(createShapeClosed().optimize());
 	public static final VoxelRotatedShape SHAPE_OPEN = new VoxelRotatedShape(createShape().optimize());
 
-	private ResourceKey<Level> LevelKey;
-
 	private final Supplier<? extends BlockEntityType<? extends ExteriorTile>> exteriorType;
 
 	public boolean IsMarkedForRemoval = false;
@@ -82,6 +79,17 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 	}
 
+	public static VoxelShape createShapeB() {
+		return Stream
+				.of(Block.box(0, 0, 0, 1, 32, 16), Block.box(15, 0, 0, 16, 32, 16), Block.box(1, 0, 15, 15, 32, 16),
+						Block.box(1, 0, 0, 15, 1, 15), Block.box(1, 31, 0, 15, 32, 15))
+				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	}
+
+	public static VoxelShape createShapeClosedB() {
+		return Block.box(0, 0, 0, 16, 32, 16).optimize();
+	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
 		super.createBlockStateDefinition(StateDefinition);
@@ -97,10 +105,6 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	public void MarkForRemoval() {
 		this.IsMarkedForRemoval = true;
-	}
-
-	public void SetInteriorKey(ResourceKey<Level> levelKey) {
-		this.LevelKey = levelKey;
 	}
 
 	public void TeleportToInterior(Entity EntityToTeleport, BlockPos pos) {
@@ -225,7 +229,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	@Override
 	public void onBrokenAfterFall(Level level, BlockPos pos, FallingBlockEntity entity) {
-		// Called when it lands and breaks - TODO: This
+		// Called when it lands and breaks - TODO: This: Remove
 	}
 
 	public void onLand(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,

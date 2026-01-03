@@ -33,13 +33,20 @@ public class DevOverlayRenderer {
 		RenderSystem.defaultBlendFunc();
 
 		stack.pushPose();
-		stack.translate(5, Minecraft.getInstance().getWindow().getGuiScaledHeight() - 35, 0);
+		stack.translate(5, 5, 0);
 
-		Minecraft.getInstance().font.drawInBatch(TriggerAPI.getModVersion(), 0, 0, white, false, stack.last().pose(),
-				bufferSource, Font.DisplayMode.NORMAL, 0, light);
-
-		Minecraft.getInstance().font.drawInBatch(Minecraft.getInstance().fpsString, 0, 10, white, false,
+		Minecraft.getInstance().font.drawInBatch("Through Time and Space: A Development", 0, 0, white, false,
 				stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+
+		Minecraft.getInstance().font.drawInBatch("Mod Version: " + TriggerAPI.getModVersion(), 0, 10, white, false,
+				stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+
+		Minecraft.getInstance().font.drawInBatch(
+				Minecraft.getInstance().getFps() + " FPS"
+						+ (Minecraft.getInstance().getFps() < 20
+								? " - This FPS is slower than the beamer your father used to run away"
+								: ""),
+				0, 20, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
 
 		stack.popPose();
 

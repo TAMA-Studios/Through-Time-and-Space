@@ -3,7 +3,6 @@ package com.code.tama.tts.server.capabilities;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
@@ -12,6 +11,7 @@ import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.capabilities.providers.FragmentLinksCapabilityProvider;
 import com.code.tama.tts.server.capabilities.providers.SerializableCapabilityProvider;
+import com.code.tama.tts.server.tileentities.FragmentLinksTile;
 import com.code.tama.tts.server.worlds.dimension.TDimensions;
 
 import net.minecraft.core.registries.Registries;

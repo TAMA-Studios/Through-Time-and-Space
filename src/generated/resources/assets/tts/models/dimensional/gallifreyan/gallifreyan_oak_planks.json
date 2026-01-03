@@ -1,3 +1,6 @@
 {
-  "parent" : "tts:dimensional/gallifreyan/gallifreyan_oak_planks"
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "tts:block/dimensional/gallifreyan/gallifreyan_oak_planks"
+  }
 }

@@ -121,7 +121,8 @@ public class TTSMod {
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
 		if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey()
-				|| event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey()) {
+				|| event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey()
+				|| event.getTabKey() == TTSCreativeTabs.DECORATIONAL_TAB.getKey()) {
 
 			// Check items
 			for (Field f : TTSItems.class.getFields()) {

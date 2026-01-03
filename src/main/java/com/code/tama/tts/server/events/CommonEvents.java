@@ -170,7 +170,8 @@ public class CommonEvents {
 			// -> cap.OnLoad(player));
 		}
 
-		if (!FMLEnvironment.production) {
+		if (!FMLEnvironment.production && false) { // Recent datagenney BS has slightly maken this go cattywonkers so
+													// I've disabled its sorry ass
 			checkAllTranslations();
 		}
 	}

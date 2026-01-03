@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.config;
 
+import java.util.List;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class TTSConfig {
@@ -40,9 +42,12 @@ public class TTSConfig {
 		public static ForgeConfigSpec.IntValue BOTI_RENDER_DISTANCE;
 
 		public static ForgeConfigSpec.IntValue TICKS_BETWEEN_FLIGHT_EVENT;
+
 		public static ForgeConfigSpec.IntValue FLIGHT_EVENT_DURATION;
 
 		public static ForgeConfigSpec.DoubleValue BLOCKS_PER_TICK;
+
+		public static ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_NAME_OVERRIDE;
 
 		public static final ForgeConfigSpec SPEC;
 		static {
@@ -78,6 +83,15 @@ public class TTSConfig {
 			FLIGHT_EVENT_DURATION = builder.defineInRange("flight_event_duration", 60, 0, Integer.MAX_VALUE);
 			builder.comment("The default speed at which the TARDIS flies (measured in blocks per tick)");
 			BLOCKS_PER_TICK = builder.defineInRange("blocks_per_tick", 0.1, 0, Double.MAX_VALUE);
+
+			builder.pop();
+
+			builder.push("Miscellaneous shit");
+
+			builder.comment(
+					"Some servers like to add lore, and might want to change the name of worlds, if this be the case, this config value is for you.");
+			DIMENSION_NAME_OVERRIDE = builder.define("overworld_name_override",
+					List.of("minecraft:overworld,Earth", "examplemod:withaworld,THEMOOOOOON"));
 
 			builder.pop();
 		}

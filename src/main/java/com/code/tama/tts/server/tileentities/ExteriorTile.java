@@ -168,7 +168,7 @@ public class ExteriorTile extends AbstractPortalTile {
 		return this.Model == null ? ExteriorsRegistry.Get(0) : this.Model;
 	}
 
-	public void NeedsClientUpdate() {
+	public void UpdateAll() {
 		if (this.level == null)
 			return;
 		if (this.level.isClientSide)
@@ -188,24 +188,21 @@ public class ExteriorTile extends AbstractPortalTile {
 		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
 				new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
 				structure.GetRL());
-		this.setChanged();
 	}
 
 	public void SetDoorsOpen(int doorState) {
 		assert this.level != null;
 		if (!this.level.isClientSide)
-			this.level.getServer().getLevel(this.INTERIOR_DIMENSION).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-					.ifPresent(cap -> cap.GetData().getInteriorDoorData().setDoorsOpen(doorState));
+			if (this.INTERIOR_DIMENSION != null)
+				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
+						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+						.ifPresent(cap -> cap.GetData().getInteriorDoorData().setDoorsOpen(doorState));
 		this.DoorState = doorState;
 	}
 
-	public void SetInteriorAndSyncWithBlock(ResourceKey<Level> INTERIOR_DIMENSION) {
+	public void SetInterior(ResourceKey<Level> INTERIOR_DIMENSION) {
 		this.INTERIOR_DIMENSION = INTERIOR_DIMENSION;
-		assert this.level != null;
-		if (this.level.getBlockState(this.getBlockPos()).getBlock() instanceof ExteriorBlock exteriorBlock) {
-			exteriorBlock.SetInteriorKey(this.INTERIOR_DIMENSION);
-			this.setChanged();
-		}
+		this.UpdateAll();
 	}
 
 	public void updateTargetPos() {
@@ -429,9 +426,6 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.state.equals(ExteriorState.SHOULDNTEXIST))
 			this.UtterlyDestroy();
 
-		if (this.INTERIOR_DIMENSION == null)
-			this.UtterlyDestroy();
-
 		if (this.ShouldMakeDimOnNextTick)
 			makeInterior(this.isArtificial);
 
@@ -471,8 +465,6 @@ public class ExteriorTile extends AbstractPortalTile {
 			else
 				tardisLevel = DimensionAPI.get().getOrCreateLevel(level.getServer(), resourceKey,
 						() -> TStemCreation.createNaturalTARDISLevelStem(level.getServer()));
-
-			((ExteriorBlock) this.getBlockState().getBlock()).SetInteriorKey(tardisLevel.dimension());
 
 			GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
 				cap.SetExteriorTile(this);

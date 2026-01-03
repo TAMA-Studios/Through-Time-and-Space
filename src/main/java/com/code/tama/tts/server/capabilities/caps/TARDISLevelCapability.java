@@ -56,7 +56,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	private final Thread TickThread;
+	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 
@@ -71,7 +71,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	public TARDISLevelCapability(Level level) {
 		this.level = level;
-		this.TickThread = CommonThreads.TARDISTickThread(this);
 	}
 
 	@Override
@@ -257,7 +256,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void SetExteriorTile(ExteriorTile exteriorTile) {
 		this.exteriorTile = exteriorTile;
-		this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
+		// this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
 		assert exteriorTile.getLevel() != null;
 		this.navigationalData
 				.setLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension()));
@@ -520,8 +519,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			CurrentLevel.setBlock(this.GetNavigationalData().getDestination().GetBlockPos(),
 					exteriorBlockState.setValue(FACING, this.GetNavigationalData().getFacing()), 3);
 
-			((ExteriorBlock) exteriorBlockState.getBlock()).SetInteriorKey(this.GetLevel().dimension());
-
 			this.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), exteriorBlockState);
 			if (CurrentLevel.getBlockEntity(pos) != null) {
 				this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(pos)));
@@ -601,7 +598,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
 					Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
 					Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
-					Objects.requireNonNull(cap.GetExteriorTile()).NeedsClientUpdate();
+					cap.GetExteriorTile().getLevel().sendBlockUpdated(cap.GetExteriorTile().getBlockPos(),
+							cap.GetExteriorTile().getBlockState(), cap.GetExteriorTile().getBlockState(), 3);
 				}
 			}
 		}
@@ -612,11 +610,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void Tick() {
 		this.ticks++;
 
-		if (TickThread.isAlive())
-			TickThread.run();
-		else
+		if (TickThread == null) {
+			TickThread = CommonThreads.TARDISTickThread(this);
 			TickThread.start();
-
+		} else
+			TickThread.run();
 		// if (GetData().getSubSystemsData().DynamorphicController.isActivated(level)
 		// && !GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty() &&
 		// this.data.isRefueling()

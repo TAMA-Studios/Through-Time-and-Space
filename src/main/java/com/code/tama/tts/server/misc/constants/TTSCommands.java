@@ -8,8 +8,12 @@ import java.util.stream.Collectors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.registries.tardis.SubsystemsRegistry;
+import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
+import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -19,6 +23,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -27,6 +32,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -46,8 +52,12 @@ public class TTSCommands {
 				return SharedSuggestionProvider.suggest(systems, builder);
 			}).executes(ctx -> placeSystem(ctx.getSource(), StringArgumentType.getString(ctx, "subsystem"))));
 
+	public static LiteralArgumentBuilder<CommandSourceStack> createTardis = Commands.literal("create_tardis")
+			.executes(ctx -> placeTARDIS(ctx.getSource()));
+
 	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
-	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem);
+	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem)
+			.then(createTardis);
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
 		AbstractSubsystem subsystem = SubsystemsRegistry.subsystems.stream().filter(sub -> sub.name().equals(system))
@@ -63,6 +73,31 @@ public class TTSCommands {
 		source.sendSuccess(() -> {
 			assert player != null;
 			return Component.literal("Placed subsystem " + system + " at " + player.position());
+		}, true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int placeTARDIS(CommandSourceStack source) {
+		ServerPlayer player = source.getPlayer();
+		BlockPos blockPos = player.blockPosition();
+		Level level = source.getLevel();
+
+		BlockState state1 = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
+		ExteriorTile tile = TTSTileEntities.EXTERIOR_TILE.create(blockPos, state1);
+
+		tile.PlacerName = player.getName().getString();
+		tile.PlacerUUID = player.getUUID();
+		tile.state = ExteriorState.LANDED;
+		tile.isArtificial = true;
+
+		level.setBlockAndUpdate(blockPos, state1);
+		level.setBlockEntity(tile);
+
+		tile.ShouldMakeDimOnNextTick = true;
+
+		source.sendSuccess(() -> {
+			assert player != null;
+			return Component.literal("Placed TARDIS at " + player.position());
 		}, true);
 		return Command.SINGLE_SUCCESS;
 	}

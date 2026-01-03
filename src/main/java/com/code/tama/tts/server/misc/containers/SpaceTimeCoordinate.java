@@ -1,6 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
+import com.code.tama.tts.server.misc.MiscUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -119,7 +120,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 
 	public String ReadableStringShort() {
 		return Integer.toString((int) this.X) + " | " + Integer.toString((int) this.Y) + " | "
-				+ Integer.toString((int) this.Z) + " | " + this.level.location();
+				+ Integer.toString((int) this.Z) + " | " + MiscUtils.getDimName(this.level.location());
 	}
 
 	public SpaceTimeCoordinate copy() {

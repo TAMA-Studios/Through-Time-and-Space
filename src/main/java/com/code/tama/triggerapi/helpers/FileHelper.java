@@ -59,6 +59,28 @@ public class FileHelper {
 		}
 	}
 
+	public static boolean createStoredFileCustomPath(String path, String fileName, String content) {
+		Path dirPath = FMLPaths.GAMEDIR.get().resolve(path);
+		File directory = dirPath.toFile();
+
+		if (!directory.exists()) {
+			if (!directory.mkdirs()) {
+				Logger.error("Failed to create directory: %s", directory.getAbsolutePath());
+				return false;
+			}
+		}
+
+		File file = new File(directory, fileName + ".txt");
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+			writer.write(content);
+			Logger.info("Created file: %s", file.getAbsolutePath());
+			return true;
+		} catch (IOException e) {
+			Logger.error("Error creating file %s: %s", file.getName(), e.getMessage());
+			return false;
+		}
+	}
+
 	public static String getOrCreateFile(String fileName) {
 		if (storedFileExists(fileName))
 			return getStoredFile(fileName);

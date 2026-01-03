@@ -3,6 +3,8 @@ package com.code.tama.tts.server.worlds;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.server.data.Tags;
+
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -10,7 +12,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -52,7 +53,7 @@ public class TBiomeModifiers {
 						GenerationStep.Decoration.UNDERGROUND_ORES));
 
 		context.register(ADD_TREE_GALLIFREYAN_OAK,
-				new ForgeBiomeModifiers.AddFeaturesBiomeModifier(biomes.getOrThrow(Tags.Biomes.IS_PLAINS),
+				new ForgeBiomeModifiers.AddFeaturesBiomeModifier(biomes.getOrThrow(Tags.Biomes.IS_GALLIFREY),
 						HolderSet.direct(placedFeatures.getOrThrow(TPlacedFeatures.GALLIFREYAN_OAK_PLACED_KEY)),
 						GenerationStep.Decoration.VEGETAL_DECORATION));
 	}

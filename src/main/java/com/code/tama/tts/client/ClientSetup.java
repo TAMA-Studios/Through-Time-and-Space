@@ -5,10 +5,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 
 import java.io.IOException;
 
-import com.code.tama.tts.client.models.ColinRichmondInteriorDoors;
-import com.code.tama.tts.client.models.HartnellRotorModel;
-import com.code.tama.tts.client.models.HudolinConsoleModel;
-import com.code.tama.tts.client.models.NESSConsoleModel;
+import com.code.tama.tts.client.models.*;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.ponder.TTSPonderPlugin;
 import com.code.tama.tts.client.renderers.ControlRenderer;
@@ -56,6 +53,7 @@ public class ClientSetup {
 	public static void FMLClientSetup(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.GALLIFREYAN_OAK_LEAVES.get(), RenderType.cutout());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
@@ -113,6 +111,7 @@ public class ClientSetup {
 				ColinRichmondInteriorDoors::createBodyLayer);
 		event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
+		event.registerLayerDefinition(ShellBaseModel.LAYER_LOCATION, ShellBaseModel::createBodyLayer);
 	}
 
 	@SubscribeEvent

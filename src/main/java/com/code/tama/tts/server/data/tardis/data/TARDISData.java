@@ -127,7 +127,7 @@ public class TARDISData {
 		if (this.TARDIS.GetExteriorTile() != null) {
 			this.TARDIS.GetExteriorTile().Model = model;
 			this.TARDIS.GetExteriorTile().setModelIndex(model.getModel());
-			this.TARDIS.GetExteriorTile().NeedsClientUpdate();
+			this.TARDIS.GetExteriorTile().UpdateAll();
 			this.TARDIS.GetExteriorTile().setChanged();
 		}
 	}
@@ -164,7 +164,7 @@ public class TARDISData {
 			return;
 		this.TARDIS.GetExteriorTile().Model = container;
 		this.TARDIS.GetExteriorTile().setModelIndex(container.getModel());
-		this.TARDIS.GetExteriorTile().NeedsClientUpdate();
+		this.TARDIS.GetExteriorTile().UpdateAll();
 	}
 
 }

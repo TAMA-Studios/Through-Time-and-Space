@@ -1,3 +1,6 @@
 {
-  "parent" : "tts:zeiton/nether_zeiton_ore"
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "tts:block/zeiton/nether_zeiton_ore"
+  }
 }

@@ -8,8 +8,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarpetBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 
 import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.triggerapi.universal.UniversalServerOnly;
@@ -31,7 +33,8 @@ public class BlockUtils {
 	public static float getHeightModifier(BlockState state) {
 		if (state.getBlock().equals(Blocks.AIR))
 			return 1;
-		if (state.getBlock() instanceof net.minecraft.world.level.block.SlabBlock) {
+		if (state.getBlock() instanceof net.minecraft.world.level.block.SlabBlock
+				&& state.getValue(SlabBlock.TYPE).equals(SlabType.BOTTOM)) {
 			return 0.5f;
 		}
 

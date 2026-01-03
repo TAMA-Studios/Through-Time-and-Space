@@ -14,7 +14,7 @@ import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer
 import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
-import com.code.tama.tts.client.renderers.tiles.tardis.FragmentLinksTile;
+import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.server.registries.TTSRegistrate;
@@ -37,7 +37,8 @@ public class TTSTileEntities {
 			.renderer(() -> ChameleonCircuitRenderer::new).validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
 	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
-			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL).register();
+			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL)
+			.renderer(() -> EmptyArtificialShellRenderer::new).register();
 
 	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
 			.validBlocks(TTSBlocks.DOOR_BLOCK).renderer(() -> InteriorDoorRenderer::new).register();

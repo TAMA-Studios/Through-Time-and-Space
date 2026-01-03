@@ -1,3 +1,6 @@
 {
-  "parent" : "tts:dimensional/varos/rocks"
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "tts:block/dimensional/varos/rocks"
+  }
 }
