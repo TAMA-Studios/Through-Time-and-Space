@@ -1,0 +1,4 @@
+{
+  "display_name" : "TARDIS Controls",
+  "pages" : [ "tts:controls/controls_intro", "tts:controls/handbrake", "tts:controls/coffeepot", "tts:controls/sonic_port" ]
+}

@@ -1,0 +1,4 @@
+{
+  "text" : "The Atrium upgrade allows you to take blocks with the exterior, to use it, your TARDIS must be on top of a platform of Atrium blocks, no bigger than 11x11 blocks centred on the TARDIS, and any blocks within 11 blocks above the Atrium frame blocks will be taken with the exterior. If you land in a spot too small for the Atrium, or where the Atrium would replace a valuable block (Diamond block, chest, TARDIS exterior, etc) the Atrium will be saved inside the TARDIS Atrium buffer, and will be placed when you land in a place safe for the Atrium",
+  "type" : "normal"
+}

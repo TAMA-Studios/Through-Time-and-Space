@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.capabilities.interfaces;
 
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.tardis.EnergyHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
@@ -130,4 +131,6 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	DataFlightEvent getCurrentFlightEvent();
 
 	void UpdateExteriorState(ExteriorState state);
+
+	EnergyHandler getEnergy();
 }

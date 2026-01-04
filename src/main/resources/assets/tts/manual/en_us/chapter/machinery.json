@@ -1,0 +1,4 @@
+{
+  "display_name" : "Machinery",
+  "pages" : [ "tts:machinery/machinery_intro", "tts:machinery/tribophysical_waveform_macro_kinetic_extrapolator", "tts:machinery/eoh", "tts:machinery/k9", "tts:machinery/food_machine" ]
+}

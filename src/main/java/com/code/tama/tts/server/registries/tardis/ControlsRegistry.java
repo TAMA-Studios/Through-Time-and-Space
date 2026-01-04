@@ -44,30 +44,31 @@ public class ControlsRegistry {
 	public static final RegistryObject<ZControl> Z_CONTROL = CONTROLS.register("z_control", ZControl::new);
 
 	public static final RegistryObject<SimplestControl> VORTEX_ANCHOR_CONTROL = CONTROLS.register("vortex_anchor",
-			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
+			() -> new SimplestControl("vortex_anchor",
+					tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(false)));
 
 	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
-			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setEngineBrake(true),
+			() -> new SimplestControl("engine_break", tardis -> tardis.GetData().getControlData().setEngineBrake(true),
 					tardis -> tardis.GetData().getControlData().setEngineBrake(false)));
 
 	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
-			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setSimpleMode(true),
+			() -> new SimplestControl("simple_mode", tardis -> tardis.GetData().getControlData().setSimpleMode(true),
 					tardis -> tardis.GetData().getControlData().setSimpleMode(false)));
 
 	public static final RegistryObject<SimplestControl> BRAKES = CONTROLS.register("brakes",
-			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setBrakes(true),
+			() -> new SimplestControl("brakes", tardis -> tardis.GetData().getControlData().setBrakes(true),
 					tardis -> tardis.GetData().getControlData().setBrakes(false)));
 
 	public static final RegistryObject<SimplestControl> REFUEL = CONTROLS.register("refuel",
-			() -> new SimplestControl(tardis -> {
+			() -> new SimplestControl("refuel", tardis -> {
 				if (!tardis.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty()
 						&& tardis.GetData().getSubSystemsData().DynamorphicController.isActivated(tardis.GetLevel()))
 					tardis.GetData().setRefueling(true);
 			}, tardis -> tardis.GetData().setRefueling(false)));
 
 	public static final RegistryObject<SimplestControl> STABILIZERS = CONTROLS.register("stabilizers",
-			() -> new SimplestControl(tardis -> tardis.GetData().getControlData().setStabilizers(true),
+			() -> new SimplestControl("stabilizers", tardis -> tardis.GetData().getControlData().setStabilizers(true),
 					tardis -> tardis.GetData().getControlData().setStabilizers(true)));
 
 	public static final RegistryObject<FastReturnControl> FAST_RETURN = CONTROLS.register("fast_return",

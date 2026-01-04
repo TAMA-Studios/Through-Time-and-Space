@@ -1,0 +1,4 @@
+{
+  "text" : "TARDIS Renaming\nYou can rename the name of your TARDIS (The one that displays in GUI's such as the Distress signal GUI, and the TARDIS plaque) by using a written name tag on the TARDIS console block\nNote: You may NOT use the nametag on a TARDIS Control, it MUST be used on the block itself\nP.S, if an item has been attuned prior to renaming the TARDIS the item will still show the name from before the TARDIS was renamed, to fix this simply re-attune the item",
+  "type" : "normal"
+}

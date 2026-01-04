@@ -36,6 +36,10 @@ public class TTSTileEntities {
 			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
 			.renderer(() -> ChameleonCircuitRenderer::new).validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
 
+	public static final BlockEntityEntry<TARDISEnergyPortBlockEntity> TARDIS_ENERGY_PORT = registrate()
+			.blockEntity("tardis_energy_port", TARDISEnergyPortBlockEntity::new)
+			.validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
+
 	public static final BlockEntityEntry<EmptyArtificialShellTile> EMPTY_SHELL = registrate()
 			.blockEntity("empty_shell", EmptyArtificialShellTile::new).validBlocks(TTSBlocks.EMPTY_SHELL)
 			.renderer(() -> EmptyArtificialShellRenderer::new).register();

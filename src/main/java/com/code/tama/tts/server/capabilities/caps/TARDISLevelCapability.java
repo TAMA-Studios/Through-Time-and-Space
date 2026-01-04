@@ -16,6 +16,7 @@ import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEve
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.EnergyHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
@@ -56,6 +57,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TARDISLevelCapability implements ITARDISLevel {
+	private final EnergyHandler energyHandler = new EnergyHandler();
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
@@ -76,6 +78,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
+		this.energyHandler.saveNBT(tag);
 		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
 		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
 		tag.put("navigational_data",
@@ -88,6 +91,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
+		this.energyHandler.loadNBT(nbt);
 		this.data = TARDISData.CODEC.parse(NbtOps.INSTANCE, nbt.get("data")).get().orThrow();
 		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get()
 				.orThrow();
@@ -153,6 +157,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 					this.getExteriorLevel());
 		}
 		ForceLoadExteriorChunk(false);
+	}
+
+	@Override
+	public EnergyHandler getEnergy() {
+		return this.energyHandler;
 	}
 
 	@Override

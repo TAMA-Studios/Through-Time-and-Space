@@ -18,12 +18,16 @@ import com.code.tama.triggerapi.universal.UniversalCommon;
 public class SimplestControl extends AbstractControl {
 	private final Consumer<ITARDISLevel> onInteract;
 	private final Consumer<ITARDISLevel> onInteractLeft;
-	public SimplestControl(Consumer<ITARDISLevel> onInteract) {
+	private final String name;
+
+	public SimplestControl(String name, Consumer<ITARDISLevel> onInteract) {
+		this.name = name;
 		this.onInteract = onInteract;
 		this.onInteractLeft = onInteract;
 	}
 
-	public SimplestControl(Consumer<ITARDISLevel> onInteract, Consumer<ITARDISLevel> onInteractLeft) {
+	public SimplestControl(String name, Consumer<ITARDISLevel> onInteract, Consumer<ITARDISLevel> onInteractLeft) {
+		this.name = name;
 		this.onInteract = onInteract;
 		this.onInteractLeft = onInteractLeft;
 	}
@@ -53,6 +57,6 @@ public class SimplestControl extends AbstractControl {
 
 	@Override
 	public ResourceLocation id() {
-		return UniversalCommon.modRL("apc");
+		return UniversalCommon.modRL(this.name);
 	}
 }

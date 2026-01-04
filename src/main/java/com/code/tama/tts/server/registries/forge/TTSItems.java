@@ -5,6 +5,7 @@ import static com.code.tama.tts.TTSMod.registrate;
 
 import java.util.List;
 
+import com.code.tama.tts.manual.ManualItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
@@ -62,6 +63,9 @@ public class TTSItems {
 	public static final ItemEntry<Item> STRUCTURAL_BEAMS;
 
 	@MainTab
+	public static final ItemEntry<ManualItem> MANUAL;
+
+	@MainTab
 	public static final ItemEntry<Item> GROWTH_CAKE;
 
 	@MainTab
@@ -97,6 +101,8 @@ public class TTSItems {
 
 		STRUCTURAL_BEAMS = registrate().item("structural_beams", Item::new).properties(prop -> prop.stacksTo(16))
 				.register();
+
+		MANUAL = registrate().item("manual", ManualItem::new).register();
 
 		GROWTH_CAKE = registrate().item("growth_cake", Item::new).register();
 

@@ -1,15 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class InteriorPropsUICategory extends UICategory {
 	@Override
@@ -53,10 +54,10 @@ public class InteriorPropsUICategory extends UICategory {
 
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-//		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF00).endVertex();
-//		builder.vertex(stack.last().pose(), 0, Max, 0).color(0xFFFFFF00).endVertex();
-//		builder.vertex(stack.last().pose(), 1, Max, 0).color(0xFFFFFF00).endVertex();
-//		builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF00).endVertex();
+		// builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFF00).endVertex();
+		// builder.vertex(stack.last().pose(), 0, Max, 0).color(0xFFFFFF00).endVertex();
+		// builder.vertex(stack.last().pose(), 1, Max, 0).color(0xFFFFFF00).endVertex();
+		// builder.vertex(stack.last().pose(), 1, 0, 0).color(0xFFFFFF00).endVertex();
 
 		builder.vertex(stack.last().pose(), 0, 0, 0).color(0xFFFFFFFF).endVertex();
 		builder.vertex(stack.last().pose(), 0, Progress, 0).color(0xFFFFFFFF).endVertex();

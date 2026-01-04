@@ -10,6 +10,7 @@ import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
 import com.code.tama.tts.server.blocks.HardLightBlock;
 import com.code.tama.tts.server.blocks.Panels.*;
+import com.code.tama.tts.server.blocks.TARDISEnergyPort;
 import com.code.tama.tts.server.blocks.core.*;
 import com.code.tama.tts.server.blocks.cosmetic.*;
 import com.code.tama.tts.server.blocks.gadgets.CompressedMultiblockBlock;
@@ -186,6 +187,11 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
 			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL)).controlPanelState()
+			.properties(BlockBehaviour.Properties::noOcclusion).simpleItemNoData().register();
+
+	@MainTab
+	public static final BlockEntry<TARDISEnergyPort> TARDIS_ENERGY_PORT = Builder("tardis_energy_port",
+			p -> new TARDISEnergyPort(p, TTSTileEntities.TARDIS_ENERGY_PORT)).blankBlockstate()
 			.properties(BlockBehaviour.Properties::noOcclusion).simpleItemNoData().register();
 
 	@MainTab
