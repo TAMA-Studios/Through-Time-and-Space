@@ -1,4 +1,4 @@
 {
-  "text" : "Monitor Functions:\nThis chapter covers all of the Monitor Functions added by ASEOHA\nMonitor Functions are buttons you can find in the TARDIS Monitor, and when pressed, they do something",
+  "text" : "The Monitor\nThe Monitor is your main hub for information pertaining to your TARDIS, displaying data such as the time in flight, ETA, stored energy, the destination, location, and more.\nThe monitor has three buttons, the power button (Located in the top-right of the screen), Previous Page button (Located in the botton-left of the screen), and the Next Page button (Located in the bottom-right of the screen)\nEach monitor page displays its own information, there are pages dedicated to the destination info, location info, and even a pre-flight checklist",
   "type" : "normal"
 }
