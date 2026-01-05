@@ -1,4 +1,0 @@
-{
-  "text" : "K-9:\nActivating your K-9 unit: To power on your K-9 unit, it must be tamed, you can tame it by clicking K-9 with a sonic screwdriver. Once K-9 has been tamed, you must recharge it, recharging K-9 is simple, just click him with any item that holds an artron charge, such as a sonic screwdriver or an artron battery. Once he is charged, he will power on. K-9 will automatically attempt to destroy any mob/player it deems hostile. K-9 is equipped with a type 34 photon shield generator, any time K-9 takes damage he will lose Artron charge, when K-9 runs out of Artron charge, he will power down.\nK-9 will gradually lose Artron charge over time (By default, 1 artron unit every 25 seconds, this can be changed in the ASEOHA config)",
-  "type" : "normal"
-}

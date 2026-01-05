@@ -1,4 +1,4 @@
 {
   "display_name" : "Flight Events",
-  "pages" : [ "tts:flight_events/flight_events_intro", "tts:flight_events/tardis_power_fault", "tts:flight_events/tardis_taking_over" ]
+  "pages" : [ "tts:flight_events/flight_events_intro", "tts:flight_events/throttle_slip" ]
 }

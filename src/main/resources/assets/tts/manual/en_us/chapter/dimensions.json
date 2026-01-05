@@ -1,4 +1,4 @@
 {
   "display_name" : "Dimensions",
-  "pages" : [ "tts:dimensions/dimensions_intro", "tts:dimensions/dimensions_gallifrey" ]
+  "pages" : [ "tts:dimensions/dimensions_intro", "tts:dimensions/dimensions_gallifrey", "tts:dimensions/dimensions_overworld" ]
 }

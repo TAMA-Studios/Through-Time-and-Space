@@ -1,4 +1,0 @@
-{
-  "display_name" : "Monitor Functions",
-  "pages" : [ "tts:monitor_functions/monitor_functions_intro", "tts:monitor_functions/hads", "tts:monitor_functions/isomorphic_security", "tts:monitor_functions/eject", "tts:monitor_functions/shrink" ]
-}

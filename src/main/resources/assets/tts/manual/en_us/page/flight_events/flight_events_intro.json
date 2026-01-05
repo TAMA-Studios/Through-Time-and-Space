@@ -1,4 +1,4 @@
 {
-  "text" : "Flight events\nA chapter to guide you through the new flight events",
+  "text" : "Flight events\nA Flight Event is simply an event that happens whilst the TARDIS is in flight, these can range from the slipping of controls to vortex storms\nEvery page in this chapter documents the flight events name, error code, and what will happen in the event of failure. The Error Code will be displayed on the Fault Locator, and (in cases where the Translation Matrix is unavailable) the Monitor ",
   "type" : "normal"
 }

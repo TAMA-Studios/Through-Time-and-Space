@@ -1,4 +1,0 @@
-{
-  "display_name" : "Upgrades",
-  "pages" : [ "tts:upgrades/upgrades_intro", "tts:upgrades/engine_boosters", "tts:upgrades/light_speed_drive", "tts:upgrades/tesseract_drive", "tts:upgrades/warp_drive", "tts:upgrades/dynamic_coordinates", "tts:upgrades/atrium" ]
-}

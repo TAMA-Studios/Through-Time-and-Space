@@ -1,3 +1,3 @@
 {
-  "chapters" : [ "tts:main", "tts:machinery", "tts:upgrades", "tts:flight_events", "tts:storage", "tts:dimensions", "tts:monitor_functions", "tts:controls" ]
+  "chapters" : [ "tts:main", "tts:machinery", "tts:flight_events", "tts:dimensions", "tts:monitor", "tts:controls" ]
 }
