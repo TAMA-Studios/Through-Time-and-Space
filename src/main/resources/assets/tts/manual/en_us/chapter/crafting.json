@@ -1,4 +1,4 @@
 {
-  "display_name" : "",
+  "display_name" : "Crafting Methods",
   "pages" : [ "tts:crafting/crafting_intro", "tts:crafting/welding", "tts:crafting/soldering", "tts:crafting/brazing" ]
 }

@@ -1,20 +1,19 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.manual;
 
-import java.io.InputStreamReader;
-import java.util.List;
-
 import com.code.tama.tts.TTSMod;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.logging.log4j.Level;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import org.apache.logging.log4j.Level;
+
+import java.io.InputStreamReader;
+import java.util.List;
 
 public class Page {
 
@@ -45,67 +44,128 @@ public class Page {
 	public String parseString(String page) {
 
 		Font font = Minecraft.getInstance().font;
-		List<String> words = Lists.newArrayList(page.split(" "));
+
+		// First split by newlines to handle explicit line breaks
+		String[] paragraphs = page.split("\\n");
 
 		this.lines.clear();
-		int currentWidth = 0;
+		int totalLinesAdded = 0;
 
-		StringBuilder line = new StringBuilder();
-		String prevLineWord = "";
-		for (int i = 0; i < words.size(); ++i) {
-			String word = words.get(i);
-			int width = font.width(word);
-			currentWidth += width;
+		for (int p = 0; p < paragraphs.length; ++p) {
+			String paragraph = paragraphs[p];
 
-			int prevLineWidth = font.width(line.toString());
+			// Handle empty lines (from consecutive \n)
+			if (paragraph.trim().isEmpty()) {
+				this.lines.add("");
+				totalLinesAdded++;
 
-			// If this new word can fit on this line and the line with the previous words
-			// can fit
-			if (currentWidth < WIDTH && prevLineWidth < WIDTH) {
-				prevLineWord = line.toString();
-				line.append(word).append(" "); // Include previous and current word on the same line
-			}
-			// If we should start a new line
-			else {
-				// If the length of the line we have just constructed is also over the limit,
-				// split the words onto new lines
-				int appendedWordWidth = font.width(line.toString());
-				if (appendedWordWidth > WIDTH) {
-					if (appendedWordWidth >= MAX_LINE_WIDTH) {
-						String split = line.substring(prevLineWord.length());
-						this.lines.add(prevLineWord);
-						this.lines.add(split);
-						line = new StringBuilder(word + " ");
-						currentWidth = 0;
+				// Check if we've exceeded line limit
+				if (totalLinesAdded >= LINES) {
+					// Collect remaining content
+					StringBuilder remaining = new StringBuilder();
+					for (int j = p + 1; j < paragraphs.length; ++j) {
+						remaining.append(paragraphs[j]);
+						if (j < paragraphs.length - 1) {
+							remaining.append("\n");
+						}
 					}
-					// If the line is smaller than the max allowed line width but still larger than
-					// the page character limit
+					return remaining.toString();
+				}
+				continue;
+			}
+
+			List<String> words = Lists.newArrayList(paragraph.split(" "));
+			int currentWidth = 0;
+
+			StringBuilder line = new StringBuilder();
+			String prevLineWord = "";
+
+			for (int i = 0; i < words.size(); ++i) {
+				String word = words.get(i);
+				int width = font.width(word);
+				currentWidth += width;
+
+				int prevLineWidth = font.width(line.toString());
+
+				// If this new word can fit on this line and the line with the previous words can fit
+				if (currentWidth < WIDTH && prevLineWidth < WIDTH) {
+					prevLineWord = line.toString();
+					line.append(word).append(" ");
+				}
+				// If we should start a new line
+				else {
+					// If the length of the line we have just constructed is also over the limit,
+					// split the words onto new lines
+					int appendedWordWidth = font.width(line.toString());
+					if (appendedWordWidth > WIDTH) {
+						if (appendedWordWidth >= MAX_LINE_WIDTH) {
+							String split = line.substring(prevLineWord.length());
+							this.lines.add(prevLineWord);
+							totalLinesAdded++;
+							this.lines.add(split);
+							totalLinesAdded++;
+							line = new StringBuilder(word + " ");
+							currentWidth = 0;
+						}
+						// If the line is smaller than the max allowed line width but still larger than
+						// the page character limit
+						else {
+							this.lines.add(line.toString());
+							totalLinesAdded++;
+							line = new StringBuilder(word + " ");
+							currentWidth = 0;
+						}
+					}
+					// If previous word and current word are within limit
 					else {
 						this.lines.add(line.toString());
+						totalLinesAdded++;
 						line = new StringBuilder(word + " ");
 						currentWidth = 0;
 					}
 				}
-				// If previous word and current word are within limit
-				else {
-					this.lines.add(line.toString());
-					line = new StringBuilder(word + " ");
-					currentWidth = 0;
+
+				// If there are too many lines, return the remaining words from this paragraph
+				// plus all remaining paragraphs
+				if (totalLinesAdded >= LINES) {
+					StringBuilder build = new StringBuilder();
+
+					// Add remaining words from current paragraph
+					for (String s : words.subList(i, words.size())) {
+						build.append(s).append(" ");
+					}
+
+					// Add remaining paragraphs
+					for (int j = p + 1; j < paragraphs.length; ++j) {
+						if (build.length() > 0 || j > p + 1) {
+							build.append("\n");
+						}
+						build.append(paragraphs[j]);
+					}
+
+					return build.toString();
 				}
 			}
 
-			// If there are too many lines, return the remaining words
-			if (lines.size() >= LINES) {
-				StringBuilder build = new StringBuilder();
-				for (String s : words.subList(i, words.size())) {
-					build.append(s).append(" ");
-				}
-				return build.toString();
+			// Add the last line of this paragraph
+			if (line.length() > 0) {
+				this.lines.add(line.toString());
+				totalLinesAdded++;
 			}
 
+			// Check again after adding the last line
+			if (totalLinesAdded >= LINES) {
+				// Collect remaining paragraphs
+				StringBuilder remaining = new StringBuilder();
+				for (int j = p + 1; j < paragraphs.length; ++j) {
+					if (j > p + 1) {
+						remaining.append("\n");
+					}
+					remaining.append(paragraphs[j]);
+				}
+				return remaining.toString();
+			}
 		}
-
-		this.lines.add(line.toString());
 
 		return ""; // DO NOT CHANGE THIS or you will soft lock the game
 	}
