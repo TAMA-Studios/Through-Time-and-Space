@@ -1,4 +1,3 @@
 {
-  "chapters" : [ "tts:main", "tts:crafting", "tts:tardis_creation", "tts:machinery", "tts:monitor"],
-  "disabled" : [ "tts:controls", "tts:flight", "tts:flight_events", "tts:dimensions"]
+  "chapters" : [ "tts:main", "tts:crafting", "tts:tardis_creation", "tts:machinery", "tts:monitor", "tts:controls", "tts:flight_events", "tts:flight", "tts:dimensions"]
 }

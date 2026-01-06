@@ -5,6 +5,7 @@ import com.code.tama.tts.TTSMod;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,12 +16,17 @@ import org.apache.logging.log4j.Level;
 import java.io.InputStreamReader;
 import java.util.List;
 
+@Getter
 public class Page {
 
 	private static final List<PageSerializer> SERIALIZERS = Lists.newArrayList();
 
 	public static final int WIDTH = 65, LINES = 10, MAX_LINE_WIDTH = 115;
-	protected List<String> lines = Lists.newArrayList();
+    /**
+     * -- GETTER --
+     * Gets the number of new lines which all the text will be rendered as
+     */
+    protected List<String> lines = Lists.newArrayList();
 
 	public Page() {
 	}
@@ -30,12 +36,7 @@ public class Page {
 		SERIALIZERS.add(new CoverPageSerializer());
 	}
 
-	/** Gets the number of new lines which all the text will be rendered as */
-	public List<String> getLines() {
-		return this.lines;
-	}
-
-	// Returns true if this page was clicked
+    // Returns true if this page was clicked
 	// public boolean onClick(int x, int y){
 	// if(x < this.x)
 	// }
@@ -82,7 +83,7 @@ public class Page {
 
 			for (int i = 0; i < words.size(); ++i) {
 				String word = words.get(i);
-				int width = font.width(word);
+				int width = font.width(word.replace("\\b", ""));
 				currentWidth += width;
 
 				int prevLineWidth = font.width(line.toString());
@@ -137,7 +138,7 @@ public class Page {
 
 					// Add remaining paragraphs
 					for (int j = p + 1; j < paragraphs.length; ++j) {
-						if (build.length() > 0 || j > p + 1) {
+						if (!build.isEmpty() || j > p + 1) {
 							build.append("\n");
 						}
 						build.append(paragraphs[j]);
@@ -148,7 +149,7 @@ public class Page {
 			}
 
 			// Add the last line of this paragraph
-			if (line.length() > 0) {
+			if (!line.isEmpty()) {
 				this.lines.add(line.toString());
 				totalLinesAdded++;
 			}
@@ -176,9 +177,30 @@ public class Page {
 
 	public void render(GuiGraphics guiGraphics, Font font, int globalPage, int x, int y, int width, int height) {
 		int index = 0;
+		boolean isBold = false;
 		for (String lines : this.getLines()) {
-			guiGraphics.drawString(font, lines, x, y + (font.lineHeight + 2) * index, 0x000000, false);
-			++index;
+			y += (font.lineHeight + 2) * index;
+
+			for (int i = 0; i < lines.length(); i++) {
+				char c = lines.charAt(i);
+				String pair;
+				if (isBold && lines.length() > i + 1) {
+					pair = "" + c + (lines.charAt(i + 1));
+					if (pair.equals("\\b")) {
+						isBold = false;
+						continue;
+					}
+				} else if (lines.length() > i + 1) {
+					pair = "" + c + (lines.charAt(i + 1));
+					if (pair.equals("\\b")) {
+						isBold = true;
+						continue;
+					}
+				}
+
+				guiGraphics.drawString(font, "" + c, x + (i * 5), y, 0x000000, isBold);
+				++index;
+			}
 		}
 
 		// draw page number
