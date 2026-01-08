@@ -3,12 +3,10 @@ package com.code.tama.triggerapi.gui;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.luaj.vm2.*;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
-import org.luaj.vm2.lib.ZeroArgFunction;
+import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
+import org.luaj.vm2.lib.jse.JseStringLib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +44,7 @@ public class LuaScriptEngine {
         globals.load(new JseBaseLib());
         globals.load(new JseMathLib());
         globals.load(new JseStringLib());
-        globals.load(new JseTableLib());
+        globals.load(new TableLib());
         
         // Add player API
         LuaTable playerTable = new LuaTable();
