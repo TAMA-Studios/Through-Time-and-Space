@@ -22,6 +22,12 @@ public class LuaScriptEngine {
 			LuaValue chunk = globals.load(script);
 			LuaValue result = chunk.call();
 
+			LuaTable playerTable = (LuaTable) globals.get("player");
+			player.setHealth(playerTable.get("health").tofloat());
+			player.experienceLevel = playerTable.get("level").toint();
+			player.getFoodData().setFoodLevel(playerTable.get("foodLevel").toint());
+			player.experienceProgress = playerTable.get("xpProgress").tofloat();
+
 			return new ScriptResult(true, result.toString());
 		} catch (LuaError e) {
 			LOGGER.error("Lua script error: {}", e.getMessage());
@@ -99,6 +105,20 @@ public class LuaScriptEngine {
 						GuiRegistry.openGui(sp, loc);
 					} catch (Exception e) {
 						LOGGER.error("Failed to open GUI", e);
+					}
+				}
+				return LuaValue.NIL;
+			}
+		});
+
+		playerTable.set("hurt", new OneArgFunction() {
+			@Override
+			public LuaValue call(LuaValue health) {
+				if (player instanceof ServerPlayer sp) {
+					try {
+						player.hurt(player.damageSources().magic(), health.toint());
+					} catch (Exception e) {
+						LOGGER.error("Failed to harm player ", e);
 					}
 				}
 				return LuaValue.NIL;

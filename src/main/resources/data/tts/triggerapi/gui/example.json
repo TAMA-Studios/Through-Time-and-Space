@@ -48,7 +48,7 @@
     "id" : "buy_item",
     "image_height" : 256,
     "image_width" : 256,
-    "script" : "if player.level >= 10 then\n    player.giveItem('minecraft:diamond', 1)\n    player.sendMessage('§a§lPURCHASED! §7Diamond received!')\n    player.playSound('minecraft:entity.experience_orb.pickup', 1.0)\nelse\n    player.sendMessage('§c§lERROR! §7Need 10 levels!')\n    player.playSound('minecraft:entity.villager.no', 0.5)\nend",
+    "script" : "if player.level >= 10 then\n    player.giveItem('minecraft:diamond', 1)\n    player.level -= 10\n    player.sendMessage('§a§lPURCHASED! §7Diamond received!')\n    player.playSound('minecraft:entity.experience_orb.pickup', 1.0)\nelse\n    player.sendMessage('§c§lERROR! §7Need 10 levels!')\n    player.playSound('minecraft:entity.villager.no', 0.5)\nend",
     "texture" : "tts:textures/gui/button.png",
     "texture_x" : 0,
     "texture_y" : 40,
