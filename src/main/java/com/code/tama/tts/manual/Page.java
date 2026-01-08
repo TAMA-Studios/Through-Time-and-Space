@@ -1,11 +1,17 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.manual;
 
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.code.tama.tts.TTSMod;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import org.apache.logging.log4j.Level;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -14,11 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import org.apache.logging.log4j.Level;
-
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 public class Page {
@@ -29,8 +30,8 @@ public class Page {
 
 	public static final int WIDTH = 65, LINES = 10, MAX_LINE_WIDTH = 115;
 	/**
-	 * -- GETTER --
-	 * Gets the number of new lines which all the text will be rendered as
+	 * -- GETTER -- Gets the number of new lines which all the text will be rendered
+	 * as
 	 */
 	protected List<String> lines = Lists.newArrayList();
 
@@ -101,7 +102,8 @@ public class Page {
 
 				int prevLineWidth = font.width(line.toString());
 
-				// If this new word can fit on this line and the line with the previous words can fit
+				// If this new word can fit on this line and the line with the previous words
+				// can fit
 				if (currentWidth < WIDTH && prevLineWidth < WIDTH) {
 					prevLineWord = line.toString();
 					line.append(word).append(" ");
@@ -204,13 +206,13 @@ public class Page {
 			for (int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
 
-				if(wasStyleCode) {
+				if (wasStyleCode) {
 					wasStyleCode = false;
 					continue;
 				}
 				// Handle style toggles
 				boolean isStyleCode = false;
-				if(("" + c).equals("&")) {
+				if (("" + c).equals("&")) {
 					if (line.length() > i + 1) {
 						String spec = "" + c + line.charAt(i + 1);
 						switch (spec) {
@@ -267,16 +269,26 @@ public class Page {
 				if (!isStyleCode) {
 					List<ChatFormatting> activeFormats = new ArrayList<>();
 
-					if (styles[0]) activeFormats.add(ChatFormatting.BOLD);
-					if (styles[1]) activeFormats.add(ChatFormatting.ITALIC);
-					if (styles[2]) activeFormats.add(ChatFormatting.UNDERLINE);
-					if (styles[3]) activeFormats.add(ChatFormatting.BLACK);
-					if (styles[4]) activeFormats.add(ChatFormatting.WHITE);
-					if (styles[5]) activeFormats.add(ChatFormatting.RED);
-					if (styles[6]) activeFormats.add(ChatFormatting.GREEN);
-					if (styles[7]) activeFormats.add(ChatFormatting.BLUE);
-					if (styles[8]) activeFormats.add(ChatFormatting.YELLOW);
-					if (styles[9]) activeFormats.add(ChatFormatting.LIGHT_PURPLE);
+					if (styles[0])
+						activeFormats.add(ChatFormatting.BOLD);
+					if (styles[1])
+						activeFormats.add(ChatFormatting.ITALIC);
+					if (styles[2])
+						activeFormats.add(ChatFormatting.UNDERLINE);
+					if (styles[3])
+						activeFormats.add(ChatFormatting.BLACK);
+					if (styles[4])
+						activeFormats.add(ChatFormatting.WHITE);
+					if (styles[5])
+						activeFormats.add(ChatFormatting.RED);
+					if (styles[6])
+						activeFormats.add(ChatFormatting.GREEN);
+					if (styles[7])
+						activeFormats.add(ChatFormatting.BLUE);
+					if (styles[8])
+						activeFormats.add(ChatFormatting.YELLOW);
+					if (styles[9])
+						activeFormats.add(ChatFormatting.LIGHT_PURPLE);
 
 					// Calculate x position based on visible text rendered so far
 					int nx = x + font.width(remFormatting(visibleText.toString()));

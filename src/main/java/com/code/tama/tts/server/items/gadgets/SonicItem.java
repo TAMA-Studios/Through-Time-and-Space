@@ -1,7 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.items.gadgets;
 
-import com.code.tama.triggerapi.GrammarNazi;
+import java.util.List;
+
 import com.code.tama.tts.manual.ManualScreen;
 import com.code.tama.tts.server.items.core.AttunableItem;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
@@ -10,6 +11,9 @@ import com.code.tama.tts.server.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.sonic.SonicMode;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -36,10 +40,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import com.code.tama.triggerapi.GrammarNazi;
 
 public class SonicItem extends AttunableItem {
 	private final int Variants;
@@ -53,15 +55,12 @@ public class SonicItem extends AttunableItem {
 		this.Variants = variants;
 	}
 
-
 	@Override
 	public @NotNull ItemStack getDefaultInstance() {
 		ItemStack stack = super.getDefaultInstance();
 		stack.getOrCreateTag().putInt("chapter", 9);
 		return stack;
 	}
-
-
 
 	/**
 	 * Override this to make sure people don't put mending on it like a certain
@@ -137,10 +136,10 @@ public class SonicItem extends AttunableItem {
 			@NotNull TooltipFlag flagIn) {
 		tooltip.add(Component.literal("Sonic Screwdriver! Doesn't work on wood and allat"));
 		tooltip.add(Component.literal("Power - " + GetPower(stack)));
-			tooltip.add(Component.translatable("tooltip.tts.ctrl"));
-			if (Screen.hasControlDown()) {
-				Minecraft.getInstance().setScreen(new ManualScreen(stack));
-			}
+		tooltip.add(Component.translatable("tooltip.tts.ctrl"));
+		if (Screen.hasControlDown()) {
+			Minecraft.getInstance().setScreen(new ManualScreen(stack));
+		}
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 

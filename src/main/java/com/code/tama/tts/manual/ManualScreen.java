@@ -1,11 +1,17 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.manual;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
 import com.code.tama.tts.TTSMod;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -15,11 +21,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
 
 public class ManualScreen extends Screen {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(TTSMod.MODID, "textures/gui/manual.png");
@@ -59,14 +60,14 @@ public class ManualScreen extends Screen {
 	public ManualScreen(ItemStack stack) {
 		this(Component.literal("Manual"), TTSMod.MODID);
 		if (stack.hasTag()) {
-            if (stack.getItem().getDefaultInstance().getOrCreateTag().contains("page")) {
-                assert stack.getTag() != null;
-                this.pageIndex = stack.getItem().getDefaultInstance().getOrCreateTag().getInt("page");
+			if (stack.getItem().getDefaultInstance().getOrCreateTag().contains("page")) {
+				assert stack.getTag() != null;
+				this.pageIndex = stack.getItem().getDefaultInstance().getOrCreateTag().getInt("page");
 			}
 
 			if (stack.getItem().getDefaultInstance().getOrCreateTag().contains("chapter")) {
-                assert stack.getTag() != null;
-                this.chapterIndex = stack.getItem().getDefaultInstance().getOrCreateTag().getInt("chapter");
+				assert stack.getTag() != null;
+				this.chapterIndex = stack.getItem().getDefaultInstance().getOrCreateTag().getInt("chapter");
 			}
 		}
 	}

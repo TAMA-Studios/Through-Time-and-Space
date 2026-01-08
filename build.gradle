@@ -32,8 +32,9 @@ jacocoTestReport {
 }
 
 configurations {
-	shadeOnly
-	implementation.extendsFrom(shadeOnly)
+	commonShadow
+	implementation.extendsFrom(commonShadow)
+	runtimeOnly.extendsFrom(commonShadow)
 }
 
 group = mod_group_id
@@ -140,9 +141,9 @@ repositories {
 
 	// If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-	 flatDir {
-	     dir 'libs'
-	 }
+	flatDir {
+		dir 'libs'
+	}
 
 	maven {
 		url = "https://repo.maven.apache.org/maven2/"
@@ -158,10 +159,13 @@ repositories {
 	maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
 	maven { url = "https://maven.createmod.net" }
 
+//	maven { url 'https://jitpack.io' }
+
 //	maven{
 //		url = "https://repo.essential.gg/repository/maven-public"
 //	}
 }
+
 
 dependencies {
 	// Flywheel
@@ -182,7 +186,20 @@ dependencies {
 		jarJar.ranged(it, "[0.5.0,)")
 	}
 
-	implementation fg.deobf('org.luaj:luaj-jse:3.0.1')
+//	compileOnly(fg.deobf('org.luaj:luaj-jse:3.0.1'))
+//	runtimeOnly(fg.deobf('org.luaj:luaj-jse:3.0.1'))
+//
+//	jarJar('org.luaj:luaj-jse:3.0.1')
+
+//	implementation 'org.luaj:luaj-jse:3.0.1'
+//
+//	jarJar('org.luaj:luaj-jse:3.0.1') {
+//		jarJar.ranged(it, "[3.0.1,)")
+//	}
+//	commonShadow 'org.luaj:luaj-jse:3.0.1'
+
+	minecraftLibrary("org.luaj:luaj-jse:3.0.1")
+	commonShadow("org.luaj:luaj-jse:3.0.1")
 
 	// Minecraft
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -233,17 +250,16 @@ dependencies {
 
 shadowJar {
 	archiveClassifier.set('shadowed')
-	destinationDirectory.set(layout.buildDirectory.dir("libs"))
+	// Tell shadow to include the commonShadow configuration
+	configurations = [project.configurations.commonShadow]
 
-	configurations = [project.configurations.jarJar]
 	from(sourceSets.main.output)
 
-//	relocate("gg.essential.universalcraft", "com.code.tama.shadow.universalcraft")
+	// Relocate to avoid conflicts with other mods using LuaJ
+	relocate 'org.luaj', 'com.code.tama.shadow.luaj'
 
-	// Relocate TerraBlender package
-//	relocate 'terrablender', 'com.code.tama.shadow.terrablender'
-
-	relocate('patchouli', 'com.code.tama.shadow.patchouli')
+	// Your existing relocations
+	relocate 'patchouli', 'com.code.tama.shadow.patchouli'
 }
 
 reobf {

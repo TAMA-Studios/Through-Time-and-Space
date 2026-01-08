@@ -1,11 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.networking;
 
-import com.code.tama.triggerapi.boti.packets.BOTIPackets;
-import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
-import com.code.tama.triggerapi.networking.gui.ButtonClickPacket;
-import com.code.tama.triggerapi.networking.gui.OpenGuiPacket;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
@@ -25,6 +24,7 @@ import com.code.tama.tts.server.networking.packets.S2C.entities.UpdateTIRPacketS
 import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.server.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -40,9 +40,11 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.boti.packets.BOTIPackets;
+import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
+import com.code.tama.triggerapi.networking.gui.ButtonClickPacket;
+import com.code.tama.triggerapi.networking.gui.OpenGuiPacket;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class Networking {
 	public static int ID = 0;
@@ -68,16 +70,12 @@ public class Networking {
 		BOTIPackets.registerPackets();
 
 		INSTANCE.messageBuilder(OpenGuiPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(OpenGuiPacket::encode)
-				.decoder(OpenGuiPacket::decode)
-				.consumerMainThread(OpenGuiPacket::handle)
+				.encoder(OpenGuiPacket::encode).decoder(OpenGuiPacket::decode).consumerMainThread(OpenGuiPacket::handle)
 				.add();
 
 		INSTANCE.messageBuilder(ButtonClickPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ButtonClickPacket::encode)
-				.decoder(ButtonClickPacket::decode)
-				.consumerMainThread(ButtonClickPacket::handle)
-				.add();
+				.encoder(ButtonClickPacket::encode).decoder(ButtonClickPacket::decode)
+				.consumerMainThread(ButtonClickPacket::handle).add();
 
 		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
 

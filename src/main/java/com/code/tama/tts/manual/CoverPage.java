@@ -3,6 +3,7 @@ package com.code.tama.tts.manual;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;

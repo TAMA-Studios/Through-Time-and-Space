@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.manual;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TOCPage extends Page {
 
