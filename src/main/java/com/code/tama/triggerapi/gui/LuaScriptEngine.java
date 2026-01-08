@@ -4,9 +4,11 @@ package com.code.tama.triggerapi.gui;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.luaj.vm2.*;
+import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +33,16 @@ public class LuaScriptEngine {
 	}
 
 	private static Globals createSandboxedGlobals(Player player, ScriptContext context) {
-		Globals globals = new Globals();
+		Globals globals = JsePlatform.standardGlobals();
 
-		// Load safe libraries only
+		LuaC.install(globals);
+
 		globals.load(new JseBaseLib());
-		globals.load(new JseMathLib());
+		globals.load(new PackageLib());
 		globals.load(new StringLib());
 		globals.load(new TableLib());
+		globals.load(new JseMathLib());
+
 
 		// Add player API
 		LuaTable playerTable = new LuaTable();

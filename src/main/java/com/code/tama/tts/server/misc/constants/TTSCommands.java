@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.constants;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
+import com.code.tama.triggerapi.gui.CustomGuiProvider;
+import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.gui.LuaScriptEngine;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -18,7 +17,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -37,8 +35,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import com.code.tama.triggerapi.gui.CustomGuiProvider;
-import com.code.tama.triggerapi.gui.GuiLoader;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TTSCommands {
@@ -50,6 +49,20 @@ public class TTSCommands {
 							"gui_id");
 
 					CustomGuiProvider.openGui(player, guiId);
+					return 1;
+				}
+
+				context.getSource().sendFailure(Component.literal("Only players can use this command"));
+				return 0;
+			}));
+
+	public static LiteralArgumentBuilder<CommandSourceStack> lua = Commands.literal("lua").then(Commands
+			.argument("code", StringArgumentType.string()).executes(context -> {
+				if (context.getSource().getEntity() instanceof ServerPlayer player) {
+
+
+					LuaScriptEngine.ScriptContext ctx = new LuaScriptEngine.ScriptContext();
+					LuaScriptEngine.executeScript(StringArgumentType.getString(context, "code"), player, ctx);
 					return 1;
 				}
 
@@ -91,7 +104,7 @@ public class TTSCommands {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
 	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem)
-			.then(createTardis).then(listguis).then(opengui);
+			.then(createTardis).then(listguis).then(opengui).then(lua);
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
 		AbstractSubsystem subsystem = SubsystemsRegistry.subsystems.stream().filter(sub -> sub.name().equals(system))
