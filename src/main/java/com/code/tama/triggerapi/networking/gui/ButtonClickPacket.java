@@ -63,9 +63,7 @@ public class ButtonClickPacket {
         String script;
         
         // Check if it's a script file reference
-        boolean isFileReference = scriptRef.contains(":") || 
-                                 (scriptRef.contains("/") && !scriptRef.trim().startsWith("player.") && 
-                                  !scriptRef.trim().startsWith("if") && !scriptRef.trim().startsWith("local"));
+        boolean isFileReference = scriptRef.endsWith(".lua");
         
         if (isFileReference) {
             // Script file reference
@@ -84,7 +82,7 @@ public class ButtonClickPacket {
         context.set("guiId", guiId.toString());
         context.set("elementId", elementId);
         context.set("button", button);
-        
+
         LuaScriptEngine.ScriptResult result = LuaScriptEngine.executeScript(script, player, context);
         
         if (!result.isSuccess()) {

@@ -3,7 +3,7 @@
   "title": "§6§lPlayer Menu",
   "width": 176,
   "height": 166,
-  "background_texture": "triggerapi:textures/gui/menu_background.png",
+  "background_texture": "tts:textures/gui/menu_background.png",
   "elements": [
     {
       "type": "text",
@@ -32,7 +32,7 @@
       "y": 40,
       "width": 136,
       "height": 20,
-      "texture": "triggerapi:textures/gui/button.png",
+      "texture": "tts:textures/gui/button.png",
       "texture_x": 0,
       "texture_y": 0,
       "hover_texture_y": 20,
@@ -61,7 +61,7 @@
       "y": 65,
       "width": 136,
       "height": 20,
-      "texture": "triggerapi:textures/gui/button.png",
+      "texture": "tts:textures/gui/button.png",
       "texture_x": 0,
       "texture_y": 40,
       "hover_texture_y": 60,
