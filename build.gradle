@@ -86,7 +86,7 @@ minecraft {
 			property 'forge.logging.markers', 'REGISTRIES'
 			property 'forge.logging.console.level', 'debug'
 			property 'forge.enabledGameTestNamespaces', 'tts'
-			arg "-mixin.config=aseoha.mixins.json"
+			arg "-mixin.config=tts.mixins.json"
 			property 'mixin.env.remapRefMap', 'true'
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
