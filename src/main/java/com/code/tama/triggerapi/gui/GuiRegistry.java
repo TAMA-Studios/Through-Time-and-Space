@@ -8,11 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Wrapper class for opening GUIs
- * Delegates to appropriate provider based on GUI type
+ * Central registry for opening GUIs
  */
-public class CustomGuiProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomGuiProvider.class);
+public class GuiRegistry {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuiRegistry.class);
     
     public static void openGui(ServerPlayer player, ResourceLocation guiId) {
         GuiDefinition def = GuiLoader.getGuiDefinition(guiId);

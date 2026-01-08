@@ -6,11 +6,8 @@ import org.luaj.vm2.*;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
-import org.luaj.vm2.lib.jse.JseStringLib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 /**
  * Executes Lua scripts with sandboxing and player context
@@ -43,7 +40,7 @@ public class LuaScriptEngine {
         // Load safe libraries only
         globals.load(new JseBaseLib());
         globals.load(new JseMathLib());
-        globals.load(new JseStringLib());
+        globals.load(new StringLib());
         globals.load(new TableLib());
         
         // Add player API
@@ -53,6 +50,8 @@ public class LuaScriptEngine {
         playerTable.set("health", player.getHealth());
         playerTable.set("maxHealth", player.getMaxHealth());
         playerTable.set("level", player.experienceLevel);
+        playerTable.set("foodLevel", player.getFoodData().getFoodLevel());
+        playerTable.set("xpProgress", player.experienceProgress);
         
         // Player functions
         playerTable.set("sendMessage", new OneArgFunction() {
@@ -96,9 +95,28 @@ public class LuaScriptEngine {
                     try {
                         net.minecraft.resources.ResourceLocation loc = 
                             new net.minecraft.resources.ResourceLocation(guiId.checkjstring());
-                        CustomGuiProvider.openGui(sp, loc);
+                        GuiRegistry.openGui(sp, loc);
                     } catch (Exception e) {
                         LOGGER.error("Failed to open GUI", e);
+                    }
+                }
+                return LuaValue.NIL;
+            }
+        });
+        
+        playerTable.set("playSound", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue soundId, LuaValue volume) {
+                if (player instanceof ServerPlayer sp) {
+                    try {
+                        net.minecraft.resources.ResourceLocation id = 
+                            new net.minecraft.resources.ResourceLocation(soundId.checkjstring());
+                        net.minecraft.sounds.SoundEvent sound = 
+                            net.minecraft.sounds.SoundEvent.createVariableRangeEvent(id);
+                        sp.playNotifySound(sound, net.minecraft.sounds.SoundSource.PLAYERS, 
+                            (float)volume.checkdouble(), 1.0f);
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to play sound", e);
                     }
                 }
                 return LuaValue.NIL;
@@ -109,7 +127,7 @@ public class LuaScriptEngine {
         
         // Add context variables
         LuaTable contextTable = new LuaTable();
-        for (Map.Entry<String, Object> entry : context.getVariables().entrySet()) {
+        for (java.util.Map.Entry<String, Object> entry : context.getVariables().entrySet()) {
             contextTable.set(entry.getKey(), toLuaValue(entry.getValue()));
         }
         globals.set("ctx", contextTable);

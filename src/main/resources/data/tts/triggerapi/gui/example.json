@@ -1,0 +1,170 @@
+{
+  "type": "custom",
+  "title": "§6§lPlayer Menu",
+  "width": 176,
+  "height": 166,
+  "background_texture": "triggerapi:textures/gui/menu_background.png",
+  "elements": [
+    {
+      "type": "text",
+      "id": "title",
+      "x": 8,
+      "y": 6,
+      "text": "§6§lPlayer Menu",
+      "color": 4210752,
+      "shadow": true,
+      "scale": 1.0
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "x": 8,
+      "y": 18,
+      "text": "§7Choose an option below",
+      "color": 8421504,
+      "shadow": false,
+      "scale": 0.9
+    },
+    {
+      "type": "button",
+      "id": "teleport_home",
+      "x": 20,
+      "y": 40,
+      "width": 136,
+      "height": 20,
+      "texture": "triggerapi:textures/gui/button.png",
+      "texture_x": 0,
+      "texture_y": 0,
+      "hover_texture_y": 20,
+      "image_width": 256,
+      "image_height": 256,
+      "script": "player.sendMessage('§aTeleporting home...')\nplayer.playSound('minecraft:entity.enderman.teleport', 1.0)\nplayer.closeGui()",
+      "tooltip": [
+        "§5§lTeleport Home",
+        "§7Click to teleport to spawn"
+      ]
+    },
+    {
+      "type": "text",
+      "id": "teleport_label",
+      "x": 52,
+      "y": 47,
+      "text": "§f§lTeleport Home",
+      "color": 16777215,
+      "shadow": false,
+      "scale": 1.0
+    },
+    {
+      "type": "button",
+      "id": "buy_item",
+      "x": 20,
+      "y": 65,
+      "width": 136,
+      "height": 20,
+      "texture": "triggerapi:textures/gui/button.png",
+      "texture_x": 0,
+      "texture_y": 40,
+      "hover_texture_y": 60,
+      "image_width": 256,
+      "image_height": 256,
+      "script": "if player.level >= 10 then\n    player.giveItem('minecraft:diamond', 1)\n    player.sendMessage('§a§lPURCHASED! §7Diamond received!')\n    player.playSound('minecraft:entity.experience_orb.pickup', 1.0)\nelse\n    player.sendMessage('§c§lERROR! §7Need 10 levels!')\n    player.playSound('minecraft:entity.villager.no', 0.5)\nend",
+      "tooltip": [
+        "§b§lBuy Diamond",
+        "§7Cost: §e10 levels",
+        "§7",
+        "§aClick to purchase!"
+      ]
+    },
+    {
+      "type": "text",
+      "id": "buy_label",
+      "x": 48,
+      "y": 72,
+      "text": "§f§lBuy Diamond - 10 Lvl",
+      "color": 16777215,
+      "shadow": false,
+      "scale": 1.0
+    },
+    {
+      "type": "button",
+      "id": "stats_button",
+      "x": 20,
+      "y": 90,
+      "width": 136,
+      "height": 20,
+      "texture": "triggerapi:textures/gui/button.png",
+      "texture_x": 0,
+      "texture_y": 80,
+      "hover_texture_y": 100,
+      "image_width": 256,
+      "image_height": 256,
+      "script": "local hp = math.floor((player.health / player.maxHealth) * 100)\nplayer.sendMessage('§b§l=== Your Stats ===')\nplayer.sendMessage('§7Name: §f' .. player.name)\nplayer.sendMessage('§7Level: §e' .. player.level)\nplayer.sendMessage('§7Health: §a' .. hp .. '%')\nplayer.sendMessage('§7Food: §6' .. player.foodLevel .. '/20')",
+      "tooltip": [
+        "§a§lView Stats",
+        "§7Click to see your stats"
+      ]
+    },
+    {
+      "type": "text",
+      "id": "stats_label",
+      "x": 58,
+      "y": 97,
+      "text": "§f§lView Stats",
+      "color": 16777215,
+      "shadow": false,
+      "scale": 1.0
+    },
+    {
+      "type": "item",
+      "id": "display_diamond",
+      "x": 12,
+      "y": 120,
+      "item": "minecraft:diamond",
+      "tooltip": [
+        "§b§lShiny Diamond",
+        "§7The finest gem!"
+      ]
+    },
+    {
+      "type": "text",
+      "id": "footer",
+      "x": 35,
+      "y": 125,
+      "text": "§7TriggerAPI Custom GUI Demo",
+      "color": 8421504,
+      "shadow": false,
+      "scale": 0.8
+    },
+    {
+      "type": "image",
+      "id": "decoration_icon",
+      "x": 150,
+      "y": 120,
+      "width": 16,
+      "height": 16,
+      "texture": "minecraft:textures/item/nether_star.png",
+      "texture_x": 0,
+      "texture_y": 0,
+      "image_width": 16,
+      "image_height": 16
+    },
+    {
+      "type": "button",
+      "id": "close_button",
+      "x": 148,
+      "y": 6,
+      "width": 20,
+      "height": 20,
+      "texture": "triggerapi:textures/gui/close_button.png",
+      "texture_x": 0,
+      "texture_y": 0,
+      "hover_texture_y": 20,
+      "image_width": 256,
+      "image_height": 256,
+      "script": "player.closeGui()",
+      "tooltip": [
+        "§cClose Menu"
+      ]
+    }
+  ]
+}
