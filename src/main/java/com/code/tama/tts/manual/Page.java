@@ -6,27 +6,33 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.logging.log4j.Level;
 
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class Page {
 
 	private static final List<PageSerializer> SERIALIZERS = Lists.newArrayList();
+	// &b = bold, &f = italic, &t = underline, &n = newline, &0-&7 = colors
+	private static final String SPECIAL_CHARS[] = {"&b", "&f", "&t", "&n", "&1", "&2", "&3", "&4", "&5", "&6", "&7"};
 
 	public static final int WIDTH = 65, LINES = 10, MAX_LINE_WIDTH = 115;
-    /**
-     * -- GETTER --
-     * Gets the number of new lines which all the text will be rendered as
-     */
-    protected List<String> lines = Lists.newArrayList();
+	/**
+	 * -- GETTER --
+	 * Gets the number of new lines which all the text will be rendered as
+	 */
+	protected List<String> lines = Lists.newArrayList();
 
 	public Page() {
 	}
@@ -36,18 +42,25 @@ public class Page {
 		SERIALIZERS.add(new CoverPageSerializer());
 	}
 
-    // Returns true if this page was clicked
-	// public boolean onClick(int x, int y){
-	// if(x < this.x)
-	// }
+	/**
+	 * Removes all special formatting characters from a string
+	 */
+	public String remFormatting(String removeFrom) {
+		String result = removeFrom;
+		for (String special : SPECIAL_CHARS) {
+			result = result.replace(special, "");
+		}
+		return result;
+	}
 
+	// Returns left over string
 	// Returns left over string
 	public String parseString(String page) {
 
 		Font font = Minecraft.getInstance().font;
 
 		// First split by newlines to handle explicit line breaks
-		String[] paragraphs = page.split("\\n");
+		String[] paragraphs = page.split("&n");
 
 		this.lines.clear();
 		int totalLinesAdded = 0;
@@ -83,7 +96,7 @@ public class Page {
 
 			for (int i = 0; i < words.size(); ++i) {
 				String word = words.get(i);
-				int width = font.width(word.replace("\\b", ""));
+				int width = font.width(word);
 				currentWidth += width;
 
 				int prevLineWidth = font.width(line.toString());
@@ -138,7 +151,7 @@ public class Page {
 
 					// Add remaining paragraphs
 					for (int j = p + 1; j < paragraphs.length; ++j) {
-						if (!build.isEmpty() || j > p + 1) {
+						if (build.length() > 0 || j > p + 1) {
 							build.append("\n");
 						}
 						build.append(paragraphs[j]);
@@ -149,7 +162,7 @@ public class Page {
 			}
 
 			// Add the last line of this paragraph
-			if (!line.isEmpty()) {
+			if (line.length() > 0) {
 				this.lines.add(line.toString());
 				totalLinesAdded++;
 			}
@@ -177,35 +190,111 @@ public class Page {
 
 	public void render(GuiGraphics guiGraphics, Font font, int globalPage, int x, int y, int width, int height) {
 		int index = 0;
-		boolean isBold = false;
-		for (String lines : this.getLines()) {
-			y += (font.lineHeight + 2) * index;
+		// Track active styles: [bold, italic, underline, color0-7]
+		boolean styles[] = new boolean[11];
 
-			for (int i = 0; i < lines.length(); i++) {
-				char c = lines.charAt(i);
-				String pair;
-				if (isBold && lines.length() > i + 1) {
-					pair = "" + c + (lines.charAt(i + 1));
-					if (pair.equals("\\b")) {
-						isBold = false;
-						continue;
-					}
-				} else if (lines.length() > i + 1) {
-					pair = "" + c + (lines.charAt(i + 1));
-					if (pair.equals("\\b")) {
-						isBold = true;
-						continue;
+		for (String line : this.getLines()) {
+			int ny = y + (font.lineHeight + 2) * index;
+			++index;
+
+			// Build and render the line character by character
+			StringBuilder visibleText = new StringBuilder();
+
+			boolean wasStyleCode = false;
+			for (int i = 0; i < line.length(); i++) {
+				char c = line.charAt(i);
+
+				if(wasStyleCode) {
+					wasStyleCode = false;
+					continue;
+				}
+				// Handle style toggles
+				boolean isStyleCode = false;
+				if(("" + c).equals("&")) {
+					if (line.length() > i + 1) {
+						String spec = "" + c + line.charAt(i + 1);
+						switch (spec) {
+							case "&b" -> {
+								styles[0] = !styles[0];
+								isStyleCode = true;
+							}
+							case "&f" -> {
+								styles[1] = !styles[1];
+								isStyleCode = true;
+							}
+							case "&t" -> {
+								styles[2] = !styles[2];
+								isStyleCode = true;
+							}
+							case "&0" -> {
+								styles[3] = !styles[3];
+								isStyleCode = true;
+							}
+							case "&1" -> {
+								styles[4] = !styles[4];
+								isStyleCode = true;
+							}
+							case "&2" -> {
+								styles[5] = !styles[5];
+								isStyleCode = true;
+							}
+							case "&3" -> {
+								styles[6] = !styles[6];
+								isStyleCode = true;
+							}
+							case "&4" -> {
+								styles[7] = !styles[7];
+								isStyleCode = true;
+							}
+							case "&5" -> {
+								styles[8] = !styles[8];
+								isStyleCode = true;
+							}
+							case "&6" -> {
+								styles[9] = !styles[9];
+								isStyleCode = true;
+							}
+							case "&7" -> {
+								styles[10] = !styles[10];
+								isStyleCode = true;
+							}
+						}
+						wasStyleCode = isStyleCode;
 					}
 				}
 
-				guiGraphics.drawString(font, "" + c, x + (i * 5), y, 0x000000, isBold);
-				++index;
+				// If this is a visible character, render it with current styles
+				if (!isStyleCode) {
+					List<ChatFormatting> activeFormats = new ArrayList<>();
+
+					if (styles[0]) activeFormats.add(ChatFormatting.BOLD);
+					if (styles[1]) activeFormats.add(ChatFormatting.ITALIC);
+					if (styles[2]) activeFormats.add(ChatFormatting.UNDERLINE);
+					if (styles[3]) activeFormats.add(ChatFormatting.BLACK);
+					if (styles[4]) activeFormats.add(ChatFormatting.WHITE);
+					if (styles[5]) activeFormats.add(ChatFormatting.RED);
+					if (styles[6]) activeFormats.add(ChatFormatting.GREEN);
+					if (styles[7]) activeFormats.add(ChatFormatting.BLUE);
+					if (styles[8]) activeFormats.add(ChatFormatting.YELLOW);
+					if (styles[9]) activeFormats.add(ChatFormatting.LIGHT_PURPLE);
+
+					// Calculate x position based on visible text rendered so far
+					int nx = x + font.width(remFormatting(visibleText.toString()));
+
+					MutableComponent charComponent = Component.literal(Character.toString(c));
+					for (ChatFormatting format : activeFormats) {
+						charComponent = charComponent.withStyle(format);
+					}
+
+					guiGraphics.drawString(font, charComponent, nx, ny, 0x000000, false);
+					visibleText.append(c);
+				}
 			}
 		}
 
-		// draw page number
+		// Draw page number
 		String pageNum = globalPage + "";
-		guiGraphics.drawString(font, pageNum, x + (WIDTH) / 2 + font.width(pageNum) / 2, y + 120, 0x000000, false);
+		guiGraphics.drawString(font, pageNum, x + (WIDTH) / 2 - font.width(pageNum) / 2, y + 120, 0x000000, false);
 	}
 
 	public static List<Page> read(ResourceLocation id) {

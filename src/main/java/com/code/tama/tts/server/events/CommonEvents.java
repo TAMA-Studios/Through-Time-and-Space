@@ -1,10 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.exceptions.GrammarException;
@@ -13,7 +11,6 @@ import com.code.tama.tts.server.data.json.loaders.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.registries.forge.TTSDamageSources;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +29,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.helpers.OxygenHelper;
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -122,6 +121,7 @@ public class CommonEvents {
 
 	@SubscribeEvent
 	public static void onAddReloadListeners(AddReloadListenerEvent event) {
+		event.addListener(new GuiLoader());
 		event.addListener(new ExteriorDataLoader());
 		event.addListener(new ARSDataLoader());
 		event.addListener(new DataFlightEventLoader());

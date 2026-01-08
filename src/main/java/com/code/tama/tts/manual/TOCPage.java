@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.manual;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TOCPage extends Page {
 
@@ -46,15 +46,15 @@ public class TOCPage extends Page {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, Font font, int globalPage, int x, int y, int width, int height) {
+	public void render(GuiGraphics guiGraphics, Font font, int globalPage, int x, int ny, int width, int height) {
 		// In 1.20, we draw via guiGraphics.
 		// font.draw is replaced by guiGraphics.drawString
-		guiGraphics.drawString(font, Component.literal("Table of Contents").withStyle(ChatFormatting.BOLD), x, y - 10,
+		guiGraphics.drawString(font, Component.literal("Table of Contents").withStyle(ChatFormatting.BOLD), x, ny - 10,
 				0x000000, false);
 
 		for (int i = 0; i < this.actions.size(); ++i) {
 			NamedAction action = this.actions.get(i);
-			guiGraphics.drawString(font, Component.literal(action.getName()), x, y + action.y + font.lineHeight - 5,
+			guiGraphics.drawString(font, Component.literal(action.getName()), x, ny + action.y + font.lineHeight - 5,
 					0x463316, false);
 		}
 	}

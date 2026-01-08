@@ -1,0 +1,176 @@
+package com.code.tama.triggerapi.gui;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import org.luaj.vm2.*;
+import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.VarArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
+import org.luaj.vm2.lib.jse.JseBaseLib;
+import org.luaj.vm2.lib.jse.JseMathLib;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+/**
+ * Executes Lua scripts with sandboxing and player context
+ * Add LuaJ dependency to build.gradle:
+ * implementation 'org.luaj:luaj-jse:3.0.1'
+ */
+public class LuaScriptEngine {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LuaScriptEngine.class);
+    
+    public static ScriptResult executeScript(String script, Player player, ScriptContext context) {
+        try {
+            Globals globals = createSandboxedGlobals(player, context);
+            
+            LuaValue chunk = globals.load(script);
+            LuaValue result = chunk.call();
+            
+            return new ScriptResult(true, result.toString());
+        } catch (LuaError e) {
+            LOGGER.error("Lua script error: {}", e.getMessage());
+            return new ScriptResult(false, e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Script execution error", e);
+            return new ScriptResult(false, e.getMessage());
+        }
+    }
+    
+    private static Globals createSandboxedGlobals(Player player, ScriptContext context) {
+        Globals globals = new Globals();
+        
+        // Load safe libraries only
+        globals.load(new JseBaseLib());
+        globals.load(new JseMathLib());
+        globals.load(new JseStringLib());
+        globals.load(new JseTableLib());
+        
+        // Add player API
+        LuaTable playerTable = new LuaTable();
+        playerTable.set("name", player.getName().getString());
+        playerTable.set("uuid", player.getStringUUID());
+        playerTable.set("health", player.getHealth());
+        playerTable.set("maxHealth", player.getMaxHealth());
+        playerTable.set("level", player.experienceLevel);
+        
+        // Player functions
+        playerTable.set("sendMessage", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue msg) {
+                player.sendSystemMessage(net.minecraft.network.chat.Component.literal(msg.checkjstring()));
+                return LuaValue.NIL;
+            }
+        });
+        
+        playerTable.set("giveItem", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue itemId, LuaValue count) {
+                if (player instanceof ServerPlayer sp) {
+                    try {
+                        net.minecraft.resources.ResourceLocation id = 
+                            new net.minecraft.resources.ResourceLocation(itemId.checkjstring());
+                        net.minecraft.world.item.Item item = 
+                            net.minecraft.core.registries.BuiltInRegistries.ITEM.get(id);
+                        sp.addItem(new net.minecraft.world.item.ItemStack(item, count.checkint()));
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to give item", e);
+                    }
+                }
+                return LuaValue.NIL;
+            }
+        });
+        
+        playerTable.set("closeGui", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                player.closeContainer();
+                return LuaValue.NIL;
+            }
+        });
+        
+        playerTable.set("openGui", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue guiId) {
+                if (player instanceof ServerPlayer sp) {
+                    try {
+                        net.minecraft.resources.ResourceLocation loc = 
+                            new net.minecraft.resources.ResourceLocation(guiId.checkjstring());
+                        CustomGuiProvider.openGui(sp, loc);
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to open GUI", e);
+                    }
+                }
+                return LuaValue.NIL;
+            }
+        });
+        
+        globals.set("player", playerTable);
+        
+        // Add context variables
+        LuaTable contextTable = new LuaTable();
+        for (Map.Entry<String, Object> entry : context.getVariables().entrySet()) {
+            contextTable.set(entry.getKey(), toLuaValue(entry.getValue()));
+        }
+        globals.set("ctx", contextTable);
+        
+        // Add utility functions
+        globals.set("print", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 1; i <= args.narg(); i++) {
+                    if (i > 1) sb.append("\t");
+                    sb.append(args.arg(i).tojstring());
+                }
+                LOGGER.info("[Script] {}", sb);
+                return LuaValue.NIL;
+            }
+        });
+        
+        return globals;
+    }
+    
+    private static LuaValue toLuaValue(Object obj) {
+        if (obj instanceof String) return LuaValue.valueOf((String) obj);
+        if (obj instanceof Number) return LuaValue.valueOf(((Number) obj).doubleValue());
+        if (obj instanceof Boolean) return LuaValue.valueOf((Boolean) obj);
+        return LuaValue.NIL;
+    }
+    
+    public static class ScriptResult {
+        private final boolean success;
+        private final String message;
+        
+        public ScriptResult(boolean success, String message) {
+            this.success = success;
+            this.message = message;
+        }
+        
+        public boolean isSuccess() {
+            return success;
+        }
+        
+        public String getMessage() {
+            return message;
+        }
+    }
+    
+    public static class ScriptContext {
+        private final java.util.Map<String, Object> variables = new java.util.HashMap<>();
+        
+        public void set(String key, Object value) {
+            variables.put(key, value);
+        }
+        
+        public Object get(String key) {
+            return variables.get(key);
+        }
+        
+        public java.util.Map<String, Object> getVariables() {
+            return variables;
+        }
+    }
+}
