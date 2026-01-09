@@ -1,15 +1,21 @@
 {
-  "pools" : [ {
-    "bonus_rolls" : 0.0,
-    "conditions" : [ {
-      "condition" : "minecraft:survives_explosion"
-    } ],
-    "entries" : [ {
-      "name" : "tts:carbon_steel_grate_slab",
-      "type" : "minecraft:item"
-    } ],
-    "rolls" : 1.0
-  } ],
-  "random_sequence" : "tts:blocks/carbon_steel_grate_slab",
-  "type" : "minecraft:block"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tts:carbon_steel_grate_slab"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tts:blocks/carbon_steel_grate_slab"
 }

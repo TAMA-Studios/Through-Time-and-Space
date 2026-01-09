@@ -1,15 +1,21 @@
 {
-  "pools" : [ {
-    "bonus_rolls" : 0.0,
-    "conditions" : [ {
-      "condition" : "minecraft:survives_explosion"
-    } ],
-    "entries" : [ {
-      "name" : "tts:organic/interior_rock",
-      "type" : "minecraft:item"
-    } ],
-    "rolls" : 1.0
-  } ],
-  "random_sequence" : "tts:blocks/organic/interior_rock",
-  "type" : "minecraft:block"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tts:organic/interior_rock"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tts:blocks/organic/interior_rock"
 }

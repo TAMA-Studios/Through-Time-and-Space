@@ -1,22 +1,27 @@
 {
-  "feature" : "tts:zeiton_ore",
-  "placement" : [ {
-    "count" : 48,
-    "type" : "minecraft:count"
-  }, {
-    "type" : "minecraft:in_square"
-  }, {
-    "height" : {
-      "max_inclusive" : {
-        "absolute" : 80
-      },
-      "min_inclusive" : {
-        "absolute" : -63
-      },
-      "type" : "minecraft:uniform"
+  "feature": "tts:zeiton_ore",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 48
     },
-    "type" : "minecraft:height_range"
-  }, {
-    "type" : "minecraft:biome"
-  } ]
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 80
+        },
+        "min_inclusive": {
+          "absolute": -63
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
 }

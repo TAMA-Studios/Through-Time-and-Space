@@ -1,15 +1,21 @@
 {
-  "pools" : [ {
-    "bonus_rolls" : 0.0,
-    "conditions" : [ {
-      "condition" : "minecraft:survives_explosion"
-    } ],
-    "entries" : [ {
-      "name" : "tts:exterior_block",
-      "type" : "minecraft:item"
-    } ],
-    "rolls" : 1.0
-  } ],
-  "random_sequence" : "tts:blocks/exterior_block",
-  "type" : "minecraft:block"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tts:exterior_block"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tts:blocks/exterior_block"
 }

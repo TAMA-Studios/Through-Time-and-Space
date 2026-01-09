@@ -1,6 +1,6 @@
 {
-  "biomes" : "#minecraft:is_overworld",
-  "features" : "tts:zeiton_ore_placed",
-  "step" : "underground_ores",
-  "type" : "forge:add_features"
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "tts:zeiton_ore_placed",
+  "step": "underground_ores"
 }

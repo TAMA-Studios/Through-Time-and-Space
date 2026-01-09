@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
+import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.datagen.assets.DataBlockStateProvider;
+import com.google.gson.JsonElement;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
@@ -13,8 +12,6 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +19,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
@@ -44,8 +47,13 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	public TTSBlockBuilder<T, P> verySimpleBlock() {
 		return this
-				.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion().lightLevel(state -> 10))
-				.stateWithExistingModel().simpleItem().defaultLang().defaultLoot();
+				.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion())
+				.defaultBlockstate().defaultLang().defaultLoot().simpleBlockItemBlockParent();
+	}
+
+	public TTSBlockBuilder<T, P> light(int Light) {
+		int finalLight = (int) MathUtils.clamp(Light, 0, 15);
+		return this.properties(p -> p.lightLevel(state -> finalLight));
 	}
 
 	public TTSBlockBuilder<T, P> stateWithExistingModel(String path) {
@@ -53,7 +61,7 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	public TTSBlockBuilder<T, P> controlPanelState() {
-		return this.itemWithPath(BlockItem::new, "control/").build().blockstate(DataBlockStateProvider::controlPanel);
+		return this.itemWithPath(BlockItem::new, "control/").build().blockstate(DataBlockStateProvider::controlPanel).simpleBlockItemBlockParentPath("control/");
 	}
 
 	public TTSBlockBuilder<T, P> airState() {
@@ -97,9 +105,36 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 		return (TTSBlockBuilder<T, P>) super.initialProperties(block);
 	}
 
-	@Override
 	public @NotNull TTSBlockBuilder<T, P> simpleItem() {
-		return (TTSBlockBuilder<T, P>) super.simpleItem();
+		return (TTSBlockBuilder<T, P>) this.item().build();
+	}
+
+	public ItemBuilder<BlockItem, BlockBuilder<T, P>> item() {
+		return this.item(BlockItem::new);
+	}
+
+	@Override
+	public <I extends Item> ItemBuilder<I, BlockBuilder<T, P>> item(NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
+		return ((ItemBuilder) this.getOwner()
+				.item(this, this.getName(), (p) -> (Item) factory.apply(this.getEntry(), p))
+				.setData(ProviderType.LANG, (ctx, provider) -> {
+					provider.add(ctx.get().getDescriptionId(), Arrays.stream(ctx.getName().split("/")).toList()
+							.get(Arrays.stream(ctx.getName().split("/")).toArray().length));
+				})).model((ctx, prov) -> {
+			Optional<String> model = this.getOwner().getDataProvider(ProviderType.BLOCKSTATE).flatMap((p) -> p.getExistingVariantBuilder((Block)this.getEntry())).map((b) -> (BlockStateProvider.ConfiguredModelList)b.getModels().get(b.partialState())).map(BlockStateProvider.ConfiguredModelList::toJSON).filter(JsonElement::isJsonObject).map((j) -> j.getAsJsonObject().get("model")).map(JsonElement::getAsString);
+
+			if(model.isPresent())
+				((RegistrateItemModelProvider) prov).withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(),
+						model.get());
+
+			else
+				((RegistrateItemModelProvider) prov).withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(),
+						((RegistrateItemModelProvider) prov).modLoc("block/" + this.getName()));
+
+
+			// ((RegistrateItemModelProvider) prov).blockItem(this.asSupplier());
+
+		});
 	}
 
 	public <I extends Item> ItemBuilder<I, TTSBlockBuilder<T, P>> itemWithPath(
@@ -118,6 +153,24 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 					// ((RegistrateItemModelProvider) prov).blockItem(this.asSupplier());
 
 				});
+	}
+
+	private TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
+		try {
+			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) ->  prov.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + this.getName()))).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private TTSBlockBuilder<T, P> simpleBlockItemBlockParentPath(String path) {
+		try {
+			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) ->  prov.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + path + this.getName()))).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public TTSBlockBuilder<T, P> simpleItemNoData() {
@@ -143,7 +196,7 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	@Override
 	public TTSBlockBuilder<T, P> defaultBlockstate() {
 		try {
-			return (TTSBlockBuilder<T, P>) super.defaultBlockstate();
+			return this.blockstate((ctx, prov) -> prov.simpleBlock((Block)ctx.getEntry()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,8 +209,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	@Override
-	public TTSBlockBuilder<T, P> blockstate(
-			NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> cons) {
+	public @NotNull TTSBlockBuilder<T, P> blockstate(
+			@NotNull NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> cons) {
 		return (TTSBlockBuilder<T, P>) super.blockstate(cons);
 	}
 

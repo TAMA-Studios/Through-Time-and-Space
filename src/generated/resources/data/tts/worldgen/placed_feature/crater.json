@@ -1,12 +1,16 @@
 {
-  "feature" : "tts:crater",
-  "placement" : [ {
-    "chance" : 10,
-    "type" : "minecraft:rarity_filter"
-  }, {
-    "type" : "minecraft:in_square"
-  }, {
-    "heightmap" : "WORLD_SURFACE_WG",
-    "type" : "minecraft:heightmap"
-  } ]
+  "feature": "tts:crater",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 10
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
+    }
+  ]
 }

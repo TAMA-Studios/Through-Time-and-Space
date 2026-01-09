@@ -1,15 +1,21 @@
 {
-  "pools" : [ {
-    "bonus_rolls" : 0.0,
-    "conditions" : [ {
-      "condition" : "minecraft:survives_explosion"
-    } ],
-    "entries" : [ {
-      "name" : "tts:zeiton/end_stone_zeiton_ore",
-      "type" : "minecraft:item"
-    } ],
-    "rolls" : 1.0
-  } ],
-  "random_sequence" : "tts:blocks/zeiton/end_stone_zeiton_ore",
-  "type" : "minecraft:block"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tts:zeiton/end_stone_zeiton_ore"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tts:blocks/zeiton/end_stone_zeiton_ore"
 }

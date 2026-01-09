@@ -1,15 +1,21 @@
 {
-  "pools" : [ {
-    "bonus_rolls" : 0.0,
-    "conditions" : [ {
-      "condition" : "minecraft:survives_explosion"
-    } ],
-    "entries" : [ {
-      "name" : "tts:destination_info_panel",
-      "type" : "minecraft:item"
-    } ],
-    "rolls" : 1.0
-  } ],
-  "random_sequence" : "tts:blocks/destination_info_panel",
-  "type" : "minecraft:block"
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tts:destination_info_panel"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tts:blocks/destination_info_panel"
 }

@@ -1,6 +1,6 @@
 {
-  "config" : {
-    "probability" : 0.25
-  },
-  "type" : "tts:crater"
+  "type": "tts:crater",
+  "config": {
+    "probability": 0.25
+  }
 }
