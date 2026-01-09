@@ -109,7 +109,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tts-dev-build-B${{ github.run_number }}
-          path: "build/libs/*.jar"
+          path: "build/libs/*-shadowed.jar"
           if-no-files-found: error
           retention-days: 10
 
@@ -119,7 +119,7 @@ jobs:
         with:
           url: ${{ secrets.DEV_BUILDS }}
           file: 'build/libs/*'
-          username: TAMAman
+          username: BananaMan
           avatar: 'https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png'
           commit: '> :sparkles: [%MESSAGE%](<%LINK%>) by [%AUTHOR%](<%AUTHOR_LINK%>) '
           message: |

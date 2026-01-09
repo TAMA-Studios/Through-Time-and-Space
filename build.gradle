@@ -250,25 +250,36 @@ dependencies {
 
 shadowJar {
 	archiveClassifier.set('shadowed')
-	// Tell shadow to include the commonShadow configuration
 	configurations = [project.configurations.commonShadow]
 
 	from(sourceSets.main.output)
 
-	// Relocate to avoid conflicts with other mods using LuaJ
-	relocate 'org.luaj', 'com.code.tama.shadow.luaj'
+	// Add the mixin refmap rename
+	rename 'mixins.tts.refmap.json', 'mixins-refmap.tts.json'
 
-	// Your existing relocations
+	// Relocate to avoid conflicts
+	relocate 'org.luaj', 'com.code.tama.shadow.luaj'
 	relocate 'patchouli', 'com.code.tama.shadow.patchouli'
+
+	// Inherit manifest from main jar
+	manifest {
+		from(jar.manifest)
+	}
+
+	// Finalize with reobf
+	finalizedBy 'reobfShadowJar'
 }
 
+// Add reobf task for shadowJar
 reobf {
+	shadowJar { }
 	jarJar { }
 }
 
 tasks.jarJar.finalizedBy('reobfJarJar')
 
 tasks.build.dependsOn shadowJar
+tasks.build.dependsOn reobfShadowJar
 
 tasks.named('processResources', ProcessResources).configure {
 	var replaceProperties = [
