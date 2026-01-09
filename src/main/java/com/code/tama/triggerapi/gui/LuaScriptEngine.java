@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.*;
@@ -11,6 +9,9 @@ import org.luaj.vm2.lib.jse.JseMathLib;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public class LuaScriptEngine {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LuaScriptEngine.class);
@@ -48,7 +49,6 @@ public class LuaScriptEngine {
 		globals.load(new StringLib());
 		globals.load(new TableLib());
 		globals.load(new JseMathLib());
-
 
 		// Add player API
 		LuaTable playerTable = new LuaTable();

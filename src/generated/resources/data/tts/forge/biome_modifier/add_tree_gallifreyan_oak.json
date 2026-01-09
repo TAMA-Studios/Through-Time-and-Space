@@ -1,6 +1,6 @@
 {
-  "type": "forge:add_features",
-  "biomes": "#tts:gallifrey",
-  "features": "tts:gallifreyan_oak_placed",
-  "step": "vegetal_decoration"
+  "biomes" : "#tts:gallifrey",
+  "features" : "tts:gallifreyan_oak_placed",
+  "step" : "vegetal_decoration",
+  "type" : "forge:add_features"
 }

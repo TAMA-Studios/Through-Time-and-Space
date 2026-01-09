@@ -71,6 +71,7 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 						workbenchTile.nozzle != null ? workbenchTile.nozzle : Items.AIR);
 				if (result != Items.AIR) {
 					assert result != null;
+
 					player.getInventory().add(result.getDefaultInstance());
 					workbenchTile.StoredItems.clear();
 					return InteractionResult.CONSUME;
@@ -79,9 +80,7 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 			}
 
 			// If player isn't holding sonic, and the workbench isn't full, (and they're not
-			// holding a
-			// nozzle) add the
-			// players mainhand item
+			// holding a nozzle) add the players mainhand item
 			else if (workbenchTile.StoredItems.size() < 6
 					&& !(player.getMainHandItem().getItem() instanceof NozzleItem)) {
 				if (!player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() != Items.AIR) {

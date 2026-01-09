@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
@@ -33,6 +37,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -46,10 +51,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -233,7 +234,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<LightPanel> LIGHT_PANEL = Builder("light_panel", LightPanel::new)
-			.properties(p -> p.strength(1.25f).lightLevel(s -> 1).sound(SoundType.STONE)).controlPanelState().register();
+			.properties(p -> p.strength(1.25f).lightLevel(s -> 1).sound(SoundType.STONE)).controlPanelState()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<ARSPanel> ARS_PANEL = Builder("ars_panel", ARSPanel::new)
@@ -495,48 +497,48 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("decoration/sov/bridge/trimlight_lower", Block::new)
-			.verySimpleBlock().light(10).register();
+	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_LOWER = Builder("decoration/sov/bridge/trimlight_lower",
+			Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_UPPER = Builder("decoration/sov/bridge/trimlight_upper", Block::new)
-			.verySimpleBlock().light(10).register();
+	public static final BlockEntry<Block> SOV_BRIDGE_TRIMLIGHT_UPPER = Builder("decoration/sov/bridge/trimlight_upper",
+			Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BRIDGE_BROWN_FLAT = Builder("decoration/sov/bridge/brown_flat", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_BRIDGE_BROWN_FLAT = Builder("decoration/sov/bridge/brown_flat",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_TOP = Builder("decoration/sov/outer_corridor_top", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_TOP = Builder("decoration/sov/outer_corridor_top",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_MID = Builder("decoration/sov/outer_corridor_mid", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_MID = Builder("decoration/sov/outer_corridor_mid",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_BASE = Builder("decoration/sov/outer_corridor_base", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_OUTER_CORRIDOR_BASE = Builder("decoration/sov/outer_corridor_base",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_TOP = Builder("decoration/sov/inner_corridor_top", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_TOP = Builder("decoration/sov/inner_corridor_top",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_MID = Builder("decoration/sov/inner_corridor_mid", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_MID = Builder("decoration/sov/inner_corridor_mid",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_BASE = Builder("decoration/sov/inner_corridor_base", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_INNER_CORRIDOR_BASE = Builder("decoration/sov/inner_corridor_base",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
@@ -550,13 +552,13 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_ENG_CORRIDOR_BASE = Builder("decoration/sov/eng_corridor_base", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_ENG_CORRIDOR_BASE = Builder("decoration/sov/eng_corridor_base",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_INTERIOR_LIGHT_FULL = Builder("decoration/sov/interior_light_full", Block::new)
-			.verySimpleBlock().light(10).register();
+	public static final BlockEntry<Block> SOV_INTERIOR_LIGHT_FULL = Builder("decoration/sov/interior_light_full",
+			Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	@SOV
@@ -565,18 +567,18 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL = Builder("decoration/sov/interior/beige_fabric_wall", Block::new)
-			.verySimpleBlock().register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL_VERT = Builder("decoration/sov/interior/beige_fabric_wall_vert",
+	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL = Builder("decoration/sov/interior/beige_fabric_wall",
 			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BEIGE_PANEL_SPLIT = Builder("decoration/sov/interior/beige_panel_split", Block::new)
-			.verySimpleBlock().register();
+	public static final BlockEntry<Block> SOV_BEIGE_FABRIC_WALL_VERT = Builder(
+			"decoration/sov/interior/beige_fabric_wall_vert", Block::new).verySimpleBlock().register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_PANEL_SPLIT = Builder("decoration/sov/interior/beige_panel_split",
+			Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
@@ -585,23 +587,23 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("decoration/sov/interior/beige_rooflight", Block::new)
-			.verySimpleBlock().light(10).register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("decoration/sov/interior/beige_wall_lamp", Block::new)
-			.verySimpleBlock().register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT = Builder("decoration/sov/bridge/brown_baselight", Block::new)
-			.verySimpleBlock().light(10).register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT_DIVOT = Builder("decoration/sov/bridge/brown_baselight_divot",
+	public static final BlockEntry<Block> SOV_BEIGE_ROOFLIGHT = Builder("decoration/sov/interior/beige_rooflight",
 			Block::new).verySimpleBlock().light(10).register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BEIGE_WALL_LAMP = Builder("decoration/sov/interior/beige_wall_lamp",
+			Block::new).verySimpleBlock().register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT = Builder("decoration/sov/bridge/brown_baselight",
+			Block::new).verySimpleBlock().light(10).register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_BASELIGHT_DIVOT = Builder(
+			"decoration/sov/bridge/brown_baselight_divot", Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	@SOV
@@ -610,18 +612,18 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_BROWN_DIVOT_VERT = Builder("decoration/sov/bridge/brown_divot_vert", Block::new)
-			.verySimpleBlock().register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL = Builder("decoration/sov/bridge/brown_fabric_wall", Block::new)
-			.verySimpleBlock().register();
-
-	@Decorational
-	@SOV
-	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL_VERT = Builder("decoration/sov/bridge/brown_fabric_wall_vert",
+	public static final BlockEntry<Block> SOV_BROWN_DIVOT_VERT = Builder("decoration/sov/bridge/brown_divot_vert",
 			Block::new).verySimpleBlock().register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL = Builder("decoration/sov/bridge/brown_fabric_wall",
+			Block::new).verySimpleBlock().register();
+
+	@Decorational
+	@SOV
+	public static final BlockEntry<Block> SOV_BROWN_FABRIC_WALL_VERT = Builder(
+			"decoration/sov/bridge/brown_fabric_wall_vert", Block::new).verySimpleBlock().register();
 
 	@Decorational
 	@SOV
@@ -630,13 +632,13 @@ public class TTSBlocks {
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_TRIMLIGHT_LOWER = Builder("decoration/sov/bridge/trimlight_lower", Block::new)
-			.verySimpleBlock().light(10).register();
+	public static final BlockEntry<Block> SOV_TRIMLIGHT_LOWER = Builder("decoration/sov/bridge/trimlight_lower",
+			Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	@SOV
-	public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("decoration/sov/bridge/trimlight_upper", Block::new)
-			.verySimpleBlock().light(10).register();
+	public static final BlockEntry<Block> SOV_TRIMLIGHT_UPPER = Builder("decoration/sov/bridge/trimlight_upper",
+			Block::new).verySimpleBlock().light(10).register();
 
 	@Decorational
 	public static final BlockEntry<Block> RUNNER_LIGHT_HALVED = Builder("decoration/runner_light_halved", Block::new)

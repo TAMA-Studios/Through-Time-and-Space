@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries;
 
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.code.tama.tts.datagen.assets.DataBlockStateProvider;
 import com.google.gson.JsonElement;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -12,6 +15,8 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,11 +25,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.Supplier;
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 @SuppressWarnings("unchecked")
 public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
@@ -46,9 +48,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	public TTSBlockBuilder<T, P> verySimpleBlock() {
-		return this
-				.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion())
-				.defaultBlockstate().defaultLang().defaultLoot().simpleBlockItemBlockParent();
+		return this.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion()).defaultBlockstate()
+				.defaultLang().defaultLoot().simpleBlockItemBlockParent();
 	}
 
 	public TTSBlockBuilder<T, P> light(int Light) {
@@ -61,7 +62,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	public TTSBlockBuilder<T, P> controlPanelState() {
-		return this.itemWithPath(BlockItem::new, "control/").build().blockstate(DataBlockStateProvider::controlPanel).simpleBlockItemBlockParentPath("control/");
+		return this.itemWithPath(BlockItem::new, "control/").build().blockstate(DataBlockStateProvider::controlPanel)
+				.simpleBlockItemBlockParentPath("control/");
 	}
 
 	public TTSBlockBuilder<T, P> airState() {
@@ -114,27 +116,32 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	@Override
-	public <I extends Item> ItemBuilder<I, BlockBuilder<T, P>> item(NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
+	public <I extends Item> ItemBuilder<I, BlockBuilder<T, P>> item(
+			NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
 		return ((ItemBuilder) this.getOwner()
 				.item(this, this.getName(), (p) -> (Item) factory.apply(this.getEntry(), p))
 				.setData(ProviderType.LANG, (ctx, provider) -> {
 					provider.add(ctx.get().getDescriptionId(), Arrays.stream(ctx.getName().split("/")).toList()
 							.get(Arrays.stream(ctx.getName().split("/")).toArray().length));
 				})).model((ctx, prov) -> {
-			Optional<String> model = this.getOwner().getDataProvider(ProviderType.BLOCKSTATE).flatMap((p) -> p.getExistingVariantBuilder((Block)this.getEntry())).map((b) -> (BlockStateProvider.ConfiguredModelList)b.getModels().get(b.partialState())).map(BlockStateProvider.ConfiguredModelList::toJSON).filter(JsonElement::isJsonObject).map((j) -> j.getAsJsonObject().get("model")).map(JsonElement::getAsString);
+					Optional<String> model = this.getOwner().getDataProvider(ProviderType.BLOCKSTATE)
+							.flatMap((p) -> p.getExistingVariantBuilder((Block) this.getEntry()))
+							.map((b) -> (BlockStateProvider.ConfiguredModelList) b.getModels().get(b.partialState()))
+							.map(BlockStateProvider.ConfiguredModelList::toJSON).filter(JsonElement::isJsonObject)
+							.map((j) -> j.getAsJsonObject().get("model")).map(JsonElement::getAsString);
 
-			if(model.isPresent())
-				((RegistrateItemModelProvider) prov).withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(),
-						model.get());
+					if (model.isPresent())
+						((RegistrateItemModelProvider) prov)
+								.withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(), model.get());
 
-			else
-				((RegistrateItemModelProvider) prov).withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(),
-						((RegistrateItemModelProvider) prov).modLoc("block/" + this.getName()));
+					else
+						((RegistrateItemModelProvider) prov).withExistingParent(
+								"item/" + ((DataGenContext<Item, I>) ctx).getName(),
+								((RegistrateItemModelProvider) prov).modLoc("block/" + this.getName()));
 
+					// ((RegistrateItemModelProvider) prov).blockItem(this.asSupplier());
 
-			// ((RegistrateItemModelProvider) prov).blockItem(this.asSupplier());
-
-		});
+				});
 	}
 
 	public <I extends Item> ItemBuilder<I, TTSBlockBuilder<T, P>> itemWithPath(
@@ -157,7 +164,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	private TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
 		try {
-			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) ->  prov.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + this.getName()))).build();
+			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) -> prov
+					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + this.getName()))).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -166,7 +174,9 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	private TTSBlockBuilder<T, P> simpleBlockItemBlockParentPath(String path) {
 		try {
-			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) ->  prov.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + path + this.getName()))).build();
+			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) -> prov
+					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + path + this.getName())))
+					.build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -196,7 +206,7 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	@Override
 	public TTSBlockBuilder<T, P> defaultBlockstate() {
 		try {
-			return this.blockstate((ctx, prov) -> prov.simpleBlock((Block)ctx.getEntry()));
+			return this.blockstate((ctx, prov) -> prov.simpleBlock((Block) ctx.getEntry()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

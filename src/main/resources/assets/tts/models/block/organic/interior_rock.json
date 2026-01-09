@@ -1,6 +1,7 @@
 {
   "parent" : "minecraft:block/cube_all",
   "textures" : {
-    "all" : "" // TODO: this <-
+    "all" : "",
+    "comment" : "TODO: this (Interior rock texture)"
   }
 }

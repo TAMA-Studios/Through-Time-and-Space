@@ -1,9 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.constants;
 
-import com.code.tama.triggerapi.gui.CustomGuiProvider;
-import com.code.tama.triggerapi.gui.GuiLoader;
-import com.code.tama.triggerapi.gui.LuaScriptEngine;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -17,6 +18,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -35,9 +37,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import com.code.tama.triggerapi.gui.CustomGuiProvider;
+import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.gui.LuaScriptEngine;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TTSCommands {
@@ -56,10 +58,9 @@ public class TTSCommands {
 				return 0;
 			}));
 
-	public static LiteralArgumentBuilder<CommandSourceStack> lua = Commands.literal("lua").then(Commands
-			.argument("code", StringArgumentType.string()).executes(context -> {
+	public static LiteralArgumentBuilder<CommandSourceStack> lua = Commands.literal("lua")
+			.then(Commands.argument("code", StringArgumentType.string()).executes(context -> {
 				if (context.getSource().getEntity() instanceof ServerPlayer player) {
-
 
 					LuaScriptEngine.ScriptContext ctx = new LuaScriptEngine.ScriptContext();
 					LuaScriptEngine.executeScript(StringArgumentType.getString(context, "code"), player, ctx);

@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
-
-import java.util.List;
 
 /**
  * Represents a custom GUI definition loaded from JSON Location:
@@ -46,7 +46,7 @@ public class GuiDefinition {
 	// Container button (for chest-like GUIs)
 	@Getter
 	public static class ContainerButtonDefinition {
-        @SerializedName("slot")
+		@SerializedName("slot")
 		private int slot;
 
 		@SerializedName("item")
@@ -74,100 +74,100 @@ public class GuiDefinition {
 
 	public static class BackgroundDefinition {
 		@Getter
-        @SerializedName("item")
+		@SerializedName("item")
 		private String item;
 
 		@SerializedName("fill_empty")
 		private boolean fillEmpty = false;
 
-        public boolean shouldFillEmpty() {
+		public boolean shouldFillEmpty() {
 			return fillEmpty;
 		}
 	}
 
 	// Custom GUI element (button, text, image, etc.)
 	public static class GuiElement {
-        // Getters
-        @Getter
-        @SerializedName("type")
+		// Getters
+		@Getter
+		@SerializedName("type")
 		private String type; // "button", "text", "image", "item"
 
 		@Getter
-        @SerializedName("id")
+		@SerializedName("id")
 		private String id;
 
 		@Getter
-        @SerializedName("x")
+		@SerializedName("x")
 		private int x;
 
 		@Getter
-        @SerializedName("y")
+		@SerializedName("y")
 		private int y;
 
 		@Getter
-        @SerializedName("width")
+		@SerializedName("width")
 		private int width;
 
 		@Getter
-        @SerializedName("height")
+		@SerializedName("height")
 		private int height;
 
 		// Button specific
 		@Getter
-        @SerializedName("texture")
+		@SerializedName("texture")
 		private String texture;
 
 		@Getter
-        @SerializedName("texture_x")
+		@SerializedName("texture_x")
 		private int textureX = 0;
 
 		@Getter
-        @SerializedName("texture_y")
+		@SerializedName("texture_y")
 		private int textureY = 0;
 
 		@Getter
-        @SerializedName("hover_texture_y")
+		@SerializedName("hover_texture_y")
 		private int hoverTextureY = 0;
 
 		@Getter
-        @SerializedName("script")
+		@SerializedName("script")
 		private String script;
 
 		// Text specific
 		@Getter
-        @SerializedName("text")
+		@SerializedName("text")
 		private String text;
 
 		@Getter
-        @SerializedName("color")
+		@SerializedName("color")
 		private int color = 0x404040;
 
 		@SerializedName("shadow")
 		private boolean shadow = false;
 
 		@Getter
-        @SerializedName("scale")
+		@SerializedName("scale")
 		private float scale = 1.0f;
 
 		// Item specific
 		@Getter
-        @SerializedName("item")
+		@SerializedName("item")
 		private String item;
 
 		@Getter
-        @SerializedName("tooltip")
+		@SerializedName("tooltip")
 		private List<String> tooltip;
 
 		// Image specific
 		@Getter
-        @SerializedName("image_width")
+		@SerializedName("image_width")
 		private int imageWidth = 256;
 
 		@Getter
-        @SerializedName("image_height")
+		@SerializedName("image_height")
 		private int imageHeight = 256;
 
-        public boolean hasShadow() {
+		public boolean hasShadow() {
 			return shadow;
 		}
 	}
