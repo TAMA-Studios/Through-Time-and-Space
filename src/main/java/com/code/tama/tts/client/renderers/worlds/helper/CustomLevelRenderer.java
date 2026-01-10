@@ -12,8 +12,10 @@ import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.TardisSkyRenderer;
+import com.code.tama.tts.mixin.client.ILevelRendererAccessor;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.Tags;
+import com.code.tama.tts.server.items.TwineItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -26,6 +28,9 @@ import org.joml.Vector4i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -192,6 +197,8 @@ public class CustomLevelRenderer {
 	// This method will handle the rendering event
 	@SubscribeEvent
 	public static void onRenderLevel(RenderLevelStageEvent event) {
+		renderTwine(event);
+
 		if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
 			SkyBlock.renderSky(
 					new SkyBlock.RenderData(event.getPoseStack(), event.getPartialTick(), event.getProjectionMatrix()));
@@ -216,6 +223,72 @@ public class CustomLevelRenderer {
 		// Apply the calculated lighting
 		CustomLevelRenderer.applyLighting(ambientLight, Disco);
 		CustomLevelRenderer.applyFogEffect(ambientLight);
+	}
+
+	public static void renderTwine(RenderLevelStageEvent event) {
+		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES)
+			return;
+
+		Minecraft mc = Minecraft.getInstance();
+		Player player = mc.player;
+		if (player == null)
+			return;
+
+		// Check if player is holding twine
+		for (ItemStack stack : player.getHandSlots()) {
+			if (stack.getItem() instanceof TwineItem) {
+				CompoundTag tag = stack.getTag();
+				if (tag != null && tag.contains("BoundEntityId")) {
+					int entityId = tag.getInt("BoundEntityId");
+					Entity boundEntity = player.level().getEntity(entityId);
+
+					if (boundEntity != null) {
+						renderTwineString(event.getPoseStack(),
+								((ILevelRendererAccessor) event.getLevelRenderer()).getRenderBuffers().bufferSource(),
+								player, boundEntity, event.getPartialTick());
+					}
+				}
+			}
+		}
+	}
+
+	private static void renderTwineString(PoseStack poseStack, MultiBufferSource buffer, Player player, Entity target,
+			float partialTick) {
+		poseStack.pushPose();
+
+		Vec3 playerPos = player.getEyePosition(partialTick);
+		Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
+		Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+
+		poseStack.translate(playerPos.x - camera.x, playerPos.y - camera.y, playerPos.z - camera.z);
+
+		VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.leash());
+		Matrix4f matrix = poseStack.last().pose();
+
+		// Calculate the direction and render the string
+		float dx = (float) (targetPos.x - playerPos.x);
+		float dy = (float) (targetPos.y - playerPos.y);
+		float dz = (float) (targetPos.z - playerPos.z);
+
+		// Render string segments (similar to lead rendering)
+		int segments = 24;
+		for (int i = 0; i < segments; i++) {
+			float t = i / (float) segments;
+			float nextT = (i + 1) / (float) segments;
+
+			float x1 = dx * t;
+			float y1 = dy * t - (float) (Math.sin(t * Math.PI) * 0.2);
+			float z1 = dz * t;
+
+			float x2 = dx * nextT;
+			float y2 = dy * nextT - (float) (Math.sin(nextT * Math.PI) * 0.2);
+			float z2 = dz * nextT;
+
+			vertexConsumer.vertex(matrix, x1, y1, z1).color(139, 90, 43, 255).endVertex();
+			vertexConsumer.vertex(matrix, x2, y2, z2).color(139, 90, 43, 255).endVertex();
+		}
+
+		poseStack.popPose();
 	}
 
 	public static void renderImageSky(PoseStack poseStack, ResourceLocation resourceLocation, Vector4i Colors) {

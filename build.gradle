@@ -178,7 +178,7 @@ dependencies {
 	// Mixin Extras
 	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
 
-	implementation fg.deobf(jarJar("com.tterrag.registrate:Registrate:${registrate_version}"))
+	commonShadow(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
 
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
 
@@ -260,6 +260,7 @@ shadowJar {
 	// Relocate to avoid conflicts
 	relocate 'org.luaj', 'com.code.tama.shadow.luaj'
 	relocate 'patchouli', 'com.code.tama.shadow.patchouli'
+	relocate 'com.tterrag.registrate', 'com.code.tama.shadow.registrate'
 
 	// Inherit manifest from main jar
 	manifest {

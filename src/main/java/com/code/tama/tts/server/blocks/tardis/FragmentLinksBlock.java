@@ -109,8 +109,6 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 
 					fragmentLinks.LoopTest(level, pos.relative(testing, 1), testing, false, iteration + 1, isBroken);
 					makeParticle(level, pos.above());
-
-					System.out.println(iteration);
 				}
 
 				if (level.getBlockState(pos.relative(testing, 1))

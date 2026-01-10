@@ -43,7 +43,9 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import com.code.tama.triggerapi.boti.packets.BOTIPackets;
 import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
 import com.code.tama.triggerapi.networking.gui.ButtonClickPacket;
+import com.code.tama.triggerapi.networking.gui.GuiStateUpdatePacket;
 import com.code.tama.triggerapi.networking.gui.OpenGuiPacket;
+import com.code.tama.triggerapi.networking.gui.ProgressUpdatePacket;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class Networking {
@@ -62,7 +64,7 @@ public class Networking {
 
 	public static <T> void register(Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encoder,
 			Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> handler) {
-		INSTANCE.registerMessage(id(), clazz, encoder, decoder, handler);
+		INSTANCE.registerMessage(Networking.id(), clazz, encoder, decoder, handler);
 	}
 
 	public static void registerPackets() {
@@ -78,6 +80,9 @@ public class Networking {
 				.consumerMainThread(ButtonClickPacket::handle).add();
 
 		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
+
+		UniversalCommon.Networking.registerMsg(ProgressUpdatePacket.class);
+		UniversalCommon.Networking.registerMsg(GuiStateUpdatePacket.class);
 
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,

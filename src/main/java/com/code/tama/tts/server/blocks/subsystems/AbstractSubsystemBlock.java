@@ -5,6 +5,8 @@ import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
 import lombok.Getter;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -34,7 +36,9 @@ public abstract class AbstractSubsystemBlock extends Block {
 	 */
 	public void OnIntegration(Level level, BlockPos blockPos) {
 		this.subsystem.setBlockPos(blockPos);
-		if (this.subsystem.IsValid(level, blockPos))
+		if (this.subsystem.IsValid(level, blockPos)) {
+			level.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f);
 			this.OnActivate(level, blockPos);
+		}
 	}
 }

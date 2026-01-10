@@ -32,10 +32,14 @@ public class EnergyHandler {
 	}
 
 	public void saveNBT(CompoundTag tag) {
-		tag.put("Energy", energy.serializeNBT());
+		tag.putInt("Energy", energy.getEnergyStored());
 	}
 
 	public void loadNBT(CompoundTag tag) {
-		energy.deserializeNBT(tag.getCompound("Energy"));
+		if (tag.contains("Energy")) {
+			int stored = tag.getInt("Energy");
+			energy.receiveEnergy(stored, false);
+		}
 	}
+
 }

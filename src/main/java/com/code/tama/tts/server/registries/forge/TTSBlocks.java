@@ -676,6 +676,34 @@ public class TTSBlocks {
 	public static final BlockEntry<Block> TUBE_WALL = Builder("decoration/tube_wall", Block::new).verySimpleBlock()
 			.register();
 
+	@Decorational
+	public static final BlockEntry<Block> CABINET_WALL = Builder("decoration/cabinet_wall", Block::new)
+			.verySimpleBlock().register();
+
+	@Decorational
+	public static final BlockEntry<Block> INTEGRITY_PIPING = Builder("decoration/integrity_piping", Block::new)
+			.verySimpleBlock().register();
+
+	@Decorational
+	public static final BlockEntry<Block> LANDSCAPE_SHEETING = Builder("decoration/landscape_sheeting", Block::new)
+			.verySimpleBlock().register();
+
+	@Decorational
+	public static final BlockEntry<Block> LANDSCAPE_SHEETING_VERT = Builder("decoration/landscape_sheeting_vert",
+			Block::new).verySimpleBlock().register();
+
+	@Decorational
+	public static final BlockEntry<Block> PADDED_WALL = Builder("decoration/padded_wall", Block::new).verySimpleBlock()
+			.register();
+
+	@Decorational
+	public static final BlockEntry<Block> PADDED_WALL_LAMP = Builder("decoration/padded_wall_lamp", Block::new)
+			.verySimpleBlock().register();
+
+	@Decorational
+	public static final BlockEntry<Block> RUNNER_PADDING_RAILED = Builder("decoration/runner_padding_railed",
+			Block::new).verySimpleBlock().register();
+
 	/**
 	 * Automatically handles registering the block and item for you, all you do is
 	 * pass in the name

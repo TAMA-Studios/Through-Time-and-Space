@@ -30,6 +30,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.phys.AABB;
@@ -159,6 +161,15 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void OnControlClicked(ITARDISLevel capability, Player player) {
+		if (player.getMainHandItem() != Items.AIR.getDefaultInstance()) {
+			ItemStack stack = player.getMainHandItem();
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.putInt("BoundEntityId", this.getId());
+			tag.putUUID("BoundEntityUUID", this.getUUID());
+			player.displayClientMessage(net.minecraft.network.chat.Component.literal("Twine tied to control!"), true);
+			return;
+		}
+
 		if (player.getUsedItemHand() == InteractionHand.OFF_HAND)
 			return;
 

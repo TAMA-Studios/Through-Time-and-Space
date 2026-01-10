@@ -6,6 +6,7 @@ import static com.code.tama.tts.TTSMod.registrate;
 import java.util.List;
 
 import com.code.tama.tts.manual.ManualItem;
+import com.code.tama.tts.server.items.TwineItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
@@ -53,8 +54,8 @@ public class TTSItems {
 	public static final ItemEntry<Item> ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
 
 	@MainTab
-	public static final ItemEntry<Item> TWINE_SPOOL = registrate().item("gadgets/twine_spool", Item::new).defaultModel()
-			.defaultLang().register();
+	public static final ItemEntry<TwineItem> TWINE_SPOOL = registrate().item("gadgets/twine_spool", TwineItem::new)
+			.defaultModel().defaultLang().register();
 
 	@MainTab
 	public static final ItemEntry<Item> PLASMIC_SHELL_PLATING;

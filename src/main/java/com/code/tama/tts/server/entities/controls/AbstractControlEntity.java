@@ -3,7 +3,9 @@ package com.code.tama.tts.server.entities.controls;
 
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.registries.forge.TTSItems;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.network.chat.Component;
@@ -27,6 +29,17 @@ public abstract class AbstractControlEntity extends Entity {
 	public AbstractControlEntity(EntityType<?> entity, Level level) {
 		super(entity, level);
 		this.setNoGravity(true); // Prevent it from falling
+	}
+
+	public void onTwineInteract(Player player) {
+		TARDISLevelCapability.GetTARDISCapSupplier(this.level()).ifPresent(cap -> {
+			boolean flag = player.getMainHandItem().getItem().equals(TTSItems.TWINE_SPOOL.get())
+					&& player.getOffhandItem().getItem().equals(TTSItems.TWINE_SPOOL.get());
+			if (flag)
+				this.OnControlClicked(cap, player);
+			else
+				this.OnControlHit(cap, player);
+		});
 	}
 
 	@Override

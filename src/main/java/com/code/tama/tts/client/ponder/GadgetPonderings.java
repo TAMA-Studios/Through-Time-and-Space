@@ -34,6 +34,12 @@ public class GadgetPonderings {
 		scene.overlay().showText(60).text("Subsystems are connected to the Interface via the use of Fragment Links")
 				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
 
+		scene.idle(60);
+
+		scene.overlay().showText(60).text(
+				"Once the Fragment Links and the Subsystem are physically connected to each other, Sonic the Fragment Links to finalize the connection")
+				.attachKeyFrame().pointAt(util.vector().blockSurface(corePos, Direction.WEST)).placeNearTarget();
+
 		scene.idle(10);
 	}
 

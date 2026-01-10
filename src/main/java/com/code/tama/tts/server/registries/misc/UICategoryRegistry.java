@@ -38,6 +38,9 @@ public class UICategoryRegistry {
 	public static final RegistryObject<UICategory> DESTINATION_LOC = UI_CATEGORIES.register("destination",
 			DestinationUICategory::new);
 
+	public static final RegistryObject<UICategory> FAULT_LOCATOR = UI_CATEGORIES.register("fault_locator",
+			FaultLocatorCategory::new);
+
 	public static final RegistryObject<UICategory> INTERIOR_PROPS = UI_CATEGORIES.register("int_props",
 			InteriorPropsUICategory::new);
 

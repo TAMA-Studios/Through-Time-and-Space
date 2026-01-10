@@ -5,6 +5,7 @@ import com.code.tama.tts.server.misc.progressable.IWeldable;
 import net.royawesome.jlibnoise.MathHelper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,5 +34,22 @@ public class EmptyArtificialShellTile extends BlockEntity implements IWeldable {
 	@Override
 	public void setWeld(int weld) {
 		this.Weld = MathHelper.clamp(weld, 0, this.getMaxWeld());
+	}
+
+	@Override
+	protected void saveAdditional(CompoundTag tag) {
+		tag.putInt("plates", PlasmicShellPlates);
+		tag.putInt("beams", StructuralBeams);
+		tag.putInt("weld", Weld);
+
+		super.saveAdditional(tag);
+	}
+
+	@Override
+	public void load(CompoundTag tag) {
+		this.PlasmicShellPlates = tag.getInt("plates");
+		this.StructuralBeams = tag.getInt("beams");
+		this.Weld = tag.getInt("beams");
+		super.load(tag);
 	}
 }
