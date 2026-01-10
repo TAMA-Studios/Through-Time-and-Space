@@ -86,6 +86,7 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag) {
+		tag.putInt("doorsOpen", this.DoorsOpen());
 		if (this.PlacerUUID != null)
 			tag.putUUID("placerUUID", this.PlacerUUID);
 		if (this.PlacerName != null)
@@ -139,7 +140,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	public int DoorsOpen() {
 		if (this.level != null && this.GetInterior() != null && !this.level.isClientSide) {
 			assert this.getLevel() != null;
-			return this.level.getServer().getLevel(this.GetInterior())
+			return this.DoorState = this.level.getServer().getLevel(this.GetInterior())
 					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.orElse(new TARDISLevelCapability(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION)))
 					.GetData().getInteriorDoorData().getDoorsOpen();
@@ -323,6 +324,10 @@ public class ExteriorTile extends AbstractPortalTile {
 			this.INTERIOR_DIMENSION = ResourceKey.create(Registries.DIMENSION,
 					new ResourceLocation(MODID + "-tardis", tag.getString("interior")));
 			this.targetLevel = this.INTERIOR_DIMENSION;
+		}
+
+		if (tag.contains("doorsOpen")) {
+			this.SetDoorsOpen(tag.getInt("doorsOpen"));
 		}
 
 		super.load(tag);

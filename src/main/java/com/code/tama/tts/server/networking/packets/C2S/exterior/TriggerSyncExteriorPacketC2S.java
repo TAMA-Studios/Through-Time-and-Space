@@ -54,7 +54,7 @@ public class TriggerSyncExteriorPacketC2S {
 			if (be instanceof ExteriorTile exteriorTile) {
 				Networking.sendPacketToDimension(packet.level,
 						new SyncExteriorPacketS2C(exteriorTile.getModelIndex(), exteriorTile.state,
-								exteriorTile.isArtificial, ExteriorsRegistry.GetOrdinal(exteriorTile.GetVariant()),
+								exteriorTile.DoorsOpen(), ExteriorsRegistry.GetOrdinal(exteriorTile.GetVariant()),
 								exteriorTile.targetLevel, exteriorTile.targetY, exteriorTile.targetPos, packet.blockX,
 								packet.blockY, packet.blockZ));
 			}

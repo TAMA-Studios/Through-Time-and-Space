@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SyncExteriorPacketS2C {
-	final boolean artificial;
+	final int doors;
 
 	final ExteriorState state;
 
@@ -33,10 +33,10 @@ public class SyncExteriorPacketS2C {
 
 	final int variant;
 
-	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, boolean artificial, int variant,
+	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, int doorsOpen, int variant,
 			@NotNull ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
 		this.state = state;
-		this.artificial = artificial;
+		this.doors = doorsOpen;
 		this.variant = variant;
 		this.model = model;
 		this.level = level;
@@ -49,15 +49,14 @@ public class SyncExteriorPacketS2C {
 
 	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
 		return new SyncExteriorPacketS2C(buffer.readResourceLocation(), buffer.readEnum(ExteriorState.class),
-				buffer.readBoolean(), buffer.readInt(), buffer.readResourceKey(Registries.DIMENSION),
-				buffer.readFloat(), buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(),
-				buffer.readInt());
+				buffer.readInt(), buffer.readInt(), buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
+				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}
 
 	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
 		buffer.writeResourceLocation(packet.model);
 		buffer.writeEnum(packet.state);
-		buffer.writeBoolean(packet.artificial);
+		buffer.writeInt(packet.doors);
 		buffer.writeInt(packet.variant);
 		buffer.writeResourceKey(packet.level);
 		buffer.writeFloat(packet.targetY);
@@ -81,7 +80,7 @@ public class SyncExteriorPacketS2C {
 					exteriorTile.setModel(packet.variant);
 					exteriorTile.setModelIndex(packet.model);
 					exteriorTile.state = packet.state;
-					exteriorTile.isArtificial = packet.artificial;
+					exteriorTile.SetDoorsOpen(packet.doors);
 				}
 			}
 		});
