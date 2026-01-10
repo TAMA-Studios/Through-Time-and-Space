@@ -284,8 +284,8 @@ public class CustomLevelRenderer {
 			float y2 = dy * nextT - (float) (Math.sin(nextT * Math.PI) * 0.2);
 			float z2 = dz * nextT;
 
-			vertexConsumer.vertex(matrix, x1, y1, z1).color(139, 90, 43, 255).endVertex();
-			vertexConsumer.vertex(matrix, x2, y2, z2).color(139, 90, 43, 255).endVertex();
+			vertexConsumer.vertex(matrix, x1, y1, z1).color(139, 90, 43, 255).uv2(0xf000f0).endVertex();
+			vertexConsumer.vertex(matrix, x2, y2, z2).color(139, 90, 43, 255).uv2(0xf000f0).endVertex();
 		}
 
 		poseStack.popPose();
