@@ -28,10 +28,12 @@ import org.joml.Vector4i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -256,36 +258,51 @@ public class CustomLevelRenderer {
 			float partialTick) {
 		poseStack.pushPose();
 
-		Vec3 playerPos = player.getEyePosition(partialTick);
+		Vec3 playerPos = player.getEyePosition(partialTick).add(0, -0.5, 0);
 		Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
 		Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
 		poseStack.translate(playerPos.x - camera.x, playerPos.y - camera.y, playerPos.z - camera.z);
 
-		VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.leash());
+		VertexConsumer vc = buffer.getBuffer(RenderType.leash());
 		Matrix4f matrix = poseStack.last().pose();
 
-		// Calculate the direction and render the string
 		float dx = (float) (targetPos.x - playerPos.x);
 		float dy = (float) (targetPos.y - playerPos.y);
 		float dz = (float) (targetPos.z - playerPos.z);
 
-		// Render string segments (similar to lead rendering)
-		int segments = 24;
-		for (int i = 0; i < segments; i++) {
+		int segments = Mth.clamp((int) (Math.sqrt(dx * dx + dz * dz) * 6), 24, 64);
+		float thickness = 0.025f;
+		int light = LightTexture.FULL_BRIGHT;
+
+		for (int i = 0; i <= segments; i++) {
 			float t = i / (float) segments;
-			float nextT = (i + 1) / (float) segments;
+			float nextT = Math.min(1.0f, (i + 1f) / segments);
 
-			float x1 = dx * t;
-			float y1 = dy * t - (float) (Math.sin(t * Math.PI) * 0.2);
-			float z1 = dz * t;
+			float x = dx * t;
+			float y = dy * t - Mth.sin(t * Mth.PI) * 0.2f;
+			float z = dz * t;
 
-			float x2 = dx * nextT;
-			float y2 = dy * nextT - (float) (Math.sin(nextT * Math.PI) * 0.2);
-			float z2 = dz * nextT;
+			float nx = dx * nextT - x;
+			float ny = dy * nextT - y - Mth.sin(nextT * Mth.PI) * 0.2f;
+			float nz = dz * nextT - z;
 
-			vertexConsumer.vertex(matrix, x1, y1, z1).color(139, 90, 43, 255).uv2(0xf000f0).endVertex();
-			vertexConsumer.vertex(matrix, x2, y2, z2).color(139, 90, 43, 255).uv2(0xf000f0).endVertex();
+			float len = Mth.sqrt(nx * nx + nz * nz);
+			if (len != 0.0f) {
+				nx /= len;
+				nz /= len;
+			}
+
+			float px = -nz * thickness;
+			float pz = nx * thickness;
+
+			int r = (i & 1) == 0 ? 139 : 120;
+			int g = (i & 1) == 0 ? 90 : 75;
+			int b = (i & 1) == 0 ? 43 : 35;
+
+			vc.vertex(matrix, x + px, y, z + pz).color(r, g, b, 255).uv2(light).endVertex();
+
+			vc.vertex(matrix, x - px, y, z - pz).color(r, g, b, 255).uv2(light).endVertex();
 		}
 
 		poseStack.popPose();

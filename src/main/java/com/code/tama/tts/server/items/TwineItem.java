@@ -58,7 +58,7 @@ public class TwineItem extends Item {
 				} else {
 					// Check distance (similar to lead's max distance)
 					double distance = player.distanceTo(boundEntity);
-					if (distance > 10.0) {
+					if (distance > 25.0) {
 						if (!level.isClientSide) {
 							tag.remove("BoundEntityId");
 							tag.remove("BoundEntityUUID");
