@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.luaj.vm2.LuaTable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.code.tama.triggerapi.codec.lua.LuaCodecBridge;
 
 /**
  * Holds four doubles, X, Y, Z, and Time Can be NBT serialized/deserialized
@@ -158,5 +161,16 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 	@Override
 	public String toString() {
 		return this.ReadableString();
+	}
+
+	public static LuaTable spaceTimeCoordinateTable(SpaceTimeCoordinate coordinate) {
+		LuaTable table = new LuaTable();
+		// table.set("x", coordinate.GetX());
+		// table.set("y", coordinate.GetY());
+		// table.set("z", coordinate.GetZ());
+		// table.set("time", coordinate.GetTime());
+		// table.set("dim", resourceLocationTable(coordinate.getLevelKey().location()));
+
+		return LuaCodecBridge.encodeToLua(CODEC, coordinate);
 	}
 }

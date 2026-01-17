@@ -1,4 +1,142 @@
 TODO:
+
+weight: influences what the behavior should be
+
+Personality:
+Curiosity      – How often it wants to explore random locations
+Stability      – How reliable its landings are
+Obedience      – How often it listens to exact coordinates
+Playfulness    – How often it messes with the player
+Protectiveness – How strongly it reacts to danger
+Energy         – How fast systems regenerate / recharge
+
+Moods:
+Calm
+Excited
+Irritated
+Tired
+Alert
+Playful
+Sulking
+
+Behavior:
+idk, should have a bunch of entries stating what should happen in response to smth else happening
+
+Lua:
+_G (Global Table)
+├── standard libraries (Base, Package, String, Table, Math)
+├── mc (Table)
+│   ├── isClientSide [Boolean]
+│   ├── hasPlayer [Boolean]
+│   ├── level (Table)
+│   │   ├── isClientSide [Boolean]
+│   │   ├── dimensionName [String]
+│   │   ├── time [Long]
+│   │   ├── isRaining [Boolean]
+│   │   ├── isThundering [Boolean]
+│   │   ├── difficulty [String]
+│   │   ├── getBlockAt(x, y, z) [Function -> String]
+│   │   ├── setBlockAt(x, y, z, blockId) [Function] (Server only)
+│   │   ├── spawnEntity(entityId, x, y, z) [Function] (Server only)
+│   │   └── setTime(time) [Function] (Server only)
+│   ├── client (Table)
+│   │   ├── exists [Boolean]
+│   │   ├── fps [Integer]
+│   │   ├── frameTimeNs [Long]
+│   │   ├── fov [Float]
+│   │   ├── renderDistance [Integer]
+│   │   ├── entityDistance [Double]
+│   │   ├── gamma [Double]
+│   │   ├── guiScale [Integer]
+│   │   ├── mouseSensitivity [Double]
+│   │   ├── soundVolume [Double]
+│   │   ├── musicVolume [Double]
+│   │   ├── currentScreen [String]
+│   │   ├── windowWidth [Integer]
+│   │   ├── windowHeight [Integer]
+│   │   ├── isFullscreen [Boolean]
+│   │   ├── guiWidth [Integer]
+│   │   ├── guiHeight [Integer]
+│   │   ├── isPaused [Boolean]
+│   │   ├── hasSingleplayerServer [Boolean]
+│   │   ├── camera (Table)
+│   │   │   ├── x, y, z [Double]
+│   │   │   ├── yaw, pitch [Float]
+│   │   │   └── isDetached [Boolean]
+│   │   ├── server (Table) (If connected)
+│   │   │   ├── ip [String]
+│   │   │   ├── name [String]
+│   │   │   ├── motd [String]
+│   │   │   ├── playerCount [Integer]
+│   │   │   ├── maxPlayers [Integer]
+│   │   │   └── version [String]
+│   │   ├── resourcePacks (Table) [Indexed List of Strings]
+│   │   ├── language [String]
+│   │   ├── particleSetting [String]
+│   │   ├── setFov(fov) [Function]
+│   │   ├── setGamma(gamma) [Function]
+│   │   ├── setSoundVolume(source, volume) [Function]
+│   │   ├── openScreen(screenName) [Function]
+│   │   ├── closeScreen() [Function]
+│   │   ├── screenshot() [Function]
+│   │   ├── setRenderDistance(distance) [Function]
+│   │   ├── reload() [Function]
+│   │   ├── getTargetedBlock() [Function -> Table {x, y, z, face}]
+│   │   └── getTargetedEntity() [Function -> Table {type, uuid, name}]
+│   ├── server (Table)
+│   │   ├── exists [Boolean]
+│   │   ├── tps [Double]
+│   │   ├── tickTime [Double]
+│   │   ├── playerCount [Integer]
+│   │   ├── maxPlayers [Integer]
+│   │   ├── motd [String]
+│   │   ├── serverPort [Integer]
+│   │   ├── isHardcore [Boolean]
+│   │   ├── isPvpAllowed [Boolean]
+│   │   └── difficulty [String]
+│   ├── player (Table)
+│   │   ├── name [String]
+│   │   ├── uuid [String]
+│   │   ├── displayName [String]
+│   │   ├── health [Float]
+│   │   ├── maxHealth [Float]
+│   │   ├── level [Integer]
+│   │   ├── foodLevel [Integer]
+│   │   ├── saturation [Float]
+│   │   ├── xpProgress [Float]
+│   │   ├── totalXp [Integer]
+│   │   ├── armor [Integer]
+│   │   ├── absorptionAmount [Float]
+│   │   ├── airSupply [Integer]
+│   │   ├── maxAirSupply [Integer]
+│   │   ├── x, y, z [Double]
+│   │   ├── yaw, pitch [Float]
+│   │   ├── dimension [String]
+│   │   ├── isOnGround, isInWater, isInLava, isSneaking, isSprinting, isSwimming,
+│   │   │   isSleeping, isOnFire, isAlive, isCreative, isSpectator, isFallFlying [Boolean]
+│   │   ├── skinTexture [String]
+│   │   ├── skinModel [String]
+│   │   ├── sendMessage(msg) [Function]
+│   │   ├── giveItem(itemId, count) [Function]
+│   │   ├── closeGui() [Function]
+│   │   ├── openGui(guiId) [Function]
+│   │   ├── hurt(amount) [Function]
+│   │   ├── playSound(soundId, volume) [Function]
+│   │   ├── teleport(x, y, z) [Function]
+│   │   ├── getPosition() [Function -> Table {x, y, z, yaw, pitch}]
+│   │   ├── setVelocity(x, y, z) [Function]
+│   │   ├── addVelocity(x, y, z) [Function]
+│   │   └── getInventory() [Function -> Table of ItemTables {id, count, displayName}]
+│   └── util (Table)
+│       ├── print(...) [Function -> Log to console]
+│       ├── broadcast(msg) [Function]
+│       └── executeCommand(command) [Function]
+├── ctx (Table)
+│   └── [Dynamic variables from ScriptContext]
+├── isTardis [Boolean]
+└── tardis (Table)
+    └── [Values provided by TARDIS capability bridge]
+
 ~~Valkyrian Skies compat!!~~ (DONE!)
 TODO: Figure out all these damn disconnected errors (Maybe fixed?)
 ~~FIX FLIGHT/LAND MECHANIC~~ DONE

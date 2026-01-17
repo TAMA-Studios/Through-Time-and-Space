@@ -103,7 +103,7 @@ public class TARDISData {
 			this.Vortex = vortex;
 	}
 
-	@Nullable Player GetOwner() {
+	@Nullable public Player GetOwner() {
 		if (this.TARDIS.GetLevel().isClientSide)
 			return null;
 		// return this.level.getServer().overworld().getPlayerByUUID(this.GetOwnerID());

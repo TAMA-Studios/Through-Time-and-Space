@@ -39,7 +39,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.code.tama.triggerapi.gui.CustomGuiProvider;
 import com.code.tama.triggerapi.gui.GuiLoader;
-import com.code.tama.triggerapi.gui.LuaScriptEngine;
+import com.code.tama.triggerapi.lua.LuaScriptEngine;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TTSCommands {

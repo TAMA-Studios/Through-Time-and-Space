@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import com.code.tama.triggerapi.lua.LuaScriptEngine;
+
 /**
  * Provider for container-style GUIs (chest-like inventories)
  */

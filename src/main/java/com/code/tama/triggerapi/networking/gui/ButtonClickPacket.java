@@ -11,7 +11,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import com.code.tama.triggerapi.gui.GuiDefinition;
 import com.code.tama.triggerapi.gui.GuiLoader;
-import com.code.tama.triggerapi.gui.LuaScriptEngine;
+import com.code.tama.triggerapi.lua.LuaScriptEngine;
 
 public class ButtonClickPacket {
 	private final ResourceLocation guiId;
