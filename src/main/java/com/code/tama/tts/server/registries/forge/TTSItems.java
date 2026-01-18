@@ -89,7 +89,7 @@ public class TTSItems {
 				.item("holo_glasses", prop -> new ArmorItem(ArmorMaterials.IRON, ArmorItem.Type.HELMET, prop))
 				.register();
 
-		VORTEX_MANIPULATOR = registrate().item("vortex_manipulator", VortexManipulatorItem::new).register();
+		VORTEX_MANIPULATOR = registrate().item("gadgets/vortex_manipulator", VortexManipulatorItem::new).register();
 
 		HUON_BOTTLE = registrate().item("huon_bottle", prop -> new Item(prop.food(new FoodProperties.Builder()
 				.alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 1, 1), 1f).build()))).register();
