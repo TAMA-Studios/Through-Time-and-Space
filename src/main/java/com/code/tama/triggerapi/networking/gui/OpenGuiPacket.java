@@ -11,8 +11,9 @@ import net.minecraftforge.network.NetworkEvent;
 import com.code.tama.triggerapi.gui.CustomGuiScreen;
 import com.code.tama.triggerapi.gui.GuiDefinition;
 import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
-public class OpenGuiPacket {
+public class OpenGuiPacket implements ImAPacket {
 	private final ResourceLocation guiId;
 
 	public OpenGuiPacket(ResourceLocation guiId) {

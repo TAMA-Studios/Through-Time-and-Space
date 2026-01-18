@@ -9,11 +9,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
+import com.code.tama.triggerapi.gui.GuiContextManager;
 import com.code.tama.triggerapi.gui.GuiDefinition;
 import com.code.tama.triggerapi.gui.GuiLoader;
 import com.code.tama.triggerapi.lua.LuaScriptEngine;
+import com.code.tama.triggerapi.networking.ImAPacket;
 
-public class ButtonClickPacket {
+public class ButtonClickPacket implements ImAPacket {
 	private final ResourceLocation guiId;
 	private final String elementId;
 	private final int button;
@@ -45,11 +47,14 @@ public class ButtonClickPacket {
 			if (definition == null || definition.getElements() == null)
 				return;
 
-			// Find the clicked element
+			// Get the shared context for this GUI
+			LuaScriptEngine.ScriptContext sharedContext = getPlayerGuiContext(player, packet.guiId);
+
 			for (GuiDefinition.GuiElement element : definition.getElements()) {
 				if (element.getId() != null && element.getId().equals(packet.elementId)) {
 					if (element.getScript() != null) {
-						executeScript(element.getScript(), player, packet.guiId, packet.elementId, packet.button);
+						executeScript(element.getScript(), player, packet.guiId, packet.elementId, packet.button,
+								sharedContext);
 					}
 					break;
 				}
@@ -58,27 +63,28 @@ public class ButtonClickPacket {
 		context.setPacketHandled(true);
 	}
 
-	private static void executeScript(String scriptRef, ServerPlayer player, ResourceLocation guiId, String elementId,
-			int button) {
-		String script;
+	private static LuaScriptEngine.ScriptContext getPlayerGuiContext(ServerPlayer player, ResourceLocation guiId) {
+		return GuiContextManager.getGuiContext(player, guiId);
+	}
 
-		// Check if it's a script file reference
+	private static void executeScript(String scriptRef, ServerPlayer player, ResourceLocation guiId, String elementId,
+			int button, LuaScriptEngine.ScriptContext sharedContext) {
+		String script;
 		boolean isFileReference = scriptRef.endsWith(".lua");
 
 		if (isFileReference) {
-			// Script file reference
 			script = GuiLoader.getLuaScript(scriptRef);
 			if (script == null) {
 				player.sendSystemMessage(Component.literal("§cScript not found: " + scriptRef));
 				return;
 			}
 		} else {
-			// Inline script
 			script = scriptRef;
 		}
 
-		// Execute script
+		// Create a context that includes shared data + element-specific data
 		LuaScriptEngine.ScriptContext context = new LuaScriptEngine.ScriptContext();
+		context.getVariables().putAll(sharedContext.getVariables()); // Copy shared state
 		context.set("guiId", guiId.toString());
 		context.set("elementId", elementId);
 		context.set("button", button);
@@ -87,6 +93,13 @@ public class ButtonClickPacket {
 
 		if (!result.isSuccess()) {
 			player.sendSystemMessage(Component.literal("§cScript Error: " + result.getMessage()));
+		} else {
+			// Copy back any new variables set in Lua back to shared context
+			context.getVariables().forEach((key, value) -> {
+				if (!key.equals("guiId") && !key.equals("elementId") && !key.equals("button")) {
+					sharedContext.set(key, value);
+				}
+			});
 		}
 	}
 }

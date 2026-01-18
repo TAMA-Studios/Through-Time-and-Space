@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2026 */
-package com.code.tama.tts.server.data.json;
+package com.code.tama.triggerapi.data;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
@@ -21,9 +21,7 @@ public class DatapackRegistry {
 
 	@SubscribeEvent
 	public static void onAddReloadListeners(AddReloadListenerEvent event) {
-		loaders.forEach((i, l) -> {
-			event.addListener(l);
-		});
+		loaders.forEach((i, l) -> event.addListener(l));
 	}
 
 	public static AbstractDPLoader<?> getLoader(ResourceLocation location) {

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -148,7 +149,10 @@ public class ContainerGuiProvider implements MenuProvider {
 				}
 
 				if (buttonDef != null && buttonDef.getScript() != null) {
-					executeScript(buttonDef.getScript(), player, slotId, button, clickType);
+					if (player instanceof ServerPlayer sp) {
+						LuaScriptEngine.ScriptContext sharedContext = GuiContextManager.getGuiContext(sp, guiId);
+						executeScript(buttonDef.getScript(), player, slotId, button, clickType, sharedContext);
+					}
 
 					if (buttonDef.shouldCloseOnClick()) {
 						player.closeContainer();
@@ -159,6 +163,45 @@ public class ContainerGuiProvider implements MenuProvider {
 			}
 
 			super.clicked(slotId, button, clickType, player);
+		}
+
+		private void executeScript(String scriptRef, Player player, int slot, int button, ClickType clickType,
+				LuaScriptEngine.ScriptContext sharedContext) {
+			String script;
+
+			boolean isFileReference = scriptRef.endsWith(".lua");
+
+			if (isFileReference) {
+				script = GuiLoader.getLuaScript(scriptRef);
+				if (script == null) {
+					player.sendSystemMessage(Component.literal("§cScript not found: " + scriptRef));
+					return;
+				}
+			} else {
+				script = scriptRef;
+			}
+
+			// Create context with shared data
+			LuaScriptEngine.ScriptContext context = new LuaScriptEngine.ScriptContext();
+			context.getVariables().putAll(sharedContext.getVariables());
+			context.set("guiId", guiId.toString());
+			context.set("slot", slot);
+			context.set("button", button);
+			context.set("clickType", clickType.name());
+
+			LuaScriptEngine.ScriptResult result = LuaScriptEngine.executeScript(script, player, context);
+
+			if (!result.isSuccess()) {
+				player.sendSystemMessage(Component.literal("§cScript Error: " + result.getMessage()));
+			} else {
+				// Copy back new variables to shared context
+				context.getVariables().forEach((key, value) -> {
+					if (!key.equals("guiId") && !key.equals("slot") && !key.equals("button")
+							&& !key.equals("clickType")) {
+						sharedContext.set(key, value);
+					}
+				});
+			}
 		}
 
 		private void executeScript(String scriptRef, Player player, int slot, int button, ClickType clickType) {

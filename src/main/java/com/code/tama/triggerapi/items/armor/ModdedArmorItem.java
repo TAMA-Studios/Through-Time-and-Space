@@ -1,8 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.items.armor;
 
+import java.util.function.Consumer;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.nbt.CompoundTag;
@@ -15,10 +20,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public abstract class ModdedArmorItem extends ArmorItem {
 	private static final String FULL_SET_ID = "hadFullSet";

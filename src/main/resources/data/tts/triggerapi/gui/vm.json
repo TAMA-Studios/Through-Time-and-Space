@@ -1,0 +1,61 @@
+{
+  "background_texture" : "tts:textures/gui/screen.png",
+  "elements" : [ {
+    "height" : 20,
+    "id" : "text_box_1",
+    "type" : "text_box",
+    "width" : 120,
+    "x" : 25,
+    "y" : 10
+  }, {
+    "height" : 20,
+    "id" : "text_box_y",
+    "type" : "text_box",
+    "width" : 120,
+    "x" : 25,
+    "y" : 54
+  }, {
+    "height" : 20,
+    "id" : "text_box_z",
+    "type" : "text_box",
+    "width" : 120,
+    "x" : 25,
+    "y" : 32
+  }, {
+    "height" : 20,
+    "id" : "enter",
+    "script" : "mc.player.teleport(ctx.x, ctx.y, ctx.z); mc.player.sendMessage('Teleported to ' .. ctx.x .. ', ' .. ctx.y .. ', ' .. ctx.z)",
+    "texture" : "minecraft:textures/gui/widgets.png",
+    "texture_y" : 66,
+    "tooltip" : [ "Teleport" ],
+    "type" : "button",
+    "width" : 100,
+    "x" : 35,
+    "y" : 77
+  }, {
+    "color" : 16777215,
+    "id" : "text_5",
+    "text" : "X:",
+    "type" : "text",
+    "x" : 14,
+    "y" : 14
+  }, {
+    "color" : 16777215,
+    "id" : "text_6",
+    "text" : "Y:",
+    "type" : "text",
+    "x" : 14,
+    "y" : 36
+  }, {
+    "color" : 16777215,
+    "id" : "text_7",
+    "text" : "Z:",
+    "type" : "text",
+    "x" : 14,
+    "y" : 58
+  } ],
+  "height" : 166,
+  "title" : "vm",
+  "type" : "custom",
+  "width" : 176
+}

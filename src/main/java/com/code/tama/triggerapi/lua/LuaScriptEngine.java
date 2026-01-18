@@ -1,9 +1,7 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.lua;
 
-import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +13,14 @@ public class LuaScriptEngine {
 
 	public static ScriptResult executeScript(String script, Player player, ScriptContext context) {
 		try {
-			Globals globals = LuaExecutable.createSandboxedGlobals(player, context);
+			// Globals globals = LuaExecutable.createSandboxedGlobals(player, context);
+			//
+			// LuaValue chunk = globals.load(script);
+			// LuaValue result = chunk.call();
 
-			LuaValue chunk = globals.load(script);
-			LuaValue result = chunk.call();
+			LuaExecutable executable = new LuaExecutable(script);
 
-			LuaTable playerTable = (LuaTable) globals.get("player");
-			player.setHealth(playerTable.get("health").tofloat());
-			player.experienceLevel = playerTable.get("level").toint();
-			player.getFoodData().setFoodLevel(playerTable.get("foodLevel").toint());
-			player.experienceProgress = playerTable.get("xpProgress").tofloat();
-
-			return new ScriptResult(true, result.toString());
+			return new ScriptResult(true, executable.executeScript(player, context).toString());
 		} catch (LuaError e) {
 			LOGGER.error("Lua script error: {}", e.getMessage());
 			return new ScriptResult(false, e.getMessage());

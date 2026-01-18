@@ -127,15 +127,16 @@ _G (Global Table)
 │   │   ├── setVelocity(x, y, z) [Function]
 │   │   ├── addVelocity(x, y, z) [Function]
 │   │   └── getInventory() [Function -> Table of ItemTables {id, count, displayName}]
-│   └── util (Table)
-│       ├── print(...) [Function -> Log to console]
-│       ├── broadcast(msg) [Function]
-│       └── executeCommand(command) [Function]
+│   ├── isTardis [Boolean]
+│   ├── tardis (Table)
+│   │   └── [Values provided by TARDIS capability bridge]
+│   │
+├── util (Table)
+│   │   ├── print(...) [Function -> Log to console]
+│   │   ├── broadcast(msg) [Function]
+│   │   └── executeCommand(command) [Function]
 ├── ctx (Table)
 │   └── [Dynamic variables from ScriptContext]
-├── isTardis [Boolean]
-└── tardis (Table)
-    └── [Values provided by TARDIS capability bridge]
 
 ~~Valkyrian Skies compat!!~~ (DONE!)
 TODO: Figure out all these damn disconnected errors (Maybe fixed?)

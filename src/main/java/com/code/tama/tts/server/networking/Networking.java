@@ -42,10 +42,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import com.code.tama.triggerapi.boti.packets.BOTIPackets;
 import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
-import com.code.tama.triggerapi.networking.gui.ButtonClickPacket;
-import com.code.tama.triggerapi.networking.gui.GuiStateUpdatePacket;
-import com.code.tama.triggerapi.networking.gui.OpenGuiPacket;
-import com.code.tama.triggerapi.networking.gui.ProgressUpdatePacket;
+import com.code.tama.triggerapi.networking.gui.*;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class Networking {
@@ -71,18 +68,14 @@ public class Networking {
 		DimensionPacketsRegistration.registerPackets();
 		BOTIPackets.registerPackets();
 
-		INSTANCE.messageBuilder(OpenGuiPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(OpenGuiPacket::encode).decoder(OpenGuiPacket::decode).consumerMainThread(OpenGuiPacket::handle)
-				.add();
-
-		INSTANCE.messageBuilder(ButtonClickPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ButtonClickPacket::encode).decoder(ButtonClickPacket::decode)
-				.consumerMainThread(ButtonClickPacket::handle).add();
-
 		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
 
 		UniversalCommon.Networking.registerMsg(ProgressUpdatePacket.class);
 		UniversalCommon.Networking.registerMsg(GuiStateUpdatePacket.class);
+		UniversalCommon.Networking.registerMsg(CloseGuiPacket.class);
+		UniversalCommon.Networking.registerMsg(OpenGuiPacket.class);
+		UniversalCommon.Networking.registerMsg(ButtonClickPacket.class);
+		UniversalCommon.Networking.registerMsg(SyncContextPacket.class);
 
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,

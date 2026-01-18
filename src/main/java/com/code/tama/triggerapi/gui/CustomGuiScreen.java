@@ -7,6 +7,7 @@ import com.code.tama.tts.server.networking.Networking;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,19 +28,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import com.code.tama.triggerapi.networking.gui.ButtonClickPacket;
+import com.code.tama.triggerapi.networking.gui.CloseGuiPacket;
 import com.code.tama.triggerapi.networking.gui.GuiStateUpdatePacket;
 
 public class CustomGuiScreen extends Screen {
 	private final GuiDefinition definition;
-	private final ResourceLocation guiId;
+	public final ResourceLocation guiId;
 	private int leftPos;
 	private int topPos;
 	private GuiDefinition.GuiElement hoveredElement = null;
+
+	// Shared context from server (key-value pairs)
+	private final Map<String, Object> sharedContext = new HashMap<>();
 
 	// State tracking
 	private final Map<String, Float> sliderValues = new HashMap<>();
 	private final Map<String, Float> progressValues = new HashMap<>();
 	private final Map<String, String> textBoxValues = new HashMap<>();
+	private final Map<String, String> lastSentTextBoxValues = new HashMap<>(); // Track last sent values
 	private final Map<String, Integer> dropdownSelections = new HashMap<>();
 	private final Map<String, Boolean> switchStates = new HashMap<>();
 	private final Map<String, Boolean> checkboxStates = new HashMap<>();
@@ -64,7 +70,10 @@ public class CustomGuiScreen extends Screen {
 				switch (element.getType()) {
 					case "slider" -> sliderValues.put(element.getId(), element.getDefaultValue());
 					case "progress_bar" -> progressValues.put(element.getId(), 0.0f);
-					case "text_box" -> textBoxValues.put(element.getId(), "");
+					case "text_box" -> {
+						textBoxValues.put(element.getId(), "");
+						lastSentTextBoxValues.put(element.getId(), "");
+					}
 					case "dropdown" -> dropdownSelections.put(element.getId(), element.getDefaultOption());
 					case "switch" -> switchStates.put(element.getId(), element.isDefaultState());
 					case "checkbox" -> checkboxStates.put(element.getId(), element.isDefaultState());
@@ -72,6 +81,27 @@ public class CustomGuiScreen extends Screen {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Called by SyncContextPacket to update the shared context from server
+	 */
+	public void updateSharedContext(Map<String, Object> contextData) {
+		sharedContext.putAll(contextData);
+	}
+
+	/**
+	 * Get value from shared context (for Lua scripts)
+	 */
+	public Object getContextValue(String key) {
+		return sharedContext.get(key);
+	}
+
+	/**
+	 * Set value in shared context (for Lua scripts)
+	 */
+	public void setContextValue(String key, Object value) {
+		sharedContext.put(key, value);
 	}
 
 	private void cacheEntity(GuiDefinition.GuiElement element) {
@@ -133,8 +163,14 @@ public class CustomGuiScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+	public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		this.renderBackground(graphics);
+
+		// Update text box values from EditBox widgets
+		updateTextBoxValues();
+
+		// Check for text box changes
+		checkTextBoxChanges();
 
 		// Update progress bars periodically
 		long currentTime = System.currentTimeMillis();
@@ -167,12 +203,52 @@ public class CustomGuiScreen extends Screen {
 		super.render(graphics, mouseX, mouseY, partialTick);
 	}
 
-	public void renderBackground(GuiGraphics graphics) {
+	/**
+	 * Sync text box values from EditBox widgets to our state map
+	 */
+	private void updateTextBoxValues() {
+		for (Map.Entry<String, EditBox> entry : editBoxes.entrySet()) {
+			textBoxValues.put(entry.getKey(), entry.getValue().getValue());
+		}
+	}
+
+	/**
+	 * Check if any text box values changed since last update and send packets
+	 */
+	private void checkTextBoxChanges() {
+		for (Map.Entry<String, String> entry : textBoxValues.entrySet()) {
+			String elementId = entry.getKey();
+			String currentValue = entry.getValue();
+			String lastSentValue = lastSentTextBoxValues.getOrDefault(elementId, "");
+
+			// Only send if value changed
+			if (!currentValue.equals(lastSentValue)) {
+				lastSentTextBoxValues.put(elementId, currentValue);
+
+				// Find the element definition
+				if (definition.getElements() != null) {
+					for (GuiDefinition.GuiElement element : definition.getElements()) {
+						if (element.getId() != null && element.getId().equals(elementId)
+								&& "text_box".equals(element.getType())) {
+							if (element.getOnTextChangeScript() != null) {
+								Networking.sendToServer(
+										new GuiStateUpdatePacket(guiId, elementId, "text_change", currentValue));
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void renderBackground(@NotNull GuiGraphics graphics) {
 		if (definition.getBackgroundTexture() != null) {
 			try {
-				ResourceLocation bgTexture = new ResourceLocation(definition.getBackgroundTexture());
+				ResourceLocation bgTexture = ResourceLocation.tryParse(definition.getBackgroundTexture());
 				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+				assert bgTexture != null;
 				RenderSystem.setShaderTexture(0, bgTexture);
 
 				graphics.blit(bgTexture, leftPos, topPos, 0, 0, definition.getWidth(), definition.getHeight(),
@@ -604,5 +680,11 @@ public class CustomGuiScreen extends Screen {
 	@Override
 	public boolean isPauseScreen() {
 		return false;
+	}
+
+	@Override
+	public void onClose() {
+		Networking.sendToServer(new CloseGuiPacket(this.guiId));
+		super.onClose();
 	}
 }

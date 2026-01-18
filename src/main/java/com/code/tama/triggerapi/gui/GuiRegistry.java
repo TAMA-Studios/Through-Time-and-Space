@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.code.tama.triggerapi.networking.gui.OpenGuiPacket;
+import com.code.tama.triggerapi.networking.gui.SyncContextPacket;
 
 /**
  * Central registry for opening GUIs
@@ -23,13 +24,15 @@ public class GuiRegistry {
 			return;
 		}
 
-		String type = def.getType();
+		// Create/get the shared context
+		var sharedContext = GuiContextManager.getGuiContext(player, guiId);
 
+		String type = def.getType();
 		if ("container".equals(type)) {
-			// Open container-style GUI
 			player.openMenu(new ContainerGuiProvider(def, guiId));
 		} else {
-			// Open custom GUI (send packet to client)
+			// For custom GUIs, send context sync packet before opening GUI
+			Networking.sendToClient(player, new SyncContextPacket(guiId, sharedContext.getVariables()));
 			Networking.sendToClient(player, new OpenGuiPacket(guiId));
 		}
 	}

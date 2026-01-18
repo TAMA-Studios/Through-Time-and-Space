@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2026 */
-package com.code.tama.tts.server.data.json;
+package com.code.tama.triggerapi.data;
 
 import static com.code.tama.tts.TTSMod.LOGGER;
 
@@ -49,7 +49,7 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							T t = getHolder(valuesObject);
+							T t = getHolder(jsonObject);
 							if (!tempList.contains(t))
 								tempList.add(t);
 						} else {
@@ -62,7 +62,6 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 			}
 		}
 
-		// Store the list of Data ars room objects in the Data ars Array
 		list.setList(tempList);
 	}
 
@@ -73,7 +72,7 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 		private List<T> list;
 
 		public void setList(List<T> list) {
-			list = removeDuplicates(list);
+			this.list = removeDuplicates(list);
 		}
 
 		public List<T> removeDuplicates(List<T> list) {

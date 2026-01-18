@@ -1,17 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
+import java.util.List;
+
 import com.code.tama.tts.manual.ManualItem;
 import com.code.tama.tts.server.items.TwineItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
+import com.code.tama.tts.server.items.gadgets.VortexManipulatorItem;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -19,10 +25,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
-
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {
@@ -71,6 +73,9 @@ public class TTSItems {
 	public static final ItemEntry<ManualItem> MANUAL;
 
 	@MainTab
+	public static final ItemEntry<VortexManipulatorItem> VORTEX_MANIPULATOR;
+
+	@MainTab
 	public static final ItemEntry<Item> GROWTH_CAKE;
 
 	@MainTab
@@ -80,7 +85,11 @@ public class TTSItems {
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
 
-		HOLO_GLASSES = register("holo_glasses", new ArmorItem(ArmorMaterials.IRON, ArmorItem.Type.HELMET, new Item.Properties()));
+		HOLO_GLASSES = registrate()
+				.item("holo_glasses", prop -> new ArmorItem(ArmorMaterials.IRON, ArmorItem.Type.HELMET, prop))
+				.register();
+
+		VORTEX_MANIPULATOR = registrate().item("vortex_manipulator", VortexManipulatorItem::new).register();
 
 		HUON_BOTTLE = registrate().item("huon_bottle", prop -> new Item(prop.food(new FoodProperties.Builder()
 				.alwaysEat().effect(new MobEffectInstance(MobEffects.CONFUSION, 1, 1), 1f).build()))).register();
