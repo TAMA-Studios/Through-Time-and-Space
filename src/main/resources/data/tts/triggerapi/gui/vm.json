@@ -29,6 +29,7 @@
     "id" : "enter",
     "script" : "mc.player.teleport(ctx.x, ctx.y, ctx.z); mc.player.sendMessage('Teleported to ' .. ctx.x .. ', ' .. ctx.y .. ', ' .. ctx.z)",
     "texture" : "minecraft:textures/gui/widgets.png",
+    "texture_y" : 66,
     "tooltip" : [ "Teleport" ],
     "type" : "button",
     "width" : 100,
