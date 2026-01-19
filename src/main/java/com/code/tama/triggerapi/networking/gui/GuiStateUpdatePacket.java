@@ -181,6 +181,7 @@ public class GuiStateUpdatePacket implements ImAPacket {
 
 		// Create a new context that includes shared data
 		LuaScriptEngine.ScriptContext context = new LuaScriptEngine.ScriptContext();
+
 		context.getVariables().putAll(sharedContext.getVariables()); // Copy shared state
 		context.set("guiId", guiId.toString());
 		context.set("elementId", elementId);

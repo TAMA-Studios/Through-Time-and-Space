@@ -108,7 +108,7 @@ public class GuiLoader extends SimpleJsonResourceReloadListener {
 	}
 
 	public static String getLuaScript(String scriptName) {
-		return LUA_SCRIPTS.get(scriptName);
+		return LUA_SCRIPTS.get(scriptName.replace(".lua", ""));
 	}
 
 	public static Map<String, String> getAllScripts() {

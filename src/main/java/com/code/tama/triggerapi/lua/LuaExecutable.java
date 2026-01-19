@@ -132,6 +132,28 @@ public class LuaExecutable {
 		return value.toString();
 	}
 
+	public static LuaTable createDefaultTable(Player player, LuaTable table, LuaScriptEngine.ScriptContext context) {
+		LuaTable mcTable = new LuaTable();
+
+		mcTable.set("isClientSide", toLuaValue(player.level().isClientSide));
+		mcTable.set("level", levelTable(player.level()));
+		mcTable.set("client", clientTable(player.level()));
+		mcTable.set("server", serverTable(player.level()));
+		mcTable.set("hasPlayer", toLuaValue(true));
+		mcTable.set("player", playerTable(player));
+		mcTable.set("util", utilTable(player.level()));
+		if (TARDISLevelCapability.GetTARDISCapSupplier(player.level()).isPresent()) {
+			mcTable.set("isTardis", toLuaValue(true));
+			mcTable.set("tardis",
+					tardisTable(TARDISLevelCapability.GetTARDISCapSupplier(player.level()).orElseGet(null)));
+		} else
+			mcTable.set("isTardis", toLuaValue(false));
+
+		table.set("mc", mcTable);
+		table.set("ctx", contextTable(context));
+		return table;
+	}
+
 	public static Globals createSandboxedGlobals(Player player, LuaScriptEngine.ScriptContext context) {
 		Globals globals = JsePlatform.standardGlobals();
 

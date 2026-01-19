@@ -27,7 +27,7 @@
   }, {
     "height" : 20,
     "id" : "enter",
-    "script" : "mc.player.teleport(ctx.x, ctx.y, ctx.z); mc.player.sendMessage('Teleported to ' .. ctx.x .. ', ' .. ctx.y .. ', ' .. ctx.z)",
+    "script" : "tts:vm_teleport.lua",
     "texture" : "minecraft:textures/gui/widgets.png",
     "texture_y" : 66,
     "tooltip" : [ "Teleport" ],

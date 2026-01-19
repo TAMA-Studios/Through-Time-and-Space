@@ -44,7 +44,7 @@ public class DevOverlayRenderer {
 		Minecraft.getInstance().font.drawInBatch(
 				Minecraft.getInstance().getFps() + " FPS"
 						+ (Minecraft.getInstance().getFps() < 20
-								? " - This FPS is slower than the beamer your father used to run away"
+								? " - This FPS is slow"// er than the beamer your father used to run away"
 								: ""),
 				0, 20, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
 

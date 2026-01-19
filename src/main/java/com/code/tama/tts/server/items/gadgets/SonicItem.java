@@ -30,6 +30,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -43,14 +44,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.GrammarNazi;
 
-public class SonicItem implements IAttunableItem {
+public class SonicItem extends Item implements IAttunableItem {
 	private final int Variants;
 
 	@Getter
 	@Setter
 	public @NotNull SonicMode InteractionType = new SonicBlockMode();
 
-	public SonicItem(Properties properties, int variants) {
+	public SonicItem(Item.Properties properties, int variants) {
 		super(properties.durability(1000).setNoRepair());
 		this.Variants = variants;
 	}
