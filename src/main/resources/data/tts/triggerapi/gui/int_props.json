@@ -2,7 +2,7 @@
   "elements" : [ {
     "height" : 20,
     "id" : "progress_bar_1",
-    "progress_script" : "mc.tardis.environmental.light_level",
+    "progress_script" : "tts:get_light_level.lua",
     "show_percentage" : true,
     "type" : "progress_bar",
     "vertical" : true,

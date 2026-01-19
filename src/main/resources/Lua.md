@@ -363,8 +363,8 @@ Displays progress as a fillable bar (updated via Lua).
 
 **Progress Script Example:**
 ```lua
--- Must return a value between 0.0 and 1.0
-return mc.player.health / mc.player.maxHealth
+-- Must set a value between 0.0 and 1.0
+ctx.result = mc.player.health / mc.player.maxHealth
 ```
 
 **Note:** Progress bars automatically request updates every 50ms via the `progress_script`.

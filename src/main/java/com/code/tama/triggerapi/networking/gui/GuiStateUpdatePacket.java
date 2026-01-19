@@ -197,7 +197,9 @@ public class GuiStateUpdatePacket implements ImAPacket {
 					}
 				});
 
-				return Float.parseFloat(result.getMessage());
+				DEBUG((String) context.get("progress"));
+
+				return Float.parseFloat((String) context.get("progress"));
 			} catch (NumberFormatException e) {
 				return 0.0f;
 			}

@@ -1,0 +1,1 @@
+ctx.progress = tonumber(mc.tardis.environmental.light_level) - 0.1

@@ -33,7 +33,7 @@ public class TARDISEnvironmentalData {
 	}
 
 	public void SetLightLevel(float LightLevel) {
-		LightLevel = Math.max(Math.min(LightLevel, 1.5F), 0.1F);
+		LightLevel = Math.max(Math.min(LightLevel, 1.3F), 0.1F);
 		this.LightLevel = LightLevel;
 	}
 
