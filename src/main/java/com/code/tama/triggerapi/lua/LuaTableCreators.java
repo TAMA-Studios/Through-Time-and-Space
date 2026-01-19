@@ -22,13 +22,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import com.code.tama.triggerapi.codec.lua.LuaCodecBridge;
 import com.code.tama.triggerapi.gui.GuiRegistry;
 
 public class LuaTableCreators {
-
 	public static LuaTable utilTable(Level level) {
 		LuaTable utilTable = new LuaTable();
 
@@ -382,6 +382,18 @@ public class LuaTableCreators {
 		return table;
 	}
 
+	public static LuaTable itemTable(ItemStack stack) {
+		LuaTable item = LuaBridge.unsafeJavaToLua(stack).checktable();
+
+		// item.set("id",
+		// net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
+		// item.set("count", stack.getCount());
+		// item.set("displayName", stack.getHoverName().getString());
+		// item.set("damage", stack.getDamageValue());
+		// item.set("max_damage", stack.getMaxDamage());
+
+		return item;
+	}
 	public static LuaTable playerTable(Player player) {
 		LuaTable playerTable = new LuaTable();
 
@@ -563,14 +575,13 @@ public class LuaTableCreators {
 				for (int i = 0; i < inventory.getContainerSize(); i++) {
 					net.minecraft.world.item.ItemStack stack = inventory.getItem(i);
 					if (!stack.isEmpty()) {
-						LuaTable item = new LuaTable();
-						item.set("id", net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem())
-								.toString());
-						item.set("count", stack.getCount());
-						item.set("displayName", stack.getHoverName().getString());
-						inv.set(i, item);
+						inv.set(i, itemTable(stack));
 					}
 				}
+
+				inv.set("mainhand", itemTable(player.getMainHandItem()));
+				inv.set("offhand", itemTable(player.getOffhandItem()));
+
 				return inv;
 			}
 		});

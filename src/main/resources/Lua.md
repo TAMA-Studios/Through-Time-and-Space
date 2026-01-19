@@ -1283,4 +1283,32 @@ Common colors in `0xAARRGGBB` format:
 
 ---
 
+## For MODDERS
+
+Serialization of custom Objects using the LuaBridge
+```// Expose Minecraft objects to Lua safely
+public class LuaMinecraftAPI {
+
+    public LuaTable getPlayerData(Player player) {
+        // Safe: only exposes what you want
+        LuaTable data = new LuaTable();
+        data.set("name", player.getName().getString());
+        data.set("health", player.getHealth());
+        data.set("position", LuaBridge.unsafeJavaToLua(player.blockPosition()));
+        return data;
+    }
+    
+    public LuaTable getBlockInfo(BlockPos pos, Level level) {
+        // Unsafe: expose entire block state
+        BlockState state = level.getBlockState(pos);
+        return LuaBridge.unsafeJavaToLua(state).checktable();
+    }
+    
+    public void teleportPlayer(Player player, LuaTable posData) {
+        // Deserialize position from Lua
+        BlockPos pos = LuaBridge.unsafeLuaToJava(posData, BlockPos.class);
+        player.teleportTo(pos.getX(), pos.getY(), pos.getZ());
+    }
+}```
+
 **Happy GUI Creating!**__
