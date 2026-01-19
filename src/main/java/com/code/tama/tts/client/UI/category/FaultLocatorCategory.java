@@ -6,6 +6,8 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 import java.util.ArrayList;
 import java.util.List;
 
+import com.code.tama.tts.config.FlightType;
+import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -52,32 +54,65 @@ public class FaultLocatorCategory extends UICategory {
 			List<String> faults = new ArrayList<>();
 
 			if (!cap.GetData().getSubSystemsData().DematerializationCircuit.isActivated(cap.GetLevel()))
-				faults.add("E.DM");
+				faults.add(getFault(Fault.DEMAT));
 			if (!cap.GetData().getSubSystemsData().DynamorphicController.isActivated(cap.GetLevel()))
-				faults.add("E.DC");
+				faults.add(getFault(Fault.DYNAMO_CONTROLLER));
 			if (!cap.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty())
-				faults.add("E.DG");
+				faults.add(getFault(Fault.DYNAMO_CONTROLLER));
 			if (!cap.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated(cap.GetLevel()))
-				faults.add("E.NR");
+				faults.add(getFault(Fault.NETHER_REACTOR_CORE));
 
 			if (cap.GetData().getFuel() <= 0 && cap.getEnergy().getEnergy() <= 0)
-				faults.add("E.PW");
+				faults.add(getFault(Fault.POWER));
 
-			int x = -40;
+			int x = -50;
 			int y = 25;
 			for (String fault : faults) {
-				y += 15;
-				x += 15;
-				if (x > -10)
+				if (x > 25) {
 					x = -40;
+					y += 15;
+				}
 				if (y > 55)
 					y = 25;
 
 				RenderText(monitor, fault, poseStack, bufferSource, x, y);
+				x += 25;
 			}
 
 			poseStack.popPose();
 
 		});
+	}
+
+	public static String getFault(IFault fault) {
+		if (TTSConfig.ClientConfig.FLIGHT_TYPE.get() == FlightType.NIGHTMARE
+				|| TTSConfig.ClientConfig.FLIGHT_TYPE.get() == FlightType.ADVANCED)
+			return fault.AdvancedName();
+		return fault.NormalName();
+	}
+
+	public enum Fault implements IFault {
+		DEMAT("S.DM", "0x40"), DYNAMO_CONTROLLER("S.DC", "0x41"), DYNAMO_STACK("S.DG",
+				"0x42"), NETHER_REACTOR_CORE("S.NR", "0x43"), POWER("E.PW", "0x32");
+		Fault(String normName, String advName) {
+			this.normName = normName;
+			this.advName = advName;
+		}
+		private final String normName, advName;
+
+		@Override
+		public String AdvancedName() {
+			return advName;
+		}
+
+		@Override
+		public String NormalName() {
+			return normName;
+		}
+	}
+
+	public interface IFault { // Use an interface so other mods can implement their own faults
+		String AdvancedName();
+		String NormalName();
 	}
 }

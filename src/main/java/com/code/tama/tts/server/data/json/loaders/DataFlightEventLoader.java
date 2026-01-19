@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.CrashFailureAction;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventFailureAction;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.TakeArtronAction;
@@ -30,7 +30,7 @@ import com.code.tama.triggerapi.universal.UniversalCommon;
 @Getter
 public class DataFlightEventLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private final List<DataFlightEvent> dataFlightEvent = new ArrayList<>(); // List to store objects
+	private final List<FlightEvent> flightEvent = new ArrayList<>(); // List to store objects
 
 	private boolean isValidJson(JsonObject jsonObject) {
 		if (jsonObject.has("values")) {
@@ -63,7 +63,7 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
-		dataFlightEvent.clear();
+		flightEvent.clear();
 
 		// Iterate over all namespaces
 		for (String namespace : resourceManager.getNamespaces()) {
@@ -107,10 +107,10 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 
 							controls.asList().forEach(obj -> locList.add(UniversalCommon.parse(obj.getAsString())));
 
-							DataFlightEvent FlightEvent = new DataFlightEvent(locList, name, time, action);
+							FlightEvent FlightEvent = new FlightEvent(locList, name, time, action);
 
-							if (!dataFlightEvent.contains(FlightEvent))
-								dataFlightEvent.add(FlightEvent);
+							if (!flightEvent.contains(FlightEvent))
+								flightEvent.add(FlightEvent);
 						} else {
 							LOGGER.warn("Invalid JSON structure in {}", rl);
 						}
@@ -121,6 +121,6 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 			}
 		}
 
-		DataFlightEventList.setList(dataFlightEvent);
+		DataFlightEventList.setList(flightEvent);
 	}
 }

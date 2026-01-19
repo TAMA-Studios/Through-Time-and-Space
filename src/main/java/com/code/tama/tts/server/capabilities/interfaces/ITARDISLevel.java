@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.tardis.EnergyHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tardis.ExteriorState;
@@ -127,8 +127,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	void setNavigationalData(TARDISNavigationalData data);
 
-	void setCurrentFlightEvent(DataFlightEvent event);
-	DataFlightEvent getCurrentFlightEvent();
+	void setCurrentFlightEvent(FlightEvent event);
+	FlightEvent getCurrentFlightEvent();
 
 	void UpdateExteriorState(ExteriorState state);
 

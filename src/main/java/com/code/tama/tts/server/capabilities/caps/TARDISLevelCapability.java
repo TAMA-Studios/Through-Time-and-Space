@@ -12,8 +12,8 @@ import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.EnergyHandler;
@@ -127,14 +127,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public void setCurrentFlightEvent(@Nullable DataFlightEvent event) {
+	public void setCurrentFlightEvent(@Nullable FlightEvent event) {
 		if (event == null)
 			event = new DecoyFlightEvent();
 		this.GetFlightData().setFlightEvent(event.copy());
 	}
 
 	@Override
-	public DataFlightEvent getCurrentFlightEvent() {
+	public FlightEvent getCurrentFlightEvent() {
 		return this.GetFlightData().getFlightEvent();
 	}
 

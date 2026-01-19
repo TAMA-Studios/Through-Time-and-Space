@@ -4,8 +4,8 @@ package com.code.tama.tts.server.data.tardis.data;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DataFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.tardis.FlightSoundSchemesRegistry;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 public class TARDISFlightData {
 	public static final Codec<TARDISFlightData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(DataFlightEvent.CODEC.fieldOf("flight_event").forGetter(TARDISFlightData::getFlightEvent),
+			.group(FlightEvent.CODEC.fieldOf("flight_event").forGetter(TARDISFlightData::getFlightEvent),
 					Codec.INT.fieldOf("ticksInFlight").forGetter(TARDISFlightData::getTicksInFlight),
 					Codec.INT.fieldOf("drift").forGetter(TARDISFlightData::getDrift),
 					FlightTerminationProtocolRegistry.CODEC.fieldOf("flightTerminationProtocol")
@@ -37,7 +37,7 @@ public class TARDISFlightData {
 	AbstractSoundScheme FlightSoundScheme = new SmithSoundScheme();
 
 	ITARDISLevel TARDIS;
-	private DataFlightEvent flightEvent = new DecoyFlightEvent();
+	private FlightEvent flightEvent = new DecoyFlightEvent();
 	int TicksInFlight, Drift;
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
 	boolean inFlight, PlayRotorAnimation;
@@ -46,7 +46,7 @@ public class TARDISFlightData {
 		this.TARDIS = TARDIS;
 	}
 
-	public TARDISFlightData(DataFlightEvent flightEvent, int ticksInFlight, int drift,
+	public TARDISFlightData(FlightEvent flightEvent, int ticksInFlight, int drift,
 			FlightTerminationProtocol flightTerminationProtocol, AbstractSoundScheme flightSoundScheme,
 			boolean inFlight, boolean playRotorAnimation) {
 		this.TicksInFlight = ticksInFlight;

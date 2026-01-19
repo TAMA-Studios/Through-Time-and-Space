@@ -4,7 +4,7 @@ package com.code.tama.tts.server.items.gadgets;
 import java.util.List;
 
 import com.code.tama.tts.manual.ManualScreen;
-import com.code.tama.tts.server.items.core.AttunableItem;
+import com.code.tama.tts.server.items.core.IAttunableItem;
 import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.server.sonic.SonicBlockMode;
 import com.code.tama.tts.server.sonic.SonicBuilderMode;
@@ -43,7 +43,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.GrammarNazi;
 
-public class SonicItem extends AttunableItem {
+public class SonicItem implements IAttunableItem {
 	private final int Variants;
 
 	@Getter

@@ -14,9 +14,9 @@ import com.code.tama.triggerapi.helpers.MathUtils;
 @Setter
 public class TARDISEnvironmentalData {
 	public static final Codec<TARDISEnvironmentalData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("lightLevel").forGetter(TARDISEnvironmentalData::getLightLevel),
-					Codec.FLOAT.fieldOf("gravityLevel").forGetter(TARDISEnvironmentalData::getGravityLevel),
-					Codec.FLOAT.fieldOf("oxygenLevel").forGetter(TARDISEnvironmentalData::getOxygenLevel))
+			.group(Codec.FLOAT.fieldOf("light_level").forGetter(TARDISEnvironmentalData::getLightLevel),
+					Codec.FLOAT.fieldOf("gravity_level").forGetter(TARDISEnvironmentalData::getGravityLevel),
+					Codec.FLOAT.fieldOf("oxygen_level").forGetter(TARDISEnvironmentalData::getOxygenLevel))
 			.apply(instance, TARDISEnvironmentalData::new));
 
 	float LightLevel, gravityLevel = 0.08f, oxygenLevel;

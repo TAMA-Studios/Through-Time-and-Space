@@ -239,7 +239,10 @@ public class LuaExecutable {
 	}
 
 	public static void DEBUG(String... s) {
-		if (false) {
+		if (true) {
+			for (String string : s) {
+				System.out.println(string);
+			}
 			TTSMod.LOGGER.info(s);
 		}
 	}

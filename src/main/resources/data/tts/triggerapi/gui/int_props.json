@@ -1,0 +1,17 @@
+{
+  "elements" : [ {
+    "height" : 20,
+    "id" : "progress_bar_1",
+    "progress_script" : "return mc.tardis.environmental.light_level",
+    "show_percentage" : true,
+    "type" : "progress_bar",
+    "vertical" : true,
+    "width" : 100,
+    "x" : 6,
+    "y" : 78
+  } ],
+  "height" : 166,
+  "title" : "tardis_props",
+  "type" : "custom",
+  "width" : 176
+}

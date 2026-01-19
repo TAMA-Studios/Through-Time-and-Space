@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.DoNothingAction;
 
-public class DecoyFlightEvent extends DataFlightEvent {
+public class DecoyFlightEvent extends FlightEvent {
 
 	public DecoyFlightEvent() {
 		super(List.of(), "none", 0, new DoNothingAction());
