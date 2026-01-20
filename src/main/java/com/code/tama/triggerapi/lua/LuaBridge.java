@@ -1,4 +1,9 @@
+/* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.lua;
+
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -6,22 +11,20 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.*;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class LuaBridge {
 
 	// Cache for reflection data
 	private static final Map<Class<?>, List<FieldInfo>> FIELD_CACHE = new ConcurrentHashMap<>();
 
-	private record FieldInfo(Field field, String luaName) {}
+	private record FieldInfo(Field field, String luaName) {
+	}
 
 	public static boolean isUnsafe(LuaValue value) {
-		if(value.istable()) {
-			if(value.checktable().get("__unsafe").isnil())
+		if (value.istable()) {
+			if (value.checktable().get("__unsafe").isnil())
 				return false;
-			else return value.checktable().get("__unsafe").checkboolean();
+			else
+				return value.checktable().get("__unsafe").checkboolean();
 		}
 		return false;
 	}
@@ -104,8 +107,8 @@ public class LuaBridge {
 
 			// Determine actual type to instantiate
 			Class<?> actualType = targetType;
-			if (targetType == LuaSerializable.class || targetType.isInterface() ||
-					Modifier.isAbstract(targetType.getModifiers())) {
+			if (targetType == LuaSerializable.class || targetType.isInterface()
+					|| Modifier.isAbstract(targetType.getModifiers())) {
 
 				LuaValue classValue = table.get("__javaClass");
 				if (classValue.isstring()) {
@@ -115,8 +118,7 @@ public class LuaBridge {
 						throw new LuaError("Unknown class: " + classValue.checkjstring());
 					}
 				} else {
-					throw new LuaError("Cannot instantiate " + targetType.getName() +
-							" - no __javaClass tag found");
+					throw new LuaError("Cannot instantiate " + targetType.getName() + " - no __javaClass tag found");
 				}
 			}
 
@@ -124,8 +126,8 @@ public class LuaBridge {
 				Object instance = createInstance(actualType, table);
 
 				if (instance == null) {
-					throw new LuaError("Cannot create instance of " + actualType.getName() +
-							" - no suitable constructor or factory method found");
+					throw new LuaError("Cannot create instance of " + actualType.getName()
+							+ " - no suitable constructor or factory method found");
 				}
 
 				// Populate fields
@@ -141,8 +143,8 @@ public class LuaBridge {
 				return instance;
 
 			} catch (Exception e) {
-				throw new LuaError("Failed to deserialize " + actualType.getName() + ": " +
-						e.getClass().getSimpleName() + " - " + e.getMessage());
+				throw new LuaError("Failed to deserialize " + actualType.getName() + ": " + e.getClass().getSimpleName()
+						+ " - " + e.getMessage());
 			}
 		}
 
@@ -157,7 +159,8 @@ public class LuaBridge {
 	}
 
 	private static LuaValue javaToLua(Object obj, IdentityHashMap<Object, LuaValue> visited) {
-		if (obj == null) return LuaValue.NIL;
+		if (obj == null)
+			return LuaValue.NIL;
 
 		// Check for circular reference
 		if (visited.containsKey(obj)) {
@@ -165,15 +168,24 @@ public class LuaBridge {
 		}
 
 		// Primitives and strings
-		if (obj instanceof Integer i) return LuaValue.valueOf(i);
-		if (obj instanceof Long l) return LuaValue.valueOf(l.doubleValue());
-		if (obj instanceof Double d) return LuaValue.valueOf(d);
-		if (obj instanceof Float f) return LuaValue.valueOf(f);
-		if (obj instanceof Boolean b) return LuaValue.valueOf(b);
-		if (obj instanceof String s) return LuaValue.valueOf(s);
-		if (obj instanceof Byte b) return LuaValue.valueOf(b);
-		if (obj instanceof Short s) return LuaValue.valueOf(s);
-		if (obj instanceof Character c) return LuaValue.valueOf(c.toString());
+		if (obj instanceof Integer i)
+			return LuaValue.valueOf(i);
+		if (obj instanceof Long l)
+			return LuaValue.valueOf(l.doubleValue());
+		if (obj instanceof Double d)
+			return LuaValue.valueOf(d);
+		if (obj instanceof Float f)
+			return LuaValue.valueOf(f);
+		if (obj instanceof Boolean b)
+			return LuaValue.valueOf(b);
+		if (obj instanceof String s)
+			return LuaValue.valueOf(s);
+		if (obj instanceof Byte b)
+			return LuaValue.valueOf(b);
+		if (obj instanceof Short s)
+			return LuaValue.valueOf(s);
+		if (obj instanceof Character c)
+			return LuaValue.valueOf(c.toString());
 
 		// Mark as visited for circular reference detection
 		visited.put(obj, LuaValue.NIL); // Placeholder
@@ -313,7 +325,8 @@ public class LuaBridge {
 		int index = 1;
 		while (true) {
 			LuaValue element = table.get(index);
-			if (element.isnil()) break;
+			if (element.isnil())
+				break;
 
 			// For lists, we can't know the generic type, so we try to infer
 			list.add(luaToJavaAuto(element, visited));
@@ -340,7 +353,8 @@ public class LuaBridge {
 		while (true) {
 			Varargs next = table.next(key);
 			key = next.arg1();
-			if (key.isnil()) break;
+			if (key.isnil())
+				break;
 
 			LuaValue value = next.arg(2);
 			map.put(luaToJavaAuto(key, visited), luaToJavaAuto(value, visited));
@@ -354,11 +368,16 @@ public class LuaBridge {
 	 * Auto-detect type and convert Lua to Java (for collections without type info)
 	 */
 	private static Object luaToJavaAuto(LuaValue value, Set<LuaTable> visited) {
-		if (value.isnil()) return null;
-		if (value.isboolean()) return value.checkboolean();
-		if (value.isint()) return value.checkint();
-		if (value.isnumber()) return value.checkdouble();
-		if (value.isstring()) return value.checkjstring();
+		if (value.isnil())
+			return null;
+		if (value.isboolean())
+			return value.checkboolean();
+		if (value.isint())
+			return value.checkint();
+		if (value.isnumber())
+			return value.checkdouble();
+		if (value.isstring())
+			return value.checkjstring();
 
 		if (value.istable()) {
 			LuaTable table = value.checktable();
@@ -391,8 +410,7 @@ public class LuaBridge {
 	private static final int MAX_UNSAFE_DEPTH = 3; // Prevent deep recursion
 
 	// Blacklist of field names to skip (common internal fields)
-	private static final Set<String> UNSAFE_FIELD_BLACKLIST = Set.of(
-			"ENUM$VALUES", "$VALUES", // Enum internals
+	private static final Set<String> UNSAFE_FIELD_BLACKLIST = Set.of("ENUM$VALUES", "$VALUES", // Enum internals
 			"serialVersionUID", "serialPersistentFields", // Serialization internals
 			"class", "$jacocoData", // Class metadata and code coverage
 			"table", "modCount", "threshold", "loadFactor", // HashMap/ArrayList internals
@@ -412,7 +430,8 @@ public class LuaBridge {
 	}
 
 	private static LuaValue unsafeJavaToLua(Object obj, IdentityHashMap<Object, LuaValue> visited, int depth) {
-		if (obj == null) return LuaValue.NIL;
+		if (obj == null)
+			return LuaValue.NIL;
 
 		// Depth limit to prevent excessive recursion
 		if (depth > MAX_UNSAFE_DEPTH) {
@@ -434,17 +453,15 @@ public class LuaBridge {
 		Class<?> clazz = obj.getClass();
 
 		// Skip Java/JDK internal classes that might cause issues
-		if (clazz.getName().startsWith("java.lang.reflect") ||
-				clazz.getName().startsWith("java.lang.Class") ||
-				clazz.getName().startsWith("java.lang.Module") ||
-				clazz.getName().startsWith("sun.") ||
-				clazz.getName().startsWith("jdk.")) {
+		if (clazz.getName().startsWith("java.lang.reflect") || clazz.getName().startsWith("java.lang.Class")
+				|| clazz.getName().startsWith("java.lang.Module") || clazz.getName().startsWith("sun.")
+				|| clazz.getName().startsWith("jdk.")) {
 			return LuaValue.valueOf(obj.toString());
 		}
 
 		// Skip internal Java collection implementations
-		if (clazz.getName().startsWith("java.util.") &&
-				(clazz.getName().contains("$") || clazz.getName().contains("Immutable"))) {
+		if (clazz.getName().startsWith("java.util.")
+				&& (clazz.getName().contains("$") || clazz.getName().contains("Immutable"))) {
 			// For collections, try to convert to simple list/map
 			try {
 				if (obj instanceof List<?> list) {
@@ -478,9 +495,8 @@ public class LuaBridge {
 			// Serialize all accessible fields
 			for (Field field : getAllFields(clazz)) {
 				// Skip static, synthetic, and blacklisted fields
-				if (Modifier.isStatic(field.getModifiers()) ||
-						field.isSynthetic() ||
-						UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
+				if (Modifier.isStatic(field.getModifiers()) || field.isSynthetic()
+						|| UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
 					continue;
 				}
 
@@ -511,9 +527,9 @@ public class LuaBridge {
 	}
 
 	/**
-	 * Converts Lua table back to Java object using reflection.
-	 * WARNING: This bypasses @LuaField annotations and may set internal state.
-	 * Use only for classes you don't control (Minecraft, libraries, etc.)
+	 * Converts Lua table back to Java object using reflection. WARNING: This
+	 * bypasses @LuaField annotations and may set internal state. Use only for
+	 * classes you don't control (Minecraft, libraries, etc.)
 	 */
 	public static <T> T unsafeLuaToJava(LuaValue value, Class<T> targetType) {
 		return unsafeLuaToJava(value, targetType, new HashSet<>());
@@ -556,8 +572,8 @@ public class LuaBridge {
 			Object instance = createInstance(actualType, table);
 
 			if (instance == null) {
-				throw new LuaError("Cannot create instance of " + actualType.getName() +
-						" - no suitable constructor or factory method found");
+				throw new LuaError("Cannot create instance of " + actualType.getName()
+						+ " - no suitable constructor or factory method found");
 			}
 
 			// Populate all accessible fields (including final ones!)
@@ -583,8 +599,8 @@ public class LuaBridge {
 			return (T) instance;
 
 		} catch (Exception e) {
-			throw new LuaError("Unsafe deserialization failed for " + targetType.getName() + ": " +
-					e.getClass().getSimpleName() + " - " + e.getMessage());
+			throw new LuaError("Unsafe deserialization failed for " + targetType.getName() + ": "
+					+ e.getClass().getSimpleName() + " - " + e.getMessage());
 		}
 	}
 
@@ -599,24 +615,30 @@ public class LuaBridge {
 
 		// 2. Try static factory methods (already in your code, but add more names)
 		Object factoryResult = tryFactoryMethods(clazz, table);
-		if (factoryResult != null) return factoryResult;
+		if (factoryResult != null)
+			return factoryResult;
 
 		// 3. Try no-arg constructor (highest priority for standard objects)
 		try {
 			Constructor<?> constructor = clazz.getDeclaredConstructor();
 			constructor.setAccessible(true);
 			return constructor.newInstance();
-		} catch (Exception ignored) {}
+		} catch (Exception ignored) {
+		}
 
 		// 4. Positional/Type-based constructor matching
 		Object constructorResult = tryConstructorWithParams(clazz, table);
-		if (constructorResult != null) return constructorResult;
+		if (constructorResult != null)
+			return constructorResult;
 
-		// 5. Last Resort: Unsafe (Only works if JVM flags allow or if on custom launcher)
+		// 5. Last Resort: Unsafe (Only works if JVM flags allow or if on custom
+		// launcher)
 		try {
 			sun.misc.Unsafe unsafe = getUnsafe();
-			if (unsafe != null) return unsafe.allocateInstance(clazz);
-		} catch (Exception ignored) {}
+			if (unsafe != null)
+				return unsafe.allocateInstance(clazz);
+		} catch (Exception ignored) {
+		}
 
 		return null;
 	}
@@ -631,7 +653,8 @@ public class LuaBridge {
 				paramTypes[i] = components[i].getType();
 				// Try lookup by component name, then by index
 				LuaValue val = table.get(components[i].getName());
-				if (val.isnil()) val = table.get(i + 1);
+				if (val.isnil())
+					val = table.get(i + 1);
 
 				args[i] = luaToJava(val, paramTypes[i], new HashSet<>());
 			}
@@ -666,8 +689,7 @@ public class LuaBridge {
 			try {
 				// Try with no parameters
 				Method method = clazz.getMethod(methodName);
-				if (Modifier.isStatic(method.getModifiers()) &&
-						clazz.isAssignableFrom(method.getReturnType())) {
+				if (Modifier.isStatic(method.getModifiers()) && clazz.isAssignableFrom(method.getReturnType())) {
 					return method.invoke(null);
 				}
 			} catch (Exception e) {
@@ -678,8 +700,7 @@ public class LuaBridge {
 			try {
 				// Try with String parameter (e.g., ResourceLocation.of("minecraft:dirt"))
 				Method method = clazz.getMethod(methodName, String.class);
-				if (Modifier.isStatic(method.getModifiers()) &&
-						clazz.isAssignableFrom(method.getReturnType())) {
+				if (Modifier.isStatic(method.getModifiers()) && clazz.isAssignableFrom(method.getReturnType())) {
 
 					// Look for common string fields in the table
 					LuaValue nameValue = table.get("name");
@@ -715,8 +736,10 @@ public class LuaBridge {
 		Arrays.sort(constructors, Comparator.comparingInt(Constructor::getParameterCount));
 
 		for (Constructor<?> constructor : constructors) {
-			if (constructor.getParameterCount() == 0) continue; // Already tried
-			if (constructor.getParameterCount() > 10) continue; // Too complex
+			if (constructor.getParameterCount() == 0)
+				continue; // Already tried
+			if (constructor.getParameterCount() > 10)
+				continue; // Too complex
 
 			try {
 				constructor.setAccessible(true);
@@ -778,7 +801,8 @@ public class LuaBridge {
 			String[] names = {"x", "y", "z", "width", "height", "count", "amount", "size", "value", "id"};
 			for (String name : names) {
 				LuaValue val = table.get(name);
-				if (!val.isnil()) return val;
+				if (!val.isnil())
+					return val;
 			}
 		}
 
@@ -786,7 +810,8 @@ public class LuaBridge {
 			String[] names = {"x", "y", "z", "value", "amount", "scale"};
 			for (String name : names) {
 				LuaValue val = table.get(name);
-				if (!val.isnil()) return val;
+				if (!val.isnil())
+					return val;
 			}
 		}
 
@@ -794,13 +819,15 @@ public class LuaBridge {
 			String[] names = {"name", "id", "key", "value", "text", "message", "path"};
 			for (String name : names) {
 				LuaValue val = table.get(name);
-				if (!val.isnil()) return val;
+				if (!val.isnil())
+					return val;
 			}
 		}
 
 		// Try indexed access (for positional constructors)
 		LuaValue indexed = table.get(index + 1); // Lua is 1-indexed
-		if (!indexed.isnil()) return indexed;
+		if (!indexed.isnil())
+			return indexed;
 
 		return LuaValue.NIL;
 	}
@@ -822,10 +849,11 @@ public class LuaBridge {
 	}
 
 	/**
-	 * Sets a field value, even if it's final.
-	 * Uses multiple strategies to bypass Java's final field protection.
+	 * Sets a field value, even if it's final. Uses multiple strategies to bypass
+	 * Java's final field protection.
 	 */
-	private static void setFieldValue(Object instance, Field field, LuaValue luaValue, Set<LuaTable> visited) throws Exception {
+	private static void setFieldValue(Object instance, Field field, LuaValue luaValue, Set<LuaTable> visited)
+			throws Exception {
 		Object javaValue = unsafeLuaToJavaField(luaValue, field.getType(), visited);
 
 		// Strategy 1: Try normal reflection first
@@ -894,8 +922,8 @@ public class LuaBridge {
 		}
 
 		// All strategies failed - throw exception
-		throw new IllegalAccessException("Cannot set final field: " + field.getName() +
-				" in class " + instance.getClass().getName());
+		throw new IllegalAccessException(
+				"Cannot set final field: " + field.getName() + " in class " + instance.getClass().getName());
 	}
 
 	/**
@@ -946,22 +974,30 @@ public class LuaBridge {
 	 * Get default value for a primitive type (for constructor parameters)
 	 */
 	private static Object getDefaultValue(Class<?> type) {
-		if (type == boolean.class) return false;
-		if (type == byte.class) return (byte) 0;
-		if (type == short.class) return (short) 0;
-		if (type == int.class) return 0;
-		if (type == long.class) return 0L;
-		if (type == float.class) return 0.0f;
-		if (type == double.class) return 0.0;
-		if (type == char.class) return '\0';
+		if (type == boolean.class)
+			return false;
+		if (type == byte.class)
+			return (byte) 0;
+		if (type == short.class)
+			return (short) 0;
+		if (type == int.class)
+			return 0;
+		if (type == long.class)
+			return 0L;
+		if (type == float.class)
+			return 0.0f;
+		if (type == double.class)
+			return 0.0;
+		if (type == char.class)
+			return '\0';
 		return null; // For reference types
 	}
 
 	// ========== MINECRAFT-SPECIFIC HELPERS ==========
 
 	/**
-	 * Helper to create ItemStack from Lua table.
-	 * Handles the complex final fields properly.
+	 * Helper to create ItemStack from Lua table. Handles the complex final fields
+	 * properly.
 	 */
 	public static Object createItemStack(LuaTable table) {
 		try {
@@ -1024,8 +1060,7 @@ public class LuaBridge {
 	}
 
 	/**
-	 * Helper to create BlockPos from Lua table.
-	 * Much simpler than ItemStack.
+	 * Helper to create BlockPos from Lua table. Much simpler than ItemStack.
 	 */
 	public static Object createBlockPos(LuaTable table) {
 		try {
@@ -1080,8 +1115,8 @@ public class LuaBridge {
 
 	/**
 	 * SAFER VERSION: Only exposes methods (no fields) from third-party objects.
-	 * Recommended for Minecraft objects where you only want to call methods.
-	 * Does NOT serialize internal state.
+	 * Recommended for Minecraft objects where you only want to call methods. Does
+	 * NOT serialize internal state.
 	 */
 	public static LuaTable unsafeMethodsOnly(Object obj) {
 		LuaTable table = new LuaTable();
@@ -1093,8 +1128,10 @@ public class LuaBridge {
 		// Add all public methods
 		for (Method method : obj.getClass().getMethods()) {
 			// Skip Object methods and synthetic/bridge methods
-			if (method.isSynthetic() || method.isBridge()) continue;
-			if (method.getDeclaringClass() == Object.class) continue;
+			if (method.isSynthetic() || method.isBridge())
+				continue;
+			if (method.getDeclaringClass() == Object.class)
+				continue;
 
 			int paramCount = method.getParameterCount();
 			LibFunction function = createFunctionWrapper(obj, method, paramCount, true);
@@ -1109,15 +1146,16 @@ public class LuaBridge {
 
 	/**
 	 * COMPLETE UNSAFE: Exposes BOTH fields AND methods from third-party objects.
-	 * WARNING: This creates a fully interactive Lua wrapper with both data and behavior.
-	 * Use when you need complete access to an object you don't control.
+	 * WARNING: This creates a fully interactive Lua wrapper with both data and
+	 * behavior. Use when you need complete access to an object you don't control.
 	 */
 	public static LuaTable unsafeFieldsAndMethods(Object obj) {
 		return unsafeFieldsAndMethods(obj, new IdentityHashMap<>(), 0);
 	}
 
 	private static LuaTable unsafeFieldsAndMethods(Object obj, IdentityHashMap<Object, LuaTable> visited, int depth) {
-		if (obj == null) return null;
+		if (obj == null)
+			return null;
 
 		// Depth limit
 		if (depth > MAX_UNSAFE_DEPTH) {
@@ -1148,8 +1186,10 @@ public class LuaBridge {
 		// Add all public methods
 		for (Method method : clazz.getMethods()) {
 			// Skip Object methods and synthetic/bridge methods
-			if (method.isSynthetic() || method.isBridge()) continue;
-			if (method.getDeclaringClass() == Object.class) continue;
+			if (method.isSynthetic() || method.isBridge())
+				continue;
+			if (method.getDeclaringClass() == Object.class)
+				continue;
 
 			int paramCount = method.getParameterCount();
 			LibFunction function = createFunctionWrapper(obj, method, paramCount, true);
@@ -1162,9 +1202,8 @@ public class LuaBridge {
 		// Add all accessible fields as values (not methods)
 		for (Field field : getAllFields(clazz)) {
 			// Skip static, synthetic, and blacklisted fields
-			if (Modifier.isStatic(field.getModifiers()) ||
-					field.isSynthetic() ||
-					UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
+			if (Modifier.isStatic(field.getModifiers()) || field.isSynthetic()
+					|| UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
 				continue;
 			}
 
@@ -1196,18 +1235,28 @@ public class LuaBridge {
 	 * Helper to convert field values intelligently during unsafe serialization
 	 */
 	private static LuaValue convertFieldValue(Object value, IdentityHashMap<Object, LuaTable> visited, int depth) {
-		if (value == null) return LuaValue.NIL;
+		if (value == null)
+			return LuaValue.NIL;
 
 		// Primitives and strings
-		if (value instanceof Integer i) return LuaValue.valueOf(i);
-		if (value instanceof Long l) return LuaValue.valueOf(l.doubleValue());
-		if (value instanceof Double d) return LuaValue.valueOf(d);
-		if (value instanceof Float f) return LuaValue.valueOf(f);
-		if (value instanceof Boolean b) return LuaValue.valueOf(b);
-		if (value instanceof String s) return LuaValue.valueOf(s);
-		if (value instanceof Byte b) return LuaValue.valueOf(b);
-		if (value instanceof Short s) return LuaValue.valueOf(s);
-		if (value instanceof Character c) return LuaValue.valueOf(c.toString());
+		if (value instanceof Integer i)
+			return LuaValue.valueOf(i);
+		if (value instanceof Long l)
+			return LuaValue.valueOf(l.doubleValue());
+		if (value instanceof Double d)
+			return LuaValue.valueOf(d);
+		if (value instanceof Float f)
+			return LuaValue.valueOf(f);
+		if (value instanceof Boolean b)
+			return LuaValue.valueOf(b);
+		if (value instanceof String s)
+			return LuaValue.valueOf(s);
+		if (value instanceof Byte b)
+			return LuaValue.valueOf(b);
+		if (value instanceof Short s)
+			return LuaValue.valueOf(s);
+		if (value instanceof Character c)
+			return LuaValue.valueOf(c.toString());
 
 		// Arrays
 		if (value.getClass().isArray()) {
@@ -1291,11 +1340,9 @@ public class LuaBridge {
 		Class<?> clazz = value.getClass();
 
 		// Skip problematic Java internals
-		if (clazz.getName().startsWith("java.lang.reflect") ||
-				clazz.getName().startsWith("java.lang.Class") ||
-				clazz.getName().startsWith("java.lang.Module") ||
-				clazz.getName().startsWith("sun.") ||
-				clazz.getName().startsWith("jdk.")) {
+		if (clazz.getName().startsWith("java.lang.reflect") || clazz.getName().startsWith("java.lang.Class")
+				|| clazz.getName().startsWith("java.lang.Module") || clazz.getName().startsWith("sun.")
+				|| clazz.getName().startsWith("jdk.")) {
 			return LuaValue.valueOf(value.toString());
 		}
 
@@ -1323,7 +1370,8 @@ public class LuaBridge {
 						field.setAccessible(true);
 
 						String name = field.getAnnotation(LuaField.class).value();
-						if (name.isEmpty()) name = field.getName();
+						if (name.isEmpty())
+							name = field.getName();
 
 						fields.add(new FieldInfo(field, name));
 					}
@@ -1343,7 +1391,8 @@ public class LuaBridge {
 
 		// Add accessible fields
 		for (Field field : obj.getClass().getDeclaredFields()) {
-			if (!field.canAccess(obj)) continue;
+			if (!field.canAccess(obj))
+				continue;
 
 			try {
 				LuaValue luaValue = javaToLua(field.get(obj));
@@ -1359,7 +1408,8 @@ public class LuaBridge {
 		// Add methods
 		for (Method method : obj.getClass().getMethods()) {
 			// Skip weird / synthetic methods
-			if (method.isSynthetic() || method.isBridge()) continue;
+			if (method.isSynthetic() || method.isBridge())
+				continue;
 
 			int paramCount = method.getParameterCount();
 			LibFunction function = createFunctionWrapper(obj, method, paramCount, false);
@@ -1384,8 +1434,8 @@ public class LuaBridge {
 						Object result = method.invoke(obj);
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
@@ -1398,8 +1448,8 @@ public class LuaBridge {
 						Object result = method.invoke(obj, p1);
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
@@ -1409,14 +1459,11 @@ public class LuaBridge {
 				public LuaValue call(LuaValue a1, LuaValue a2) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
@@ -1426,15 +1473,12 @@ public class LuaBridge {
 				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
@@ -1444,16 +1488,12 @@ public class LuaBridge {
 				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
@@ -1463,138 +1503,95 @@ public class LuaBridge {
 				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
 
 			case 6 -> new SixArgFunction() {
 				@Override
-				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3,
-									 LuaValue a4, LuaValue a5, LuaValue a6) {
+				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5, LuaValue a6) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4]),
-								luaToJava(a6, p[5])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]), luaToJava(a6, p[5]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
 
 			case 7 -> new SevenArgFunction() {
 				@Override
-				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3,
-									 LuaValue a4, LuaValue a5, LuaValue a6, LuaValue a7) {
+				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5, LuaValue a6,
+						LuaValue a7) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4]),
-								luaToJava(a6, p[5]),
-								luaToJava(a7, p[6])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]), luaToJava(a6, p[5]),
+								luaToJava(a7, p[6]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
 
 			case 8 -> new EightArgFunction() {
 				@Override
-				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4,
-									 LuaValue a5, LuaValue a6, LuaValue a7, LuaValue a8) {
+				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5, LuaValue a6,
+						LuaValue a7, LuaValue a8) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4]),
-								luaToJava(a6, p[5]),
-								luaToJava(a7, p[6]),
-								luaToJava(a8, p[7])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]), luaToJava(a6, p[5]),
+								luaToJava(a7, p[6]), luaToJava(a8, p[7]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
 
 			case 9 -> new NineArgFunction() {
 				@Override
-				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4,
-									 LuaValue a5, LuaValue a6, LuaValue a7, LuaValue a8, LuaValue a9) {
+				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5, LuaValue a6,
+						LuaValue a7, LuaValue a8, LuaValue a9) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4]),
-								luaToJava(a6, p[5]),
-								luaToJava(a7, p[6]),
-								luaToJava(a8, p[7]),
-								luaToJava(a9, p[8])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]), luaToJava(a6, p[5]),
+								luaToJava(a7, p[6]), luaToJava(a8, p[7]), luaToJava(a9, p[8]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};
 
 			case 10 -> new TenArgFunction() {
 				@Override
-				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4,
-									 LuaValue a5, LuaValue a6, LuaValue a7, LuaValue a8,
-									 LuaValue a9, LuaValue a10) {
+				public LuaValue call(LuaValue a1, LuaValue a2, LuaValue a3, LuaValue a4, LuaValue a5, LuaValue a6,
+						LuaValue a7, LuaValue a8, LuaValue a9, LuaValue a10) {
 					try {
 						Class<?>[] p = method.getParameterTypes();
-						Object result = method.invoke(obj,
-								luaToJava(a1, p[0]),
-								luaToJava(a2, p[1]),
-								luaToJava(a3, p[2]),
-								luaToJava(a4, p[3]),
-								luaToJava(a5, p[4]),
-								luaToJava(a6, p[5]),
-								luaToJava(a7, p[6]),
-								luaToJava(a8, p[7]),
-								luaToJava(a9, p[8]),
-								luaToJava(a10, p[9])
-						);
+						Object result = method.invoke(obj, luaToJava(a1, p[0]), luaToJava(a2, p[1]),
+								luaToJava(a3, p[2]), luaToJava(a4, p[3]), luaToJava(a5, p[4]), luaToJava(a6, p[5]),
+								luaToJava(a7, p[6]), luaToJava(a8, p[7]), luaToJava(a9, p[8]), luaToJava(a10, p[9]));
 						return !unSafe ? javaToLua(result) : unsafeFieldsAndMethods(result);
 					} catch (Throwable t) {
-						throw new LuaError("Error calling " + method.getName() + ": " +
-								t.getClass().getSimpleName() + " - " + t.getMessage());
+						throw new LuaError("Error calling " + method.getName() + ": " + t.getClass().getSimpleName()
+								+ " - " + t.getMessage());
 					}
 				}
 			};

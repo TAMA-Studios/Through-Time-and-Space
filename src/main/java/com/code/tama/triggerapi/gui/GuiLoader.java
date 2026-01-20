@@ -1,21 +1,22 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 /**
  * Loads GUI definitions and Lua scripts from datapacks GUIs:
@@ -76,11 +77,11 @@ public class GuiLoader extends SimpleJsonResourceReloadListener {
 							content.append(line).append("\n");
 						}
 
-						String scriptPath = location.getPath().replace("triggerapi/gui/scripts/", "")
-								.replace(".lua", "");
+						String scriptPath = location.getPath().replace("triggerapi/gui/scripts/", "").replace(".lua",
+								"");
 						String scriptName = location.getNamespace() + ":" + scriptPath;
 
-						if(!LUA_SCRIPTS.containsKey(scriptName))
+						if (!LUA_SCRIPTS.containsKey(scriptName))
 							LUA_SCRIPTS.put(scriptName, content.toString());
 						LOGGER.info("Loaded Lua script: {}", scriptName);
 

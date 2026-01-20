@@ -1,30 +1,32 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.lua;
 
-import com.code.tama.triggerapi.codec.lua.LuaCodecBridge;
-import com.code.tama.triggerapi.gui.GuiRegistry;
+import static com.code.tama.triggerapi.helpers.SkinHelper.*;
+import static com.code.tama.triggerapi.lua.LuaScriptEngine.getTPS;
+import static com.code.tama.triggerapi.lua.LuaScriptEngine.toLuaValue;
+import static com.code.tama.tts.TTSMod.LOGGER;
+
+import java.util.UUID;
+
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.data.TARDISData;
 import com.code.tama.tts.server.data.tardis.data.TARDISEnvironmentalData;
 import com.code.tama.tts.server.data.tardis.data.TARDISFlightData;
 import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.*;
 
-import java.util.UUID;
-
-import static com.code.tama.triggerapi.helpers.SkinHelper.*;
-import static com.code.tama.triggerapi.lua.LuaScriptEngine.getTPS;
-import static com.code.tama.triggerapi.lua.LuaScriptEngine.toLuaValue;
-import static com.code.tama.tts.TTSMod.LOGGER;
+import com.code.tama.triggerapi.codec.lua.LuaCodecBridge;
+import com.code.tama.triggerapi.gui.GuiRegistry;
 
 public class LuaTableCreators {
 	public static LuaTable utilTable(Level level) {
@@ -381,14 +383,16 @@ public class LuaTableCreators {
 	}
 
 	public static LuaTable itemTable(ItemStack stack) {
-		LuaTable table = LuaBridge.unsafeFieldsAndMethods(stack).checktable();//new LuaTable();
-//		table.set("stack", LuaBridge.unsafeFieldsAndMethods(stack).checktable());
-//		table.set("item", LuaBridge.unsafeFieldsAndMethods(stack.getItem()).checktable())
+		LuaTable table = LuaBridge.unsafeFieldsAndMethods(stack).checktable();// new LuaTable();
+		// table.set("stack", LuaBridge.unsafeFieldsAndMethods(stack).checktable());
+		// table.set("item",
+		// LuaBridge.unsafeFieldsAndMethods(stack.getItem()).checktable())
 		return table;
 	}
 	public static LuaTable playerTable(Player player) {
 
-		if(true) return LuaBridge.unsafeFieldsAndMethods(player);
+		if (true)
+			return LuaBridge.unsafeFieldsAndMethods(player);
 
 		LuaTable playerTable = new LuaTable();
 
