@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 import com.code.tama.triggerapi.boti.packets.S2C.PortalSyncPacketS2C;
 import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
 import com.code.tama.triggerapi.tileEntities.TickingTile;
@@ -52,7 +52,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 	public Map<BakedModel, Integer> chunkModels = new HashMap<>();
 
 	@OnlyIn(Dist.CLIENT)
-	public List<BotiChunkContainer> containers = new ArrayList<>();
+	public List<BotiBlockContainer> containers = new ArrayList<>();
 
 	public ResourceKey<DimensionType> dimensionTypeId;
 
@@ -118,7 +118,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void updateChunkDataFromServer(List<BotiChunkContainer> chunkData, int packetIndex, int totalPackets) {
+	public void updateChunkDataFromServer(List<BotiBlockContainer> chunkData, int packetIndex, int totalPackets) {
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
 			return;
 		if (packetIndex > totalPackets || this.recievedPackets.contains(packetIndex)) {

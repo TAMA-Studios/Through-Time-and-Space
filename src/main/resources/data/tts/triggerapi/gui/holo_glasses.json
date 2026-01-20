@@ -1,0 +1,15 @@
+{
+  "elements" : [ {
+    "height" : 20,
+    "id" : "button_1",
+    "script" : "tts:holo_glasses.lua",
+    "type" : "button",
+    "width" : 60,
+    "x" : 10,
+    "y" : 10
+  } ],
+  "height" : 166,
+  "title" : "holo_glasses",
+  "type" : "custom",
+  "width" : 176
+}

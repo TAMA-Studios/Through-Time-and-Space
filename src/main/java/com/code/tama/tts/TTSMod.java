@@ -69,6 +69,10 @@ public class TTSMod {
 		REGISTRATE.skipErrors(true);
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+		// This comment suppresses the "InstantiationOfUtilityClass" warning
+		// noinspection InstantiationOfUtilityClass
+		triggerAPI = new TriggerAPI(modEventBus, MODID);
+
 		// Register the commonSetup method for modloading
 		modEventBus.addListener(this::commonSetup);
 		CustomLevelRenderer.Register();
@@ -76,10 +80,6 @@ public class TTSMod {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
 				() -> () -> MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class));
-
-		// This comment suppresses the "InstantiationOfUtilityClass" warning
-		// noinspection InstantiationOfUtilityClass
-		triggerAPI = new TriggerAPI(modEventBus, MODID);
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TTSConfig.ClientConfig.SPEC,
 				"through_time_and_space-client-config.toml");

@@ -1,3 +1,5 @@
+print("calling")
+
 function clamp(value, min, max)
     local result = tonumber(value)
     if result == nil then
@@ -9,35 +11,18 @@ function clamp(value, min, max)
     return result
 end
 
-function useEnergy(stack)
-    if stack == nil then
-        print("No item in main hand")
-        return
-    end
-
-    print("Listing")
-    --for key, value in pairs(stack.getItem()) do
-    --    print(key, "=", value)
-    --end
-    print("Getting damage")
-    local maxDamage = tonumber(stack.getMaxDamage())
-    print("damage: " .. maxDamage)
-    if not maxDamage then
-        error("getMaxDamage() returned non-number")
-    end
-
-    print("using")
-
-    stack.item.consumeEnergy(stack, 100)
-    print("used")
-end
-
+--for key, value in pairs(stack.getItem()) do
+--    print(key, "=", value)
+--end
+print("setting Y")
 local y = clamp(ctx.y, -64, 999999)
+print("Y: " .. y)
 
-mc.player.teleportTo(ctx.x, y, ctx.z)
-
-local stack = mc.player.getMainHandItem()
-useEnergy(stack)
+print("teleporting")
+mc.player.teleportRelative(tonumber(ctx.x), y, tonumber(ctx.z))
+print("teleported")
+--local stack = mc.player.getMainHandItem()
+--useEnergy(stack)
 
 mc.player.sendMessage(
     "Teleported to " .. ctx.x .. ", " .. y .. ", " .. ctx.z

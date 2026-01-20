@@ -25,7 +25,7 @@ import net.minecraft.world.level.material.FluidState;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class BotiChunkContainer {
+public class BotiBlockContainer {
 	boolean IsFluid;
 	boolean IsTile;
 	CompoundTag entityTag;
@@ -35,7 +35,7 @@ public class BotiChunkContainer {
 	final BlockPos pos;
 	final BlockState state;
 
-	public BotiChunkContainer(Level level, BlockState state, BlockPos pos, int light, boolean IsTile,
+	public BotiBlockContainer(Level level, BlockState state, BlockPos pos, int light, boolean IsTile,
 			CompoundTag tileTag) {
 		this.state = state;
 		this.IsTile = IsTile;
@@ -45,7 +45,7 @@ public class BotiChunkContainer {
 		this.level = level;
 	}
 
-	public BotiChunkContainer(Level level, BlockState state, FluidState fluidState, BlockPos pos, int light) {
+	public BotiBlockContainer(Level level, BlockState state, FluidState fluidState, BlockPos pos, int light) {
 		this.state = state;
 		this.fluidState = fluidState;
 		this.pos = pos;
@@ -56,7 +56,7 @@ public class BotiChunkContainer {
 
 	@Contract("_ -> new")
 	@SuppressWarnings("deprecation")
-	public static @NotNull BotiChunkContainer decode(@NotNull FriendlyByteBuf buf) {
+	public static @NotNull BotiBlockContainer decode(@NotNull FriendlyByteBuf buf) {
 		BlockPos pos = buf.readBlockPos();
 
 		// Read BlockState
@@ -68,26 +68,26 @@ public class BotiChunkContainer {
 		if (IsFluid) {
 			int id = buf.readVarInt();
 			FluidState fluid = Fluid.FLUID_STATE_REGISTRY.byId(id);
-			return new BotiChunkContainer(Minecraft.getInstance().level, state, fluid, pos, light);
+			return new BotiBlockContainer(Minecraft.getInstance().level, state, fluid, pos, light);
 		}
 		if (IsTile) {
-			return new BotiChunkContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
+			return new BotiBlockContainer(Minecraft.getInstance().level, state, pos, light, true, buf.readNbt());
 		}
-		return new BotiChunkContainer(Minecraft.getInstance().level, light, pos, state);
+		return new BotiBlockContainer(Minecraft.getInstance().level, light, pos, state);
 	}
 
-	public static List<BotiChunkContainer> decodeList(FriendlyByteBuf buf) {
+	public static List<BotiBlockContainer> decodeList(FriendlyByteBuf buf) {
 		int size = buf.readVarInt();
-		List<BotiChunkContainer> list = new ArrayList<>(size);
+		List<BotiBlockContainer> list = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			list.add(BotiChunkContainer.decode(buf));
+			list.add(BotiBlockContainer.decode(buf));
 		}
 		return list;
 	}
 
-	public static void encodeList(List<BotiChunkContainer> list, FriendlyByteBuf buf) {
+	public static void encodeList(List<BotiBlockContainer> list, FriendlyByteBuf buf) {
 		buf.writeVarInt(list.size());
-		for (BotiChunkContainer container : list) {
+		for (BotiBlockContainer container : list) {
 			container.encode(buf);
 		}
 	}

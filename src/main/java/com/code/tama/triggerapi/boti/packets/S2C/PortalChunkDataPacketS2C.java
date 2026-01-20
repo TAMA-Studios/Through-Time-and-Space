@@ -17,16 +17,16 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 
 public class PortalChunkDataPacketS2C {
 	private final BlockPos portalPos;
 
 	int index;
 	int totalPackets;
-	public List<BotiChunkContainer> containersL = new ArrayList<>();
+	public List<BotiBlockContainer> containersL = new ArrayList<>();
 
-	public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiChunkContainer> containers, int index,
+	public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiBlockContainer> containers, int index,
 			int totalPackets) {
 		this.portalPos = portalPos;
 		this.containersL = containers;
@@ -50,13 +50,13 @@ public class PortalChunkDataPacketS2C {
 
 	public static PortalChunkDataPacketS2C decode(FriendlyByteBuf buf) {
 		BlockPos pos = buf.readBlockPos();
-		List<BotiChunkContainer> data = BotiChunkContainer.decodeList(buf);
+		List<BotiBlockContainer> data = BotiBlockContainer.decodeList(buf);
 		return new PortalChunkDataPacketS2C(pos, data, buf.readInt(), buf.readInt());
 	}
 
 	public static void encode(PortalChunkDataPacketS2C msg, FriendlyByteBuf buf) {
 		buf.writeBlockPos(msg.portalPos);
-		BotiChunkContainer.encodeList(msg.containersL, buf);
+		BotiBlockContainer.encodeList(msg.containersL, buf);
 		buf.writeInt(msg.index);
 		buf.writeInt(msg.totalPackets);
 	}

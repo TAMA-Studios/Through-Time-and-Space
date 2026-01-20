@@ -8,6 +8,7 @@ import java.util.List;
 import com.code.tama.tts.manual.ManualItem;
 import com.code.tama.tts.server.items.TwineItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
+import com.code.tama.tts.server.items.gadgets.HoloGlasses;
 import com.code.tama.tts.server.items.gadgets.SonicItem;
 import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
 import com.code.tama.tts.server.items.gadgets.VortexManipulatorItem;
@@ -22,8 +23,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 
 @SuppressWarnings("deprecation")
@@ -51,7 +50,7 @@ public class TTSItems {
 	public static final ItemEntry<SonicItem> COPPER_SONIC;
 
 	@MainTab
-	public static final ItemEntry<ArmorItem> HOLO_GLASSES;
+	public static final ItemEntry<HoloGlasses> HOLO_GLASSES;
 
 	@MainTab
 	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
@@ -85,9 +84,7 @@ public class TTSItems {
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
 
-		HOLO_GLASSES = registrate()
-				.item("holo_glasses", prop -> new ArmorItem(ArmorMaterials.IRON, ArmorItem.Type.HELMET, prop))
-				.register();
+		HOLO_GLASSES = registrate().item("holo_glasses", HoloGlasses::new).register();
 
 		VORTEX_MANIPULATOR = registrate().item("gadgets/vortex_manipulator", VortexManipulatorItem::new).register();
 

@@ -39,7 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
 import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
@@ -115,7 +115,7 @@ public class BOTIUtils {
 		}
 	}
 
-	public static VertexBuffer buildModelVBO(List<BotiChunkContainer> containers, AbstractPortalTile tile) {
+	public static VertexBuffer buildModelVBO(List<BotiBlockContainer> containers, AbstractPortalTile tile) {
 		Minecraft mc = Minecraft.getInstance();
 
 		int ChunksToRender = 8;
@@ -126,7 +126,7 @@ public class BOTIUtils {
 		// Dump all quads into the buffer
 		PoseStack stack = new PoseStack();
 
-		Map<BlockPos, BotiChunkContainer> chunkMap = getMapFromContainerList(containers);
+		Map<BlockPos, BotiBlockContainer> chunkMap = getMapFromContainerList(containers);
 
 		chunkMap.forEach((pos, container) -> {
 			BlockColors colors = mc.getBlockColors();
@@ -183,16 +183,16 @@ public class BOTIUtils {
 		return vbo;
 	}
 
-	public static Map<BlockPos, BotiChunkContainer> getMapFromContainerList(List<BotiChunkContainer> list) {
-		Map<BlockPos, BotiChunkContainer> map = new HashMap<>(list.size());
-		for (BotiChunkContainer container : list) {
+	public static Map<BlockPos, BotiBlockContainer> getMapFromContainerList(List<BotiBlockContainer> list) {
+		Map<BlockPos, BotiBlockContainer> map = new HashMap<>(list.size());
+		for (BotiBlockContainer container : list) {
 			map.put(container.getPos(), container);
 		}
 		return map;
 	}
 
 	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
-			Map<BlockPos, BotiChunkContainer> map) {
+			Map<BlockPos, BotiBlockContainer> map) {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		Direction[] directions = Direction.values();
 		BakedModel model = blockRenderer.getBlockModel(state);
@@ -200,7 +200,7 @@ public class BOTIUtils {
 		// render only non-occluded faces
 		for (Direction dir : directions) {
 			BlockPos neighbourPos = pos.relative(dir);
-			BotiChunkContainer neighborContainer = map.get(neighbourPos);
+			BotiBlockContainer neighborContainer = map.get(neighbourPos);
 			if (neighborContainer != null) {
 				if (BOTIUtils.shouldRenderFace(state, neighborContainer.getState(), Minecraft.getInstance().level, pos,
 						dir, neighbourPos))

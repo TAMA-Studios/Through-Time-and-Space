@@ -18,7 +18,7 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import com.code.tama.triggerapi.boti.client.BotiChunkContainer;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
@@ -40,8 +40,8 @@ public class ChunkGatheringThread extends Thread {
 		int maxBlocks = 50000;
 
 		try {
-			ArrayList<BotiChunkContainer> containers = new ArrayList<>();
-			ArrayList<List<BotiChunkContainer>> containerLists = new ArrayList<>();
+			ArrayList<BotiBlockContainer> containers = new ArrayList<>();
+			ArrayList<List<BotiBlockContainer>> containerLists = new ArrayList<>();
 			boolean isSquare = true;
 			// \/ Use either client render distance, or server render distance, whichever's
 			// smaller
@@ -111,31 +111,31 @@ public class ChunkGatheringThread extends Thread {
 									// }
 
 									if (fluidState.isEmpty())
-										containers.add(new BotiChunkContainer(level,
+										containers.add(new BotiBlockContainer(level,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
 																.atY(targetPos.getY())),
 												pos, state));
 									else
-										containers.add(new BotiChunkContainer(level, state, fluidState, pos,
+										containers.add(new BotiBlockContainer(level, state, fluidState, pos,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
 																.atY(targetPos.getY()))));
 
 									if (fluidStateAbove.isEmpty())
-										containers.add(new BotiChunkContainer(level,
+										containers.add(new BotiBlockContainer(level,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
 																.atY(targetPos.getY())),
 												posAbove, stateAbove));
 									else
-										containers.add(new BotiChunkContainer(level, stateAbove, fluidState, posAbove,
+										containers.add(new BotiBlockContainer(level, stateAbove, fluidState, posAbove,
 												BlockUtils.getPackedLight(level,
 														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
 																.atY(targetPos.getY()))));
 								}
 								if (containers.size() >= maxBlocks - 1) {
-									containerLists.add((List<BotiChunkContainer>) containers.clone());
+									containerLists.add((List<BotiBlockContainer>) containers.clone());
 									containers.clear();
 								}
 							}
@@ -144,7 +144,7 @@ public class ChunkGatheringThread extends Thread {
 				}
 			}
 			if (!containers.isEmpty()) {
-				containerLists.add((List<BotiChunkContainer>) containers.clone());
+				containerLists.add((List<BotiBlockContainer>) containers.clone());
 				containers.clear();
 			}
 

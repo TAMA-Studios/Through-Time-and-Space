@@ -47,6 +47,14 @@ public class ClientSetup {
 					"key.categories.tts.main" // Mapping will be in the main tts category
 			));
 
+	public static final Lazy<KeyMapping> HOLO_GLASSES_GUI = Lazy
+			.of(() -> new KeyMapping("tts.keybinds.holo_glasses_gui", // Will be localized using this translation
+					// key
+					KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+					GLFW.GLFW_KEY_H, // Default key is C
+					"key.categories.tts.main" // Mapping will be in the main tts category
+			));
+
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void FMLClientSetup(FMLClientSetupEvent event) {
@@ -209,5 +217,6 @@ public class ClientSetup {
 	@SubscribeEvent
 	public void registerBindings(RegisterKeyMappingsEvent event) {
 		event.register(EXTERIOR_VIEW.get());
+		event.register(HOLO_GLASSES_GUI.get());
 	}
 }
