@@ -1,22 +1,21 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 
 /**
  * Loads GUI definitions and Lua scripts from datapacks GUIs:
@@ -63,40 +62,33 @@ public class GuiLoader extends SimpleJsonResourceReloadListener {
 
 	private void loadLuaScripts(ResourceManager resourceManager) {
 		// Scan all namespaces for lua scripts
-		for (String namespace : resourceManager.getNamespaces()) {
-			try {
-				ResourceLocation scriptDir = new ResourceLocation(namespace, "triggerapi/gui/scripts");
+		// Try to find all .lua files
+		resourceManager.listResources("triggerapi/gui/scripts", path -> path.getPath().endsWith(".lua"))
+				.forEach((location, resource) -> {
+					try {
+						InputStream stream = resource.open();
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(stream, StandardCharsets.UTF_8));
 
-				// Try to find all .lua files
-				resourceManager.listResources("triggerapi/gui/scripts", path -> path.getPath().endsWith(".lua"))
-						.forEach((location, resource) -> {
-							try {
-								InputStream stream = resource.open();
-								BufferedReader reader = new BufferedReader(
-										new InputStreamReader(stream, StandardCharsets.UTF_8));
+						StringBuilder content = new StringBuilder();
+						String line;
+						while ((line = reader.readLine()) != null) {
+							content.append(line).append("\n");
+						}
 
-								StringBuilder content = new StringBuilder();
-								String line;
-								while ((line = reader.readLine()) != null) {
-									content.append(line).append("\n");
-								}
+						String scriptPath = location.getPath().replace("triggerapi/gui/scripts/", "")
+								.replace(".lua", "");
+						String scriptName = location.getNamespace() + ":" + scriptPath;
 
-								String scriptPath = location.getPath().replace("triggerapi/gui/scripts/", "")
-										.replace(".lua", "");
-								String scriptName = namespace + ":" + scriptPath;
+						if(!LUA_SCRIPTS.containsKey(scriptName))
+							LUA_SCRIPTS.put(scriptName, content.toString());
+						LOGGER.info("Loaded Lua script: {}", scriptName);
 
-								LUA_SCRIPTS.put(scriptName, content.toString());
-								LOGGER.info("Loaded Lua script: {}", scriptName);
-
-								reader.close();
-							} catch (Exception e) {
-								LOGGER.error("Failed to load Lua script: {}", location, e);
-							}
-						});
-			} catch (Exception e) {
-				// Namespace doesn't have scripts folder, skip
-			}
-		}
+						reader.close();
+					} catch (Exception e) {
+						LOGGER.error("Failed to load Lua script: {}", location, e);
+					}
+				});
 	}
 
 	public static GuiDefinition getGuiDefinition(ResourceLocation location) {

@@ -15,25 +15,28 @@ function useEnergy(stack)
         return
     end
 
-    print("clamping")
-
+    print("Listing")
+    --for key, value in pairs(stack.getItem()) do
+    --    print(key, "=", value)
+    --end
+    print("Getting damage")
     local maxDamage = tonumber(stack.getMaxDamage())
     print("damage: " .. maxDamage)
     if not maxDamage then
         error("getMaxDamage() returned non-number")
     end
 
-    local clampedEnergy = clamp(maxDamage - 100, 0, 1000)
-
     print("using")
-    stack.setDamageValue(maxDamage - clampedEnergy)
+
+    stack.item.consumeEnergy(stack, 100)
     print("used")
 end
 
 local y = clamp(ctx.y, -64, 999999)
-mc.player.teleport(ctx.x, y, ctx.z)
 
-local stack = mc.player.getInventory().mainhand
+mc.player.teleportTo(ctx.x, y, ctx.z)
+
+local stack = mc.player.getMainHandItem()
 useEnergy(stack)
 
 mc.player.sendMessage(
