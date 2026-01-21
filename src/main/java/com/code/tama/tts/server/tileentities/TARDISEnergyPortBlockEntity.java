@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.data.tardis.EnergyMode;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,12 +30,14 @@ public class TARDISEnergyPortBlockEntity extends BlockEntity {
 
 			@Override
 			public int receiveEnergy(int receive, boolean simulate) {
-				return Math.toIntExact(getTardis().map(t -> t.getEnergy().receiveEnergy(receive, simulate)).orElse(0L));
+				return Math.toIntExact(getTardis()
+						.map(t -> t.getEnergy().receiveEnergy(EnergyMode.FORGE, receive, simulate)).orElse(0L));
 			}
 
 			@Override
 			public int extractEnergy(int extract, boolean simulate) {
-				return Math.toIntExact(getTardis().map(t -> t.getEnergy().extractEnergy(extract, simulate)).orElse(0L));
+				return Math.toIntExact(getTardis()
+						.map(t -> t.getEnergy().extractEnergy(EnergyMode.FORGE, extract, simulate)).orElse(0L));
 			}
 
 			@Override

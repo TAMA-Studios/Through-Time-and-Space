@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+import com.code.tama.tts.server.data.tardis.EnergyHandler;
 import com.code.tama.tts.server.data.tardis.data.TARDISData;
 import com.code.tama.tts.server.data.tardis.data.TARDISFlightData;
 import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
@@ -19,7 +20,7 @@ import com.code.tama.triggerapi.codec.FriendlyByteBufOps;
 
 /** Used to sync the TARDIS Cap data between the server and the client */
 public class SyncTARDISCapPacketS2C {
-	long Energy;
+	EnergyHandler Energy;
 	TARDISData data;
 
 	TARDISFlightData flightData;
@@ -34,11 +35,11 @@ public class SyncTARDISCapPacketS2C {
 		this.data = tardis.GetData();
 		this.navigationalData = tardis.GetNavigationalData();
 		this.flightData = tardis.GetFlightData();
-		this.Energy = tardis.getEnergy().getEnergy();
+		this.Energy = tardis.getEnergy();
 		this.toUpdate = toUpdate;
 	}
 
-	public SyncTARDISCapPacketS2C(long Energy, TARDISData data, TARDISNavigationalData navigationalData,
+	public SyncTARDISCapPacketS2C(EnergyHandler Energy, TARDISData data, TARDISNavigationalData navigationalData,
 			TARDISFlightData flightData, int toUpdate) {
 		this.Energy = Energy;
 		this.data = data;
@@ -48,7 +49,7 @@ public class SyncTARDISCapPacketS2C {
 	}
 	public static SyncTARDISCapPacketS2C decode(FriendlyByteBuf buffer) {
 		int toUpdate = buffer.readInt();
-		long Energy = buffer.readLong();
+		EnergyHandler Energy = FriendlyByteBufOps.Helper.readWithCodec(buffer, EnergyHandler.CODEC);
 
 		switch (toUpdate) {
 			case DataUpdateValues.DATA, DataUpdateValues.RENDERING : {
@@ -74,7 +75,7 @@ public class SyncTARDISCapPacketS2C {
 	}
 	public static void encode(SyncTARDISCapPacketS2C packet, FriendlyByteBuf buffer) {
 		buffer.writeInt(packet.toUpdate);
-		buffer.writeLong(packet.Energy);
+		FriendlyByteBufOps.Helper.writeWithCodec(buffer, EnergyHandler.CODEC, packet.Energy);
 
 		switch (packet.toUpdate) {
 			case DataUpdateValues.DATA, DataUpdateValues.RENDERING : {
@@ -102,7 +103,10 @@ public class SyncTARDISCapPacketS2C {
 		context.enqueueWork(() -> {
 			if (Minecraft.getInstance().level != null) {
 				GetClientTARDISCapSupplier().ifPresent(cap -> {
-					cap.getEnergy().getEnergyCap().setEnergy((int) packet.Energy);
+					cap.getEnergy().artron = packet.Energy.artron;
+					cap.getEnergy().getEnergyCap().setEnergy(packet.Energy.getEnergyCap().getEnergyStored());
+					cap.getEnergy().potential = packet.Energy.potential;
+
 					switch (packet.toUpdate) {
 						case DataUpdateValues.DATA, DataUpdateValues.RENDERING : {
 							cap.setData(packet.data);

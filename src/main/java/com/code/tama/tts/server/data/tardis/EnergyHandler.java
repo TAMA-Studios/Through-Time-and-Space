@@ -60,7 +60,7 @@ public class EnergyHandler {
 	}
 
 	/**
-	 * Extracts energy based on the mode.
+	 * Extracts energy based on the currently selected mode.
 	 *
 	 * @return The amount of energy actually extracted.
 	 */
@@ -147,7 +147,6 @@ public class EnergyHandler {
 		}
 	}
 
-	// Inner class to allow setting energy directly during NBT load
 	public static class CustomEnergyStorage extends EnergyStorage {
 		public CustomEnergyStorage(int capacity, int maxReceive, int maxExtract) {
 			super(capacity, maxReceive, maxExtract);

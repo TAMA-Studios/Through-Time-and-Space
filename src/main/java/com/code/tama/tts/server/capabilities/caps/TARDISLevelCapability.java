@@ -17,6 +17,7 @@ import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.EnergyHandler;
+import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
@@ -381,6 +382,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				TardisEvent.FlightEventSucceed event = new TardisEvent.FlightEventSucceed(this);
 				MinecraftForge.EVENT_BUS.post(event);
 
+				this.energyHandler.receiveEnergy(EnergyMode.POTENTIAL, ticks - lastFlightEvent, false); // Add potential
+																										// energy
+
 				this.lastFlightEvent = ticks;
 				this.UpdateClient(DataUpdateValues.FLIGHT_EVENTS);
 			}
@@ -618,13 +622,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void Tick() {
 		this.ticks++;
 
-		if (TickThread == null) {
+		if (TickThread == null || !TickThread.isAlive()) {
 			TickThread = CommonThreads.TARDISTickThread(this);
 			TickThread.start();
-		} else
-			TickThread.run();
+		}
 
-		if (this.ticks % 120 == 1) {
+		if (this.ticks % 120 == 1) { // Update client every 6 seconds
 			this.UpdateClient(DataUpdateValues.DATA);
 		}
 

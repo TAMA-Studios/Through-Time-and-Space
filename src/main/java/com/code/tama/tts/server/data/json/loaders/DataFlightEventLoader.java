@@ -10,7 +10,7 @@ import java.util.Map;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.CrashFailureAction;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.FlightEventFailureAction;
-import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.TakeArtronAction;
+import com.code.tama.tts.server.data.json.dataHolders.flightEvents.actions.TakeEnergyAction;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -94,7 +94,7 @@ public class DataFlightEventLoader implements ResourceManagerReloadListener {
 
 							switch (jsonAction.get("name").getAsString()) {
 								case "artron" : {
-									action = new TakeArtronAction(jsonAction.get("fuel_to_take").getAsInt());
+									action = new TakeEnergyAction(jsonAction.get("fuel_to_take").getAsInt());
 									break;
 								}
 								default : {
