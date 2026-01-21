@@ -423,6 +423,16 @@ public class LuaTableCreators {
 			}
 		});
 
+		playerTable.set("teleport", new ThreeArgFunction() {
+			@Override
+			public LuaValue call(LuaValue x, LuaValue y, LuaValue z) {
+				if (player instanceof ServerPlayer sp) {
+					sp.teleportTo(x.checkdouble(), y.checkdouble(), z.checkdouble());
+				}
+				return LuaValue.NIL;
+			}
+		});
+
 		if (true)
 			return playerTable;
 
@@ -526,16 +536,6 @@ public class LuaTableCreators {
 					} catch (Exception e) {
 						LOGGER.error("Failed to play sound", e);
 					}
-				}
-				return LuaValue.NIL;
-			}
-		});
-
-		playerTable.set("teleport", new ThreeArgFunction() {
-			@Override
-			public LuaValue call(LuaValue x, LuaValue y, LuaValue z) {
-				if (player instanceof ServerPlayer sp) {
-					sp.teleportTo(x.checkdouble(), y.checkdouble(), z.checkdouble());
 				}
 				return LuaValue.NIL;
 			}

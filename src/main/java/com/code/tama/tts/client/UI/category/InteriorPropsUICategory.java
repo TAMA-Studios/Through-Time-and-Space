@@ -23,7 +23,7 @@ public class InteriorPropsUICategory extends UICategory {
 			int light = (int) (cap.GetLightLevel() * 10);
 			light -= 1;
 			long line1 = cap.getEnergy().getArtron();
-			long line2 = cap.getEnergy().getEnergy();
+			String line2 = getPowerFE(cap.getEnergy().getEnergy());
 
 			RenderSystem.disableDepthTest();
 
@@ -38,13 +38,16 @@ public class InteriorPropsUICategory extends UICategory {
 					bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
 			poseStack.popPose();
-			fontRenderer.drawInBatch("Stored Energy: " + line1 + "AU", -40, 25, color(monitor), false,
-					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
+			fontRenderer.drawInBatch("Stored Energy:", -40, 25, color(monitor), false, poseStack.last().pose(),
+					bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
-			fontRenderer.drawInBatch("Stored Energy: " + line2 + "FE", -40, 35, color(monitor), false,
-					poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
+			fontRenderer.drawInBatch(line1 + "AU", -30, 35, color(monitor), false, poseStack.last().pose(),
+					bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
-			poseStack.translate(-20, 0, 0);
+			fontRenderer.drawInBatch(line2, -30, 45, color(monitor), false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, 0xf000f0);
+
+			poseStack.translate(40, 0, 0);
 			drawProgressBar(15, light, poseStack);
 
 			poseStack.popPose();
@@ -76,4 +79,25 @@ public class InteriorPropsUICategory extends UICategory {
 
 		stack.popPose();
 	}
+
+	public static String getPowerFE(long fe) {
+		if (fe >= 1_000_000_000_000L) {
+			return format(fe / 1_000_000_000_000.0) + "TFE";
+		}
+		if (fe >= 1_000_000_000L) {
+			return format(fe / 1_000_000_000.0) + "BFE";
+		}
+		if (fe >= 1_000_000L) {
+			return format(fe / 1_000_000.0) + "MFE";
+		}
+		if (fe >= 1_000L) {
+			return format(fe / 1_000.0) + "KFE";
+		}
+		return fe + "FE";
+	}
+
+	private static String format(double value) {
+		return value % 1 == 0 ? String.valueOf((long) value) : String.format("%.1f", value);
+	}
+
 }
