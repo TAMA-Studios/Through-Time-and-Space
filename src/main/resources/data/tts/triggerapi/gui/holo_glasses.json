@@ -1,15 +1,42 @@
 {
   "elements" : [ {
-    "height" : 20,
+    "height" : 60,
     "id" : "button_1",
-    "script" : "tts:holo_glasses.lua",
+    "script" : "mc.player:openGui(\"tts:holograms\")",
     "type" : "button",
-    "width" : 60,
-    "x" : 10,
-    "y" : 10
+    "width" : 350,
+    "x" : 24,
+    "y" : 26
+  }, {
+    "id" : "text_2",
+    "scale" : 5.0,
+    "text" : "Holograms",
+    "type" : "text",
+    "x" : 40,
+    "y" : 27
+  }, {
+    "entity_type" : "minecraft:zombie",
+    "height" : 800,
+    "id" : "entity_3",
+    "type" : "entity",
+    "width" : 500,
+    "x" : 1332,
+    "y" : 132
+  }, {
+    "border_color" : 16711680,
+    "height" : 100,
+    "id" : "progress_bar_4",
+    "progress_script" : "ctx.progress = player.getMainHandItem().getDamageValue() / player.getMainHandItem().getMaxDamage()",
+    "show_percentage" : true,
+    "tooltip" : [ "Power" ],
+    "type" : "progress_bar",
+    "width" : 500,
+    "x" : 39,
+    "y" : 963
   } ],
-  "height" : 166,
+  "fullscreen" : true,
+  "height" : 1102,
   "title" : "holo_glasses",
   "type" : "custom",
-  "width" : 176
+  "width" : 1924
 }

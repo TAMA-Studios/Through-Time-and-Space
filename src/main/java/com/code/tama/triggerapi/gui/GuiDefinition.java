@@ -12,7 +12,6 @@ import lombok.Getter;
  */
 @Getter
 public class GuiDefinition {
-
 	// Getters
 	@SerializedName("type")
 	private String type = "custom"; // "custom" or "container"
@@ -32,10 +31,13 @@ public class GuiDefinition {
 
 	// Custom GUI specific
 	@SerializedName("width")
-	private int width = 176;
+	int width = 176;
 
 	@SerializedName("height")
-	private int height = 166;
+	int height = 166;
+
+	@SerializedName("fullscreen")
+	private Boolean fullscreen = false;
 
 	@SerializedName("background_texture")
 	private String backgroundTexture;
@@ -188,6 +190,7 @@ public class GuiDefinition {
 		@SerializedName("show_percentage")
 		private boolean showPercentage = false;
 
+		@Getter
 		@SerializedName("vertical")
 		private boolean vertical = false;
 
@@ -257,6 +260,7 @@ public class GuiDefinition {
 		@SerializedName("hint_color")
 		private int hintColor = 0xFF808080;
 
+		@Getter
 		@SerializedName("multiline")
 		private boolean multiline = false;
 
@@ -331,10 +335,6 @@ public class GuiDefinition {
 			return showPercentage;
 		}
 
-		public boolean isVertical() {
-			return vertical;
-		}
-
 		public boolean shouldShowValue() {
 			return showValue;
 		}
@@ -343,8 +343,5 @@ public class GuiDefinition {
 			return rotateEntity;
 		}
 
-		public boolean isMultiline() {
-			return multiline;
-		}
 	}
 }

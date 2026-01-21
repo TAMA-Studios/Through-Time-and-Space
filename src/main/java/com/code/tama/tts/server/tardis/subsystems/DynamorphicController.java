@@ -24,27 +24,6 @@ public class DynamorphicController extends AbstractSubsystem {
 
 	@Override
 	public Map<BlockPos, BlockState> BlockMap() {
-
-		// cssc
-		// s s
-		// s s
-		// cssc
-
-		// s s
-		// ge
-		// eg
-		// s s
-
-		// s s
-		// eg
-		// ge
-		// s s
-
-		// cssc
-		// s s
-		// s s
-		// cssc
-
 		if (Map == null || Map.isEmpty()) {
 			HashMap<Character, BlockState> key = new HashMap<>();
 			String map[] = new String[]{" Z \nZZZ\n Z ", "ZBZ\nBZB\nZBZ", "B B\n # \nB B", "ZBZ\nBZB\nZBZ"};

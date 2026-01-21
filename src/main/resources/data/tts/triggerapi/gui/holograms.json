@@ -1,0 +1,23 @@
+{
+  "elements" : [ {
+    "height" : 100,
+    "id" : "button_1",
+    "script" : "tts:glasses_hologram",
+    "type" : "button",
+    "width" : 500,
+    "x" : 16,
+    "y" : 16
+  }, {
+    "id" : "text_2",
+    "scale" : 6.0,
+    "text" : "Demat Circuit",
+    "type" : "text",
+    "x" : 29,
+    "y" : 31
+  } ],
+  "fullscreen" : true,
+  "height" : 1102,
+  "title" : "hologram",
+  "type" : "custom",
+  "width" : 1924
+}

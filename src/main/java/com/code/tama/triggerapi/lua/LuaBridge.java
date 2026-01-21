@@ -407,7 +407,7 @@ public class LuaBridge {
 
 	// ========== UNSAFE OPERATIONS (for third-party classes) ==========
 
-	private static final int MAX_UNSAFE_DEPTH = 3; // Prevent deep recursion
+	private static final int MAX_UNSAFE_DEPTH = 6; // Prevent deep recursion
 
 	// Blacklist of field names to skip (common internal fields)
 	private static final Set<String> UNSAFE_FIELD_BLACKLIST = Set.of("ENUM$VALUES", "$VALUES", // Enum internals

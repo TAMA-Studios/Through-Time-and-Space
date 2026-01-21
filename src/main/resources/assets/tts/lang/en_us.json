@@ -193,6 +193,7 @@
   "tts.exterior.voxel.rtd" : "Voxel — RTD",
   "tts.keybinds.category" : "Through Time and Space",
   "tts.keybinds.exterior_view_cancel" : "Stop viewing Environment Scanner",
+  "tts.keybinds.holo_glasses_gui" : "Holographic Glasses GUI",
   "tts.keybinds.sonic_mode" : "Change Sonic Interaction Mode",
   "tts.notification.key_to_exit" : "Press %s to Exit",
   "tts.ponder.console.header" : "Configuring the Console",

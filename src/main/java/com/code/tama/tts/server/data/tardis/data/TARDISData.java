@@ -55,12 +55,11 @@ public class TARDISData {
 					ControlParameters.CODEC.fieldOf("controlData").forGetter(TARDISData::getControlData),
 					ProtocolData.CODEC.fieldOf("protocolData").forGetter(TARDISData::getProtocolsData),
 					Codec.LONG.fieldOf("ticks").forGetter(TARDISData::getTicks),
-					Codec.LONG.fieldOf("fuel").forGetter(TARDISData::getFuel),
 					SpaceTimeCoordinate.CODEC.fieldOf("doorBlock").forGetter(TARDISData::getDoorBlock),
 					ResourceLocation.CODEC.fieldOf("vortex").forGetter(TARDISData::getVortex))
 			.apply(instance, TARDISData::new));
 
-	private long ticks = 0, fuel;
+	private long ticks = 0;
 	ControlParameters ControlData = new ControlParameters();
 	ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
 	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
@@ -80,8 +79,8 @@ public class TARDISData {
 	public TARDISData(Map<UUID, PlayerPosition> viewingPlayerMap, UUID ownerUUID,
 			ExteriorModelContainer exteriorModelID, boolean powered, boolean isDiscoMode, boolean isSparking,
 			boolean alarms, boolean refueling, DoorData interiorDoorData, SubsystemsData subSystemsData,
-			ControlParameters controlData, ProtocolData protocolsData, long ticks, long fuel,
-			SpaceTimeCoordinate doorBlock, ResourceLocation vortex) {
+			ControlParameters controlData, ProtocolData protocolsData, long ticks, SpaceTimeCoordinate doorBlock,
+			ResourceLocation vortex) {
 		ViewingPlayerMap = new HashMap<>(viewingPlayerMap);
 		OwnerUUID = ownerUUID;
 		ExteriorModel = exteriorModelID;
@@ -96,7 +95,6 @@ public class TARDISData {
 		ControlData = controlData;
 		ProtocolsData = protocolsData;
 		this.ticks = ticks;
-		this.fuel = fuel;
 		if (vortex.equals(new ResourceLocation("", "")))
 			this.Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png");
 		else

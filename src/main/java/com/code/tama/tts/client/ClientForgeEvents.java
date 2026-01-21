@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
+
 	@SubscribeEvent
 	public static void PlayerJoin(EntityJoinLevelEvent event) {
 		GetTARDISCapSupplier(event.getLevel()).ifPresent(cap -> cap.UpdateClient(DataUpdateValues.ALL));
@@ -77,7 +78,7 @@ public class ClientForgeEvents {
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if (event.player.level().isClientSide) {
 			event.player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
-				while (ClientSetup.EXTERIOR_VIEW.get().consumeClick()) {
+				while (ClientSetup.EXTERIOR_VIEW.consumeClick()) {
 					cap.SetViewingTARDIS("");
 					Networking.sendToServer(new StopViewingExteriorC2S(event.player.getUUID()));
 				}

@@ -378,6 +378,12 @@ public class LuaTableCreators {
 			table.set("isHardcore", toLuaValue(server.isHardcore()));
 			table.set("isPvpAllowed", toLuaValue(server.isPvpAllowed()));
 			table.set("difficulty", server.getWorldData().getDifficulty().toString());
+			table.set("level", new ZeroArgFunction() {
+				@Override
+				public LuaValue call() {
+					return LuaBridge.unsafeFieldsAndMethods(sl);
+				}
+			});
 		}
 		return table;
 	}
@@ -391,10 +397,34 @@ public class LuaTableCreators {
 	}
 	public static LuaTable playerTable(Player player) {
 
-		if (true)
-			return LuaBridge.unsafeFieldsAndMethods(player);
+		LuaTable playerTable = LuaBridge.unsafeFieldsAndMethods(player);
 
-		LuaTable playerTable = new LuaTable();
+		playerTable.set("closeGui", new ZeroArgFunction() {
+			@Override
+			public LuaValue call() {
+				player.closeContainer();
+				return LuaValue.NIL;
+			}
+		});
+
+		playerTable.set("openGui", new OneArgFunction() {
+			@Override
+			public LuaValue call(LuaValue guiId) {
+				if (player instanceof ServerPlayer sp) {
+					try {
+						net.minecraft.resources.ResourceLocation loc = new net.minecraft.resources.ResourceLocation(
+								guiId.checkjstring());
+						GuiRegistry.openGui(sp, loc);
+					} catch (Exception e) {
+						LOGGER.error("Failed to open GUI", e);
+					}
+				}
+				return LuaValue.NIL;
+			}
+		});
+
+		if (true)
+			return playerTable;
 
 		// Basic info
 		playerTable.set("name", player.getName().getString());
@@ -462,30 +492,6 @@ public class LuaTableCreators {
 						sp.addItem(new net.minecraft.world.item.ItemStack(item, count.checkint()));
 					} catch (Exception e) {
 						LOGGER.error("Failed to give item", e);
-					}
-				}
-				return LuaValue.NIL;
-			}
-		});
-
-		playerTable.set("closeGui", new ZeroArgFunction() {
-			@Override
-			public LuaValue call() {
-				player.closeContainer();
-				return LuaValue.NIL;
-			}
-		});
-
-		playerTable.set("openGui", new OneArgFunction() {
-			@Override
-			public LuaValue call(LuaValue guiId) {
-				if (player instanceof ServerPlayer sp) {
-					try {
-						net.minecraft.resources.ResourceLocation loc = new net.minecraft.resources.ResourceLocation(
-								guiId.checkjstring());
-						GuiRegistry.openGui(sp, loc);
-					} catch (Exception e) {
-						LOGGER.error("Failed to open GUI", e);
 					}
 				}
 				return LuaValue.NIL;

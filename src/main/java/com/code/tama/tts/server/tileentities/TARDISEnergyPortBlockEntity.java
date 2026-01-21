@@ -28,18 +28,18 @@ public class TARDISEnergyPortBlockEntity extends BlockEntity {
 		return new IEnergyStorage() {
 
 			@Override
-			public int receiveEnergy(int maxReceive, boolean simulate) {
-				return getTardis().map(t -> t.getEnergy().receiveEnergy(maxReceive, simulate)).orElse(0);
+			public int receiveEnergy(int receive, boolean simulate) {
+				return Math.toIntExact(getTardis().map(t -> t.getEnergy().receiveEnergy(receive, simulate)).orElse(0L));
 			}
 
 			@Override
-			public int extractEnergy(int maxExtract, boolean simulate) {
-				return getTardis().map(t -> t.getEnergy().extractEnergy(maxExtract, simulate)).orElse(0);
+			public int extractEnergy(int extract, boolean simulate) {
+				return Math.toIntExact(getTardis().map(t -> t.getEnergy().extractEnergy(extract, simulate)).orElse(0L));
 			}
 
 			@Override
 			public int getEnergyStored() {
-				return getTardis().map(t -> t.getEnergy().getEnergy()).orElse(0);
+				return Math.toIntExact(getTardis().map(t -> t.getEnergy().getEnergy()).orElse(0L));
 			}
 
 			@Override

@@ -30,7 +30,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -39,21 +38,25 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
-	public static final Lazy<KeyMapping> EXTERIOR_VIEW = Lazy
-			.of(() -> new KeyMapping("tts.keybinds.exterior_view_cancel", // Will be localized using this translation
-					// key
-					KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-					GLFW.GLFW_KEY_C, // Default key is C
-					"key.categories.tts.main" // Mapping will be in the main tts category
-			));
+	public static final KeyMapping EXTERIOR_VIEW = new KeyMapping("tts.keybinds.exterior_view_cancel", // Will be
+																										// localized
+																										// using this
+																										// translation
+			// key
+			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+			GLFW.GLFW_KEY_LEFT_SHIFT, // Default key is LSHIFT
+			"key.categories.tts.main" // Mapping will be in the main tts category
+	);
 
-	public static final Lazy<KeyMapping> HOLO_GLASSES_GUI = Lazy
-			.of(() -> new KeyMapping("tts.keybinds.holo_glasses_gui", // Will be localized using this translation
-					// key
-					KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-					GLFW.GLFW_KEY_H, // Default key is C
-					"key.categories.tts.main" // Mapping will be in the main tts category
-			));
+	public static final KeyMapping HOLO_GLASSES_GUI = new KeyMapping("tts.keybinds.holo_glasses_gui", // Will be
+																										// localized
+																										// using this
+																										// translation
+			// key
+			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
+			GLFW.GLFW_KEY_H, // Default key is H
+			"key.categories.tts.main" // Mapping will be in the main tts category
+	);
 
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
@@ -215,8 +218,8 @@ public class ClientSetup {
 	}
 
 	@SubscribeEvent
-	public void registerBindings(RegisterKeyMappingsEvent event) {
-		event.register(EXTERIOR_VIEW.get());
-		event.register(HOLO_GLASSES_GUI.get());
+	public static void registerBindings(RegisterKeyMappingsEvent event) {
+		event.register(EXTERIOR_VIEW);
+		event.register(HOLO_GLASSES_GUI);
 	}
 }

@@ -261,7 +261,7 @@ public class LuaExecutable {
 	}
 
 	public static void DEBUG(String... s) {
-		if (true) {
+		if (false) {
 			for (String string : s) {
 				System.out.println(string);
 			}

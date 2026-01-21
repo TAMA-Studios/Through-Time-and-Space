@@ -3,6 +3,7 @@ package com.code.tama.tts.server.registries.tardis;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.tardis.controls.*;
 
 import net.minecraft.core.Registry;
@@ -55,6 +56,18 @@ public class ControlsRegistry {
 	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
 			() -> new SimplestControl("simple_mode", tardis -> tardis.GetData().getControlData().setSimpleMode(true),
 					tardis -> tardis.GetData().getControlData().setSimpleMode(false)));
+
+	public static final RegistryObject<SimplestControl> ENERGY_MODE = CONTROLS.register("energy_mode",
+			() -> new SimplestControl("energy_mode", tardis -> {
+				tardis.getEnergy().mode = switch (tardis.getEnergy().mode) {
+					case FORGE -> EnergyMode.ARTRON;
+					case ARTRON -> EnergyMode.POTENTIAL;
+					case POTENTIAL -> tardis.GetData().getSubSystemsData().DynamorphicController.isActivated()
+							? EnergyMode.AUTO
+							: EnergyMode.FORGE;
+					case AUTO -> EnergyMode.FORGE;
+				};
+			}));
 
 	public static final RegistryObject<SimplestControl> BRAKES = CONTROLS.register("brakes",
 			() -> new SimplestControl("brakes", tardis -> tardis.GetData().getControlData().setBrakes(true),

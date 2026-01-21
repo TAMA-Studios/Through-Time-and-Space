@@ -57,7 +57,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	private final EnergyHandler energyHandler = new EnergyHandler();
+	private final EnergyHandler energyHandler = new EnergyHandler(this);
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
@@ -192,14 +192,15 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public boolean CanTakeoff() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
-				&& !this.data.getControlData().isVortexAnchor() && this.data.getFuel() > 0
+				&& !this.data.getControlData().isVortexAnchor() && this.energyHandler.getEnergy() > 0
 				&& !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
 	public boolean CanFly() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered() && this.data.getFuel() > 0 && !this.data.getControlData().isEngineBrake();
+				&& this.data.isPowered() && this.energyHandler.getEnergy() > 0
+				&& !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
@@ -328,12 +329,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		this.GetNavigationalData().setLocation(current);
 
-		this.data
-				.setFuel(Math.max(this.data.getFuel() - ((long) speed + (this.data.getControlData().Stabilizers ? 5 : 0)
-						+ ((this.GetFlightData().getTicksInFlight() / 1000))), 0)); // The longer you're in flight for,
-																					// the faster fuel drains, for every
-																					// 50 seconds you're in flight,
-																					// it'll drain 1 fuel unit faster
+		this.energyHandler.extractEnergy(((int) speed + (this.data.getControlData().Stabilizers ? 5 : 0)
+				+ ((this.GetFlightData().getTicksInFlight() / 1000))), false); // The longer you're in flight for,
+																				// the faster fuel drains, for every
+																				// 50 seconds you're in flight,
+																				// it'll drain 1 fuel unit faster
 
 		if (!level.isClientSide)
 			HandleFlightEvents();
@@ -600,8 +600,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 						new SyncTARDISFlightEventPacketS2C(cap.GetFlightData().getFlightEvent()));
 			} else {
 
-				Networking.sendPacketToDimension(cap.level.dimension(),
-						new SyncTARDISCapPacketS2C(cap.data, cap.navigationalData, cap.flightData, toUpdate));
+				Networking.sendPacketToDimension(cap.level.dimension(), new SyncTARDISCapPacketS2C(cap, toUpdate));
 
 				if (this.GetExteriorTile() != null) {
 					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
@@ -624,6 +623,11 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			TickThread.start();
 		} else
 			TickThread.run();
+
+		if (this.ticks % 120 == 1) {
+			this.UpdateClient(DataUpdateValues.DATA);
+		}
+
 		// if (GetData().getSubSystemsData().DynamorphicController.isActivated(level)
 		// && !GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty() &&
 		// this.data.isRefueling()

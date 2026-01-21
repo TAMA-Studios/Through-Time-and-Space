@@ -34,6 +34,8 @@ import com.code.tama.triggerapi.networking.gui.GuiStateUpdatePacket;
 public class CustomGuiScreen extends Screen {
 	private final GuiDefinition definition;
 	public final ResourceLocation guiId;
+	private int guiWidth; // Actual width
+	private int guiHeight; // Actual height
 	private int leftPos;
 	private int topPos;
 	private GuiDefinition.GuiElement hoveredElement = null;
@@ -134,9 +136,19 @@ public class CustomGuiScreen extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		this.leftPos = (this.width - definition.getWidth()) / 2;
-		this.topPos = (this.height - definition.getHeight()) / 2;
 
+		if (definition.getFullscreen()) {
+			this.guiWidth = this.width;
+			this.guiHeight = this.height;
+			this.leftPos = 0;
+			this.topPos = 0;
+		} else {
+			this.guiWidth = definition.getWidth();
+			this.guiHeight = definition.getHeight();
+			// Center the GUI on screen
+			this.leftPos = (this.width - this.guiWidth) / 2;
+			this.topPos = (this.height - this.guiHeight) / 2;
+		}
 		// Initialize edit boxes
 		editBoxes.clear();
 		if (definition.getElements() != null) {
