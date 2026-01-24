@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import com.code.tama.tts.client.TwineRenderer;
 import com.code.tama.tts.client.renderers.DevOverlayRenderer;
+import com.code.tama.tts.client.renderers.HoloOverlayRenderer;
 import com.code.tama.tts.client.renderers.SonicOverlayRenderer;
 import com.code.tama.tts.client.renderers.worlds.GallifreySkyRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
@@ -136,6 +137,7 @@ public class CustomLevelRenderer {
 	@SubscribeEvent
 	public static void onRenderGUI(RenderGuiEvent event) {
 		// ModList.get().getModFileById("aseoha").versionString()
+		HoloOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
 		SonicOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
 		DevOverlayRenderer.Render(event.getGuiGraphics().pose(), event.getGuiGraphics().bufferSource());
 	}

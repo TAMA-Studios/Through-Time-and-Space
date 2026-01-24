@@ -16,8 +16,8 @@ import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEv
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.data.tardis.EnergyHandler;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
+import com.code.tama.tts.server.data.tardis.PowerHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
@@ -58,7 +58,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TARDISLevelCapability implements ITARDISLevel {
-	private final EnergyHandler energyHandler = new EnergyHandler(this);
+	private final PowerHandler powerHandler = new PowerHandler(this);
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
@@ -79,7 +79,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
-		this.energyHandler.saveNBT(tag);
+		this.powerHandler.saveNBT(tag);
 		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
 		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
 		tag.put("navigational_data",
@@ -92,7 +92,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
-		this.energyHandler.loadNBT(nbt);
+		this.powerHandler.loadNBT(nbt);
 		this.data = TARDISData.CODEC.parse(NbtOps.INSTANCE, nbt.get("data")).get().orThrow();
 		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get()
 				.orThrow();
@@ -161,8 +161,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public EnergyHandler getEnergy() {
-		return this.energyHandler;
+	public PowerHandler getEnergy() {
+		return this.powerHandler;
 	}
 
 	@Override
@@ -193,14 +193,14 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public boolean CanTakeoff() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
-				&& !this.data.getControlData().isVortexAnchor() && this.energyHandler.getEnergy() > 0
+				&& !this.data.getControlData().isVortexAnchor() && this.powerHandler.getPower() > 0
 				&& !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
 	public boolean CanFly() {
 		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered() && this.energyHandler.getEnergy() > 0
+				&& this.data.isPowered() && this.powerHandler.getPower() > 0
 				&& !this.data.getControlData().isEngineBrake();
 	}
 
@@ -330,7 +330,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		this.GetNavigationalData().setLocation(current);
 
-		this.energyHandler.extractEnergy(((int) speed + (this.data.getControlData().Stabilizers ? 5 : 0)
+		this.powerHandler.extractPower(((int) speed + (this.data.getControlData().Stabilizers ? 5 : 0)
 				+ ((this.GetFlightData().getTicksInFlight() / 1000))), false); // The longer you're in flight for,
 																				// the faster fuel drains, for every
 																				// 50 seconds you're in flight,
@@ -382,7 +382,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				TardisEvent.FlightEventSucceed event = new TardisEvent.FlightEventSucceed(this);
 				MinecraftForge.EVENT_BUS.post(event);
 
-				this.energyHandler.receiveEnergy(EnergyMode.POTENTIAL, ticks - lastFlightEvent, false); // Add potential
+				this.powerHandler.receivePower(EnergyMode.POTENTIAL, ticks - lastFlightEvent, false); // Add potential
 																										// energy
 
 				this.lastFlightEvent = ticks;

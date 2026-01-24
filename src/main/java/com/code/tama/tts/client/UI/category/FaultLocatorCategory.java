@@ -62,7 +62,7 @@ public class FaultLocatorCategory extends UICategory {
 			if (!cap.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated(cap.GetLevel()))
 				faults.add(getFault(Fault.NETHER_REACTOR_CORE));
 
-			if (cap.getEnergy().getEnergy() <= 0)
+			if (cap.getEnergy().getPower() <= 0)
 				faults.add(getFault(Fault.POWER));
 
 			int x = -50;

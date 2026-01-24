@@ -13,7 +13,7 @@ public class CommonThreads {
 					&& !tardis.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty()
 					&& tardis.GetData().isRefueling() && !tardis.GetFlightData().isInFlight()) {
 				if (tardis.GetLevel().getGameTime() % 20 == 1)
-					tardis.getEnergy().receiveEnergy(EnergyMode.ARTRON, 1, false);
+					tardis.getEnergy().receivePower(EnergyMode.ARTRON, 1, false);
 			}
 
 			if (tardis.GetFlightData().isInFlight()) {

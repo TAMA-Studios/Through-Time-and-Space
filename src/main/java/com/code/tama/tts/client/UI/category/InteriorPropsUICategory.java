@@ -21,9 +21,12 @@ public class InteriorPropsUICategory extends UICategory {
 			Font fontRenderer = Minecraft.getInstance().font;
 
 			int light = (int) (cap.GetLightLevel() * 10);
-			light -= 1;
-			long line1 = cap.getEnergy().getArtron();
-			String line2 = getPowerFE(cap.getEnergy().getEnergy());
+			light--;
+
+			String auLine = cap.getEnergy().getArtron() + "AU";
+			String feLine = getPowerFE(cap.getEnergy().getPower());
+			String flow = cap.getEnergy().getPowerFlow() + " FE/t";
+			String voltage = cap.getEnergy().getVoltage() + " Volts";
 
 			RenderSystem.disableDepthTest();
 
@@ -41,10 +44,16 @@ public class InteriorPropsUICategory extends UICategory {
 			fontRenderer.drawInBatch("Stored Energy:", -40, 25, color(monitor), false, poseStack.last().pose(),
 					bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
-			fontRenderer.drawInBatch(line1 + "AU", -30, 35, color(monitor), false, poseStack.last().pose(),
-					bufferSource, Font.DisplayMode.NORMAL, 0, 0xf000f0);
+			fontRenderer.drawInBatch(auLine, -30, 35, color(monitor), false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
-			fontRenderer.drawInBatch(line2, -30, 45, color(monitor), false, poseStack.last().pose(), bufferSource,
+			fontRenderer.drawInBatch(feLine, -30, 45, color(monitor), false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, 0xf000f0);
+
+			fontRenderer.drawInBatch(flow, -30, 55, color(monitor), false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, 0xf000f0);
+
+			fontRenderer.drawInBatch(voltage, -30, 65, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
 			poseStack.translate(40, 0, 0);
