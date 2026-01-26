@@ -44,7 +44,7 @@ public class ClientSetup {
 																										// translation
 			// key
 			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-			GLFW.GLFW_KEY_LEFT_SHIFT, // Default key is LSHIFT
+			GLFW.GLFW_KEY_LEFT_CONTROL, // Default key is LSHIFT
 			"key.categories.tts.main" // Mapping will be in the main tts category
 	);
 

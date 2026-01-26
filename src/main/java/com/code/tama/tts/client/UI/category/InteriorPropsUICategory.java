@@ -23,10 +23,10 @@ public class InteriorPropsUICategory extends UICategory {
 			int light = (int) (cap.GetLightLevel() * 10);
 			light--;
 
-			String auLine = cap.getEnergy().getArtron() + "AU";
+			String auLine = cap.getEnergy().artron + "AU";
 			String feLine = getPowerFE(cap.getEnergy().getPower());
 			String flow = cap.getEnergy().getPowerFlow() + " FE/t";
-			String voltage = cap.getEnergy().getVoltage() + " Volts";
+			String voltage = cap.getEnergy().getVoltageInt() + " Volts";
 
 			RenderSystem.disableDepthTest();
 

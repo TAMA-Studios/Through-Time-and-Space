@@ -7,7 +7,6 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import lombok.Setter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.energy.EnergyStorage;
@@ -30,7 +29,6 @@ public class PowerHandler {
 
 	private ITARDISLevel itardisLevel;
 
-	@Setter
 	public EnergyMode mode = EnergyMode.FORGE;
 	public long potential, artron, prevPotential, prevArtron, lastRequestTime;
 	int prevForge;
@@ -203,7 +201,14 @@ public class PowerHandler {
 	 * Gets the current voltage (FE/t at max capacity)
 	 */
 	public double getVoltage() {
-		return (double) getPower() / getMaxPower() * 1000; // Normalized to 1000V at full capacity
+		return (double) getPower() / getMaxPower() * 10000; // Normalized to 10000V at full capacity
+	}
+
+	/**
+	 * Gets the current voltage (FE/t at max capacity)
+	 */
+	public int getVoltageInt() {
+		return Math.toIntExact(getPower() / getMaxPower() * 10000); // Normalized to 10000V at full capacity
 	}
 
 	/**

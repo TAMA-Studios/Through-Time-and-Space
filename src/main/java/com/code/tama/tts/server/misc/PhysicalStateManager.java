@@ -107,7 +107,7 @@ public class PhysicalStateManager {
 		long tick = this.itardisLevel.GetLevel().getGameTime();
 		// Play takeoff sound to everyone in dimension
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetLanding().PlayIfFinished(player.level(), player.blockPosition()));
+				.getFlightSoundScheme().GetLanding().Play(player.level(), player.blockPosition()));
 
 		this.exteriorTile = itardisLevel.GetExteriorTile();
 
@@ -123,7 +123,7 @@ public class PhysicalStateManager {
 		long tick = itardisLevel.GetLevel().getGameTime();
 		// Play takeoff sound to everyone in dimension
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetTakeoff().PlayIfFinished(player.level(), player.blockPosition()));
+				.getFlightSoundScheme().GetTakeoff().Play(player.level(), player.blockPosition()));
 
 		itardisLevel.UpdateExteriorState(ExteriorState.TAKINGOFF);
 		assert exteriorTile.getLevel() != null;

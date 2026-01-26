@@ -407,7 +407,7 @@ public class LuaBridge {
 
 	// ========== UNSAFE OPERATIONS (for third-party classes) ==========
 
-	private static final int MAX_UNSAFE_DEPTH = 6; // Prevent deep recursion
+	private static final int MAX_UNSAFE_DEPTH = 4; // Prevent deep recursion
 
 	// Blacklist of field names to skip (common internal fields)
 	private static final Set<String> UNSAFE_FIELD_BLACKLIST = Set.of("ENUM$VALUES", "$VALUES", // Enum internals
@@ -1114,37 +1114,6 @@ public class LuaBridge {
 	}
 
 	/**
-	 * SAFER VERSION: Only exposes methods (no fields) from third-party objects.
-	 * Recommended for Minecraft objects where you only want to call methods. Does
-	 * NOT serialize internal state.
-	 */
-	public static LuaTable unsafeMethodsOnly(Object obj) {
-		LuaTable table = new LuaTable();
-
-		// Add class info
-		table.set("__javaClass", obj.getClass().getName());
-		table.set("__methodsOnly", LuaValue.valueOf(true));
-
-		// Add all public methods
-		for (Method method : obj.getClass().getMethods()) {
-			// Skip Object methods and synthetic/bridge methods
-			if (method.isSynthetic() || method.isBridge())
-				continue;
-			if (method.getDeclaringClass() == Object.class)
-				continue;
-
-			int paramCount = method.getParameterCount();
-			LibFunction function = createFunctionWrapper(obj, method, paramCount, true);
-
-			if (function != null) {
-				table.set(method.getName(), function);
-			}
-		}
-
-		return table;
-	}
-
-	/**
 	 * COMPLETE UNSAFE: Exposes BOTH fields AND methods from third-party objects.
 	 * WARNING: This creates a fully interactive Lua wrapper with both data and
 	 * behavior. Use when you need complete access to an object you don't control.
@@ -1598,5 +1567,219 @@ public class LuaBridge {
 
 			default -> null; // Methods with 11+ parameters not supported
 		};
+	}
+
+	// Add these to replace the slow unsafe methods in your LuaBridge class
+
+	// Cache for methods by class
+	private static final Map<Class<?>, List<Method>> METHOD_CACHE = new ConcurrentHashMap<>();
+
+	/**
+	 * Get cached public methods for a class (no inheritance overhead)
+	 */
+	private static List<Method> getCachedMethods(Class<?> clazz) {
+		return METHOD_CACHE.computeIfAbsent(clazz, c -> {
+			List<Method> methods = new ArrayList<>();
+			for (Method method : c.getMethods()) {
+				// Skip Object methods, synthetic/bridge methods
+				if (method.isSynthetic() || method.isBridge())
+					continue;
+				if (method.getDeclaringClass() == Object.class)
+					continue;
+				methods.add(method);
+			}
+			return List.copyOf(methods);
+		});
+	}
+
+	/**
+	 * FASTER VERSION: Only exposes methods, no field recursion. Much better
+	 * performance.
+	 */
+	public static LuaTable unsafeMethodsOnly(Object obj) {
+		LuaTable table = new LuaTable();
+		table.set("__javaClass", obj.getClass().getName());
+		table.set("__methodsOnly", LuaValue.valueOf(true));
+
+		for (Method method : getCachedMethods(obj.getClass())) {
+			int paramCount = method.getParameterCount();
+			if (paramCount <= 10) {
+				LibFunction function = createFunctionWrapper(obj, method, paramCount, false);
+				if (function != null) {
+					table.set(method.getName(), function);
+				}
+			}
+		}
+
+		return table;
+	}
+
+	/**
+	 * OPTIMIZED VERSION: Only expose specific field types, skip complex objects.
+	 * Use this for Player/Entity instead of full fields+methods.
+	 */
+	public static LuaTable unsafeFieldsAndMethodsLimited(Object obj) {
+		return unsafeFieldsAndMethodsLimited(obj, new IdentityHashMap<>(), 0);
+	}
+
+	private static LuaTable unsafeFieldsAndMethodsLimited(Object obj, IdentityHashMap<Object, LuaTable> visited,
+			int depth) {
+		if (obj == null)
+			return null;
+
+		// Much higher depth limit since we're selective about what we serialize
+		if (depth > 8) {
+			LuaTable table = new LuaTable();
+			table.set("__truncated", LuaValue.valueOf(true));
+			table.set("__class", obj.getClass().getSimpleName());
+			return table;
+		}
+
+		if (visited.containsKey(obj)) {
+			LuaTable circular = new LuaTable();
+			circular.set("__circular", LuaValue.valueOf(true));
+			return circular;
+		}
+
+		Class<?> clazz = obj.getClass();
+		LuaTable table = new LuaTable();
+		visited.put(obj, table);
+
+		table.set("__unsafe", LuaValue.valueOf(true));
+		table.set("__javaClass", clazz.getName());
+
+		// Add methods (cached)
+		for (Method method : getCachedMethods(clazz)) {
+			int paramCount = method.getParameterCount();
+			if (paramCount <= 10) {
+				LibFunction function = createFunctionWrapper(obj, method, paramCount, true);
+				if (function != null) {
+					table.set(method.getName(), function);
+				}
+			}
+		}
+
+		// Add ONLY simple fields (primitives, strings, enums) - skip complex objects
+		for (Field field : getAllFields(clazz)) {
+			if (Modifier.isStatic(field.getModifiers()) || field.isSynthetic()
+					|| UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
+				continue;
+			}
+
+			try {
+				field.setAccessible(true);
+				Object value = field.get(obj);
+
+				if (value == null)
+					continue;
+
+				// ONLY serialize simple types, skip complex objects
+				Class<?> fieldType = value.getClass();
+
+				if (fieldType.isPrimitive() || fieldType == Integer.class || fieldType == Long.class
+						|| fieldType == Double.class || fieldType == Float.class || fieldType == Boolean.class
+						|| fieldType == String.class || fieldType == Byte.class || fieldType == Short.class
+						|| fieldType == Character.class || value instanceof Enum<?>) {
+					// Serialize primitive/string fields
+					LuaValue luaVal = convertFieldValue(value, visited, depth);
+					if (luaVal != null) {
+						table.set(field.getName(), luaVal);
+					}
+				}
+				// Skip arrays, lists, maps, and complex objects entirely
+			} catch (Exception e) {
+				continue;
+			}
+		}
+
+		visited.remove(obj);
+		return table;
+	}
+
+	/**
+	 * ALTERNATIVE: If you absolutely need full fields+methods, use this with MUCH
+	 * higher depth limit and selective serialization
+	 */
+	public static LuaTable unsafeFieldsAndMethodsOptimized(Object obj) {
+		return unsafeFieldsAndMethodsOptimized(obj, new IdentityHashMap<>(), 0);
+	}
+
+	private static LuaTable unsafeFieldsAndMethodsOptimized(Object obj, IdentityHashMap<Object, LuaTable> visited,
+			int depth) {
+		if (obj == null)
+			return null;
+
+		// Much higher limit - we're being more selective
+		if (depth > 6) {
+			LuaTable table = new LuaTable();
+			table.set("__class", obj.getClass().getSimpleName());
+			return table;
+		}
+
+		if (visited.containsKey(obj)) {
+			LuaTable circular = new LuaTable();
+			circular.set("__circular", LuaValue.valueOf(true));
+			return circular;
+		}
+
+		Class<?> clazz = obj.getClass();
+		LuaTable table = new LuaTable();
+		visited.put(obj, table);
+
+		table.set("__unsafe", LuaValue.valueOf(true));
+		table.set("__javaClass", clazz.getName());
+
+		// Add methods (cached)
+		for (Method method : getCachedMethods(clazz)) {
+			int paramCount = method.getParameterCount();
+			if (paramCount <= 10) {
+				LibFunction function = createFunctionWrapper(obj, method, paramCount, true);
+				if (function != null) {
+					table.set(method.getName(), function);
+				}
+			}
+		}
+
+		// Add fields with smart depth-based serialization
+		for (Field field : getAllFields(clazz)) {
+			if (Modifier.isStatic(field.getModifiers()) || field.isSynthetic()
+					|| UNSAFE_FIELD_BLACKLIST.contains(field.getName())) {
+				continue;
+			}
+
+			try {
+				field.setAccessible(true);
+				Object value = field.get(obj);
+
+				if (value == null)
+					continue;
+
+				Class<?> fieldType = value.getClass();
+
+				// At shallow depths, serialize everything
+				// At deeper depths, only serialize simple types
+				LuaValue luaVal = null;
+				if (depth < 2) {
+					luaVal = convertFieldValue(value, visited, depth);
+				} else {
+					// Deep recursion: only simple types
+					if (fieldType.isPrimitive() || fieldType == Integer.class || fieldType == Long.class
+							|| fieldType == Double.class || fieldType == Float.class || fieldType == Boolean.class
+							|| fieldType == String.class || fieldType == Byte.class || fieldType == Short.class
+							|| fieldType == Character.class || value instanceof Enum<?>) {
+						luaVal = convertFieldValue(value, visited, depth);
+					}
+				}
+
+				if (luaVal != null) {
+					table.set(field.getName(), luaVal);
+				}
+			} catch (Exception e) {
+				continue;
+			}
+		}
+
+		visited.remove(obj);
+		return table;
 	}
 }

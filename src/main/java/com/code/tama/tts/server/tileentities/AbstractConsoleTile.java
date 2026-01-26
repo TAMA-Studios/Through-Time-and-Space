@@ -54,9 +54,9 @@ public class AbstractConsoleTile extends BlockEntity {
 				// pos);
 				// }
 				else if (cap.GetFlightData().isInFlight()) {
-					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayIfFinished(level, pos);
+					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, pos);
 				} else
-					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().SetFinished(true);
+					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
 			});
 		}
 	}
