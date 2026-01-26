@@ -17,10 +17,8 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -62,6 +60,11 @@ public class ClientForgeEvents {
 	}
 
 	@SubscribeEvent
+	public static void inputEvent(InputEvent event) {
+
+	}
+
+	@SubscribeEvent
 	public static void onInputUpdate(MovementInputUpdateEvent event) {
 		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, event.getEntity()).ifPresent(cap -> {
 			if (!cap.GetViewingTARDIS().isEmpty()) {
@@ -89,6 +92,8 @@ public class ClientForgeEvents {
 	@SubscribeEvent
 	public static void onRenderGameOverlay(RenderGuiOverlayEvent.Pre event) {
 		// Hide specific overlays
+		if (event.getOverlay().equals(VanillaGuiOverlay.CHAT_PANEL.type()))
+			return;
 		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, Minecraft.getInstance().player).ifPresent(cap -> {
 			if (!cap.GetViewingTARDIS().isEmpty()) {
 				event.setCanceled(true);

@@ -27,12 +27,14 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.helpers.GravityHelper;
 import com.code.tama.triggerapi.helpers.OxygenHelper;
 
 @Mod.EventBusSubscriber(modid = MODID)
@@ -51,6 +53,25 @@ public class CommonEvents {
 		// Networking.sendPacketToDimension(event.getPlayer().level().dimension(), new
 		// SyncCapLightLevelPacket((float) Integer.parseInt(event.getRawText()) / 10));
 		// }
+	}
+
+	private static final float VANILLA_GRAVITY = 0.08F;
+
+	@SubscribeEvent
+	public static void onLivingFall(LivingFallEvent event) {
+		LivingEntity entity = event.getEntity();
+
+		if (entity.level().isClientSide())
+			return;
+
+		float gravity = GravityHelper.getGravity(entity.level());
+
+		float gravityScale = gravity / VANILLA_GRAVITY;
+
+		gravityScale = Math.max(0.05f, Math.min(gravityScale, 10.0f));
+
+		float newMultiplier = event.getDamageMultiplier() * gravityScale;
+		event.setDamageMultiplier(newMultiplier);
 	}
 
 	@SubscribeEvent

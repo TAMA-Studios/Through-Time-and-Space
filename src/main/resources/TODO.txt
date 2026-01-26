@@ -2,6 +2,8 @@ TODO:
 
 weight: influences what the behavior should be
 
+Add a custom overlay registry atp
+
 Personality:
 Curiosity      – How often it wants to explore random locations
 Stability      – How reliable its landings are
@@ -22,6 +24,7 @@ Sulking
 Behavior:
 idk, should have a bunch of entries stating what should happen in response to smth else happening
 
+(Needs revamp \/)
 Lua:
 _G (Global Table)
 ├── standard libraries (Base, Package, String, Table, Math)

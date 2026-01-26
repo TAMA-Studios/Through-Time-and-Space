@@ -15,7 +15,7 @@ end
 local y = clamp(ctx.y, -64, 999999)
 print("Y: " .. y)
 
-mc.player.teleport(tonumber(ctx.x), y, tonumber(ctx.z))
+mc.player.teleport(ctx.x, y, ctx.z)
 --local stack = mc.player.getMainHandItem()
 --useEnergy(stack)
 
