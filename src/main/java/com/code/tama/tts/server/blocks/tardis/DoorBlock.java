@@ -1,13 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.blocks.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Set;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.data.tardis.DoorData;
@@ -17,8 +11,6 @@ import com.code.tama.tts.server.registries.forge.TTSTileEntities;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -40,6 +33,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Slf4j
 @SuppressWarnings("deprecation")
@@ -51,6 +50,11 @@ public class DoorBlock extends Block implements EntityBlock {
 	public DoorBlock(Properties p_49795_) {
 		super(p_49795_);
 		this.doorBlock = TTSTileEntities.DOOR_TILE;
+	}
+
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state,
+																  @NotNull BlockEntityType<T> type) {
+		return type == TTSTileEntities.DOOR_TILE.get() ? DoorTile::tick : null;
 	}
 
 	@Nullable @Override
@@ -124,8 +128,12 @@ public class DoorBlock extends Block implements EntityBlock {
 				}
 				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot()
 						+ EntityToTeleport.getYRot();
-				EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()), pos.getX(),
-						pos.getY(), pos.getZ(), Set.of(), yRot, 0);
+				// EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()),
+				// pos.getX(),
+				// pos.getY(), pos.getZ(), Set.of(), yRot, 0);
+
+				SeamlessTeleport.teleportTo(EntityToTeleport, Interior.getServer().getLevel(cap.GetCurrentLevel()),
+						pos.getX(), pos.getY(), pos.getZ(), yRot, 0);
 
 				((ServerPlayer) EntityToTeleport).getAbilities().flying = false;
 				((ServerPlayer) EntityToTeleport).onUpdateAbilities();

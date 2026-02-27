@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.boti.teleporting.TickScheduler;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
-
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 
 public class TriggerAPI {
 	public static String MOD_ID;
@@ -13,6 +13,7 @@ public class TriggerAPI {
 		MOD_ID = modid;
 		bus.register(JavaJSON.class);
 		Logger.info("Trigger engine started for %s", MOD_ID);
+		TickScheduler.register();
 	}
 
 	public TriggerAPI(String modID) { // String modId) {

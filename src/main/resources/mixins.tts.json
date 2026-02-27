@@ -5,7 +5,7 @@
     "defaultRequire" : 1
   },
   "minVersion" : "0.8",
-  "mixins" : [ "BlockAccessor", "BlockBehaviorAccessor", "BlockBehaviourPropertiesAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin" ],
+  "mixins" : [ "BlockAccessor", "BlockBehaviorAccessor", "BlockBehaviourPropertiesAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin", "seamlessTele.ClientPacketListenerAccessor", "seamlessTele.MixinClientPacketListener", "seamlessTele.MixinServerPlayer" ],
   "package" : "com.code.tama.tts.mixin",
   "refmap" : "mixins-refmap.tts.json",
   "required" : true

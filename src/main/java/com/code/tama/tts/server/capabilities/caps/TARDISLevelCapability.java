@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.CommonThreads;
 import com.code.tama.tts.server.ServerThreads;
@@ -33,9 +28,6 @@ import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegis
 import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,12 +42,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private final PowerHandler powerHandler = new PowerHandler(this);
@@ -240,18 +238,13 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 					assert tardisLevel != null;
 
-					ChunkAccess chunk = this.level
-							.getChunk(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+					this.ForceLoadExteriorChunk(true);
 
-					BlockEntity fromChunk = chunk.getBlockEntity(this.navigationalData.getDestination().GetBlockPos());
+					BlockEntity fromChunk = level.getServer().getLevel(GetCurrentLevel()).getBlockEntity(GetNavigationalData()
+							.GetExteriorLocation().GetBlockPos());
 
 					if (fromChunk instanceof ExteriorTile tile)
 						return exteriorTile = tile;
-
-					this.ForceLoadExteriorChunk(true);
-
-					this.exteriorTile = (ExteriorTile) chunk
-							.getBlockEntity(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
 					this.ForceLoadExteriorChunk(false);
 

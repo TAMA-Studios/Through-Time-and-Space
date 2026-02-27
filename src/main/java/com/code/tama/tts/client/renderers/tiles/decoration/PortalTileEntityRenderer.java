@@ -1,27 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.decoration;
 
+import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.PortalTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
-
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import org.jetbrains.annotations.NotNull;
 
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
 	private final Minecraft mc = Minecraft.getInstance();
@@ -30,7 +24,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 	}
 
 	@Override
-	public void render(@NotNull PortalTileEntity portal, float partialTick, @NotNull PoseStack stack,
+	public void render(@NotNull PortalTileEntity portal, float partialTick, @NotNull PoseStack pose,
 			@NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
 		assert mc.level != null;
 		if (portal.getTargetLevel() == null || portal.getTargetPos() == null) {
@@ -40,18 +34,18 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get()) // || ModList.get().isLoaded("immersive_portals") // TODO: Test
 														// IP
 			return;
-		stack.pushPose();
+		pose.pushPose();
 
-		portal.getFBOContainer().Render(stack, (pose, botiSource) -> {
-			pose.pushPose();
-			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.solid()),
-					0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-			pose.popPose();
-		}, (pose, botiSource) -> {
-		}, (pose, botiSource) -> {
+//		portal.getFBOContainer().Render(stack, (pose, botiSource) -> {
+//			pose.pushPose();
+//			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.solid()),
+//					0xf000f0, OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+//			pose.popPose();
+//		}, (pose, botiSource) -> {
+//		}, (pose, botiSource) -> {
 			// TODO: SKY RENDERER!!!
 			pose.pushPose();
-			pose.scale(2, 4, 2);
+//			pose.scale(2, 4, 2);
 			if (portal.SkyColor == null
 					|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
 							% 1200 == 0) {
@@ -85,17 +79,16 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 				}
 			}
 			// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
-			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
-					0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
-					(float) portal.SkyColor.z, 1f);
-			botiSource.endBatch();
+//			BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
+//					0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
+//					(float) portal.SkyColor.z, 1f);
+//			botiSource.endBatch();
 			pose.popPose();
 			pose.pushPose();
-			pose.translate(-0.5, -0.5, -0.5);
-			pose.mulPose(Axis.XP.rotationDegrees(180));
+			pose.translate(1.5, -0.5, 0.5);
 			BOTIUtils.RenderScene(pose, portal);
 			pose.popPose();
-		});
-		stack.popPose();
+//		});
+		pose.popPose();
 	}
 }

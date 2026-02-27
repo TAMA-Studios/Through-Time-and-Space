@@ -1,15 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.networking.Networking;
 import lombok.AllArgsConstructor;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,9 +18,7 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.*;
 
 @AllArgsConstructor
 public class ChunkGatheringThread extends Thread {
@@ -35,9 +33,17 @@ public class ChunkGatheringThread extends Thread {
 		this.setName("BOTIChunkGatheringThread");
 
 		// System.out.println("Gathering chunks for BOTI");
-		// Direction axis = Direction.fromYRot(portalTile.targetY);
-		BlockPos portalPos = portalTile.getBlockPos();
-		int maxBlocks = 50000;
+// Outside the loops, compute the facing direction once
+		float yaw = portalTile.targetY;
+
+// Normalize to cardinal: determine if portal faces along X or Z axis
+// and which side is "in front"
+		boolean facingPosZ = yaw >= -45 && yaw < 45;
+		boolean facingNegZ = yaw >= 135 || yaw < -135;
+		boolean facingPosX = yaw >= 45 && yaw < 135;
+		boolean facingNegX = yaw >= -135 && yaw < -45;
+		BlockPos portalPos = portalTile.getTargetPos();
+		int maxBlocks = 40000;
 
 		try {
 			ArrayList<BotiBlockContainer> containers = new ArrayList<>();
@@ -56,21 +62,56 @@ public class ChunkGatheringThread extends Thread {
 			uMax = chunksToRender / 2;
 			uMin = -chunksToRender / 2;
 
+			int baseChunkX = (targetPos.getX() >> 4);
+			int baseChunkZ = (targetPos.getZ() >> 4);
+
+			int sectionBaseY = (targetPos.getY() - 16) & ~15;  // floor to nearest multiple of 16
+			int sectionBaseYAbove = targetPos.getY() & ~15;
+
+			BlockPos origin = new BlockPos(0, 1, 0); // targetPos.above() in local space
+			int fillRange = chunksToRender * 8; // limit flood fill radius
+
+			Set<BlockPos> reachable = new HashSet<>();
+			Queue<BlockPos> queue = new ArrayDeque<>();
+			queue.add(origin);
+			reachable.add(origin);
+
+			while (!queue.isEmpty()) {
+				BlockPos current = queue.poll();
+				for (Direction dir : Direction.values()) {
+					BlockPos neighbor = current.relative(dir);
+
+					// Bounds check in local space
+					if (Math.abs(neighbor.getX()) > fillRange ||
+							Math.abs(neighbor.getZ()) > fillRange ||
+							neighbor.getY() < sectionBaseY - targetPos.getY() ||
+							neighbor.getY() > sectionBaseYAbove + 16 - targetPos.getY()) continue;
+
+					if (reachable.contains(neighbor)) continue;
+
+					// Convert local pos back to global to sample the block
+					BlockPos globalNeighbor = new BlockPos(
+							neighbor.getX() + targetPos.getX(),
+							neighbor.getY() + targetPos.getY(),
+							neighbor.getZ() + targetPos.getZ()
+					);
+
+					BlockState neighborState = level.getBlockState(globalNeighbor);
+					if (!neighborState.isAir() && neighborState.isSolidRender(level, globalNeighbor)) continue;
+
+					reachable.add(neighbor);
+					queue.add(neighbor);
+				}
+			}
+
 			for (int u = uMin + 1; u < uMax; u++) { // turn either the u or the v to = 0 based on the direction you're
 													// viewing from
 				for (int v = vMin + 1; v < vMax; v++) {
-					ChunkPos chunkPos = new ChunkPos(
-							new BlockPos(targetPos.getX() + (u * 16), targetPos.getY(), targetPos.getZ() + (v * 16)));
+					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
 					level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
 					LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
-
-					BlockPos relTargetPos = new BlockPos(targetPos.getX() % 16, (targetPos.getY() - 16) % 16,
-							targetPos.getZ() % 16);
-
-					BlockPos relTargetPosAbove = new BlockPos(targetPos.getX() % 16, (targetPos.getY()) % 16,
-							targetPos.getZ() % 16);
 
 					for (int y = 0; y < 16; y++) {
 						for (int x = 0; x < 16; x++) {
@@ -81,11 +122,42 @@ public class ChunkGatheringThread extends Thread {
 								FluidState fluidStateAbove = sectionAbove.getFluidState(x, y, z);
 
 								if (!state.isAir()) {
-									BlockPos pos = new BlockPos(x + (u * 16) - relTargetPos.getX(),
-											y - relTargetPos.getY() - 16, z + (v * 16) - relTargetPos.getZ());
+									int globalY = sectionBaseY + y;
+									int globalYAbove = sectionBaseYAbove + y;
 
-									BlockPos posAbove = new BlockPos(x + (u * 16) - relTargetPosAbove.getX(),
-											y - relTargetPosAbove.getY(), z + (v * 16) - relTargetPosAbove.getZ());
+									int globalX = chunkPos.getMinBlockX() + x;
+									int globalZ = chunkPos.getMinBlockZ() + z;
+
+									BlockPos pos = new BlockPos(
+											globalX - targetPos.getX(),
+											globalY - targetPos.getY(),
+											globalZ - targetPos.getZ()
+									);
+
+									BlockPos posAbove = new BlockPos(
+											globalX - targetPos.getX(),
+											globalYAbove - targetPos.getY(),
+											globalZ - targetPos.getZ()
+									);
+
+									// Ensure the block isn't behind the door.
+									boolean isBehind;
+									if (facingPosZ)      isBehind = pos.getZ() > 0;
+									else if (facingNegZ) isBehind = pos.getZ() < 0;
+									else if (facingPosX) isBehind = pos.getX() > 0;
+									else                 isBehind = pos.getX() < 0;  // facingNegX
+
+									if (isBehind) continue;
+
+									// Ensure block is visible
+									boolean isVisible = false;
+									for (Direction dir : Direction.values()) {
+										if (reachable.contains(pos.relative(dir))) {
+											isVisible = true;
+											break;
+										}
+									}
+									if (!isVisible) continue;
 
 									//
 									// if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos,
@@ -153,7 +225,7 @@ public class ChunkGatheringThread extends Thread {
 				Networking.INSTANCE.send(PacketDistributor.DIMENSION.with(() -> {
 					assert portalTile.getLevel() != null;
 					return portalTile.getLevel().dimension();
-				}), new PortalChunkDataPacketS2C(portalPos, containerLists.get(i), i, containerLists.size()));
+				}), new PortalChunkDataPacketS2C(portalTile.getBlockPos(), containerLists.get(i), i, containerLists.size()));
 			}
 			// 126142 (Too big)
 			// 71267 (prob could go higher before hitting the limit but this works at 6-ish
