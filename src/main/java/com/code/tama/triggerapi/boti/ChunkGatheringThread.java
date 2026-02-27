@@ -9,7 +9,6 @@ import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.networking.Networking;
 import lombok.AllArgsConstructor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +17,8 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 public class ChunkGatheringThread extends Thread {
@@ -68,42 +68,6 @@ public class ChunkGatheringThread extends Thread {
 			int sectionBaseY = (targetPos.getY() - 16) & ~15;  // floor to nearest multiple of 16
 			int sectionBaseYAbove = targetPos.getY() & ~15;
 
-			BlockPos origin = new BlockPos(0, 1, 0); // targetPos.above() in local space
-			int fillRange = chunksToRender * 8; // limit flood fill radius
-
-			Set<BlockPos> reachable = new HashSet<>();
-			Queue<BlockPos> queue = new ArrayDeque<>();
-			queue.add(origin);
-			reachable.add(origin);
-
-			while (!queue.isEmpty()) {
-				BlockPos current = queue.poll();
-				for (Direction dir : Direction.values()) {
-					BlockPos neighbor = current.relative(dir);
-
-					// Bounds check in local space
-					if (Math.abs(neighbor.getX()) > fillRange ||
-							Math.abs(neighbor.getZ()) > fillRange ||
-							neighbor.getY() < sectionBaseY - targetPos.getY() ||
-							neighbor.getY() > sectionBaseYAbove + 16 - targetPos.getY()) continue;
-
-					if (reachable.contains(neighbor)) continue;
-
-					// Convert local pos back to global to sample the block
-					BlockPos globalNeighbor = new BlockPos(
-							neighbor.getX() + targetPos.getX(),
-							neighbor.getY() + targetPos.getY(),
-							neighbor.getZ() + targetPos.getZ()
-					);
-
-					BlockState neighborState = level.getBlockState(globalNeighbor);
-					if (!neighborState.isAir() && neighborState.isSolidRender(level, globalNeighbor)) continue;
-
-					reachable.add(neighbor);
-					queue.add(neighbor);
-				}
-			}
-
 			for (int u = uMin + 1; u < uMax; u++) { // turn either the u or the v to = 0 based on the direction you're
 													// viewing from
 				for (int v = vMin + 1; v < vMax; v++) {
@@ -140,7 +104,6 @@ public class ChunkGatheringThread extends Thread {
 											globalZ - targetPos.getZ()
 									);
 
-									// Ensure the block isn't behind the door.
 									boolean isBehind;
 									if (facingPosZ)      isBehind = pos.getZ() > 0;
 									else if (facingNegZ) isBehind = pos.getZ() < 0;
@@ -149,15 +112,21 @@ public class ChunkGatheringThread extends Thread {
 
 									if (isBehind) continue;
 
-									// Ensure block is visible
 									boolean isVisible = false;
-									for (Direction dir : Direction.values()) {
-										if (reachable.contains(pos.relative(dir))) {
-											isVisible = true;
-											break;
-										}
-									}
-									if (!isVisible) continue;
+
+//									for (Direction dir : Direction.values()) {
+//										if (section.getBlockState(
+//												dir.equals(Direction.EAST) ? x + 1 : dir.equals(Direction.WEST) ? x - 1 : x,
+//												dir.equals(Direction.UP) ? y + 1 : dir.equals(Direction.DOWN) ? y - 1 : y,
+//												dir.equals(Direction.NORTH) ? z + 1 : dir.equals(Direction.SOUTH) ? z - 1 : z
+//										).isAir()) {
+//											isVisible = true;
+//											break;
+//										}
+//									}
+//
+//									if (!isVisible) continue;
+
 
 									//
 									// if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos,

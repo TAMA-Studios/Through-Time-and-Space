@@ -190,7 +190,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void SetDoorsOpen(int doorState) {
-		assert this.level != null;
+		if(this.level != null)
 		if (!this.level.isClientSide)
 			if (this.INTERIOR_DIMENSION != null)
 				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
