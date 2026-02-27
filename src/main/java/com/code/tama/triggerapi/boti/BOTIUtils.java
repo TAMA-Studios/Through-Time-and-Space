@@ -142,15 +142,29 @@ public class BOTIUtils {
 			if (container.isIsFluid()) {
 				FluidState fluidState = container.getFluidState();
 				if (!fluidState.isEmpty()) {
-					FluidQuadCollector fluidCollector = new FluidQuadCollector(pos);
+					// Use ZERO so renderLiquid emits 0-1 relative vertices
+					// and collector subtracts ZERO (no-op), keeping them 0-1 relative
+					FluidQuadCollector fluidCollector = new FluidQuadCollector(BlockPos.ZERO);
 
-					assert Minecraft.getInstance().level != null;
-					Minecraft.getInstance().getBlockRenderer().renderLiquid(pos, Minecraft.getInstance().level,
-							fluidCollector, container.getState(), fluidState);
+                    assert Minecraft.getInstance().level != null;
+                    Minecraft.getInstance().getBlockRenderer().renderLiquid(
+							BlockPos.ZERO,                        // world pos for neighbor sampling — wrong dim but geometry shape is all we need
+							Minecraft.getInstance().level,
+							fluidCollector,
+							container.getState(),
+							fluidState
+					);
 
-					// Now feed collector.getVertices() into VBO
+					// Vertices are now 0-1 relative, add local pos to place them correctly
 					for (FluidQuadCollector.FluidVertex v : fluidCollector.getVertices()) {
-						buffer.vertex(v.x, v.y, v.z).color(v.r, v.g, v.b, v.a).uv(v.u, v.v).uv2(container.getLight())
+						buffer.vertex(
+										pos.getX() + v.x,
+										pos.getY() + v.y,
+										pos.getZ() + v.z
+								)
+								.color(v.r, v.g, v.b, v.a)
+								.uv(v.u, v.v)
+								.uv2(v.light)
 								.endVertex();
 					}
 				}
@@ -186,6 +200,7 @@ public class BOTIUtils {
 
 			stack.popPose();
 		});
+
 		BufferBuilder.RenderedBuffer rendered = buffer.end();
 
 		VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);

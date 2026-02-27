@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -19,15 +17,18 @@ import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.*;
+import com.code.tama.tts.server.tileentities.boti.BotiWindowRenderer;
+import com.code.tama.tts.server.tileentities.boti.BotiWindowTile;
 import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.server.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
@@ -46,6 +47,9 @@ public class TTSTileEntities {
 
 	public static final BlockEntityEntry<DoorTile> DOOR_TILE = registrate().blockEntity("door_tile", DoorTile::new)
 			.validBlocks(TTSBlocks.DOOR_BLOCK).renderer(() -> InteriorDoorRenderer::new).register();
+
+	public static final BlockEntityEntry<BotiWindowTile> BOTI_WINDOW = registrate().blockEntity("boti_window", BotiWindowTile::new)
+			.validBlocks(TTSBlocks.BOTI_WINDOW).renderer(() -> BotiWindowRenderer::new).register();
 
 	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();

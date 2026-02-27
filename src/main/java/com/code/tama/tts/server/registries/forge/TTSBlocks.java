@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
 import com.code.tama.tts.server.blocks.EmptyShellBlock;
@@ -32,12 +28,12 @@ import com.code.tama.tts.server.registries.TTSBlockBuilder;
 import com.code.tama.tts.server.registries.TTSRegistrate;
 import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
 import com.code.tama.tts.server.tileentities.NESSConsoleTile;
+import com.code.tama.tts.server.tileentities.boti.BotiWindowBlock;
 import com.code.tama.tts.server.worlds.tree.GallifreyanOakTreeGrower;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -51,6 +47,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -196,6 +196,10 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
+			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItemNoData().register();
+
+	@MainTab
+	public static final BlockEntry<BotiWindowBlock> BOTI_WINDOW = Builder("boti_window", BotiWindowBlock::new)
 			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItemNoData().register();
 
 	@MainTab

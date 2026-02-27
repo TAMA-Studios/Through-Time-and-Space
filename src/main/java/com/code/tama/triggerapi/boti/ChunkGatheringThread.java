@@ -3,15 +3,18 @@ package com.code.tama.triggerapi.boti;
 
 import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.networking.Networking;
 import lombok.AllArgsConstructor;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
@@ -69,48 +72,64 @@ public class ChunkGatheringThread extends Thread {
 			int sectionBaseYAbove = targetPos.getY() & ~15;
 
 			for (int u = uMin + 1; u < uMax; u++) { // turn either the u or the v to = 0 based on the direction you're
-													// viewing from
+				// viewing from
 				for (int v = vMin + 1; v < vMax; v++) {
 					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
 					level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true); // Force load chunk
+					// After force-loading the chunk, wait for light to be ready
+					level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true);
 					LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
+
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 
-					for (int y = 0; y < 16; y++) {
-						for (int x = 0; x < 16; x++) {
-							for (int z = 0; z < 16; z++) {
-								BlockState state = section.getBlockState(x, y, z);
-								BlockState stateAbove = sectionAbove.getBlockState(x, y, z);
-								FluidState fluidState = section.getFluidState(x, y, z);
-								FluidState fluidStateAbove = sectionAbove.getFluidState(x, y, z);
+					// If lighting isn't ready, force it synchronously
+					if (!chunk.isLightCorrect()) {
+						level.getServer().submit(() -> {
+							for (int ly = level.getMinBuildHeight(); ly < level.getMaxBuildHeight(); ly += 16) {
+								level.getLightEngine().checkBlock(new BlockPos(chunkPos.getMiddleBlockX(), ly, chunkPos.getMiddleBlockZ()));
+							}
+						}).join();
 
-								if (!state.isAir()) {
-									int globalY = sectionBaseY + y;
-									int globalYAbove = sectionBaseYAbove + y;
+						// Give the light engine a tick to propagate
+						Thread.sleep(50);
+					}
 
-									int globalX = chunkPos.getMinBlockX() + x;
-									int globalZ = chunkPos.getMinBlockZ() + z;
+					level.getServer().submit(() -> {
+						for (int y = 0; y < 16; y++) {
+							for (int x = 0; x < 16; x++) {
+								for (int z = 0; z < 16; z++) {
+									BlockState state = section.getBlockState(x, y, z);
+									BlockState stateAbove = sectionAbove.getBlockState(x, y, z);
+									FluidState fluidState = section.getFluidState(x, y, z);
+									FluidState fluidStateAbove = sectionAbove.getFluidState(x, y, z);
 
-									BlockPos pos = new BlockPos(
-											globalX - targetPos.getX(),
-											globalY - targetPos.getY(),
-											globalZ - targetPos.getZ()
-									);
+									if (!state.isAir()) {
+										int globalY = sectionBaseY + y;
+										int globalYAbove = sectionBaseYAbove + y;
 
-									BlockPos posAbove = new BlockPos(
-											globalX - targetPos.getX(),
-											globalYAbove - targetPos.getY(),
-											globalZ - targetPos.getZ()
-									);
+										int globalX = chunkPos.getMinBlockX() + x;
+										int globalZ = chunkPos.getMinBlockZ() + z;
 
-									boolean isBehind;
-									if (facingPosZ)      isBehind = pos.getZ() > 0;
-									else if (facingNegZ) isBehind = pos.getZ() < 0;
-									else if (facingPosX) isBehind = pos.getX() > 0;
-									else                 isBehind = pos.getX() < 0;  // facingNegX
+										BlockPos pos = new BlockPos(
+												globalX - targetPos.getX(),
+												globalY - targetPos.getY(),
+												globalZ - targetPos.getZ()
+										);
 
-									if (isBehind) continue;
+										BlockPos posAbove = new BlockPos(
+												globalX - targetPos.getX(),
+												globalYAbove - targetPos.getY(),
+												globalZ - targetPos.getZ()
+										);
+
+										boolean isBehind;
+										if (facingPosZ) isBehind = pos.getZ() > 0;
+										else if (facingNegZ) isBehind = pos.getZ() < 0;
+										else if (facingPosX) isBehind = pos.getX() > 0;
+										else isBehind = pos.getX() < 0;  // facingNegX
+
+										if (isBehind) continue;
 
 //									boolean isVisible = false;
 //
@@ -128,60 +147,69 @@ public class ChunkGatheringThread extends Thread {
 //									if (!isVisible) continue;
 
 
-									//
-									// if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos,
-									// exteriorAxis))
-									// continue;
+										//
+										// if(BlockUtils.isBehind(relTargetPos.relative(exteriorAxis), pos,
+										// exteriorAxis))
+										// continue;
 
-									//
-									// if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-									// .atY(targetPos.getY())) != null) {
-									// BlockEntity entity =
-									// level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
-									// .atY(targetPos.getY()));
-									// containers.add(new
-									// BotiChunkContainer(level,
-									// state,
-									// pos,
-									// BlockUtils.getPackedLight(
-									// level,
-									//
-									// BlockUtils.fromChunkAndLocal(chunkPos, pos)
-									//
-									// .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
-									// }
+										//
+										// if(level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+										// .atY(targetPos.getY())) != null) {
+										// BlockEntity entity =
+										// level.getBlockEntity(BlockUtils.fromChunkAndLocal(chunkPos, pos)
+										// .atY(targetPos.getY()));
+										// containers.add(new
+										// BotiChunkContainer(level,
+										// state,
+										// pos,
+										// BlockUtils.getPackedLight(
+										// level,
+										//
+										// BlockUtils.fromChunkAndLocal(chunkPos, pos)
+										//
+										// .atY(targetPos.getY())), true, entity.saveWithFullMetadata()));
+										// }
 
-									if (fluidState.isEmpty())
-										containers.add(new BotiBlockContainer(level,
-												BlockUtils.getPackedLight(level,
-														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY())),
-												pos, state));
-									else
-										containers.add(new BotiBlockContainer(level, state, fluidState, pos,
-												BlockUtils.getPackedLight(level,
-														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY()))));
+										BlockPos samplePos = new BlockPos(globalX, globalY, globalZ);
 
-									if (fluidStateAbove.isEmpty())
-										containers.add(new BotiBlockContainer(level,
-												BlockUtils.getPackedLight(level,
-														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY())),
-												posAbove, stateAbove));
-									else
-										containers.add(new BotiBlockContainer(level, stateAbove, fluidState, posAbove,
-												BlockUtils.getPackedLight(level,
-														BlockUtils.fromChunkAndLocal(chunkPos, new BlockPos(x, y, z))
-																.atY(targetPos.getY()))));
-								}
-								if (containers.size() >= maxBlocks - 1) {
-									containerLists.add((List<BotiBlockContainer>) containers.clone());
-									containers.clear();
+										DataLayer blockLightData = level.getLightEngine()
+												.getLayerListener(LightLayer.BLOCK)
+												.getDataLayerData(SectionPos.of(samplePos));
+										DataLayer skyLightData = level.getLightEngine()
+												.getLayerListener(LightLayer.SKY)
+												.getDataLayerData(SectionPos.of(samplePos));
+
+										int blockLight = blockLightData != null ? blockLightData.get(
+												samplePos.getX() & 15, samplePos.getY() & 15, samplePos.getZ() & 15) : 0;
+										int skyLight = skyLightData != null ? skyLightData.get(
+												samplePos.getX() & 15, samplePos.getY() & 15, samplePos.getZ() & 15) : 15;
+
+										int packedLight = LightTexture.pack(blockLight, skyLight);
+
+										if (fluidState.isEmpty())
+											containers.add(new BotiBlockContainer(level,
+													packedLight,
+													pos, state));
+										else
+											containers.add(new BotiBlockContainer(level, state, fluidState, pos,
+													packedLight));
+
+										if (fluidStateAbove.isEmpty())
+											containers.add(new BotiBlockContainer(level,
+													packedLight,
+													posAbove, stateAbove));
+										else
+											containers.add(new BotiBlockContainer(level, stateAbove, fluidState, posAbove,
+													packedLight));
+									}
+									if (containers.size() >= maxBlocks - 1) {
+										containerLists.add((List<BotiBlockContainer>) containers.clone());
+										containers.clear();
+									}
 								}
 							}
 						}
-					}
+					}).join();
 				}
 			}
 			if (!containers.isEmpty()) {
