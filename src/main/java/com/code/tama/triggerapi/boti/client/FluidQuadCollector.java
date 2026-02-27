@@ -1,16 +1,32 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
+import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FluidQuadCollector implements VertexConsumer {
 
 	private FluidVertex current;
+
+	private final BlockPos blockPos;
+
+	public FluidQuadCollector(BlockPos blockPos) {
+		this.blockPos = blockPos;
+	}
+
+	@Override
+	public @NotNull VertexConsumer vertex(double x, double y, double z) {
+		current = new FluidVertex();
+		current.x = (float) (x - blockPos.getX());
+		current.y = (float) (y - blockPos.getY());
+		current.z = (float) (z - blockPos.getZ());
+		return this;
+	}
 
 	@Getter
 	private final List<FluidVertex> vertices = new ArrayList<>();
@@ -79,15 +95,6 @@ public class FluidQuadCollector implements VertexConsumer {
 		if (current != null) {
 			current.light = (v << 16) | (u & 0xFFFF);
 		}
-		return this;
-	}
-
-	@Override
-	public @NotNull VertexConsumer vertex(double x, double y, double z) {
-		current = new FluidVertex();
-		current.x = (float) x;
-		current.y = (float) y;
-		current.z = (float) z;
 		return this;
 	}
 

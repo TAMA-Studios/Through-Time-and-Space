@@ -142,7 +142,7 @@ public class BOTIUtils {
 			if (container.isIsFluid()) {
 				FluidState fluidState = container.getFluidState();
 				if (!fluidState.isEmpty()) {
-					FluidQuadCollector fluidCollector = new FluidQuadCollector();
+					FluidQuadCollector fluidCollector = new FluidQuadCollector(pos);
 
 					assert Minecraft.getInstance().level != null;
 					Minecraft.getInstance().getBlockRenderer().renderLiquid(pos, Minecraft.getInstance().level,
@@ -157,16 +157,31 @@ public class BOTIUtils {
 			}
 
 			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
-				// Convert packed light into brightness factor (0.0–1.0)
-				float brightness = (float) (container.getLight() / 0xf000f0);
+				// Only apply tint color if this quad actually uses it
+				float qr, qg, qb;
+				if (quad.isTinted()) {
+					qr = r;
+					qg = g;
+					qb = b;
+				} else {
+					qr = 1.0f;
+					qg = 1.0f;
+					qb = 1.0f;
+				}
 
-				// Apply brightness to base RGB values
-				float rLit = r; // *= brightness;
-				float gLit = g; // *= brightness;
-				float bLit = b; // *= brightness;
+				// Apply directional shading like vanilla does
+				float shade = switch (quad.getDirection()) {
+					case DOWN  -> 0.5f;
+					case UP    -> 1.0f;
+					case NORTH, SOUTH -> 0.8f;
+					case EAST, WEST   -> 0.6f;
+				};
 
-				buffer.putBulkData(stack.last(), quad, rLit, gLit, bLit, 1.0F, container.getLight(),
-						OverlayTexture.NO_OVERLAY, true);
+				qr *= shade;
+				qg *= shade;
+				qb *= shade;
+
+				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, container.getLight(), OverlayTexture.NO_OVERLAY, true);
 			}
 
 			stack.popPose();

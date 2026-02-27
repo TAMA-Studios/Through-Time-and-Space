@@ -112,8 +112,8 @@ public class ChunkGatheringThread extends Thread {
 
 									if (isBehind) continue;
 
-									boolean isVisible = false;
-
+//									boolean isVisible = false;
+//
 //									for (Direction dir : Direction.values()) {
 //										if (section.getBlockState(
 //												dir.equals(Direction.EAST) ? x + 1 : dir.equals(Direction.WEST) ? x - 1 : x,
