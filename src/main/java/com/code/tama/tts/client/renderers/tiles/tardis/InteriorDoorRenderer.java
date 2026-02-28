@@ -119,10 +119,13 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 			poseStack.mulPose(Axis.YP.rotationDegrees(180));
 			poseStack.translate(-0.5, 0.15, 0.5);
 
+			// Set bone rotations directly on the model — rotating the pose stack would
+			// swing the entire frame. These bones are on the exterior renderer's JSON,
+			// matching what setupInteriorDoorPose() was doing, but with eased angles.
 			cap.GetClientData().getExteriorRenderer().getJavaJSON()
-					.getPart("IntRightDoor").yRot = (float) Math.toRadians(-rightAngle);
+					.getPart("IntRightDoor").yRot = (float) Math.toRadians( rightAngle);
 			cap.GetClientData().getExteriorRenderer().getJavaJSON()
-					.getPart("IntLeftDoor").yRot  = (float) Math.toRadians( leftAngle);
+					.getPart("IntLeftDoor").yRot  = (float) Math.toRadians(-leftAngle);
 			renderBone(door, poseStack,
 					bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())),
 					combinedLight);
