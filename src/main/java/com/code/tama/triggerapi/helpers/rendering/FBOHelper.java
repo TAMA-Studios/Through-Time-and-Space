@@ -1,10 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.rendering;
 
-import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
-
-import java.util.function.BiConsumer;
-
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.IHelpWithFBOs;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
@@ -19,9 +20,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -37,25 +35,19 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.IHelpWithFBOs;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import java.util.function.BiConsumer;
+
+import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
 
-	public static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png"); // TODO: set
-																											// RGB
-																											// values
-																											// when
-																											// rendering
-																											// this for
-																											// sky color
+	public static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png");
 
-	public static StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
+	public StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
 	public RenderTarget renderTarget;
 
 	public FBOHelper() {
@@ -329,7 +321,9 @@ public class FBOHelper {
 		copyColor(renderTarget, mainTarget);
 
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
+		GL11.glStencilMask(0xFF);
 
+		RenderSystem.enableDepthTest();
 		RenderSystem.depthMask(true);
 
 		stack.popPose();
