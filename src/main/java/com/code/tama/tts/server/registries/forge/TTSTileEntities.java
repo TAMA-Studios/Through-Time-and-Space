@@ -8,6 +8,7 @@ import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
 import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.HartnellDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
@@ -49,7 +50,7 @@ public class TTSTileEntities {
 			.validBlocks(TTSBlocks.DOOR_BLOCK).renderer(() -> InteriorDoorRenderer::new).register();
 
 	public static final BlockEntityEntry<BotiWindowTile> BOTI_WINDOW = registrate().blockEntity("boti_window", BotiWindowTile::new)
-			.validBlocks(TTSBlocks.BOTI_WINDOW).renderer(() -> BotiWindowRenderer::new).register();
+			.validBlocks(TTSBlocks.BOTI_WINDOW).renderer(() -> context -> new BotiWindowRenderer()).register();
 
 	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
@@ -71,7 +72,7 @@ public class TTSTileEntities {
 			.renderer(() -> HartnellRotorRenderer::new).register();
 
 	public static final BlockEntityEntry<HartnellDoorTile> HARTNELL_DOOR = registrate()
-			.blockEntity("hartnell_door", HartnellDoorTile::new).validBlocks(TTSBlocks.HARTNELL_DOOR).register();
+			.blockEntity("hartnell_door", HartnellDoorTile::new).validBlocks(TTSBlocks.HARTNELL_DOOR).renderer(() -> HartnellDoorRenderer::new).register();
 
 	public static final BlockEntityEntry<HartnellDoorTilePlaceholder> HARTNELL_DOOR_PLACEHOLDER = registrate()
 			.blockEntity("hartnell_door_placeholder", HartnellDoorTilePlaceholder::new)

@@ -1,18 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalSyncPacketS2C;
+import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
+import com.code.tama.triggerapi.tileEntities.TickingTile;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.config.TTSConfig;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.networking.Networking;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import lombok.Getter;
-
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -27,16 +25,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.packets.S2C.PortalSyncPacketS2C;
-import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
-import com.code.tama.triggerapi.tileEntities.TickingTile;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Other tiles implement this to get data for portals */
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
 	@OnlyIn(Dist.CLIENT)
 	private FBOHelper FBOContainer;
+
+	long fuckYouTimer = 0; // Timer that determines when the BOTI says "fuck you" and resets
 
 	private final List<Integer> recievedPackets = new ArrayList<>();
 
@@ -100,6 +100,16 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 	@Override
 	public void tick() {
+		fuckYouTimer++;
+
+		if(fuckYouTimer >= 1200) {
+			fuckYouTimer = 0;
+			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
+							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+			return;
+		}
+
 		if (this.targetLevel != null)
 			return;
 

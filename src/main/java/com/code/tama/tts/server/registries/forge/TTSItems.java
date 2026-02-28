@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.manual.ManualItem;
 import com.code.tama.tts.server.items.TwineItem;
 import com.code.tama.tts.server.items.core.NozzleItem;
@@ -14,16 +10,20 @@ import com.code.tama.tts.server.items.gadgets.TemporalImprintReaderItem;
 import com.code.tama.tts.server.items.gadgets.VortexManipulatorItem;
 import com.code.tama.tts.server.items.tabs.MainTab;
 import com.code.tama.tts.server.registries.TTSRegistrate;
+import com.code.tama.tts.server.tileentities.boti.BotiWindowConfigurator;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {
@@ -51,6 +51,9 @@ public class TTSItems {
 
 	@MainTab
 	public static final ItemEntry<HoloGlasses> HOLO_GLASSES;
+
+	@MainTab
+	public static final ItemEntry<BotiWindowConfigurator> WINDOW_CONFIGURATOR;
 
 	@MainTab
 	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
@@ -104,6 +107,8 @@ public class TTSItems {
 		COPPER_SONIC = registrate().item("sonic/copper", prop -> new SonicItem(prop, 5)).register();
 
 		BASIC_NOZZLE = registrate().item("basic_nozzle", NozzleItem::new).register();
+
+		WINDOW_CONFIGURATOR = registrate().item("window_configurator", BotiWindowConfigurator::new).register();
 
 		BASIC_CONTROL_CIRCUIT = registrate().item("basic_control_circuit", Item::new).register();
 

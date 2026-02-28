@@ -9,22 +9,16 @@ import com.mojang.blaze3d.vertex.VertexBuffer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
-
-    // Per-master stencil VBO cache. Keyed by master tile instance.
-    // WeakHashMap so it auto-clears if the tile is unloaded.
-    private static final List<BlockPos> stencilVBOCache = new ArrayList<>();
     private static VertexBuffer stencilVBO = null;
-    public BotiWindowRenderer(BlockEntityRendererProvider.Context context) {}
+    public BotiWindowRenderer() {}
 
     @Override
     public void render(@NotNull BotiWindowTile tile, float partialTick, @NotNull PoseStack pose,
@@ -49,55 +43,26 @@ public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
 
         tile.getFBOContainer().Render(pose,
                 (stack, source) -> {
-            stack.pushPose();
+                    if(stencilVBO == null) return; // I've had instances where it's still null, if this be one of those cases, abort before it crashes
+                    stack.pushPose();
                     RenderSystem.setShader(GameRenderer::getPositionShader);
                     stencilVBO.bind();
                     stencilVBO.drawWithShader(pose.last().pose(), RenderSystem.getProjectionMatrix(),
-                            RenderSystem.getShader());
+                            Objects.requireNonNull(RenderSystem.getShader()));
                     VertexBuffer.unbind();
                     stack.popPose();
                 },
                 (stack, source) -> {},
                 (stack, source) -> {
-            stack.pushPose();
-                    pose.translate(masterPos.getX(), masterPos.getY() - 1.5, masterPos.getZ() + 0.5);
+                    if(stencilVBO == null) return;
+                    stack.pushPose();
+                    pose.translate(masterPos.getX() + 1.5, masterPos.getY() - 1.5, masterPos.getZ() + 0.5);
                     StencilUtils.drawColoredCube(stack, 500, new Vec3(0, 0, 100));
+                    // Apply configurator rotation around Y axis
+                    stack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(tile.getRotationDegrees()));
                     BOTIUtils.RenderScene(pose, tile);
                     stack.popPose();
                 });
-
-        pose.popPose();
-        if(true) return; // WHEN ENABLING NEXT CODE MAKE SURE TO PREVENT POSE NOT CLOSED OR WHATEVER BULLSHIT
-        // ---- Stencil pass: write 1 where the cluster faces are ----
-        GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glStencilMask(0xFF);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
-        GL11.glColorMask(false, false, false, false);
-        RenderSystem.depthMask(false);
-
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        stencilVBO.bind();
-        stencilVBO.drawWithShader(pose.last().pose(), RenderSystem.getProjectionMatrix(),
-                RenderSystem.getShader());
-        VertexBuffer.unbind();
-
-        // ---- Scene pass: only draw where stencil == 1 ----
-        GL11.glStencilMask(0x00);
-        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-        GL11.glColorMask(true, true, true, true);
-        RenderSystem.depthMask(true);
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-
-        // Undo the world-space offset before passing to RenderScene,
-        // which expects the pose to be at the portal tile's position.
-        pose.translate(masterPos.getX(), masterPos.getY(), masterPos.getZ());
-        BOTIUtils.RenderScene(pose, tile);
-
-        // ---- Cleanup ----
-        GL11.glDisable(GL11.GL_STENCIL_TEST);
-        GL11.glStencilMask(0xFF);
 
         pose.popPose();
     }

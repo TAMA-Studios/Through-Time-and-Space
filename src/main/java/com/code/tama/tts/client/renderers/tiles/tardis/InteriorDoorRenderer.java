@@ -4,6 +4,8 @@ package com.code.tama.tts.client.renderers.tiles.tardis;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.DoorTile;
@@ -101,43 +103,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 //		pose.pushPose();
 //		pose.scale(2, 4, 2);
-//		if (portal.SkyColor == null
-//				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
-//						% 1200 == 0) {
-//			if (portal.type != null) {
-//				Minecraft mc = Minecraft.getInstance();
-//				ClientLevel oldLevel = mc.level;
-//				assert mc.level != null;
-//				Holder<DimensionType> dimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-//						.getHolderOrThrow(portal.dimensionTypeId);
-//
-//				LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
-//						mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
-//				assert mc.player != null;
-//				ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(), portal.targetLevel,
-//						dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(),
-//						mc.level.getProfilerSupplier(), renderer, false, 0);
-//				renderer.setLevel(level);
-//
-//				mc.level = level;
-//				assert Minecraft.getInstance().level != null;
-//				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(portal.targetPos.getCenter(),
-//						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-//				mc.level = oldLevel;
-//			} else {
-//				assert Minecraft.getInstance().player != null;
-//				assert Minecraft.getInstance().level != null;
-//				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(Minecraft.getInstance().player.position(),
-//						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-//			}
-//		}
-//
-//		// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
-//		BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
-//				0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
-//				(float) portal.SkyColor.z, 1f);
-//
-//		botiSource.endBatch();
+
 //		pose.popPose();
 //		pose.pushPose();
 //		BOTIUtils.RenderScene(pose, portal);
@@ -156,6 +122,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 //		}, (pose, botiSource) -> {
 		// TODO: SKY RENDERER!!!
 		pose.pushPose();
+		renderSky(portal, pose, botiSource);
 //			pose.scale(2, 4, 2);
 		if (portal.SkyColor == null
 				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
@@ -200,5 +167,86 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		BOTIUtils.RenderScene(pose, portal);
 		pose.popPose();
 //		});
+	}
+
+	public static void renderSky(AbstractPortalTile portal, PoseStack pose, MultiBufferSource.BufferSource botiSource) {
+		pose.pushPose();
+		pose.scale(2, 4, 2);
+
+		if (portal.SkyColor == null
+				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
+				% 1200 == 0) {
+			if (portal.type != null) {
+				Minecraft mc = Minecraft.getInstance();if (portal.SkyColor == null
+				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
+						% 1200 == 0) {
+			if (portal.type != null) {
+				ClientLevel oldLevel = mc.level;
+				assert mc.level != null;
+				Holder<DimensionType> dimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+						.getHolderOrThrow(portal.dimensionTypeId);
+
+				LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
+						mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
+				assert mc.player != null;
+				ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(), portal.targetLevel,
+						dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(),
+						mc.level.getProfilerSupplier(), renderer, false, 0);
+				renderer.setLevel(level);
+
+				mc.level = level;
+				assert Minecraft.getInstance().level != null;
+				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(portal.targetPos.getCenter(),
+						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+				mc.level = oldLevel;
+			} else {
+				assert Minecraft.getInstance().player != null;
+				assert Minecraft.getInstance().level != null;
+				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(Minecraft.getInstance().player.position(),
+						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+			}
+		}
+
+		// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
+		BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
+				0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
+				(float) portal.SkyColor.z, 1f);
+
+		botiSource.endBatch();
+				ClientLevel oldLevel = mc.level;
+				assert mc.level != null;
+				Holder<DimensionType> dimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+						.getHolderOrThrow(portal.dimensionTypeId);
+
+				LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
+						mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
+				assert mc.player != null;
+				ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(), portal.targetLevel,
+						dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(),
+						mc.level.getProfilerSupplier(), renderer, false, 0);
+				renderer.setLevel(level);
+
+				mc.level = level;
+				assert Minecraft.getInstance().level != null;
+				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(portal.targetPos.getCenter(),
+						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+				mc.level = oldLevel;
+			} else {
+				assert Minecraft.getInstance().player != null;
+				assert Minecraft.getInstance().level != null;
+				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(Minecraft.getInstance().player.position(),
+						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+			}
+		}
+
+		// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
+//		BotiPortalModel.createBodyLayer().bakeRoot().render(pose, botiSource.getBuffer(RenderType.debugFilledBox()),
+//				0xf000f0, OverlayTexture.NO_OVERLAY, (float) portal.SkyColor.x, (float) portal.SkyColor.y,
+//				(float) portal.SkyColor.z, 1f);
+
+		StencilUtils.drawColoredFrame(pose, 2, 4, portal.SkyColor);
+
+		botiSource.endBatch();
+		pose.popPose();
 	}
 }
