@@ -1,10 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.events;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.helpers.GravityHelper;
+import com.code.tama.triggerapi.helpers.OxygenHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.exceptions.GrammarException;
@@ -13,32 +12,81 @@ import com.code.tama.tts.server.data.json.loaders.*;
 import com.code.tama.tts.server.networking.Networking;
 import com.code.tama.tts.server.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.registries.forge.TTSDamageSources;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import com.code.tama.triggerapi.gui.GuiLoader;
-import com.code.tama.triggerapi.helpers.GravityHelper;
-import com.code.tama.triggerapi.helpers.OxygenHelper;
+import java.util.stream.StreamSupport;
+
+import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
+
+	@SubscribeEvent
+	public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+		if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+		MinecraftServer server = player.getServer();
+		if (server == null) return;
+
+		server.tell(new TickTask(server.getTickCount() + 1, () -> {
+			for (ItemStack stack : player.getInventory().items) {
+				if (!stack.is(Items.FILLED_MAP)) continue;
+
+				Integer mapId = MapItem.getMapId(stack);
+				if (mapId == null) continue;
+
+				MapItemSavedData mapData = null;
+				ServerLevel owningLevel = null;
+				for (ServerLevel level : server.getAllLevels()) {
+					MapItemSavedData candidate = level.getMapData(MapItem.makeKey(mapId));
+					if (candidate != null) {
+						mapData = candidate;
+						owningLevel = level;
+						break;
+					}
+				}
+
+				if (mapData == null || owningLevel == null) continue;
+
+				// Build the packet manually with full colors, bypassing dirty tracking
+				player.connection.send(new ClientboundMapItemDataPacket(
+						mapId,
+						mapData.scale,
+						mapData.locked,
+						StreamSupport.stream(mapData.getDecorations().spliterator(), false).toList(),
+						new MapItemSavedData.MapPatch(0, 0, 128, 128, mapData.colors)
+				));
+			}
+		}));
+	}
+
 	@SubscribeEvent
 	public static void Chat(ServerChatEvent event) {
 		// if (!event.getPlayer().level().isClientSide)

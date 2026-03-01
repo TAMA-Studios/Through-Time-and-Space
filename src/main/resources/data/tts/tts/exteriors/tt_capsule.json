@@ -1,8 +1,8 @@
 {
   "values" : {
-    "lightmap" : "tts:exteriors/ttcapsule.png",
+    "lightmap" : "tts:textures/exteriors/ttcapsule.png",
     "modelname" : "tts:models/exterior/ttcapsule.json",
     "name" : "ttcapsule",
-    "texture" : "tts:exteriors/ttcapsule.png"
+    "texture" : "tts:textures/exteriors/ttcapsule.png"
   }
 }

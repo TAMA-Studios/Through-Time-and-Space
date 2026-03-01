@@ -35,7 +35,8 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 	// Door animation constants — tweak these to taste
 	private static final float DOOR_MAX     = 5.625f; // counter range 0 → this
-	private static final float DOOR_SPEED   = 0.15f;  // counter units per frame (~37 frames = ~1.8s)
+	private static final float DOOR_SPEED   = 0.10f;  // counter units per frame (~37 frames = ~1.8s)
+	// (What the fuck was I on when I did that math... at 60fps 37 frames is roughly half a second)
 	private static final float DOOR_MAX_DEG = 75f;    // max rotation in degrees when fully open
 
 	public TardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
@@ -49,9 +50,9 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	 * Input t is 0.0–1.0, output is 0.0–1.0.
 	 * Accelerates off the latch, decelerates into the stop.
 	 *
-	 * Swap the body for:
+	 * TODO: Consider Swapping the body for:
 	 *   (float) Math.sin(t * Math.PI / 2)
-	 * if you only want ease-out (faster start, gradual stop).
+	 * for faster start, gradual stop. See how that looks. Maybe.
 	 */
 	private static float easing(float t) {
 		return (float)((1.0 - Math.cos(t * Math.PI)) / 2.0);
@@ -92,8 +93,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 				data.FrameLeft = Math.max(data.FrameLeft - DOOR_SPEED, 0f);
 		}
 
-		// ---- Convert counters → eased angles ----
-		// Normalise 0–DOOR_MAX to 0.0–1.0, run through curve, scale to degrees
+		// Normalize 0–DOOR_MAX to 0.0–1.0, run through curve, scale to degrees
 		float leftAngle  = easing(data.FrameLeft  / DOOR_MAX) * DOOR_MAX_DEG;
 		float rightAngle = easing(data.FrameRight / DOOR_MAX) * DOOR_MAX_DEG;
 
@@ -119,7 +119,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		parsed.getPart("LeftDoor").yRot  = (float) Math.toRadians( leftAngle);
 		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-rightAngle);
 
-		ModelPart boti       = parsed.getPart("BOTI").modelPart;
+		ModelPart boti        = parsed.getPart("BOTI").modelPart;
 		ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
 
 		if (false) {
@@ -152,7 +152,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 					// FRAME PASS — unused, sky handled in scene pass
 					(pose, buffer) -> {},
 
-					// SCENE PASS — sky → BOTI blocks → door overlay (front-most)
+					// SCENE PASS — sky > BOTI blocks → door overlay (front-most)
 					(pose, botiSource) -> {
 						// 1. Sky background
 						pose.pushPose();
@@ -215,6 +215,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						parsed.getPart("RightDoor").render(stack,
 								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
 								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
 						((MultiBufferSource.BufferSource) bufferSource).endBatch();
 						RenderSystem.enableDepthTest();
 						pose.popPose();
@@ -232,6 +233,11 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		parsed.getPart("baseRoot").render(stack,
 				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
 				combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
+		parsed.getPart("baseRoot").render(stack,
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())),
+				0xf000f0, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
 		stack.popPose();

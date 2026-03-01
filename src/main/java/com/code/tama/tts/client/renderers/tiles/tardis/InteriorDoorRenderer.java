@@ -73,11 +73,11 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 			if (frameTimeO != partialTicks) {
 				frameTimeO = partialTicks;
 				int doorsOpen = cap.GetData().getDoorData().getDoorsOpen();
-				if (doorsOpen >= 1)
+				if (doorsOpen == 2)
 					doorFrameRight = Math.min(doorFrameRight + DOOR_SPEED, DOOR_MAX);
 				else
 					doorFrameRight = Math.max(doorFrameRight - DOOR_SPEED, 0f);
-				if (doorsOpen == 2)
+				if (doorsOpen >= 1)
 					doorFrameLeft = Math.min(doorFrameLeft + DOOR_SPEED, DOOR_MAX);
 				else
 					doorFrameLeft = Math.max(doorFrameLeft - DOOR_SPEED, 0f);
@@ -108,7 +108,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					pose.popPose();
 				} else {
 					pose.pushPose();
-					pose.translate(0, 0, 1.3);
+					pose.translate(0, 0, 1.4);
 					renderBOTI(pose, doorTile, buf);
 					pose.popPose();
 				}
@@ -121,9 +121,9 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 			// Set bone rotations directly on the model — rotating the pose stack would
 			// swing the entire frame. These bones are on the exterior renderer's JSON,
-			// matching what setupInteriorDoorPose() was doing, but with eased angles.
+			// matching what setupInteriorDoorPose() does, but with eased angles.
 			cap.GetClientData().getExteriorRenderer().getJavaJSON()
-					.getPart("IntRightDoor").yRot = (float) Math.toRadians( rightAngle);
+					.getPart("IntRightDoor").yRot = (float) Math.toRadians(rightAngle);
 			cap.GetClientData().getExteriorRenderer().getJavaJSON()
 					.getPart("IntLeftDoor").yRot  = (float) Math.toRadians(-leftAngle);
 			renderBone(door, poseStack,

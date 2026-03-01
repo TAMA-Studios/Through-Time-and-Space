@@ -187,13 +187,17 @@ public class ExteriorTile extends AbstractPortalTile {
 		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
 				new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
 				structure.GetRL());
+
+		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {
+			this.setTargetLevel(INTERIOR_DIMENSION, cap.GetData().getDoorData().getLocation().GetBlockPos(), cap.GetData().getDoorData().getYRot(), true);
+		});
 	}
 
 	public void SetDoorsOpen(int doorState) {
 		if(this.level != null)
-		if (!this.level.isClientSide)
-			if (this.INTERIOR_DIMENSION != null)
-				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
+			if (!this.level.isClientSide)
+				if (this.INTERIOR_DIMENSION != null)
+					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
 						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 						.ifPresent(cap -> cap.GetData().getInteriorDoorData().setDoorsOpen(doorState));
 		this.DoorState = doorState;
@@ -241,20 +245,21 @@ public class ExteriorTile extends AbstractPortalTile {
 			float X, Y, Z;
 
 			BlockPos pos = cap.GetData().getDoorData().getLocation().GetBlockPos()
-					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
+					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 1);
 
 			X = pos.getX() + 0.5f;
 			Y = pos.getY() == 0 ? 128 : pos.getY();
 			Z = pos.getZ() + 0.5f;
 
 			float yRot = cap.GetData().getDoorData().getYRot() + EntityToTeleport.getYRot();
+			float xRot =  EntityToTeleport.getXRot();
 
 			if (EntityToTeleport instanceof ServerPlayer player) {
 				player.getAbilities().flying = false;
 				player.onUpdateAbilities();
 			}
 
-			SeamlessTeleport.teleportTo(EntityToTeleport, Interior, X, Y, Z, yRot, 0);
+			SeamlessTeleport.teleportTo(EntityToTeleport, Interior, X, Y, Z, yRot, xRot);
 //			EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
 
 			MinecraftForge.EVENT_BUS

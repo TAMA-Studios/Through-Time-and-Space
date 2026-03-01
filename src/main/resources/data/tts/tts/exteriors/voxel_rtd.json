@@ -1,8 +1,8 @@
 {
   "values" : {
-    "lightmap" : "tts:exteriors/voxel/_lightmap.png",
+    "lightmap" : "tts:textures/exteriors/voxel/_lightmap.png",
     "modelname" : "tts:models/exterior/voxel_rtd.json",
     "name" : "voxel.rtd",
-    "texture" : "tts:exteriors/voxel/rtd.png"
+    "texture" : "tts:textures/exteriors/voxel/rtd.png"
   }
 }

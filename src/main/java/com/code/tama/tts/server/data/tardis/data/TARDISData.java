@@ -1,11 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.codec.Codecs;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -24,14 +20,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -71,6 +69,13 @@ public class TARDISData {
 	ResourceLocation Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness");
 	SpaceTimeCoordinate doorBlock = new SpaceTimeCoordinate();
 	ITARDISLevel TARDIS;
+
+	public void setDoorBlock(SpaceTimeCoordinate coordinate, float yRot) {
+		this.getDoorData().setLocation(coordinate);
+		this.getDoorData().setYRot(yRot);
+		this.doorBlock = coordinate.copy();
+		this.TARDIS.GetExteriorTile().setTargetLevel(this.TARDIS.GetLevel().dimension(), coordinate.GetBlockPos(), yRot, true);
+	}
 
 	public TARDISData(TARDISLevelCapability TARDIS) {
 		this.TARDIS = TARDIS;

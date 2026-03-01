@@ -4,7 +4,6 @@ package com.code.tama.tts.server.blocks.tardis;
 import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.registries.forge.TTSTileEntities;
@@ -82,16 +81,8 @@ public class DoorBlock extends Block implements EntityBlock {
 	public void onPlace(@NotNull BlockState state, Level level, @NotNull BlockPos blockPos,
 			@NotNull BlockState blockState, boolean p_60570_) {
 		GetTARDISCapSupplier(level).ifPresent(cap -> {
-			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(this.GetPosForTeleport(state, blockPos)));
 			Direction direction = state.getValue(FACING);
-			// float yRot = switch (direction) {
-			// case EAST -> 90;
-			// case SOUTH -> 180;
-			// case WEST -> 270;
-			// default -> 0;
-			// };
-			cap.GetData().setInteriorDoorData(
-					new DoorData(0, direction.toYRot(), new SpaceTimeCoordinate(blockPos.relative(direction, 1))));
+			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(blockPos), direction.toYRot());
 		});
 
 		super.onPlace(state, level, blockPos, blockState, p_60570_);
@@ -121,7 +112,7 @@ public class DoorBlock extends Block implements EntityBlock {
 				return;
 
 			try {
-				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().north(1);
+				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos().relative(cap.GetNavigationalData().getFacing());
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
 					exteriorTile.SetInterior(Interior.dimension());
@@ -133,7 +124,7 @@ public class DoorBlock extends Block implements EntityBlock {
 				// pos.getY(), pos.getZ(), Set.of(), yRot, 0);
 
 				SeamlessTeleport.teleportTo(EntityToTeleport, Interior.getServer().getLevel(cap.GetCurrentLevel()),
-						pos.getX(), pos.getY(), pos.getZ(), yRot, 0);
+						pos.getX(), pos.getY(), pos.getZ(), EntityToTeleport.getYRot() + yRot, EntityToTeleport.getXRot());
 
 				((ServerPlayer) EntityToTeleport).getAbilities().flying = false;
 				((ServerPlayer) EntityToTeleport).onUpdateAbilities();
@@ -146,15 +137,7 @@ public class DoorBlock extends Block implements EntityBlock {
 	}
 
 	public BlockPos GetPosForTeleport(BlockState state, BlockPos pos) {
-		Direction dir = state.getValue(FACING);
-
-		switch (dir) {
-			case NORTH -> pos = pos.north();
-			case EAST -> pos = pos.east();
-			case WEST -> pos = pos.west();
-			default -> pos = pos.south();
-		}
-		return pos;
+		return pos.relative(state.getValue(FACING));
 	}
 
 	public float GetRotationForTeleport(BlockState state) {

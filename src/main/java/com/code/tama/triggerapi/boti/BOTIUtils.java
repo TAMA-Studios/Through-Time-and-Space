@@ -117,6 +117,8 @@ public class BOTIUtils {
 		Minecraft mc = Minecraft.getInstance();
 
 		int ChunksToRender = 8;
+		float yaw = tile.targetY;
+		Direction direction = Direction.fromYRot(yaw);
 
 		BufferBuilder buffer = new BufferBuilder((int) (ChunksToRender * Math.pow(16, 3)));
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
@@ -170,7 +172,7 @@ public class BOTIUtils {
 				}
 			}
 
-			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap)) {
+			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap, direction)) {
 				// Only apply tint color if this quad actually uses it
 				float qr, qg, qb;
 				if (quad.isTinted()) {
@@ -220,13 +222,14 @@ public class BOTIUtils {
 	}
 
 	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
-			Map<BlockPos, BotiBlockContainer> map) {
+			Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		Direction[] directions = Direction.values();
 		BakedModel model = blockRenderer.getBlockModel(state);
 		List<BakedQuad> quads = new java.util.ArrayList<>();
 		// render only non-occluded faces
 		for (Direction dir : directions) {
+			if(viewingFrom != null && dir.equals(viewingFrom.getOpposite())) continue;
 			BlockPos neighbourPos = pos.relative(dir);
 			BotiBlockContainer neighborContainer = map.get(neighbourPos);
 			if (neighborContainer != null) {
