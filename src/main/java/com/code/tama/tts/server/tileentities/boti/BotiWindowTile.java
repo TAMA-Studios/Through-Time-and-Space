@@ -17,6 +17,7 @@ public class BotiWindowTile extends AbstractPortalTile {
     // Cached master pos — null means "not computed yet", equal to getBlockPos() means "I am master"
     @Nullable
     private BlockPos masterPos = null;
+    boolean invalidated = false;
 
     // Rotation in degrees, always a multiple of 45. Range 0–315.
     @Getter
@@ -75,7 +76,7 @@ public class BotiWindowTile extends AbstractPortalTile {
     /** Call whenever neighbors change to invalidate cached master. */
     public void invalidateCluster() {
         masterPos = null;
-        BotiWindowRenderer.invalidateStencilVBO();
+        this.invalidated = true;
     }
 
     /** Returns true if this tile is The Master.. */
@@ -93,6 +94,7 @@ public class BotiWindowTile extends AbstractPortalTile {
 
     private void electMaster() {
         if (level == null) return;
+        this.invalidateCluster();
         java.util.List<BlockPos> cluster = BotiWindowCluster.findCluster(level, getBlockPos());
         BlockPos center = BotiWindowCluster.electMaster(cluster);
         // Broadcast the result to all tiles in the cluster

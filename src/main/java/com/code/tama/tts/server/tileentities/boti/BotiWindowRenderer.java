@@ -10,14 +10,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
 
 public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
-    private static VertexBuffer stencilVBO = null;
+    private VertexBuffer stencilVBO = null;
     public BotiWindowRenderer() {}
 
     @Override
@@ -25,6 +24,7 @@ public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
                        @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
         if (!tile.isMaster()) return; // non-masters do nothing
+        if(tile.invalidated) stencilVBO = null;
         RenderSystem.enableDepthTest();
 
         BlockPos masterPos = tile.getBlockPos();
@@ -56,8 +56,8 @@ public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
                 (stack, source) -> {
                     if(stencilVBO == null) return;
                     stack.pushPose();
-                    pose.translate(masterPos.getX() + 1.5, masterPos.getY() - 1.5, masterPos.getZ() + 0.5);
-                    StencilUtils.drawColoredCube(stack, 500, new Vec3(0, 0, 100));
+                    pose.translate(masterPos.getX() + 1.5, masterPos.getY() - 1.5, masterPos.getZ() - 0.5);
+                    StencilUtils.drawColoredCube(stack, 500, tile.SkyColor);
                     // Apply configurator rotation around Y axis
                     stack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(tile.getRotationDegrees()));
                     BOTIUtils.RenderScene(pose, tile);
@@ -68,7 +68,7 @@ public class BotiWindowRenderer implements BlockEntityRenderer<BotiWindowTile> {
     }
 
     /** Call this when a cluster member is added/removed to force a stencil VBO rebuild. */
-    public static void invalidateStencilVBO() {
+    public void invalidateStencilVBO() {
         stencilVBO = null;
     }
 

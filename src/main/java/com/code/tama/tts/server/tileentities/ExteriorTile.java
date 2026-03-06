@@ -245,7 +245,7 @@ public class ExteriorTile extends AbstractPortalTile {
 			float X, Y, Z;
 
 			BlockPos pos = cap.GetData().getDoorData().getLocation().GetBlockPos()
-					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 1);
+					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
 
 			X = pos.getX() + 0.5f;
 			Y = pos.getY() == 0 ? 128 : pos.getY();

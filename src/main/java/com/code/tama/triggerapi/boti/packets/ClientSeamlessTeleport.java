@@ -23,7 +23,7 @@ public class ClientSeamlessTeleport implements ImAPacket {
 		ResourceKey<Level> destDim = ResourceKey.create(Registries.DIMENSION, packet.dimension());
 
 		// If we're already in the right dimension (server already moved us),
-		// just do a smooth position update — no screen change needed
+		// just do a smooth position update, no screen change needed
 		if (mc.level != null && mc.level.dimension() == destDim) {
 			if (mc.player != null) {
 				mc.player.moveTo(packet.x(), packet.y(), packet.z(), packet.yaw(), packet.pitch());
@@ -34,7 +34,7 @@ public class ClientSeamlessTeleport implements ImAPacket {
 		}
 
 		// Cross-dimension: we need to switch the client level
-		// This is the core of the seamlessness — replicate what handleRespawn does
+		// This is the core of the seamlessness -- replicate what handleRespawn does
 		// but WITHOUT calling setScreen(downloadingTerrain) or setScreen(null)
 
 		// The mixin on ClientPacketListener.handleRespawn will have already

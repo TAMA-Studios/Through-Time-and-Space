@@ -6,7 +6,10 @@
     "client.MapInstanceAccessor",
     "client.MixinMapRenderer",
     "client.MixinRenderTarget",
-    "client.RenderStateShardAccessor"
+    "client.RenderStateShardAccessor",
+    "seamlessTele.ClientPacketListenerAccessor",
+    "seamlessTele.MixinClientPacketListener",
+    "seamlessTele.MixinMinecraft"
   ],
   "compatibilityLevel": "JAVA_8",
   "injectors": {
@@ -23,8 +26,6 @@
     "RedstoneWireMixin",
     "mavity.FallingBlockGravityMixin",
     "mavity.LivingEntityGravityMixin",
-    "seamlessTele.ClientPacketListenerAccessor",
-    "seamlessTele.MixinClientPacketListener",
     "seamlessTele.MixinServerPlayer"
   ],
   "package": "com.code.tama.tts.mixin",

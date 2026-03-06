@@ -17,10 +17,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -82,10 +85,25 @@ public class DoorBlock extends Block implements EntityBlock {
 			@NotNull BlockState blockState, boolean p_60570_) {
 		GetTARDISCapSupplier(level).ifPresent(cap -> {
 			Direction direction = state.getValue(FACING);
-			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(blockPos), direction.toYRot());
+			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(blockPos), direction.getOpposite().toYRot());
 		});
 
 		super.onPlace(state, level, blockPos, blockState, p_60570_);
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+	}
+
+	@Override
+	public @NotNull BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+		return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+	}
+
+	@Override
+	public @NotNull BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+		return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
 	}
 
 	@Override

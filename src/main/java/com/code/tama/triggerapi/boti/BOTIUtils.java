@@ -222,22 +222,26 @@ public class BOTIUtils {
 	}
 
 	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
-			Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
+													Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		Direction[] directions = Direction.values();
 		BakedModel model = blockRenderer.getBlockModel(state);
 		List<BakedQuad> quads = new java.util.ArrayList<>();
-		// render only non-occluded faces
-		for (Direction dir : directions) {
-			if(viewingFrom != null && dir.equals(viewingFrom.getOpposite())) continue;
+
+		quads.addAll(model.getQuads(state, null, rand));
+
+		for (Direction dir : Direction.values()) {
+			if (viewingFrom != null && dir.equals(viewingFrom.getOpposite())) continue;
+
 			BlockPos neighbourPos = pos.relative(dir);
 			BotiBlockContainer neighborContainer = map.get(neighbourPos);
 			if (neighborContainer != null) {
-				if (BOTIUtils.shouldRenderFace(state, neighborContainer.getState(), Minecraft.getInstance().level, pos,
-						dir, neighbourPos))
+				if (BOTIUtils.shouldRenderFace(state, neighborContainer.getState(),
+						Minecraft.getInstance().level, pos, dir, neighbourPos)) {
 					quads.addAll(model.getQuads(state, dir, rand));
-			} else
+				}
+			} else {
 				quads.addAll(model.getQuads(state, dir, rand));
+			}
 		}
 		return quads;
 	}

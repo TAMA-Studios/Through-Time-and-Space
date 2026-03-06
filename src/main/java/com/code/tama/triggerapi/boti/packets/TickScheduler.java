@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2026 */
-package com.code.tama.triggerapi.boti.teleporting;
+package com.code.tama.triggerapi.boti.packets;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -18,7 +18,7 @@ public class TickScheduler {
 	 *   MinecraftForge.EVENT_BUS.register(TickScheduler.class);
 	 *
 	 * Without registration the @SubscribeEvent below never fires and scheduled
-	 * tasks (including chunk ticket release) will silently never run -- And it will be all your fault.
+	 * tasks (including chunk ticket release) will silently never run.
 	 */
 	public static void register() {
 		MinecraftForge.EVENT_BUS.register(TickScheduler.class);

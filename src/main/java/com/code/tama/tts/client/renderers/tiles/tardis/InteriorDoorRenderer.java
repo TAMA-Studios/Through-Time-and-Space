@@ -6,23 +6,17 @@ import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.tileentities.DoorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
@@ -150,34 +144,6 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		pose.scale(2, 4, 2);
 
 		// Update sky color every 20 seconds or when null
-		if (portal.SkyColor == null
-				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1) % 1200 == 0) {
-			if (portal.type != null) {
-				Minecraft mc = Minecraft.getInstance();
-				ClientLevel oldLevel = mc.level;
-				assert mc.level != null;
-				Holder<DimensionType> dimType = mc.level.registryAccess()
-						.registryOrThrow(Registries.DIMENSION_TYPE)
-						.getHolderOrThrow(portal.dimensionTypeId);
-				LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
-						mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
-				assert mc.player != null;
-				ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(),
-						portal.targetLevel, dimType, mc.options.getEffectiveRenderDistance(),
-						mc.options.getEffectiveRenderDistance(), mc.level.getProfilerSupplier(), renderer, false, 0);
-				renderer.setLevel(level);
-				mc.level = level;
-				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(portal.targetPos.getCenter(),
-						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-				mc.level = oldLevel;
-			} else {
-				assert Minecraft.getInstance().player != null;
-				assert Minecraft.getInstance().level != null;
-				portal.SkyColor = Minecraft.getInstance().level.getSkyColor(
-						Minecraft.getInstance().player.position(),
-						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-			}
-		}
 
 		StencilUtils.drawColoredFrame(pose, 2, 4, portal.SkyColor);
 		botiSource.endBatch();

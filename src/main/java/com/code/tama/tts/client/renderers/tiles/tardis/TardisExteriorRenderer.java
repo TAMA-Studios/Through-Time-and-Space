@@ -4,12 +4,10 @@ package com.code.tama.tts.client.renderers.tiles.tardis;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,17 +15,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
@@ -154,58 +147,13 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 					// SCENE PASS — sky > BOTI blocks → door overlay (front-most)
 					(pose, botiSource) -> {
-						// 1. Sky background
 						pose.pushPose();
-						pose.scale(2, 4, 2);
-						if (exteriorTile.SkyColor == null
-								|| (Minecraft.getInstance().level != null
-								? Minecraft.getInstance().level.getGameTime() : 1) % 1200 == 0) {
-							if (exteriorTile.type != null) {
-								Minecraft mc = Minecraft.getInstance();
-								mc.execute(() -> {
-									ClientLevel oldLevel = mc.level;
-									assert mc.level != null;
-									Holder<DimensionType> dimType = mc.level.registryAccess()
-											.registryOrThrow(Registries.DIMENSION_TYPE)
-											.getHolderOrThrow(exteriorTile.dimensionTypeId);
-									LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
-											mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
-									assert mc.player != null;
-									ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(),
-											exteriorTile.targetLevel, dimType,
-											mc.options.getEffectiveRenderDistance(),
-											mc.options.getEffectiveRenderDistance(),
-											mc.level.getProfilerSupplier(), renderer, false, 0);
-									renderer.setLevel(level);
-									mc.level = level;
-									exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(
-											exteriorTile.targetPos.getCenter(),
-											((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-									mc.level = oldLevel;
-								});
-							} else {
-								Minecraft.getInstance().execute(() -> {
-									assert Minecraft.getInstance().player != null;
-									assert Minecraft.getInstance().level != null;
-									exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(
-											Minecraft.getInstance().player.position(),
-											((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-								});
-							}
-						}
-						StencilUtils.drawColoredCube(stack, 1, exteriorTile.SkyColor);
-						botiSource.endBatch();
-						pose.popPose();
-
-						// 2. BOTI block scene
-						pose.pushPose();
-						pose.translate(-0.5, -0.5, -0.5);
+						pose.translate(-0.5, 1.4, -0.62);
 						pose.mulPose(Axis.XP.rotationDegrees(180));
 						BOTIUtils.RenderScene(pose, exteriorTile);
 						botiSource.endBatch();
 						pose.popPose();
 
-						// 3. Door overlay — rendered on top of BOTI, depth test off so it always wins
 						pose.pushPose();
 						pose.translate(0, 1.5, 0);
 						RenderSystem.disableDepthTest();
