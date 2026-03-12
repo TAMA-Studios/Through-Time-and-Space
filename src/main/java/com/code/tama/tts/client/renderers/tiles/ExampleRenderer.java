@@ -3,7 +3,7 @@ package com.code.tama.tts.client.renderers.tiles;
 
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-import com.code.tama.tts.server.tileentities.ExampleTileEntity;
+import com.code.tama.tts.core.tileentities.ExampleTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

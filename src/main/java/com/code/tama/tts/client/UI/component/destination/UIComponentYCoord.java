@@ -5,8 +5,8 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import com.code.tama.tts.client.UI.component.core.ComponentTypes;
 import com.code.tama.tts.client.UI.component.core.UIComponent;
-import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
-import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
+import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
+import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 
 import net.minecraft.world.entity.player.Player;
 

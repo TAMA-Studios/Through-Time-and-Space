@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.gadgets;
 
-import com.code.tama.tts.server.tileentities.SonicConfiguratorTileEntity;
+import com.code.tama.tts.core.tileentities.SonicConfiguratorTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

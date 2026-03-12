@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
-import com.code.tama.tts.server.registries.misc.UICategoryRegistry;
+import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
 import com.mojang.math.Axis;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;

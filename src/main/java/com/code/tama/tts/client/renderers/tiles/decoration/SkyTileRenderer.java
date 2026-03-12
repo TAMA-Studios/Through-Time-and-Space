@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
-import com.code.tama.tts.server.tileentities.SkyTile;
+import com.code.tama.tts.core.tileentities.SkyTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class SkyTileRenderer<T extends SkyTile> implements BlockEntityRenderer<T
 	@Override
 	public void render(T blockEntity, float f, @NotNull PoseStack poseStack,
 			@NotNull MultiBufferSource multiBufferSource, int i, int j) {
-		if (!blockEntity.getBlockState().getValue(com.code.tama.tts.server.blocks.cosmetic.SkyBlock.ACTIVE))
+		if (!blockEntity.getBlockState().getValue(com.code.tama.tts.core.blocks.cosmetic.SkyBlock.ACTIVE))
 			return;
 		Matrix4f m4f = poseStack.last().pose();
 		var renderType = switch (blockEntity.getSkyType()) {

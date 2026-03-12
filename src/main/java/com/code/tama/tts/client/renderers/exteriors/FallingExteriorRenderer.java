@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.exteriors;
 
-import com.code.tama.tts.server.entities.FallingExteriorEntity;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.entities.FallingExteriorEntity;
+import com.code.tama.tts.core.registries.forge.TTSTileEntities;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

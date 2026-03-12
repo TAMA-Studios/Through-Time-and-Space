@@ -4,7 +4,7 @@ package com.code.tama.tts.server.misc;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.code.tama.tts.config.TTSConfig;
+import com.code.tama.tts.core.config.TTSConfig;
 
 import net.minecraft.resources.ResourceLocation;
 

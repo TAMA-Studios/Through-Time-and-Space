@@ -7,18 +7,19 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.code.tama.tts.exceptions.GrammarException;
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.registries.forge.TTSEntities;
-import com.code.tama.tts.server.registries.forge.TTSItems;
-import com.code.tama.tts.server.registries.misc.SonicModeRegistry;
-import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
-import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.registries.forge.TTSEntities;
+import com.code.tama.tts.core.registries.forge.TTSItems;
+import com.code.tama.tts.core.registries.misc.SonicModeRegistry;
+import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
+import com.code.tama.triggerapi.exceptions.GrammarException;
 
 /**
  * This is for functions related to string manipulation

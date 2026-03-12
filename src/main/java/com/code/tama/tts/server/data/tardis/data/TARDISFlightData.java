@@ -1,15 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.tts.config.TTSConfig;
+import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.registries.tardis.FlightSoundSchemesRegistry;
+import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.registries.tardis.FlightSoundSchemesRegistry;
-import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tardis.flightsoundschemes.SmithSoundScheme;
 import com.mojang.serialization.Codec;

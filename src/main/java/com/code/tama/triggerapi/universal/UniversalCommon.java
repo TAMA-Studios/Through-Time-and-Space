@@ -124,7 +124,7 @@ public class UniversalCommon {
 		}
 
 		private static void register(Class<Object> packet) {
-			getInstance().registerMessage(com.code.tama.tts.server.networking.Networking.id(), packet, (msg, buf) -> {
+			getInstance().registerMessage(com.code.tama.tts.core.networking.Networking.id(), packet, (msg, buf) -> {
 				try {
 					packet.getMethod("encode", packet, FriendlyByteBuf.class).invoke(null, msg, buf);
 				} catch (Exception e) {

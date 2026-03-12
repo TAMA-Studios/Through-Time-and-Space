@@ -6,14 +6,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.registries.forge.TTSTileEntities;
+import com.code.tama.tts.core.registries.tardis.SubsystemsRegistry;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;

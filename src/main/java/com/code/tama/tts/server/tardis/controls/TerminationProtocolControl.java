@@ -2,8 +2,8 @@
 package com.code.tama.tts.server.tardis.controls;
 
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

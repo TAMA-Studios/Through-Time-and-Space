@@ -1,9 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.tts.server.items.blocks.CompressedMultiblockItem;
-import com.code.tama.tts.server.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.tileentities.CompressedMultiblockTile;
+import com.code.tama.tts.core.items.blocks.CompressedMultiblockItem;
+import com.code.tama.tts.core.registries.forge.TTSTileEntities;
+import com.code.tama.tts.core.tileentities.CompressedMultiblockTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

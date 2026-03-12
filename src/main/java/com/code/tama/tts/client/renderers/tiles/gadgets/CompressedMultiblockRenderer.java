@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.gadgets;
 
-import com.code.tama.tts.server.tileentities.CompressedMultiblockTile;
+import com.code.tama.tts.core.tileentities.CompressedMultiblockTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

@@ -6,7 +6,7 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 import java.util.ArrayList;
 import java.util.List;
 
-import com.code.tama.tts.server.tileentities.FaultLocatorTile;
+import com.code.tama.tts.core.tileentities.FaultLocatorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

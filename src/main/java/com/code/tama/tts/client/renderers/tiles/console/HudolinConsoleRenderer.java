@@ -5,7 +5,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.client.models.HudolinConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.server.tileentities.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tardis.ExteriorState;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraftforge.api.distmarker.Dist;

@@ -6,7 +6,7 @@ import static com.code.tama.triggerapi.lua.LuaExecutable.DEBUG;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.core.networking.Networking;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

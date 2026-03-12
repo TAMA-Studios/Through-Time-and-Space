@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.core.networking.Networking;
 import com.google.common.collect.Lists;
 import com.ibm.icu.impl.locale.XCldrStub.ImmutableSet;
 import com.mojang.serialization.DynamicOps;

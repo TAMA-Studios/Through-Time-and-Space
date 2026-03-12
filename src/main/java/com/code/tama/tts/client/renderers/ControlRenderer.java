@@ -4,8 +4,8 @@ package com.code.tama.tts.client.renderers;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 import static com.code.tama.tts.server.tardis.controls.AbstractControl.Spark;
 
-import com.code.tama.tts.server.entities.controls.ModularControl;
-import com.code.tama.tts.server.items.gadgets.SonicItem;
+import com.code.tama.tts.core.entities.controls.ModularControl;
+import com.code.tama.tts.core.items.gadgets.SonicItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

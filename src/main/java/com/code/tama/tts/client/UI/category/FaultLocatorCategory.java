@@ -6,9 +6,9 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 import java.util.ArrayList;
 import java.util.List;
 
-import com.code.tama.tts.config.FlightType;
-import com.code.tama.tts.config.TTSConfig;
-import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
+import com.code.tama.tts.core.config.FlightType;
+import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 

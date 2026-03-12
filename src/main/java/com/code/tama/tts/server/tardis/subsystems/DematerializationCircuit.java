@@ -6,7 +6,7 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 import java.util.HashMap;
 import java.util.Map;
 
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import lombok.NoArgsConstructor;
 
 import net.minecraft.core.BlockPos;

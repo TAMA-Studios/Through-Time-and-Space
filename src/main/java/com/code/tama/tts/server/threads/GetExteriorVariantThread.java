@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
-import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.networking.Networking;
+import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 
 public class GetExteriorVariantThread extends Thread {
 	ExteriorTile tile;

@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis;
 
+import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
-import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;

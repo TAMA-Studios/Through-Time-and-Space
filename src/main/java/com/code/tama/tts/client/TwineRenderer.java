@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.client;
 
+import com.code.tama.tts.core.items.TwineItem;
 import com.code.tama.tts.mixin.client.ILevelRendererAccessor;
-import com.code.tama.tts.server.items.TwineItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;

@@ -5,7 +5,7 @@ package com.code.tama.tts.client.models;// Made with Blockbench 5.0.6
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.server.tileentities.EmptyArtificialShellTile;
+import com.code.tama.tts.core.tileentities.EmptyArtificialShellTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 

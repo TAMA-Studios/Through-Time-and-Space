@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

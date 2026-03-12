@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers;
 
-import com.code.tama.tts.server.items.gadgets.SonicItem;
+import com.code.tama.tts.core.items.gadgets.SonicItem;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;

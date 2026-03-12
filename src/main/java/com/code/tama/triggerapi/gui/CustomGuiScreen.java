@@ -3,7 +3,7 @@ package com.code.tama.triggerapi.gui;
 
 import java.util.*;
 
-import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.core.networking.Networking;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

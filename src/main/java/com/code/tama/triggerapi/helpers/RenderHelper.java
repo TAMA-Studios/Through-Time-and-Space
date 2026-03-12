@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.registries.forge.TTSItems;
+import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;

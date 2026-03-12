@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.tiles;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.server.tileentities.ChromiumBlockEntity;
+import com.code.tama.tts.core.tileentities.ChromiumBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
