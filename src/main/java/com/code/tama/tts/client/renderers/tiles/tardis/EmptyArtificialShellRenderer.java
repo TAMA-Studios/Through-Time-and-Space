@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
 import com.code.tama.tts.client.models.ShellBaseModel;
-import com.code.tama.tts.server.tileentities.EmptyArtificialShellTile;
+import com.code.tama.tts.core.tileentities.EmptyArtificialShellTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

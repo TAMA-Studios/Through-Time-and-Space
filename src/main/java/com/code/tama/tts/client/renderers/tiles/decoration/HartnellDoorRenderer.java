@@ -3,7 +3,7 @@ package com.code.tama.tts.client.renderers.tiles.decoration;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.server.tileentities.HartnellDoorTile;
+import com.code.tama.tts.core.tileentities.HartnellDoorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

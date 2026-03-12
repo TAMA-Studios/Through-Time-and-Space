@@ -3,8 +3,8 @@ package com.code.tama.tts.client.compat.jei;
 
 import java.util.List;
 
+import com.code.tama.tts.core.registries.misc.RecipeRegistry;
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
-import com.code.tama.tts.server.registries.misc.RecipeRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;

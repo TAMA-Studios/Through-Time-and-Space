@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;

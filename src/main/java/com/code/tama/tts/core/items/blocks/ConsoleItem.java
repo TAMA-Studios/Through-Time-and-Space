@@ -1,0 +1,35 @@
+/* (C) TAMA Studios 2025 */
+package com.code.tama.tts.core.items.blocks;
+
+import java.util.function.Consumer;
+
+import com.code.tama.tts.client.renderers.items.ConsoleItemRenderer;
+import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+
+public class ConsoleItem<T extends AbstractConsoleTile> extends BlockItem {
+	RegistryEntry<BlockEntityType<T>> type;
+
+	public ConsoleItem(RegistryEntry<BlockEntityType<T>> type, Block block, Properties properties) {
+		super(block, properties);
+		this.type = type;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return new ConsoleItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
+						Minecraft.getInstance().getEntityModels(), type.get(), getBlock().defaultBlockState());
+			}
+		});
+	}
+}

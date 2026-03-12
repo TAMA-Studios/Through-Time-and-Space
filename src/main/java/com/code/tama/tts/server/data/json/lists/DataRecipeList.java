@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.code.tama.tts.core.registries.misc.RecipeRegistry;
 import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
-import com.code.tama.tts.server.registries.misc.RecipeRegistry;
 import lombok.Getter;
 
 public class DataRecipeList {

@@ -2,8 +2,8 @@
 package com.code.tama.tts.client.renderers.items;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

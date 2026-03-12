@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.level.block.entity.BlockEntity;

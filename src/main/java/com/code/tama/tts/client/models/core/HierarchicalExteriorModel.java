@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.models.core;
 
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.model.HierarchicalModel;

@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers.worlds;
 
 import com.code.tama.tts.client.renderers.worlds.helper.AbstractLevelRenderer;
-import com.code.tama.tts.server.worlds.dimension.TDimensions;
+import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import org.jetbrains.annotations.NotNull;

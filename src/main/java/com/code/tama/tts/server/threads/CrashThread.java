@@ -1,15 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
+import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
+import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;

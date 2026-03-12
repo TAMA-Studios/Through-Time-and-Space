@@ -4,9 +4,9 @@ package com.code.tama.tts.client.renderers.tiles;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
+import com.code.tama.tts.core.tileentities.ChameleonCircuitPanelTileEntity;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
-import com.code.tama.tts.server.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

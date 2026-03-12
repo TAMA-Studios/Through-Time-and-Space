@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
-import com.code.tama.tts.server.networking.Networking;
+import com.code.tama.tts.core.networking.Networking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

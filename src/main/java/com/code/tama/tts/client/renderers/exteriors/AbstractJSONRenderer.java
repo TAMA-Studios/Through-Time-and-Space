@@ -3,7 +3,7 @@ package com.code.tama.tts.client.renderers.exteriors;
 
 import static com.mojang.math.Axis.XP;
 
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 

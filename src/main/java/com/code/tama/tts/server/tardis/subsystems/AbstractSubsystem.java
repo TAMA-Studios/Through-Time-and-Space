@@ -4,7 +4,7 @@ package com.code.tama.tts.server.tardis.subsystems;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.code.tama.tts.server.blocks.tardis.FragmentLinksBlock;
+import com.code.tama.tts.core.blocks.tardis.FragmentLinksBlock;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,7 @@ package com.code.tama.tts.client.UI.category;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
+import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 

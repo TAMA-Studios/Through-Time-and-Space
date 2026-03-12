@@ -1,43 +1,39 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.mixin.client.IMinecraftAccessor;
-import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.client.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
 
 	// Door animation constants — tweak these to taste
-	private static final float DOOR_MAX     = 5.625f; // counter range 0 → this
-	private static final float DOOR_SPEED   = 0.10f;  // counter units per frame (~37 frames = ~1.8s)
-	// (What the fuck was I on when I did that math... at 60fps 37 frames is roughly half a second)
-	private static final float DOOR_MAX_DEG = 75f;    // max rotation in degrees when fully open
+	private static final float DOOR_MAX = 5.625f; // counter range 0 → this
+	private static final float DOOR_SPEED = 0.10f; // counter units per frame (~37 frames = ~1.8s)
+	// (What the fuck was I on when I did that math... at 60fps 37 frames is roughly
+	// half a second)
+	private static final float DOOR_MAX_DEG = 75f; // max rotation in degrees when fully open
 
 	public TardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
 	}
@@ -46,21 +42,19 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	}
 
 	/**
-	 * Smoothstep easing: ease-in AND ease-out.
-	 * Input t is 0.0–1.0, output is 0.0–1.0.
-	 * Accelerates off the latch, decelerates into the stop.
+	 * Smoothstep easing: ease-in AND ease-out. Input t is 0.0–1.0, output is
+	 * 0.0–1.0. Accelerates off the latch, decelerates into the stop.
 	 *
-	 * TODO: Consider Swapping the body for:
-	 *   (float) Math.sin(t * Math.PI / 2)
-	 * for faster start, gradual stop. See how that looks. Maybe.
+	 * TODO: Consider Swapping the body for: (float) Math.sin(t * Math.PI / 2) for
+	 * faster start, gradual stop. See how that looks. Maybe.
 	 */
 	private static float easing(float t) {
-		return (float)((1.0 - Math.cos(t * Math.PI)) / 2.0);
+		return (float) ((1.0 - Math.cos(t * Math.PI)) / 2.0);
 	}
 
 	@Override
 	public void render(@NotNull T exteriorTile, float partialTicks, @NotNull PoseStack stack,
-					   @NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
+			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 		if (exteriorTile.getLevel() != null
 				&& exteriorTile.getLevel().getBlockState(exteriorTile.getBlockPos()).getBlock().equals(Blocks.AIR))
 			return;
@@ -94,7 +88,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		}
 
 		// Normalize 0–DOOR_MAX to 0.0–1.0, run through curve, scale to degrees
-		float leftAngle  = easing(data.FrameLeft  / DOOR_MAX) * DOOR_MAX_DEG;
+		float leftAngle = easing(data.FrameLeft / DOOR_MAX) * DOOR_MAX_DEG;
 		float rightAngle = easing(data.FrameRight / DOOR_MAX) * DOOR_MAX_DEG;
 
 		stack.pushPose();
@@ -116,10 +110,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 		JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
-		parsed.getPart("LeftDoor").yRot  = (float) Math.toRadians( leftAngle);
+		parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(leftAngle);
 		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-rightAngle);
 
-		ModelPart boti        = parsed.getPart("BOTI").modelPart;
+		ModelPart boti = parsed.getPart("BOTI").modelPart;
 		ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
 
 		if (false) {
@@ -150,62 +144,18 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 					},
 
 					// FRAME PASS — unused, sky handled in scene pass
-					(pose, buffer) -> {},
+					(pose, buffer) -> {
+					},
 
 					// SCENE PASS — sky > BOTI blocks → door overlay (front-most)
 					(pose, botiSource) -> {
-						// 1. Sky background
 						pose.pushPose();
-						pose.scale(2, 4, 2);
-						if (exteriorTile.SkyColor == null
-								|| (Minecraft.getInstance().level != null
-								? Minecraft.getInstance().level.getGameTime() : 1) % 1200 == 0) {
-							if (exteriorTile.type != null) {
-								Minecraft mc = Minecraft.getInstance();
-								mc.execute(() -> {
-									ClientLevel oldLevel = mc.level;
-									assert mc.level != null;
-									Holder<DimensionType> dimType = mc.level.registryAccess()
-											.registryOrThrow(Registries.DIMENSION_TYPE)
-											.getHolderOrThrow(exteriorTile.dimensionTypeId);
-									LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
-											mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
-									assert mc.player != null;
-									ClientLevel level = new ClientLevel(mc.player.connection, mc.level.getLevelData(),
-											exteriorTile.targetLevel, dimType,
-											mc.options.getEffectiveRenderDistance(),
-											mc.options.getEffectiveRenderDistance(),
-											mc.level.getProfilerSupplier(), renderer, false, 0);
-									renderer.setLevel(level);
-									mc.level = level;
-									exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(
-											exteriorTile.targetPos.getCenter(),
-											((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-									mc.level = oldLevel;
-								});
-							} else {
-								Minecraft.getInstance().execute(() -> {
-									assert Minecraft.getInstance().player != null;
-									assert Minecraft.getInstance().level != null;
-									exteriorTile.SkyColor = Minecraft.getInstance().level.getSkyColor(
-											Minecraft.getInstance().player.position(),
-											((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
-								});
-							}
-						}
-						StencilUtils.drawColoredCube(stack, 1, exteriorTile.SkyColor);
-						botiSource.endBatch();
-						pose.popPose();
-
-						// 2. BOTI block scene
-						pose.pushPose();
-						pose.translate(-0.5, -0.5, -0.5);
+						pose.translate(-0.5, 1.4, -0.62);
 						pose.mulPose(Axis.XP.rotationDegrees(180));
 						BOTIUtils.RenderScene(pose, exteriorTile);
 						botiSource.endBatch();
 						pose.popPose();
 
-						// 3. Door overlay — rendered on top of BOTI, depth test off so it always wins
 						pose.pushPose();
 						pose.translate(0, 1.5, 0);
 						RenderSystem.disableDepthTest();
@@ -219,8 +169,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						((MultiBufferSource.BufferSource) bufferSource).endBatch();
 						RenderSystem.enableDepthTest();
 						pose.popPose();
-					}
-			);
+					});
 
 			// Flush again after FBOHelper returns — anything queued inside the lambdas
 			// via bufferSource lands on main while we know mainTarget is correctly bound.
@@ -231,12 +180,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 		stack.translate(0, 1.5, 0);
 		parsed.getPart("baseRoot").render(stack,
-				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
-				combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
 
 		parsed.getPart("baseRoot").render(stack,
-				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())),
-				0xf000f0, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())), 0xf000f0,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
 
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
 

@@ -4,7 +4,7 @@ package com.code.tama.tts.server.tardis.control_lists;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.code.tama.tts.server.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 
 public class HudolinControlList extends AbstractControlList {

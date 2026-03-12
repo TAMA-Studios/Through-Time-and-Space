@@ -1,15 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
-import com.code.tama.tts.config.FlightType;
-import com.code.tama.tts.config.TTSConfig;
+import com.code.tama.tts.core.config.FlightType;
+import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.entities.controls.ModularControl;
+import com.code.tama.tts.core.networking.Networking;
+import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
+import com.code.tama.tts.core.registries.forge.TTSParticles;
+import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.entities.controls.ModularControl;
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
-import com.code.tama.tts.server.registries.forge.TTSParticles;
-import com.code.tama.tts.server.tileentities.AbstractConsoleTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;

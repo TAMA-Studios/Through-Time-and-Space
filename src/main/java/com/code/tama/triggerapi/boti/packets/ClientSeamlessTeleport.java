@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.boti.packets;
 
-import com.code.tama.triggerapi.networking.ImAPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -10,6 +9,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.code.tama.triggerapi.networking.ImAPacket;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientSeamlessTeleport implements ImAPacket {
@@ -23,7 +24,7 @@ public class ClientSeamlessTeleport implements ImAPacket {
 		ResourceKey<Level> destDim = ResourceKey.create(Registries.DIMENSION, packet.dimension());
 
 		// If we're already in the right dimension (server already moved us),
-		// just do a smooth position update — no screen change needed
+		// just do a smooth position update, no screen change needed
 		if (mc.level != null && mc.level.dimension() == destDim) {
 			if (mc.player != null) {
 				mc.player.moveTo(packet.x(), packet.y(), packet.z(), packet.yaw(), packet.pitch());
@@ -34,7 +35,7 @@ public class ClientSeamlessTeleport implements ImAPacket {
 		}
 
 		// Cross-dimension: we need to switch the client level
-		// This is the core of the seamlessness — replicate what handleRespawn does
+		// This is the core of the seamlessness -- replicate what handleRespawn does
 		// but WITHOUT calling setScreen(downloadingTerrain) or setScreen(null)
 
 		// The mixin on ClientPacketListener.handleRespawn will have already

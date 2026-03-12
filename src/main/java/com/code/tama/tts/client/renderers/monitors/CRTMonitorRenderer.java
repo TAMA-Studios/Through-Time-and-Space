@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.monitors;
 
-import com.code.tama.tts.server.tileentities.monitors.CRTMonitorTile;
+import com.code.tama.tts.core.tileentities.monitors.CRTMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

@@ -1,33 +1,12 @@
 {
-  "client": [
-    "client.ILevelRendererAccessor",
-    "client.IMinecraftAccessor",
-    "client.LevelRendererMixin",
-    "client.MapInstanceAccessor",
-    "client.MixinMapRenderer",
-    "client.MixinRenderTarget",
-    "client.RenderStateShardAccessor"
-  ],
-  "compatibilityLevel": "JAVA_8",
-  "injectors": {
-    "defaultRequire": 1
+  "client" : [ "client.ILevelRendererAccessor", "client.IMinecraftAccessor", "client.LevelRendererMixin", "client.MapInstanceAccessor", "client.MixinMapRenderer", "client.MixinRenderTarget", "client.RenderStateShardAccessor", "seamlessTele.ClientPacketListenerAccessor", "seamlessTele.MixinClientPacketListener", "seamlessTele.MixinMinecraft" ],
+  "compatibilityLevel" : "JAVA_8",
+  "injectors" : {
+    "defaultRequire" : 1
   },
-  "minVersion": "0.8",
-  "mixins": [
-    "BlockAccessor",
-    "BlockBehaviorAccessor",
-    "BlockBehaviourPropertiesAccessor",
-    "PistonBlockMixin",
-    "PlayerMixin",
-    "ProjectileGravityMixin",
-    "RedstoneWireMixin",
-    "mavity.FallingBlockGravityMixin",
-    "mavity.LivingEntityGravityMixin",
-    "seamlessTele.ClientPacketListenerAccessor",
-    "seamlessTele.MixinClientPacketListener",
-    "seamlessTele.MixinServerPlayer"
-  ],
-  "package": "com.code.tama.tts.mixin",
-  "refmap": "mixins-refmap.tts.json",
-  "required": true
+  "minVersion" : "0.8",
+  "mixins" : [ "BlockAccessor", "BlockBehaviorAccessor", "BlockBehaviourPropertiesAccessor", "PistonBlockMixin", "PlayerMixin", "ProjectileGravityMixin", "RedstoneWireMixin", "mavity.FallingBlockGravityMixin", "mavity.LivingEntityGravityMixin", "seamlessTele.MixinServerPlayer" ],
+  "package" : "com.code.tama.tts.mixin",
+  "refmap" : "mixins-refmap.tts.json",
+  "required" : true
 }

@@ -6,7 +6,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.6
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.server.tileentities.NESSConsoleTile;
+import com.code.tama.tts.core.tileentities.NESSConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;

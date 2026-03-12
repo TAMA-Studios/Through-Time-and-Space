@@ -4,9 +4,9 @@ package com.code.tama.tts.server.data.json.lists;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.registries.tardis.ExteriorsRegistry;
 import lombok.Getter;
 
 public class DataExteriorList {

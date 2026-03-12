@@ -1,0 +1,89 @@
+/* (C) TAMA Studios 2025 */
+package com.code.tama.tts.core.networking.packets.S2C.exterior;
+
+import java.util.function.Supplier;
+
+import com.code.tama.tts.core.tileentities.ExteriorTile;
+import com.code.tama.tts.server.tardis.ExteriorState;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
+
+public class SyncExteriorPacketS2C {
+	final int doors;
+
+	final ExteriorState state;
+
+	final int blockX, blockY, blockZ; // Block position
+
+	final ResourceKey<Level> level;
+
+	final ResourceLocation model;
+
+	final BlockPos targetPos;
+
+	final float targetY;
+
+	final int variant;
+
+	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, int doorsOpen, int variant,
+			@NotNull ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
+		this.state = state;
+		this.doors = doorsOpen;
+		this.variant = variant;
+		this.model = model;
+		this.level = level;
+		this.targetY = targetY;
+		this.targetPos = targetPos;
+		this.blockX = x;
+		this.blockY = y;
+		this.blockZ = z;
+	}
+
+	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
+		return new SyncExteriorPacketS2C(buffer.readResourceLocation(), buffer.readEnum(ExteriorState.class),
+				buffer.readInt(), buffer.readInt(), buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
+				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
+	}
+
+	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
+		buffer.writeResourceLocation(packet.model);
+		buffer.writeEnum(packet.state);
+		buffer.writeInt(packet.doors);
+		buffer.writeInt(packet.variant);
+		buffer.writeResourceKey(packet.level);
+		buffer.writeFloat(packet.targetY);
+		buffer.writeJsonWithCodec(BlockPos.CODEC, packet.targetPos);
+		buffer.writeInt(packet.blockX);
+		buffer.writeInt(packet.blockY);
+		buffer.writeInt(packet.blockZ);
+	}
+
+	public static void handle(SyncExteriorPacketS2C packet, Supplier<NetworkEvent.Context> contextSupplier) {
+		NetworkEvent.Context context = contextSupplier.get();
+		context.enqueueWork(() -> {
+			// This code runs on the client side
+			BlockPos pos = new BlockPos(packet.blockX, packet.blockY, packet.blockZ);
+			if (Minecraft.getInstance().level != null) {
+				// Get the block entity at the given position.
+				if (Minecraft.getInstance().level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {
+					exteriorTile.targetY = packet.targetY;
+					exteriorTile.targetPos = packet.targetPos;
+					exteriorTile.targetLevel = packet.level;
+					exteriorTile.setModel(packet.variant);
+					exteriorTile.setModelIndex(packet.model);
+					exteriorTile.state = packet.state;
+					exteriorTile.SetDoorsOpen(packet.doors);
+				}
+			}
+		});
+		context.setPacketHandled(true);
+	}
+}

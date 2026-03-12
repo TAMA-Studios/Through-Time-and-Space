@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds;
 
-import com.code.tama.tts.server.worlds.dimension.TDimensions;
+import com.code.tama.tts.core.worlds.dimension.TDimensions;
 
 import net.minecraft.resources.ResourceLocation;
 

@@ -6,7 +6,7 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.code.tama.tts.server.tileentities.monitors.AbstractMonitorTile;
+import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;

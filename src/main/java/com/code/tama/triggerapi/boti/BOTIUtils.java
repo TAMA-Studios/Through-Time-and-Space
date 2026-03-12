@@ -1,19 +1,20 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
-import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
-import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.tts.config.TTSConfig;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.mixin.BlockAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.networking.Networking;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.geom.ModelPart;
@@ -38,10 +39,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
+import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
@@ -98,7 +100,7 @@ public class BOTIUtils {
 
 			minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 				pose.translate(-0.5f, 0.5f, 0.5f);
-//				pose.scale(0.2f, 0.2f, 0.2f);
+				// pose.scale(0.2f, 0.2f, 0.2f);
 				pose.mulPose(Axis.YP.rotationDegrees(cap.GetNavigationalData().getFacing().toYRot()));
 			});
 
@@ -148,26 +150,17 @@ public class BOTIUtils {
 					// and collector subtracts ZERO (no-op), keeping them 0-1 relative
 					FluidQuadCollector fluidCollector = new FluidQuadCollector(BlockPos.ZERO);
 
-                    assert Minecraft.getInstance().level != null;
-                    Minecraft.getInstance().getBlockRenderer().renderLiquid(
-							BlockPos.ZERO,                        // world pos for neighbor sampling — wrong dim but geometry shape is all we need
-							Minecraft.getInstance().level,
-							fluidCollector,
-							container.getState(),
-							fluidState
-					);
+					assert Minecraft.getInstance().level != null;
+					Minecraft.getInstance().getBlockRenderer().renderLiquid(BlockPos.ZERO, // world pos for neighbor
+																							// sampling — wrong dim but
+																							// geometry shape is all we
+																							// need
+							Minecraft.getInstance().level, fluidCollector, container.getState(), fluidState);
 
 					// Vertices are now 0-1 relative, add local pos to place them correctly
 					for (FluidQuadCollector.FluidVertex v : fluidCollector.getVertices()) {
-						buffer.vertex(
-										pos.getX() + v.x,
-										pos.getY() + v.y,
-										pos.getZ() + v.z
-								)
-								.color(v.r, v.g, v.b, v.a)
-								.uv(v.u, v.v)
-								.uv2(v.light)
-								.endVertex();
+						buffer.vertex(pos.getX() + v.x, pos.getY() + v.y, pos.getZ() + v.z).color(v.r, v.g, v.b, v.a)
+								.uv(v.u, v.v).uv2(v.light).endVertex();
 					}
 				}
 			}
@@ -187,17 +180,18 @@ public class BOTIUtils {
 
 				// Apply directional shading like vanilla does
 				float shade = switch (quad.getDirection()) {
-					case DOWN  -> 0.5f;
-					case UP    -> 1.0f;
+					case DOWN -> 0.5f;
+					case UP -> 1.0f;
 					case NORTH, SOUTH -> 0.8f;
-					case EAST, WEST   -> 0.6f;
+					case EAST, WEST -> 0.6f;
 				};
 
 				qr *= shade;
 				qg *= shade;
 				qb *= shade;
 
-				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, container.getLight(), OverlayTexture.NO_OVERLAY, true);
+				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, container.getLight(),
+						OverlayTexture.NO_OVERLAY, true);
 			}
 
 			stack.popPose();
@@ -224,20 +218,25 @@ public class BOTIUtils {
 	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
 			Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		Direction[] directions = Direction.values();
 		BakedModel model = blockRenderer.getBlockModel(state);
 		List<BakedQuad> quads = new java.util.ArrayList<>();
-		// render only non-occluded faces
-		for (Direction dir : directions) {
-			if(viewingFrom != null && dir.equals(viewingFrom.getOpposite())) continue;
+
+		quads.addAll(model.getQuads(state, null, rand));
+
+		for (Direction dir : Direction.values()) {
+			if (viewingFrom != null && dir.equals(viewingFrom.getOpposite()))
+				continue;
+
 			BlockPos neighbourPos = pos.relative(dir);
 			BotiBlockContainer neighborContainer = map.get(neighbourPos);
 			if (neighborContainer != null) {
 				if (BOTIUtils.shouldRenderFace(state, neighborContainer.getState(), Minecraft.getInstance().level, pos,
-						dir, neighbourPos))
+						dir, neighbourPos)) {
 					quads.addAll(model.getQuads(state, dir, rand));
-			} else
+				}
+			} else {
 				quads.addAll(model.getQuads(state, dir, rand));
+			}
 		}
 		return quads;
 	}

@@ -1,0 +1,44 @@
+/* (C) TAMA Studios 2025 */
+package com.code.tama.tts.core.blocks.subsystems;
+
+import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
+import lombok.Getter;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+
+public abstract class AbstractSubsystemBlock extends Block {
+	@Getter
+	private AbstractSubsystem subsystem;
+
+	public AbstractSubsystemBlock(Properties p_49795_, AbstractSubsystem subsystem) {
+		super(p_49795_);
+		this.subsystem = subsystem;
+	}
+
+	public void OnActivate(Level level, BlockPos blockPos) {
+		this.getSubsystem().OnActivate(level, blockPos);
+	}
+
+	public void OnDeActivate(Level level, BlockPos blockPos) {
+		this.getSubsystem().OnDeActivate(level, blockPos);
+	}
+
+	/**
+	 * Called when the subsystem is tied into the engine block via fragment links
+	 *
+	 * @param blockPos
+	 *            The position of the subsystem block being integrated, used for
+	 *            verifying that it in indeed a valid multiblock structure
+	 */
+	public void OnIntegration(Level level, BlockPos blockPos) {
+		this.subsystem.setBlockPos(blockPos);
+		if (this.subsystem.IsValid(level, blockPos)) {
+			level.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f);
+			this.OnActivate(level, blockPos);
+		}
+	}
+}

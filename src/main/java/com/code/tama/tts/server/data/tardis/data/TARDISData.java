@@ -1,7 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.triggerapi.codec.Codecs;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -20,16 +24,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.codec.Codecs;
 
 @Getter
 @Setter
@@ -74,7 +76,8 @@ public class TARDISData {
 		this.getDoorData().setLocation(coordinate);
 		this.getDoorData().setYRot(yRot);
 		this.doorBlock = coordinate.copy();
-		this.TARDIS.GetExteriorTile().setTargetLevel(this.TARDIS.GetLevel().dimension(), coordinate.GetBlockPos(), yRot, true);
+		this.TARDIS.GetExteriorTile().setTargetLevel(this.TARDIS.GetLevel().dimension(), coordinate.GetBlockPos(), yRot,
+				true);
 	}
 
 	public TARDISData(TARDISLevelCapability TARDIS) {

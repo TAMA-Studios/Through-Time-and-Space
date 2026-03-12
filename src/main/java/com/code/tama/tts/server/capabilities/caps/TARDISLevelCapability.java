@@ -1,10 +1,26 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import com.code.tama.tts.config.TTSConfig;
+import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
+import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.networking.Networking;
+import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
+import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
+import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
+import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
+import com.code.tama.tts.core.networking.packets.S2C.exterior.ExteriorStatePacket;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
+import com.code.tama.tts.core.registries.tardis.LandingTypeRegistry;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.CommonThreads;
 import com.code.tama.tts.server.ServerThreads;
-import com.code.tama.tts.server.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
@@ -14,20 +30,12 @@ import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.data.tardis.PowerHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
-import com.code.tama.tts.server.events.TardisEvent;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.networking.Networking;
-import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
-import com.code.tama.tts.server.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
-import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
-import com.code.tama.tts.server.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
-import com.code.tama.tts.server.networking.packets.S2C.exterior.ExteriorStatePacket;
-import com.code.tama.tts.server.registries.forge.TTSBlocks;
-import com.code.tama.tts.server.registries.tardis.FlightTerminationProtocolRegistry;
-import com.code.tama.tts.server.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.server.tardis.ExteriorState;
-import com.code.tama.tts.server.tileentities.ExteriorTile;
+import net.royawesome.jlibnoise.MathHelper;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,13 +55,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import net.royawesome.jlibnoise.MathHelper;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.code.tama.tts.server.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private final PowerHandler powerHandler = new PowerHandler(this);
@@ -240,8 +241,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 					this.ForceLoadExteriorChunk(true);
 
-					BlockEntity fromChunk = level.getServer().getLevel(GetCurrentLevel()).getBlockEntity(GetNavigationalData()
-							.GetExteriorLocation().GetBlockPos());
+					BlockEntity fromChunk = level.getServer().getLevel(GetCurrentLevel())
+							.getBlockEntity(GetNavigationalData().GetExteriorLocation().GetBlockPos());
 
 					if (fromChunk instanceof ExteriorTile tile)
 						return exteriorTile = tile;

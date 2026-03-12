@@ -4,7 +4,7 @@ package com.code.tama.tts.client.visual;
 import java.util.function.Consumer;
 
 import com.code.tama.tts.client.TTSPartialModels;
-import com.code.tama.tts.server.tileentities.FragmentLinksTile;
+import com.code.tama.tts.core.tileentities.FragmentLinksTile;
 import dev.engine_room.flywheel.api.instance.Instance;
 import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 import dev.engine_room.flywheel.lib.instance.InstanceTypes;
