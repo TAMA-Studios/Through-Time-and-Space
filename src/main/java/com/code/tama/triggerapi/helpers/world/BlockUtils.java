@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
@@ -14,6 +12,9 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class BlockUtils {
 	public static void breakBlock(Level world, BlockPos pos) {

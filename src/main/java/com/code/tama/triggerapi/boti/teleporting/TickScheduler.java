@@ -1,13 +1,13 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.boti.teleporting;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TickScheduler {
 
@@ -15,10 +15,11 @@ public class TickScheduler {
 
 	/**
 	 * Call this once from your mod's constructor or FMLCommonSetupEvent:
-	 *   MinecraftForge.EVENT_BUS.register(TickScheduler.class);
+	 * MinecraftForge.EVENT_BUS.register(TickScheduler.class);
 	 *
 	 * Without registration the @SubscribeEvent below never fires and scheduled
-	 * tasks (including chunk ticket release) will silently never run -- And it will be all your fault.
+	 * tasks (including chunk ticket release) will silently never run -- And it will
+	 * be all your fault.
 	 */
 	public static void register() {
 		MinecraftForge.EVENT_BUS.register(TickScheduler.class);

@@ -1,13 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti.client;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.core.BlockPos;
 
 public class FluidQuadCollector implements VertexConsumer {
 

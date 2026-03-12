@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.boti.packets;
 
-import com.code.tama.triggerapi.networking.ImAPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
@@ -10,6 +9,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.code.tama.triggerapi.networking.ImAPacket;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientSeamlessTeleport implements ImAPacket {
