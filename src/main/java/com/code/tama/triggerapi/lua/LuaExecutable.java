@@ -104,8 +104,10 @@ public class LuaExecutable {
 					LuaValue value = next.arg(2);
 					String keyStr = key.tojstring();
 
-					// Convert Lua value back to Java and update context
-					Object javaValue = fromLuaValue(value);
+					// LuaBridge.deserialize re-instantiates LuaSerializable objects from
+					// their __javaClass tag, and handles lists/maps/primitives too.
+					// fromLuaValue could only handle primitives — objects were lost.
+					Object javaValue = LuaBridge.deserialize(value);
 					context.set(keyStr, javaValue);
 
 					DEBUG("[Lua Extract] Extracted ctx." + keyStr + " = " + javaValue);
@@ -250,7 +252,10 @@ public class LuaExecutable {
 		DEBUG("[Lua Context] Creating Lua context table with {} variables" + context.getVariables().size());
 
 		for (java.util.Map.Entry<String, Object> entry : context.getVariables().entrySet()) {
-			LuaValue luaValue = toLuaValue(entry.getValue());
+			// LuaBridge.serialize handles LuaSerializable (fields + @LuaMethod functions),
+			// collections, and primitives. toLuaValue only handled primitives and would
+			// silently return NIL for any object — that was the serialization bug.
+			LuaValue luaValue = LuaBridge.serialize(entry.getValue());
 			contextTable.set(entry.getKey(), luaValue);
 
 			// DEBUG

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -133,4 +134,19 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	void UpdateExteriorState(ExteriorState state);
 
 	PowerHandler getEnergy();
+
+	/**
+	 * Returns a list of TARDIS dimension strings
+	 */
+	void receiveInterCommMessage(String message);
+
+	/**
+	 * Sends an Inter TARDIS Communications message to another TARDIS
+	 *
+	 * @param message
+	 *            The message to be sent
+	 * @param recipient
+	 *            The recipients TARDISes dimension RL
+	 */
+	void sendInterCommMessage(String message, ResourceLocation recipient);
 }

@@ -29,11 +29,9 @@ public class VortexRenderer {
 	private final Minecraft mc = Minecraft.getInstance();
 	private final Tesselator tesselator = Tesselator.getInstance();
 
-	// Textures (cached existence)
-
 	public final Map<LayerType, ResourceLocation> textureLayers = new EnumMap<>(LayerType.class);
 
-	// Parameters (tweak these)
+	// Parameters (TODO: tweak these)
 
 	private final float wobbleSpeed = 0.5f;
 	private final float wobbleSeparation = 32f;
@@ -44,7 +42,6 @@ public class VortexRenderer {
 	private float time = 0f;
 
 	public VortexRenderer(ResourceLocation baseTexture) {
-		// keep same naming convention as original for derived textures
 		textureLayers.put(LayerType.BASE, baseTexture);
 		textureLayers.put(LayerType.SECOND,
 				baseTexture.withPath(baseTexture.getPath().replace(".png", "") + "_two.png"));
@@ -77,21 +74,18 @@ public class VortexRenderer {
 			renderLayer(stack, layer, layer.equals(LayerType.SECOND) ? 1.5f : 2f);
 	}
 
-	/// Internal layer rendering (cached state)
+	/// Internal layer rendering
 	private void renderLayer(PoseStack stack, LayerType layerType, float scaleFactor) {
 		ResourceLocation texture = textureLayers.get(layerType);
 		if (texture == null)
 			return;
 
-		// update time once per layer
 		time += mc.getDeltaFrameTime() / 360f;
 
 		stack.pushPose();
 
-		// scale the entire layer
 		stack.scale(diameter / scaleFactor, diameter / scaleFactor, diameter);
 
-		// Setup shader + texture + blending
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.enableBlend();
@@ -100,11 +94,9 @@ public class VortexRenderer {
 		BufferBuilder buffer = tesselator.getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-		// compute texture scroll (uses world gameTime when available)
 		long gameTime = mc.level != null ? mc.level.getGameTime() : 0L;
 		float textureDistance = (gameTime / 200.0f) * -scrollSpeed;
 
-		// capture current matrices once per frame
 		Matrix4f pose = stack.last().pose();
 		Matrix3f normal = stack.last().normal();
 
@@ -129,22 +121,18 @@ public class VortexRenderer {
 		float distortion = computeDistortionFactor(time, zOffset);
 		float distortionPlusOne = computeDistortionFactor(time, zOffset + 1);
 
-		// v offsets
 		int vOffsetIndex = (zOffset * panel + ctx.textureDistance > 1.0f) ? zOffset - 6 : zOffset;
 		float vPanelOffset = (vOffsetIndex * panel) + ctx.textureDistance;
 		float panelDistanceOffset = panel + ctx.textureDistance;
 		float vPanelOffsetNext = vOffsetIndex * panel + panelDistanceOffset;
 
-		// iterate over 6 u-panels; each produces a single quad (4 verts)
 		for (int uOffset = 0; uOffset < 6; uOffset++) {
 			float uPanelOffset = uOffset * panel;
 			float uPanelOffsetPlus = uPanelOffset + panel;
 
-			// Default V direction (scrolls forward)
 			float v1 = vPanelOffset;
 			float v2 = vPanelOffsetNext;
 
-			// Flip V for upside-down panels (2 and 5)
 			boolean flipUV = (uOffset == 2 || uOffset == 5);
 
 			if (flipUV) {
@@ -188,8 +176,6 @@ public class VortexRenderer {
 		}
 	}
 
-	// Vertex helpers (quad = 4 verts)
-
 	private void addQuad(VertexConsumer builder, LevelRenderContext ctx, float x1, float y1, float z1, float x2,
 			float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float u1, float u2,
 			float v1, float v2) {
@@ -205,8 +191,6 @@ public class VortexRenderer {
 		builder.vertex(ctx.pose, x, y, z).color(1f, 1f, 1f, 1f).uv(u, v).uv2(FULL_BRIGHT).normal(ctx.normal, 0f, 0f, 0f)
 				.endVertex();
 	}
-
-	// Distortion math (cached params above)
 
 	private float computeDistortionFactor(float time, int t) {
 		return (float) (Math.sin(time * wobbleSpeed * 2.0 * Math.PI + (13 - t) * wobbleSeparation) * wobbleAmplitude)

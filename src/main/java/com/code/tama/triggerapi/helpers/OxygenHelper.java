@@ -4,10 +4,7 @@ package com.code.tama.triggerapi.helpers;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCap;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.code.tama.tts.server.data.json.dataHolders.DataDimOxygen;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +23,7 @@ public class OxygenHelper {
 	 */
 	public static float getO2(Level level) {
 		if (GetTARDISCapSupplier(level).isPresent()) {
-			return GetTARDISCap(level).GetEnvironmentalData().getOxygenLevel();
+			return Objects.requireNonNull(GetTARDISCap(level)).GetEnvironmentalData().getOxygenLevel();
 		}
 
 		return MAP.getOrDefault(level.dimension().location(), 1.0F);

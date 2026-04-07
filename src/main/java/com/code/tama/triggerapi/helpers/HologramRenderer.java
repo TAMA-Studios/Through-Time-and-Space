@@ -25,7 +25,7 @@ import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = TTSMod.MODID)
-public class RenderHelper {
+public class HologramRenderer {
 	private static VertexBuffer vbo;
 	private static boolean dirty = true;
 
@@ -41,6 +41,7 @@ public class RenderHelper {
 		if (mc.level == null)
 			return;
 
+		assert mc.player != null;
 		if (!mc.player.getInventory().getArmor(3).getItem().equals(TTSItems.HOLO_GLASSES.get()))
 			return;
 
@@ -58,8 +59,6 @@ public class RenderHelper {
 		PoseStack poseStack = event.getPoseStack();
 		poseStack.pushPose();
 
-		// IMPORTANT: VBO already contains world-space vertices.
-		// We translate by negative camera position once.
 		poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
 		RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);

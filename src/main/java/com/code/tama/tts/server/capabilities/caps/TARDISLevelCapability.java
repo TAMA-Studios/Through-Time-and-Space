@@ -3,9 +3,13 @@ package com.code.tama.tts.server.capabilities.caps;
 
 import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.events.TardisEvent;
@@ -33,16 +37,19 @@ import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
+import lombok.Getter;
 import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -61,10 +68,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
-
 	private TARDISEnvironmentalData environmentalData = new TARDISEnvironmentalData(this);
 	@OnlyIn(Dist.CLIENT)
 	private final TARDISClientData clientData = new TARDISClientData(this);
+
+	@Getter
+	private final List<String> InterCommsMessages = new ArrayList<>();
 
 	private TARDISFlightData flightData = new TARDISFlightData(this);
 	Level level;
@@ -86,6 +95,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		tag.put("environmental_data",
 				TARDISEnvironmentalData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
 
+		for (int i = 0; i < InterCommsMessages.size(); i++) {
+			tag.putString("mes_" + i, InterCommsMessages.get(i));
+		}
+
+		tag.putInt("messages", InterCommsMessages.size());
+
 		return tag;
 	}
 
@@ -103,6 +118,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.navigationalData.setTARDIS(this);
 		this.flightData.setTARDIS(this);
 		this.environmentalData.setTARDIS(this);
+
+		for (int i = 0; i < nbt.getInt("messages"); i++) {
+			InterCommsMessages.add(nbt.getString("mes_" + i));
+		}
 	}
 
 	public TARDISData GetData() {
@@ -479,7 +498,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void Rematerialize() {
 		// if (!this.flightData.isInFlight())
-		// return;
+		// return;i
 
 		TardisEvent.Land event = new TardisEvent.Land(this, TardisEvent.State.START);
 		MinecraftForge.EVENT_BUS.post(event);
@@ -688,5 +707,29 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public ServerLevel getExteriorLevel() {
 		return this.GetNavigationalData().getDestination().getLevel().getServer()
 				.getLevel(this.navigationalData.getLocation().getLevelKey());
+	}
+
+	public void sendInterCommMessage(String message, ResourceLocation recipient) {
+		if (level.isClientSide)
+			return;
+		GetTARDISCapSupplier(Objects.requireNonNull(Objects.requireNonNull(level.getServer())
+				.getLevel(ResourceKey.create(Registries.DIMENSION, recipient)))).ifPresent(cap -> {
+					cap.receiveInterCommMessage(message);
+				});
+	}
+
+	/**
+	 * Recieves an Inter TARDIS Communications Message
+	 *
+	 * @param message
+	 *            The message to be received
+	 */
+	public void receiveInterCommMessage(String message) {
+		this.InterCommsMessages.add(message);
+	}
+
+	public static List<String> getTARDISes(MinecraftServer server) {
+		return server.levelKeys().stream().map(ResourceKey::location).map(ResourceLocation::toString)
+				.filter(dim -> dim.startsWith(TTSMod.MODID + "-tardis:")).collect(Collectors.toList());
 	}
 }

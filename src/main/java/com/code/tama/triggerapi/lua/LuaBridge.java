@@ -11,12 +11,23 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.*;
 
+import com.code.tama.triggerapi.lua.argFunctions.*;
+
 public class LuaBridge {
 
 	// Cache for reflection data
 	private static final Map<Class<?>, List<FieldInfo>> FIELD_CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, List<MethodInfo>> METHOD_ANNOTATION_CACHE = new ConcurrentHashMap<>();
 
 	private record FieldInfo(Field field, String luaName) {
+	}
+
+	/**
+	 * Mirrors {@link FieldInfo} for {@link LuaMethod}-annotated methods.
+	 * {@code luaName} is the key written into the Lua table; the {@code Method} is
+	 * made accessible once at cache-build time.
+	 */
+	private record MethodInfo(Method method, String luaName) {
 	}
 
 	public static boolean isUnsafe(LuaValue value) {
@@ -219,6 +230,7 @@ public class LuaBridge {
 
 				table.set("__javaClass", obj.getClass().getName());
 
+				// ── @LuaField fields ──────────────────────────────────────────────────
 				for (FieldInfo fieldInfo : getCachedFields(obj.getClass())) {
 					try {
 						Object value = fieldInfo.field.get(obj);
@@ -226,6 +238,14 @@ public class LuaBridge {
 					} catch (IllegalAccessException e) {
 						throw new LuaError("Cannot access field " + fieldInfo.field.getName());
 					}
+				}
+
+				// ── @LuaMethod methods — each wrapper closes over the live Java object,
+				// so mutations to fields are visible to subsequent method calls. ────
+				for (MethodInfo mi : getCachedAnnotatedMethods(obj.getClass())) {
+					LibFunction fn = createFunctionWrapper(obj, mi.method(), mi.method().getParameterCount(), false);
+					if (fn != null)
+						table.set(mi.luaName(), fn);
 				}
 
 				return table;
@@ -1349,6 +1369,87 @@ public class LuaBridge {
 			}
 
 			return List.copyOf(fields); // Immutable
+		});
+	}
+
+	// =========================================================================
+	// PUBLIC SERIALIZATION API
+	// =========================================================================
+
+	/**
+	 * Converts any supported Java object to a {@link LuaValue}.
+	 *
+	 * <ul>
+	 * <li>Primitives, String → direct Lua equivalents</li>
+	 * <li>Arrays, {@link java.util.List}, {@link java.util.Map} → Lua tables</li>
+	 * <li>{@link LuaSerializable} → Lua table with {@link LuaField} data and
+	 * {@link LuaMethod} functions; pass the result to Lua and call methods or
+	 * read/write fields directly</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * This is the primary entry point used by {@link LuaExecutable#contextTable} so
+	 * that {@link LuaSerializable} objects placed in a {@code ScriptContext} are
+	 * fully accessible from Lua instead of silently becoming {@code nil}.
+	 */
+	public static LuaValue serialize(Object obj) {
+		return javaToLua(obj);
+	}
+
+	/**
+	 * Converts a {@link LuaValue} back to a Java object using auto-detection.
+	 *
+	 * <ul>
+	 * <li>Lua booleans, numbers, strings → their Java equivalents</li>
+	 * <li>Lua tables that contain {@code __javaClass} → re-instantiated as the
+	 * named {@link LuaSerializable} and fields populated from the table</li>
+	 * <li>Lua arrays (numeric keys) → {@link java.util.List}</li>
+	 * <li>Lua maps (mixed keys) → {@link java.util.Map}</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * This is used by {@link LuaExecutable#extractContextChanges} so that objects
+	 * mutated in Lua are round-tripped back into the Java {@code ScriptContext}
+	 * correctly instead of being lost.
+	 */
+	public static Object deserialize(LuaValue value) {
+		return luaToJavaAuto(value, new HashSet<>());
+	}
+
+	// =========================================================================
+
+	/**
+	 * Returns cached {@link LuaMethod}-annotated methods for {@code clazz}, walking
+	 * the full inheritance hierarchy. Methods are made accessible once at
+	 * cache-build time. Methods with more than 10 parameters are skipped because
+	 * {@code createFunctionWrapper} only handles 0-10 args.
+	 */
+	private static List<MethodInfo> getCachedAnnotatedMethods(Class<?> clazz) {
+		return METHOD_ANNOTATION_CACHE.computeIfAbsent(clazz, c -> {
+			List<MethodInfo> methods = new ArrayList<>();
+			Class<?> current = c;
+
+			while (current != null && current != Object.class) {
+				for (Method method : current.getDeclaredMethods()) {
+					if (!method.isAnnotationPresent(LuaMethod.class))
+						continue;
+					if (method.isSynthetic() || method.isBridge())
+						continue;
+					if (method.getParameterCount() > 10)
+						continue;
+
+					method.setAccessible(true);
+
+					String luaName = method.getAnnotation(LuaMethod.class).value();
+					if (luaName.isEmpty())
+						luaName = method.getName();
+
+					methods.add(new MethodInfo(method, luaName));
+				}
+				current = current.getSuperclass();
+			}
+
+			return List.copyOf(methods);
 		});
 	}
 

@@ -176,7 +176,6 @@ public class StencilUtils {
 	}
 
 	public static void endStencil() {
-		// Just disable — don't clear or overdraw
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
 		GL11.glStencilMask(0xFF);
 		GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);

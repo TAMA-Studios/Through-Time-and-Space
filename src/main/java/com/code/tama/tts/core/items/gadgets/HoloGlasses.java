@@ -5,6 +5,8 @@ import com.code.tama.tts.client.ClientSetup;
 import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
@@ -13,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
-import com.code.tama.triggerapi.helpers.RenderHelper;
+import com.code.tama.triggerapi.helpers.HologramRenderer;
 
 public class HoloGlasses extends ArmorItem {
 	DematerializationCircuit circuit = new DematerializationCircuit();
@@ -24,11 +26,16 @@ public class HoloGlasses extends ArmorItem {
 	@Override
 	public void onArmorTick(ItemStack stack, Level level, Player player) {
 		if (level.isClientSide) {
-			while (ClientSetup.HOLO_GLASSES_GUI.consumeClick()) {
+			while (ClientSetup.SONIC_GLASSES.consumeClick()) {
 				// TODO: GUI
 			}
 		}
 		super.onArmorTick(stack, level, player);
+	}
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level p_40395_, Player p_40396_, InteractionHand p_40397_) {
+		return super.use(p_40395_, p_40396_, p_40397_);
 	}
 
 	public void renderDematCircuit() {
@@ -36,7 +43,7 @@ public class HoloGlasses extends ArmorItem {
 			Player player = Minecraft.getInstance().player;
 			circuit.BlockMap().forEach((pos, blockState) -> {
 				assert player != null;
-				RenderHelper.addBlockToRender(pos.offset(player.blockPosition().getX(),
+				HologramRenderer.addBlockToRender(pos.offset(player.blockPosition().getX(),
 						player.blockPosition().above().getY(), player.blockPosition().getZ()), blockState);
 
 			});

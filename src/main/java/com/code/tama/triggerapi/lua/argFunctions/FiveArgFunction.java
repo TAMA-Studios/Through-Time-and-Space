@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2026 */
-package com.code.tama.triggerapi.lua;
+package com.code.tama.triggerapi.lua.argFunctions;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
