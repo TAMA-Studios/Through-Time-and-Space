@@ -40,9 +40,9 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
 			int type, IntBuffer pixels) {
 		if (internalFormat == GL_DEPTH_COMPONENT && tts$isStencilEnabled)
 			GlStateManager._texImage2D(target, level,
-					!GlUtil.getVendor().toLowerCase().contains("nvidia") ? GL_DEPTH32F_STENCIL8 : GL_DEPTH24_STENCIL8,
-					width, height, border, ARBFramebufferObject.GL_DEPTH_STENCIL,
-					!GlUtil.getVendor().toLowerCase().contains("nvidia")
+					isShitImeanNVIDIAAndShouldUseCompatMode() ? GL_DEPTH32F_STENCIL8 : GL_DEPTH24_STENCIL8, width,
+					height, border, ARBFramebufferObject.GL_DEPTH_STENCIL,
+					isShitImeanNVIDIAAndShouldUseCompatMode()
 							? GL_FLOAT_32_UNSIGNED_INT_24_8_REV
 							: GL30.GL_UNSIGNED_INT_24_8,
 					pixels);
@@ -62,5 +62,11 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
 			((RenderTarget) (Object) this).resize(((RenderTarget) (Object) this).width,
 					((RenderTarget) (Object) this).height, Minecraft.ON_OSX);
 		}
+	}
+
+	// Returns true if your GPU is shi-I mean NVIDIA And should use compatibility
+	// mode
+	@Unique private static boolean isShitImeanNVIDIAAndShouldUseCompatMode() {
+		return GlUtil.getVendor().toLowerCase().contains("nvidia");
 	}
 }

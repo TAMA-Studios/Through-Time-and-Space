@@ -261,7 +261,6 @@ public class ExteriorTile extends AbstractPortalTile {
 				player.getAbilities().flying = false;
 				player.onUpdateAbilities();
 			}
-
 			SeamlessTeleport.teleportTo(EntityToTeleport, Interior, X, Y, Z, yRot, xRot);
 			// EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
 

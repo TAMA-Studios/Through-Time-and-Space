@@ -17,26 +17,51 @@ import com.code.tama.triggerapi.boti.teleporting.ClientSeamlessTeleportState;
 @Mixin(ClientPacketListener.class)
 public abstract class MixinClientPacketListener {
 
-	@Unique private static final Logger throughTimeAndSpace$LOGGER = LogManager
-			.getLogger("TTS$SeamlessTele#ClientPacketListener");
+	@Unique private static final Logger LOGGER = LogManager.getLogger("TTS$SeamlessTele#ClientPacketListener");
 
-	@Unique private boolean tts$suppressLoadingScreen = false;
+	// Whether THIS invocation of handleRespawn pushed suppression.
+	// Instance field so each re-entrant call (Netty thread vs Render thread)
+	// tracks its own push independently.
+	@Unique private boolean tts$pushedSuppression = false;
 
-	@Inject(method = "handleRespawn", at = @At("HEAD"))
+	@Inject(method = "handleRespawn", at = @At("HEAD"), cancellable = true)
 	private void tts$onHandleRespawnHead(ClientboundRespawnPacket packet, CallbackInfo ci) {
 		boolean pending = ClientSeamlessTeleportState.isSeamlessPending();
-		throughTimeAndSpace$LOGGER.info("[SMLS] handleRespawn HEAD — isSeamlessPending={}", pending);
+		boolean expecting = ClientSeamlessTeleportState.isExpectingSeamlessRespawn();
+
+		LOGGER.info("[SMLS] handleRespawn HEAD — pending={}, expecting={}, thread={}", pending, expecting,
+				Thread.currentThread().getName());
+
 		if (pending) {
-			tts$suppressLoadingScreen = true;
+			// COMMIT arrived before the respawn packet — normal fast path.
+			// Only push suppression once; the Render thread is the one that
+			// actually executes vanilla handleRespawn body and calls setScreen.
+			ClientSeamlessTeleportState.pushSuppression();
+			tts$pushedSuppression = true;
 			ClientSeamlessTeleportState.clearPending();
-			ClientSeamlessTeleportState.setSuppressingLoadingScreen(true);
+			return;
 		}
+
+		if (expecting) {
+			// Respawn arrived before COMMIT — hold it and cancel this call.
+			// replayHeldRespawnIfAny() will re-invoke handleRespawn after
+			// pushing suppression itself.
+			ClientSeamlessTeleportState.holdRespawn(packet);
+			ci.cancel();
+			return;
+		}
+
+		// Not a seamless teleport — let vanilla run.
+		tts$pushedSuppression = false;
 	}
 
 	@Inject(method = "handleRespawn", at = @At("RETURN"))
 	private void tts$onHandleRespawnReturn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		throughTimeAndSpace$LOGGER.info("[SMLS] handleRespawn RETURN — suppressed={}", tts$suppressLoadingScreen);
-		tts$suppressLoadingScreen = false;
-		ClientSeamlessTeleportState.setSuppressingLoadingScreen(false);
+		LOGGER.info("[SMLS] handleRespawn RETURN — pushedSuppression={}, thread={}", tts$pushedSuppression,
+				Thread.currentThread().getName());
+		if (tts$pushedSuppression) {
+			ClientSeamlessTeleportState.popSuppression();
+			tts$pushedSuppression = false;
+		}
 	}
 }

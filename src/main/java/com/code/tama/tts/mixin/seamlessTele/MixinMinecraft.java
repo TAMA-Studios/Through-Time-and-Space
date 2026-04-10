@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ProgressScreen;
 import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -23,10 +24,16 @@ public abstract class MixinMinecraft {
 	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
 	private void tts$suppressLoadingScreen(Screen screen, CallbackInfo ci) {
 		boolean suppressing = ClientSeamlessTeleportState.isSuppressingLoadingScreen();
-		// Log EVERY setScreen call so we can see what's happening
-		LOGGER.info("[SMLS] setScreen called — screen={}, suppressing={}",
+
+		LOGGER.info("[SMLS] setScreen — screen={}, suppressing={}",
 				screen == null ? "null" : screen.getClass().getSimpleName(), suppressing);
-		if (suppressing && (screen instanceof ReceivingLevelScreen || screen == null)) {
+
+		if (!suppressing)
+			return;
+
+		// Suppress the "Joining World" / "Downloading terrain" screens and their
+		// dismissal (setScreen(null)) while a seamless teleport is in progress.
+		if (screen == null || screen instanceof ReceivingLevelScreen || screen instanceof ProgressScreen) {
 			LOGGER.info("[SMLS] setScreen SUPPRESSED for {}",
 					screen == null ? "null" : screen.getClass().getSimpleName());
 			ci.cancel();

@@ -14,17 +14,15 @@ import com.code.tama.triggerapi.boti.teleporting.ClientSeamlessTeleportState;
 import com.code.tama.triggerapi.networking.ImAPacket;
 
 /**
- * This packet has two modes, distinguished by whether a UUID is present:
+ * Two modes, distinguished by whether a UUID is present:
  *
- * PREPARE new SeamlessPreparePacket(uuid) Sent at the start of a gather. Opens
- * the client staging buffer under the given UUID so incoming
- * SeamlessChunkPreloadPacketS2C batches are accepted.
+ * PREPARE — new SeamlessPreparePacket(uuid) Sent when a gather starts. Opens
+ * the staging buffer and sets expectingSeamlessRespawn so the mixin knows to
+ * HOLD the next ClientboundRespawnPacket until the COMMIT arrives.
  *
- * COMMIT new SeamlessPreparePacket() Sent immediately before changeDimension.
- * Arms the handleRespawn mixin. In the no-preload path this arrives before any
- * geometry, so the client tick mixin holds the respawn packet until geometry
- * lands (or 5 second timeout). In the preloaded path geometry is already staged
- * and the switch is instant.
+ * COMMIT — new SeamlessPreparePacket() Sent immediately before changeDimension
+ * on the server. Sets pending=true and replays the held respawn packet if it
+ * already arrived.
  */
 public class SeamlessPreparePacket implements ImAPacket {
 
@@ -65,19 +63,25 @@ public class SeamlessPreparePacket implements ImAPacket {
 	}
 
 	// -------------------------------------------------------------------------
-	// Handler
+	// Handler — runs on the main client thread via enqueueWork
 	// -------------------------------------------------------------------------
 
 	public static void handle(SeamlessPreparePacket msg, Supplier<NetworkEvent.Context> ctxSupplier) {
 		NetworkEvent.Context ctx = ctxSupplier.get();
 		ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			if (msg.teleportId != null) {
-				// PREPARE: open the staging buffer under this UUID.
+				// PREPARE: open staging buffer and arm the hold.
 				ClientSeamlessTeleportState.openStagingBuffer(msg.teleportId);
+				ClientSeamlessTeleportState.setExpectingSeamlessRespawn();
 			} else {
-				// COMMIT: arm the mixin. Guard against double-fire.
+				// COMMIT: arm the pending flag and replay held packet if needed.
+				// Guard against double-fire.
 				if (!ClientSeamlessTeleportState.isSeamlessPending()) {
 					ClientSeamlessTeleportState.setPending();
+					ClientSeamlessTeleportState.clearExpectingSeamlessRespawn();
+					// If the respawn packet already arrived and was held, replay it now.
+					// replayHeldRespawnIfAny calls pushSuppression itself before replaying.
+					ClientSeamlessTeleportState.replayHeldRespawnIfAny();
 				}
 			}
 		}));

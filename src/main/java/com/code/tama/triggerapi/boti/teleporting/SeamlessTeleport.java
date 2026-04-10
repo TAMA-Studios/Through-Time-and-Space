@@ -55,7 +55,7 @@ public class SeamlessTeleport {
 		UUID teleportId = UUID.randomUUID();
 		ACTIVE_PREPARES.put(player.getUUID(), teleportId);
 
-		// Tell the client to open its staging buffer under this UUID.
+		// Tell the client to open its staging buffer under this UUID and arm the hold.
 		Networking.sendToPlayer(player, new SeamlessPreparePacket(teleportId));
 
 		startGatherThread(player, destLevel, destPos, yaw, teleportId,
@@ -81,9 +81,6 @@ public class SeamlessTeleport {
 		teleportCrossDimension(player, destLevel, x, y, z, yaw, pitch);
 	}
 
-	/**
-	 * HEY! This method is supposed to be internal, why are you here!?
-	 */
 	private static void teleportCrossDimension(ServerPlayer player, ServerLevel destLevel, double x, double y, double z,
 			float yaw, float pitch) {
 		LOGGER.info("[ST] teleportCrossDimension → {}", destLevel.dimension().location());
@@ -91,35 +88,41 @@ public class SeamlessTeleport {
 		BlockPos centre = BlockPos.containing(x, y, z);
 		addChunkTickets(destLevel, centre, preloadRadius);
 
-		// Cancel any in-flight prepare() gather for this player. Its geometry
-		// packets will be discarded on the client by the UUID mismatch guard.
+		// Cancel any in-flight prepare() gather for this player.
+		// Its geometry packets will be discarded on the client by the UUID mismatch
+		// guard.
 		UUID oldPrepareId = ACTIVE_PREPARES.remove(player.getUUID());
-
-		boolean geometryPreloaded = oldPrepareId == null && SeamlessTeleportState.isPrepared(player);
+		boolean geometryPreloaded = oldPrepareId != null && SeamlessTeleportState.isPrepared(player);
 
 		if (!geometryPreloaded) {
-			// No preloaded geometry, kick off async gather so it arrives
+			// No preloaded geometry — kick off an async gather so it arrives
 			// shortly after the player lands.
 			LOGGER.info("[ST] No pre-loaded geometry — firing async gather.");
 			UUID teleportId = UUID.randomUUID();
+			// PREPARE packet: opens the staging buffer AND arms the respawn-hold.
 			Networking.sendToPlayer(player, new SeamlessPreparePacket(teleportId));
 			startGatherThread(player, destLevel, centre, yaw, teleportId, "SeamlessTeleport-InlineGather", null,
 					() -> TickScheduler.runAfter(100, () -> removeChunkTickets(destLevel, centre, preloadRadius)));
 		} else {
 			LOGGER.info("[ST] Geometry pre-loaded, instant switch.");
+			// Still need to arm the hold even in the preloaded path, because the
+			// client needs to know the next respawn is ours.
+			// Re-use the old prepare ID so the staging buffer UUID stays consistent.
+			Networking.sendToPlayer(player, new SeamlessPreparePacket(oldPrepareId));
 		}
 
-		// COMMIT SeamlessPreparePacket is sent by MixinServerPlayer at the HEAD
-		// of changeDimension, that is the only place guaranteed to run
-		// synchronously before changeDimension writes the respawn packet to the
-		// connection, ensuring isSeamlessPending() is true on the client when
-		// handleRespawn fires.
+		// Mark server-side pending so SeamlessTeleportState is consistent.
 		SeamlessTeleportState.setPending(player, new SeamlessTeleportContext(x, y, z, yaw, pitch));
 
-		// Perform the actual dimension switch — fires ClientboundRespawnPacket.
 		Vec3 targetPos = new Vec3(x, y, z);
-		LOGGER.info("[ST] Calling changeDimension...");
+		LOGGER.info("[ST] Sending COMMIT then calling changeDimension...");
 		try {
+			// COMMIT: tells the client "the next respawn packet is ours".
+			// Both this packet and the vanilla respawn go through the same
+			// player.connection channel, so ordering is guaranteed — no sleep needed.
+			Networking.sendToPlayer(player, new SeamlessPreparePacket());
+			player.connection.connection.channel().flush(); // drain before changeDimension writes respawn
+
 			player.changeDimension(destLevel, new ITeleporter() {
 				@Override
 				public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld,

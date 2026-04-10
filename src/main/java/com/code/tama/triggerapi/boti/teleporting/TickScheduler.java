@@ -2,8 +2,8 @@
 package com.code.tama.triggerapi.boti.teleporting;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -11,15 +11,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TickScheduler {
 
-	private static final List<ScheduledTask> TASKS = new ArrayList<>();
+	// CopyOnWriteArrayList so that tasks scheduled from inside a running task
+	// (e.g. removeChunkTickets calling runAfter) don't cause
+	// ConcurrentModificationException on the iterator.
+	private static final List<ScheduledTask> TASKS = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Call this once from your mod's constructor or FMLCommonSetupEvent:
 	 * MinecraftForge.EVENT_BUS.register(TickScheduler.class);
 	 *
 	 * Without registration the @SubscribeEvent below never fires and scheduled
-	 * tasks (including chunk ticket release) will silently never run -- And it will
-	 * be all your fault.
+	 * tasks (including chunk ticket release) will silently never run.
 	 */
 	public static void register() {
 		MinecraftForge.EVENT_BUS.register(TickScheduler.class);
@@ -34,15 +36,24 @@ public class TickScheduler {
 		if (event.phase != TickEvent.Phase.END)
 			return;
 
-		Iterator<ScheduledTask> iter = TASKS.iterator();
-		while (iter.hasNext()) {
-			ScheduledTask task = iter.next();
+		// Collect tasks that are ready to fire so we can remove them outside the loop.
+		List<ScheduledTask> toRemove = new ArrayList<>();
+
+		for (ScheduledTask task : TASKS) {
 			task.ticksRemaining--;
 			if (task.ticksRemaining <= 0) {
-				task.runnable.run();
-				iter.remove();
+				try {
+					task.runnable.run();
+				} catch (Exception e) {
+					// Don't let one bad task kill the whole scheduler
+					System.err.println("[TickScheduler] Task threw: " + e.getMessage());
+					e.printStackTrace();
+				}
+				toRemove.add(task);
 			}
 		}
+
+		TASKS.removeAll(toRemove);
 	}
 
 	private static class ScheduledTask {
