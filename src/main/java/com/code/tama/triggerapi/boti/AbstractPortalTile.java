@@ -25,6 +25,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,6 +47,10 @@ import com.code.tama.triggerapi.tileEntities.TickingTile;
 /** Other tiles implement this to get data for portals */
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
+	@Getter
+	LevelRenderer fakeRenderer = null;
+	@Getter
+	ClientLevel fakeLevel = null;
 
 	@OnlyIn(Dist.CLIENT)
 	private FBOHelper FBOContainer;
@@ -134,13 +139,13 @@ public abstract class AbstractPortalTile extends TickingTile {
 		if (fuckYouTimer >= 1200) {
 			fuckYouTimer = 0;
 
-			updateSkyColor();
-
 			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
 							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
 			return;
 		}
+
+		updateSkyColor();
 
 		if (this.targetLevel != null) {
 			// Target is known — run the proximity pre-load check on the server side.
@@ -234,42 +239,67 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 	@OnlyIn(Dist.CLIENT)
 	public void updateSkyColor() {
-		assert this.level != null;
-		if (!this.level.isClientSide)
+		if (this.level == null || !this.level.isClientSide)
 			return;
 
+		// Only rebuild fakeLevel when dimension changes
+		if (fakeLevel != null && fakeLevel.dimension().equals(this.targetLevel)) {
+			// Just resample sky color each tick — cheap
+			this.SkyColor = fakeLevel.getSkyColor(this.targetPos.getCenter(),
+					((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+			return;
+		}
+
 		RenderSystem.recordRenderCall(() -> {
-			if (this.type != null) {
-				Minecraft mc = Minecraft.getInstance();
-				assert mc.level != null;
-				assert mc.player != null;
+			if (this.type == null)
+				return;
 
-				Holder<DimensionType> dimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-						.getHolderOrThrow(this.dimensionTypeId);
+			Minecraft mc = Minecraft.getInstance();
+			if (mc.level == null || mc.player == null)
+				return;
 
-				LevelRenderer renderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(),
-						mc.getBlockEntityRenderDispatcher(), mc.renderBuffers());
+			// Use the TARGET dimension's DimensionType, not the current one
+			DimensionType targetDimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+					.getHolderOrThrow(this.dimensionTypeId).value(); // <-- unwrap the Holder
 
-				ClientLevel fakeLevel = new ClientLevel(mc.player.connection, mc.level.getLevelData(), this.targetLevel,
-						dimType, mc.options.getEffectiveRenderDistance(), mc.options.getEffectiveRenderDistance(),
-						mc.level.getProfilerSupplier(), renderer, false, 0);
+			Holder<DimensionType> dimTypeHolder = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+					.getHolderOrThrow(this.dimensionTypeId);
 
-				renderer.setLevel(fakeLevel);
+			fakeRenderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(), mc.getBlockEntityRenderDispatcher(),
+					mc.renderBuffers());
 
-				// Sample sky color from the fake level without swapping mc.level (Like I was
-				// doing before)
-				// swapping it is not render-thread-safe and can cause CMEs elsewhere.
-				this.SkyColor = fakeLevel.getSkyColor(this.targetPos.getCenter(),
-						((IMinecraftAccessor) mc).getTimer().partialTick);
+			fakeLevel = new ClientLevel(mc.player.connection, mc.level.getLevelData(), // NOTE: see below
+					this.targetLevel, dimTypeHolder, mc.options.getEffectiveRenderDistance(),
+					mc.options.getEffectiveRenderDistance(), mc.level.getProfilerSupplier(), fakeRenderer, false, 0L);
 
-			} else {
-				Minecraft mc = Minecraft.getInstance();
-				assert mc.level != null;
-				assert mc.player != null;
+			fakeRenderer.setLevel(fakeLevel);
 
-				this.SkyColor = mc.level.getSkyColor(mc.player.position(),
-						((IMinecraftAccessor) mc).getTimer().partialTick);
-			}
+			// Sync game time so sky angle matches target dim's time
+			// For nether/end this doesn't matter, but for overworld it does
+			fakeLevel.setGameTime(mc.level.getGameTime());
+			fakeLevel.setDayTime(mc.level.getDayTime());
+
+			this.SkyColor = fakeLevel.getSkyColor(this.targetPos.getCenter(),
+					((IMinecraftAccessor) mc).getTimer().partialTick);
+
+			registerFakeLevel();
 		});
+	}
+
+	public void registerFakeLevel() {
+		ChunkPos center = new ChunkPos(this.targetPos);
+		FakePortalLevelRegistry.register(new FakePortalLevelRegistry.FakePortalEntry(this.getBlockPos(),
+				this.targetLevel, this.fakeLevel, this.fakeRenderer, center.x, center.z, 2 // 5x5 chunk area, same
+																							// radius you use when
+																							// requesting chunks from
+																							// server
+		));
+	}
+
+	// In setRemoved()
+	@Override
+	public void setRemoved() {
+		super.setRemoved();
+		FakePortalLevelRegistry.unregister(this.getBlockPos());
 	}
 }

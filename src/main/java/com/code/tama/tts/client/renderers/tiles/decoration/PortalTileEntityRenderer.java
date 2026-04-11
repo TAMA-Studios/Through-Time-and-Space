@@ -17,6 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
 
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
@@ -79,6 +80,7 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 						((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
 			}
 		}
+
 		// StencilUtils.drawColoredCube(stack, 1, portal.SkyColor);
 		// BotiPortalModel.createBodyLayer().bakeRoot().render(pose,
 		// botiSource.getBuffer(RenderType.debugFilledBox()),
@@ -92,6 +94,22 @@ public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileE
 		BOTIUtils.RenderScene(pose, portal);
 		pose.popPose();
 		// });
+		pose.popPose();
+	}
+
+	public static void renderSky(AbstractPortalTile portal, PoseStack pose) {
+		pose.pushPose();
+		pose.scale(2, 4, 2);
+
+		// Fake sky renderer, just a colored frame.
+		// StencilUtils.drawColoredFrame(pose, 2, 4, portal.SkyColor);
+
+		if (portal.getFakeRenderer() != null && portal.getFakeLevel() != null) {
+			portal.getFakeRenderer().renderSky(pose, pose.last().pose(), Minecraft.getInstance().getPartialTick(),
+					Minecraft.getInstance().gameRenderer.getMainCamera(), false, () -> {
+					});
+		}
+
 		pose.popPose();
 	}
 }

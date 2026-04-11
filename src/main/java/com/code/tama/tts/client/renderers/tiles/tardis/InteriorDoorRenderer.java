@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +22,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
@@ -132,7 +132,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 	public void renderBOTI(PoseStack pose, AbstractPortalTile portal, MultiBufferSource.BufferSource botiSource) {
 		pose.pushPose();
-		renderSky(portal, pose, botiSource);
+		renderSky(portal, pose);
 		pose.popPose();
 
 		pose.pushPose();
@@ -141,14 +141,26 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		pose.popPose();
 	}
 
-	public static void renderSky(AbstractPortalTile portal, PoseStack pose, MultiBufferSource.BufferSource botiSource) {
+	public static void renderSky(AbstractPortalTile portal, PoseStack pose) {
+		if (portal.getFakeRenderer() == null || portal.getFakeLevel() == null)
+			return;
+
+		Minecraft mc = Minecraft.getInstance();
 		pose.pushPose();
 		pose.scale(2, 4, 2);
 
-		// Update sky color every 20 seconds or when null
+		// Temporarily tick the fake level so LevelRenderer sky state is valid
+		// (just the sky angle / fog calculations, not a full tick)
+		Camera fakeCamera = new Camera();
+		fakeCamera.setup(portal.getFakeLevel(), mc.player, false, false, mc.getPartialTick());
 
-		StencilUtils.drawColoredFrame(pose, 2, 4, portal.SkyColor);
-		botiSource.endBatch();
+		portal.getFakeRenderer().renderSky(pose, pose.last().pose(), mc.getPartialTick(), fakeCamera, // <-- use a
+																										// camera at the
+																										// portal's
+																										// target, not
+																										// main camera
+				false, () -> {
+				});
 
 		pose.popPose();
 	}

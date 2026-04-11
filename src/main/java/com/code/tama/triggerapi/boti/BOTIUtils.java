@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.mixin.BlockAccessor;
@@ -83,6 +84,8 @@ public class BOTIUtils {
 
 		assert minecraft.level != null;
 		long currentTime = minecraft.level.getGameTime();
+
+		PortalTileEntityRenderer.renderSky(portal, pose);
 
 		if (currentTime - portal.lastUpdateTime >= 1200) { // update model every 1200 ticks, or a minute TODO: make
 															// configurable! also make
