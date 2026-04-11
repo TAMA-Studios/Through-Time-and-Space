@@ -23,20 +23,18 @@ public abstract class MixinMinecraft {
 
 	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
 	private void tts$suppressLoadingScreen(Screen screen, CallbackInfo ci) {
-		boolean suppressing = ClientSeamlessTeleportState.isSuppressingLoadingScreen();
+		if (screen == null)
+			return;
 
-		LOGGER.info("[SMLS] setScreen — screen={}, suppressing={}",
-				screen == null ? "null" : screen.getClass().getSimpleName(), suppressing);
+		boolean suppressing = ClientSeamlessTeleportState.isSuppressingLoadingScreen()
+				&& (screen instanceof ReceivingLevelScreen || screen instanceof ProgressScreen);
+
+		LOGGER.info("[SMLS] setScreen — screen={}, suppressing={}", screen.getClass().getSimpleName(), suppressing);
 
 		if (!suppressing)
 			return;
 
-		// Suppress the "Joining World" / "Downloading terrain" screens and their
-		// dismissal (setScreen(null)) while a seamless teleport is in progress.
-		if (screen == null || screen instanceof ReceivingLevelScreen || screen instanceof ProgressScreen) {
-			LOGGER.info("[SMLS] setScreen SUPPRESSED for {}",
-					screen == null ? "null" : screen.getClass().getSimpleName());
-			ci.cancel();
-		}
+		LOGGER.info("[SMLS] setScreen SUPPRESSED for {}", screen.getClass().getSimpleName());
+		ci.cancel();
 	}
 }

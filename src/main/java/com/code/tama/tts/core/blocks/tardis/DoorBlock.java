@@ -139,8 +139,7 @@ public class DoorBlock extends Block implements EntityBlock {
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
 					exteriorTile.SetInterior(Interior.dimension());
 				}
-				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot()
-						+ EntityToTeleport.getYRot();
+				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot() + EntityToTeleport.yRotO;
 				// EntityToTeleport.teleportTo(Interior.getServer().getLevel(cap.GetCurrentLevel()),
 				// pos.getX(),
 				// pos.getY(), pos.getZ(), Set.of(), yRot, 0);

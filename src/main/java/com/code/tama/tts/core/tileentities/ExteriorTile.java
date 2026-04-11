@@ -248,13 +248,14 @@ public class ExteriorTile extends AbstractPortalTile {
 			float X, Y, Z;
 
 			BlockPos pos = cap.GetData().getDoorData().getLocation().GetBlockPos()
-					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()), 2);
+					.relative(Direction.fromYRot(cap.GetData().getDoorData().getYRot()).getOpposite(), 2);
 
 			X = pos.getX() + 0.5f;
 			Y = pos.getY() == 0 ? 128 : pos.getY();
 			Z = pos.getZ() + 0.5f;
 
-			float yRot = cap.GetData().getDoorData().getYRot() + EntityToTeleport.getYRot();
+			float yRot = (Direction.fromYRot(cap.GetData().getDoorData().getYRot()).getOpposite().toYRot())
+					+ EntityToTeleport.getYRot();
 			float xRot = EntityToTeleport.getXRot();
 
 			if (EntityToTeleport instanceof ServerPlayer player) {

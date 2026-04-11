@@ -6,10 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.eventbus.ListenerList;
 import net.minecraftforge.eventbus.api.Event;
 
 @AllArgsConstructor
 public class TardisEvent extends Event {
+
+	private final ListenerList LISTENER_LIST = new ListenerList();
+
+	@Override
+	public ListenerList getListenerList() {
+		return this.LISTENER_LIST;
+	}
+
 	@Getter
 	public final ITARDISLevel level;
 
@@ -22,6 +31,7 @@ public class TardisEvent extends Event {
 	}
 
 	public static class FlightEventStart extends TardisEvent {
+		@Override // Good practice to use @Override for clarity
 		public boolean isCancelable() {
 			return true;
 		}
@@ -32,6 +42,7 @@ public class TardisEvent extends Event {
 	}
 
 	public static class FlightEventFail extends TardisEvent {
+		@Override
 		public boolean isCancelable() {
 			return true;
 		}
@@ -42,6 +53,7 @@ public class TardisEvent extends Event {
 	}
 
 	public static class FlightEventSucceed extends TardisEvent {
+		@Override
 		public boolean isCancelable() {
 			return false;
 		}
@@ -55,6 +67,7 @@ public class TardisEvent extends Event {
 		public final Entity entity;
 		public State state;
 
+		@Override
 		public boolean isCancelable() {
 			return this.state.equals(State.START);
 		}
@@ -63,6 +76,7 @@ public class TardisEvent extends Event {
 			this.entity = entity;
 			this.state = state;
 		}
+
 	}
 
 	@Getter
@@ -70,6 +84,7 @@ public class TardisEvent extends Event {
 		public final Entity entity;
 		public State state;
 
+		@Override
 		public boolean isCancelable() {
 			return this.state.equals(State.START);
 		}
@@ -79,12 +94,21 @@ public class TardisEvent extends Event {
 			this.entity = entity;
 			this.state = state;
 		}
+
+		private final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return this.LISTENER_LIST;
+		}
+
 	}
 
 	@Getter
 	public static class Land extends TardisEvent {
 		public State state;
 
+		@Override
 		public boolean isCancelable() {
 			return this.state.equals(State.START);
 		}
@@ -99,6 +123,7 @@ public class TardisEvent extends Event {
 	public static class TakeOff extends TardisEvent {
 		public State state;
 
+		@Override
 		public boolean isCancelable() {
 			return this.state.equals(State.START);
 		}
@@ -109,11 +134,6 @@ public class TardisEvent extends Event {
 		}
 	}
 
-	/**
-	 * Two params, START, and END, let's use takeoff as an example, START is called
-	 * before any takeoff code begins, and END is called when all the takeoff code
-	 * is finished. *
-	 */
 	public enum State {
 		END, START;
 	}
