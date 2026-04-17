@@ -94,14 +94,6 @@ public class TardisEvent extends Event {
 			this.entity = entity;
 			this.state = state;
 		}
-
-		private final ListenerList LISTENER_LIST = new ListenerList();
-
-		@Override
-		public ListenerList getListenerList() {
-			return this.LISTENER_LIST;
-		}
-
 	}
 
 	@Getter

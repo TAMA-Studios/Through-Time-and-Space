@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.RenderType;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;

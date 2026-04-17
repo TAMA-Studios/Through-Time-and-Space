@@ -45,8 +45,11 @@ import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
 import com.code.tama.triggerapi.tileEntities.TickingTile;
 
 /** Other tiles implement this to get data for portals */
-@OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
+
+    @OnlyIn(Dist.CLIENT)
+    volatile boolean tts$fakeLevelTornDown = false;
+
 	@Getter
 	LevelRenderer fakeRenderer = null;
 	@Getter
@@ -88,19 +91,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 	public DimensionType type;
 
-	/**
-	 * Radius (in blocks) at which the tile starts pre-loading geometry for
-	 * approaching players. Must be large enough that the gather finishes before the
-	 * player reaches the portal. With a fast server a value of 16 is comfortable;
-	 * increase if players can sprint toward the portal.
-	 */
 	private static final double PREPARE_RADIUS_SQ = 16.0 * 16.0;
-
-	/**
-	 * How often (in ticks) the proximity check runs. Running it every tick is
-	 * wasteful; every 10 ticks (~0.5 s) is fine — players can't cover 16 blocks in
-	 * half a second at walking speed.
-	 */
 	private static final int PREPARE_CHECK_INTERVAL = 10;
 	private int prepareCheckTimer = 0;
 
@@ -138,17 +129,15 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 		if (fuckYouTimer >= 1200) {
 			fuckYouTimer = 0;
-
 			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
 							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
 			return;
 		}
 
-		updateSkyColor();
+		updateFakeLevel();
 
 		if (this.targetLevel != null) {
-			// Target is known — run the proximity pre-load check on the server side.
 			tickProximityPrepare();
 			return;
 		}
@@ -167,14 +156,6 @@ public abstract class AbstractPortalTile extends TickingTile {
 						cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
 	}
 
-	/**
-	 * Server-side only. Checks whether any player is within
-	 * {@link #PREPARE_RADIUS_SQ} blocks of this portal and, if so, triggers
-	 * {@link SeamlessTeleport#prepare(ServerPlayer, ServerLevel, BlockPos, float)}
-	 * for them.
-	 *
-	 * Runs at {@link #PREPARE_CHECK_INTERVAL}-tick intervals to keep overhead low.
-	 */
 	private void tickProximityPrepare() {
 		if (this.level == null || this.level.isClientSide())
 			return;
@@ -191,16 +172,12 @@ public abstract class AbstractPortalTile extends TickingTile {
 		if (destLevel == null)
 			return;
 
-		// Expand a search box around the portal block.
 		AABB searchBox = new AABB(worldPosition).inflate(Math.sqrt(PREPARE_RADIUS_SQ));
-
 		List<ServerPlayer> nearbyPlayers = serverLevel.getEntitiesOfClass(ServerPlayer.class, searchBox);
-
 		Vec3 portalCenter = Vec3.atCenterOf(worldPosition);
 
 		for (ServerPlayer player : nearbyPlayers) {
 			if (player.distanceToSqr(portalCenter) <= PREPARE_RADIUS_SQ) {
-				// Fire prepare(). it guards itself against double-invocation.
 				SeamlessTeleport.prepare(player, destLevel, this.targetPos, this.targetY);
 			}
 		}
@@ -233,73 +210,122 @@ public abstract class AbstractPortalTile extends TickingTile {
 		}
 	}
 
-	// Drop-in replacement for the updateSkyColor() method in AbstractPortalTile.
-	// RenderSystem.recordRenderCall() queues the lambda onto the actual render
-	// thread (not just the main game thread), which is what getSkyColor() requires.
-
 	@OnlyIn(Dist.CLIENT)
-	public void updateSkyColor() {
-		if (this.level == null || !this.level.isClientSide)
-			return;
+	public void updateFakeLevel() {
+		if (this.level == null || !this.level.isClientSide) return;
 
-		// Only rebuild fakeLevel when dimension changes
+		// fakeLevel already built for this dimension — just resample sky color cheaply.
+		// Do NOT rebuild every tick; rebuilding creates a new LevelRenderer each time
+		// which leaks GL resources and nukes any chunk data already loaded into it.
 		if (fakeLevel != null && fakeLevel.dimension().equals(this.targetLevel)) {
-			// Just resample sky color each tick — cheap
-			this.SkyColor = fakeLevel.getSkyColor(this.targetPos.getCenter(),
-					((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick);
+			this.SkyColor = fakeLevel.getSkyColor(
+					this.targetPos.getCenter(),
+					((IMinecraftAccessor) Minecraft.getInstance()).getTimer().partialTick
+			);
 			return;
 		}
 
+		// targetLevel not known yet — nothing to build
+		if (this.type == null || this.targetLevel == null) return;
+
+		// Build fakeLevel + fakeRenderer once, on the render thread.
+		// recordRenderCall enqueues onto the actual GL/render thread, which is
+		// required for LevelRenderer construction and getSkyColor.
 		RenderSystem.recordRenderCall(() -> {
-			if (this.type == null)
-				return;
-
 			Minecraft mc = Minecraft.getInstance();
-			if (mc.level == null || mc.player == null)
-				return;
+			if (mc.level == null || mc.player == null) return;
 
-			// Use the TARGET dimension's DimensionType, not the current one
-			DimensionType targetDimType = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
-					.getHolderOrThrow(this.dimensionTypeId).value(); // <-- unwrap the Holder
+			// Guard again inside the lambda — targetLevel could have been cleared
+			// between the outer check and this lambda executing.
+			if (this.targetLevel == null || this.dimensionTypeId == null) return;
 
-			Holder<DimensionType> dimTypeHolder = mc.level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE)
+			// Tear down any previous fakeRenderer for a *different* dimension.
+			// (Same-dimension case is caught by the early-return above.)
+			if (fakeRenderer != null) {
+				fakeRenderer.allChanged();
+				fakeRenderer.close();
+			}
+
+			Holder<DimensionType> dimTypeHolder = mc.level.registryAccess()
+					.registryOrThrow(Registries.DIMENSION_TYPE)
 					.getHolderOrThrow(this.dimensionTypeId);
 
-			fakeRenderer = new LevelRenderer(mc, mc.getEntityRenderDispatcher(), mc.getBlockEntityRenderDispatcher(),
-					mc.renderBuffers());
+			fakeRenderer = new LevelRenderer(
+					mc,
+					mc.getEntityRenderDispatcher(),
+					mc.getBlockEntityRenderDispatcher(),
+					mc.renderBuffers()
+			);
 
-			fakeLevel = new ClientLevel(mc.player.connection, mc.level.getLevelData(), // NOTE: see below
-					this.targetLevel, dimTypeHolder, mc.options.getEffectiveRenderDistance(),
-					mc.options.getEffectiveRenderDistance(), mc.level.getProfilerSupplier(), fakeRenderer, false, 0L);
+			fakeLevel = new ClientLevel(
+					mc.player.connection,
+					mc.level.getLevelData(),
+					this.targetLevel,
+					dimTypeHolder,
+					mc.options.getEffectiveRenderDistance(),
+					mc.options.getEffectiveRenderDistance(),
+					mc.level.getProfilerSupplier(),
+					fakeRenderer,
+					false,
+					0L
+			);
 
 			fakeRenderer.setLevel(fakeLevel);
-
-			// Sync game time so sky angle matches target dim's time
-			// For nether/end this doesn't matter, but for overworld it does
+			fakeRenderer.getChunkRenderDispatcher().uploadAllPendingUploads();
+			// Sync time so sky angle matches target dim (irrelevant for nether/end
+			// but correct for overworld↔overworld portals).
 			fakeLevel.setGameTime(mc.level.getGameTime());
 			fakeLevel.setDayTime(mc.level.getDayTime());
 
-			this.SkyColor = fakeLevel.getSkyColor(this.targetPos.getCenter(),
-					((IMinecraftAccessor) mc).getTimer().partialTick);
+			// Prime the light engine for the chunk window — without this everything
+			// in fakeLevel renders black regardless of packed light values.
+			ChunkPos center = new ChunkPos(this.targetPos);
+			int r = 2;
+			for (int cx = -r; cx <= r; cx++) {
+				for (int cz = -r; cz <= r; cz++) {
+					fakeLevel.getLightEngine().setLightEnabled(
+							new ChunkPos(center.x + cx, center.z + cz), true);
+				}
+			}
 
+			this.SkyColor = fakeLevel.getSkyColor(
+					this.targetPos.getCenter(),
+					((IMinecraftAccessor) mc).getTimer().partialTick
+			);
+
+			// Register with the client registry so the chunk mixin knows where to
+			// route incoming vanilla chunk packets for this portal.
 			registerFakeLevel();
 		});
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public void registerFakeLevel() {
 		ChunkPos center = new ChunkPos(this.targetPos);
-		FakePortalLevelRegistry.register(new FakePortalLevelRegistry.FakePortalEntry(this.getBlockPos(),
-				this.targetLevel, this.fakeLevel, this.fakeRenderer, center.x, center.z, 2 // 5x5 chunk area, same
-																							// radius you use when
-																							// requesting chunks from
-																							// server
+		FakePortalLevelRegistry.register(new FakePortalLevelRegistry.FakePortalEntry(
+				this.getBlockPos(),
+				this.targetLevel,
+				this.fakeLevel,
+				this.fakeRenderer,
+				center.x,
+				center.z,
+				2 // must match FAKE_LEVEL_CHUNK_RADIUS in PortalChunkRequestPacketC2S
 		));
 	}
 
-	// In setRemoved()
-	@Override
-	public void setRemoved() {
-		super.setRemoved();
-		FakePortalLevelRegistry.unregister(this.getBlockPos());
-	}
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (this.level != null && this.level.isClientSide) {
+            tts$fakeLevelTornDown = true;          // synchronous; render thread sees this immediately
+            FakePortalLevelRegistry.unregister(this.getBlockPos());
+            RenderSystem.recordRenderCall(() -> {
+                if (fakeRenderer != null) {
+                    fakeRenderer.close();
+                    fakeRenderer = null;
+                }
+                fakeLevel = null;
+            });
+        }
+    }
 }

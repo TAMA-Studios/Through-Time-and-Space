@@ -148,7 +148,7 @@ public class FBOHelper {
 
 		// TODO: SKY RENDERER!!!
 		// Sets the sky color every 30 seconds/skycolor being null
-		if (blockEntity.SkyColor == null
+		if (false && blockEntity.SkyColor == null
 				|| (Minecraft.getInstance().level != null ? Minecraft.getInstance().level.getGameTime() : 1)
 						% 600 == 0) {
 			if (blockEntity.type != null) {

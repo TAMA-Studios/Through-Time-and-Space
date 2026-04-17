@@ -10,18 +10,24 @@ import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRende
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.mixin.BlockAccessor;
+import com.code.tama.tts.mixin.client.ILevelRendererAccessor;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -45,6 +51,8 @@ import com.code.tama.triggerapi.boti.client.BotiPortalModel;
 import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
 import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL14;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
@@ -99,6 +107,7 @@ public class BOTIUtils {
 			portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
 			BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
 		} else {
+			if (portal.tts$fakeLevelTornDown) return;
 			pose.pushPose();
 
 			minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
@@ -109,12 +118,107 @@ public class BOTIUtils {
 
 			RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
 
-			portal.MODEL_VBO.bind();
-			portal.MODEL_VBO.drawWithShader(pose.last().pose(), RenderSystem.getProjectionMatrix(),
-					Objects.requireNonNull(RenderSystem.getShader()));
-			VertexBuffer.unbind();
+//			portal.fakeRenderer.uploadAllPendingUploads();
+
+			if(portal.fakeRenderer != null)
+				renderLevel(portal, pose);
+
+			if(false) {
+				portal.MODEL_VBO.bind();
+				portal.MODEL_VBO.drawWithShader(pose.last().pose(), RenderSystem.getProjectionMatrix(),
+						Objects.requireNonNull(RenderSystem.getShader()));
+				VertexBuffer.unbind();
+			}
 
 			pose.popPose();
+		}
+	}
+
+	public static void renderLevel(AbstractPortalTile portal, PoseStack pose) {
+		if (portal.tts$fakeLevelTornDown) return;
+		if (portal.fakeRenderer == null || portal.fakeLevel == null) return;
+
+		Minecraft mc = Minecraft.getInstance();
+
+		portal.fakeRenderer.getChunkRenderDispatcher().uploadAllPendingUploads();
+		portal.fakeLevel.setGameTime(mc.level.getGameTime());
+		portal.fakeLevel.setDayTime(mc.level.getDayTime());
+
+		Vec3 camPos = portal.targetPos.getCenter();
+
+		// Swap ONLY on LevelRenderer, not mc.level
+		// LevelRenderer.level is what renderChunkLayer actually reads
+		// mc.level stays untouched the entire time
+		var realLevelOnRenderer = portal.fakeRenderer.level;
+		portal.fakeRenderer.setLevel(portal.fakeLevel);
+
+		try {
+			// prepareCullFrustum + setupRender populate the chunk render list.
+			// Without these, renderChunkLayer has nothing to draw.
+			// Camera must be positioned AT the target pos in fakeLevel space.
+			Camera fakeCamera = new Camera();
+
+			fakeCamera.setup(
+					portal.fakeLevel,
+					mc.player,
+					false,
+					false,
+					mc.getPartialTick()
+			);
+
+// Build a frustum from the real camera's view/projection matrices
+// This determines which chunks are visible
+			Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
+			Matrix4f viewMatrix = RenderSystem.getModelViewMatrix();
+			Frustum frustum = new Frustum(viewMatrix, projMatrix);
+// Position the frustum at the target pos so it culls correctly for the portal view
+			frustum.prepare(camPos.x, camPos.y, camPos.z);
+
+			// Build the visible chunk list from the fake camera position
+			portal.fakeRenderer.prepareCullFrustum(
+					pose,
+					camPos,
+					projMatrix
+			);
+
+			portal.fakeRenderer.setupRender(
+					fakeCamera,
+					frustum,
+					false,  // hasCapturedFrustum
+					false   // isSpectator
+			);
+
+			PoseStack fakePose = new PoseStack();
+			fakePose.mulPoseMatrix(pose.last().pose());
+//			Vec3 offset = camPos.subtract(mc.player.position());
+//			fakePose.translate(offset.x, offset.y, offset.z);
+
+//			mc.level = portal.fakeLevel;
+
+			// Sky — pass fakeCamera so the sun/moon doesn't flicker
+			portal.fakeRenderer.renderSky(
+					fakePose,
+					fakePose.last().pose(),
+					mc.getPartialTick(),
+					fakeCamera,
+					false,
+					() -> {}
+			);
+
+			portal.fakeRenderer.renderChunkLayer(
+					RenderType.solid(), fakePose, camPos.x, camPos.y, camPos.z,
+					projMatrix);
+			portal.fakeRenderer.renderChunkLayer(
+					RenderType.cutout(), fakePose, camPos.x, camPos.y, camPos.z,
+					projMatrix);
+			portal.fakeRenderer.renderChunkLayer(
+					RenderType.translucent(), fakePose, camPos.x, camPos.y, camPos.z,
+					projMatrix);
+
+		}
+		finally {
+			portal.fakeRenderer.setLevel(realLevelOnRenderer);
+//			mc.level = realLevel;
 		}
 	}
 
