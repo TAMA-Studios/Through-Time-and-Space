@@ -12,11 +12,11 @@ import net.minecraftforge.eventbus.api.Event;
 @AllArgsConstructor
 public class TardisEvent extends Event {
 
-	private final ListenerList LISTENER_LIST = new ListenerList();
+	private static final ListenerList LISTENER_LIST = new ListenerList();
 
 	@Override
 	public ListenerList getListenerList() {
-		return this.LISTENER_LIST;
+		return LISTENER_LIST;
 	}
 
 	@Getter
@@ -27,6 +27,13 @@ public class TardisEvent extends Event {
 		public Crash(ITARDISLevel level, State state) {
 			super(level);
 			this.state = state;
+		}
+
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
 		}
 	}
 
@@ -39,6 +46,13 @@ public class TardisEvent extends Event {
 		public FlightEventStart(ITARDISLevel level) {
 			super(level);
 		}
+
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
+		}
 	}
 
 	public static class FlightEventFail extends TardisEvent {
@@ -50,6 +64,12 @@ public class TardisEvent extends Event {
 		public FlightEventFail(ITARDISLevel level) {
 			super(level);
 		}
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
+		}
 	}
 
 	public static class FlightEventSucceed extends TardisEvent {
@@ -59,6 +79,12 @@ public class TardisEvent extends Event {
 		}
 		public FlightEventSucceed(ITARDISLevel level) {
 			super(level);
+		}
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
 		}
 	}
 
@@ -76,7 +102,12 @@ public class TardisEvent extends Event {
 			this.entity = entity;
 			this.state = state;
 		}
+		private static final ListenerList LISTENER_LIST = new ListenerList();
 
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
+		}
 	}
 
 	@Getter
@@ -94,14 +125,12 @@ public class TardisEvent extends Event {
 			this.entity = entity;
 			this.state = state;
 		}
-
-		private final ListenerList LISTENER_LIST = new ListenerList();
+		private static final ListenerList LISTENER_LIST = new ListenerList();
 
 		@Override
 		public ListenerList getListenerList() {
-			return this.LISTENER_LIST;
+			return LISTENER_LIST;
 		}
-
 	}
 
 	@Getter
@@ -117,6 +146,12 @@ public class TardisEvent extends Event {
 			super(level);
 			this.state = state;
 		}
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
+		}
 	}
 
 	@Getter
@@ -131,6 +166,12 @@ public class TardisEvent extends Event {
 		public TakeOff(ITARDISLevel level, State state) {
 			super(level);
 			this.state = state;
+		}
+		private static final ListenerList LISTENER_LIST = new ListenerList();
+
+		@Override
+		public ListenerList getListenerList() {
+			return LISTENER_LIST;
 		}
 	}
 

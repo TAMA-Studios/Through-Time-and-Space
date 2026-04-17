@@ -12,16 +12,13 @@ import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.DataLayer;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -30,22 +27,22 @@ import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 
 /**
  * Off-thread chunk geometry gatherer.
- *
+ * <p>
  * Can be constructed in two modes:
- *
+ * <p>
  * 1. PORTAL mode -- legacy option. Pass an {@link AbstractPortalTile}; on
  * completion the gathered batches are broadcast to the portal's dimension via
  * {@link PortalChunkDataPacketS2C}.
- *
+ * <p>
  * 2. TELEPORT mode -- new option. Pass a {@code resultCallback}; on completion
  * each batch is delivered to the callback instead of being broadcast.
  * {@link com.code.tama.triggerapi.boti.SeamlessTeleport} uses this to push
  * geometry to a specific player before changeDimension fires.
- *
+ * <p>
  * The caller must supply the {@link ServerLevel} that contains the destination
  * geometry, the target {@link BlockPos} at the centre of the region to gather,
  * and the number of chunks to gather in each axis.
- *
+ * <p>
  * THREAD SAFETY ------------- The thread submits small work items to the main
  * server thread via {@code server.submit(...).join()} where Minecraft requires
  * it (chunk loading, light engine access), and does everything else off-thread.
@@ -61,7 +58,9 @@ public class ChunkGatheringThread extends Thread {
 	private final BlockPos targetPos;
 	private final float yaw;
 
-	/** Non-null in PORTAL mode. */
+	/**
+	 * Non-null in PORTAL mode.
+	 */
 	@Nullable private final AbstractPortalTile portalTile;
 
 	/**
@@ -169,22 +168,32 @@ public class ChunkGatheringThread extends Thread {
 			for (int u = uMin + 1; u < uMax; u++) {
 				for (int v = vMin + 1; v < vMax; v++) {
 					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
-					targetLevel.getChunkSource().getChunk(chunkPos.x, chunkPos.z, true);
-					LevelChunk chunk = targetLevel.getChunk(chunkPos.x, chunkPos.z);
+					ChunkAccess chunk = targetLevel.getChunkSource().getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL,
+							true);
 
+					targetLevel.getChunkSource().getLightEngine().lightChunk(chunk, false).join();
+
+					// chunk.initializeLightSources();
+
+					assert chunk != null;
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 
-					if (!chunk.isLightCorrect()) {
-						targetLevel.getServer().submit(() -> {
-							for (int ly = targetLevel.getMinBuildHeight(); ly < targetLevel
-									.getMaxBuildHeight(); ly += 16) {
-								targetLevel.getLightEngine().checkBlock(
-										new BlockPos(chunkPos.getMiddleBlockX(), ly, chunkPos.getMiddleBlockZ()));
-							}
-						}).join();
-						Thread.sleep(50);
-					}
+					targetLevel.getChunkSource().getLightEngine().lightChunk(chunk, false).join();
+
+					// chunk.initializeLightSources();
+					// targetLevel.getLightEngine().setLightEnabled(chunkPos, true);
+					// targetLevel.getLightEngine().propagateLightSources(chunkPos);
+					// targetLevel.updateSkyBrightness();
+
+					TTSMod.LOGGER.debug("[CGT] chunk ({},{}) lightCorrect={} hasData block={} sky={}", chunkPos.x,
+							chunkPos.z, chunk.isLightCorrect(),
+							targetLevel.getLightEngine().getLayerListener(LightLayer.BLOCK)
+									.getDataLayerData(SectionPos.of(new BlockPos(chunkPos.getMiddleBlockX(),
+											targetPos.getY(), chunkPos.getMiddleBlockZ()))) != null,
+							targetLevel.getLightEngine().getLayerListener(LightLayer.SKY)
+									.getDataLayerData(SectionPos.of(new BlockPos(chunkPos.getMiddleBlockX(),
+											targetPos.getY(), chunkPos.getMiddleBlockZ()))) != null);
 
 					final int fu = u, fv = v;
 					targetLevel.getServer().submit(() -> {
@@ -211,13 +220,18 @@ public class ChunkGatheringThread extends Thread {
 									solid[lx][ly][lz] = !state.isAir();
 
 									BlockPos samplePos = new BlockPos(gx, gy, gz);
-									DataLayer bl = targetLevel.getLightEngine().getLayerListener(LightLayer.BLOCK)
-											.getDataLayerData(SectionPos.of(samplePos));
-									DataLayer sl = targetLevel.getLightEngine().getLayerListener(LightLayer.SKY)
-											.getDataLayerData(SectionPos.of(samplePos));
-									int blockLight = bl != null ? bl.get(gx & 15, gy & 15, gz & 15) : 0;
-									int skyLight = sl != null ? sl.get(gx & 15, gy & 15, gz & 15) : 15;
-									packedLights[lx][ly][lz] = LightTexture.pack(blockLight, skyLight);
+
+									// Replace the entire light-sampling block for both lower and upper sections:
+
+									// Lower section
+
+									int blockLight = targetLevel.getMaxLocalRawBrightness(new BlockPos(gx, gy + 1, gz));
+									// int skyLight = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx, gy,
+									// gz));
+
+									packedLights[lx][ly][lz] = blockLight;
+
+									// Upper section
 
 									// --- upper section ---
 									int gyA = sectionBaseYAbove + y;
@@ -234,13 +248,11 @@ public class ChunkGatheringThread extends Thread {
 											&& stateA.isSolidRender(chunk, new BlockPos(gx, gyA, gz));
 
 									BlockPos samplePosA = new BlockPos(gx, gyA, gz);
-									DataLayer blA = targetLevel.getLightEngine().getLayerListener(LightLayer.BLOCK)
-											.getDataLayerData(SectionPos.of(samplePosA));
-									DataLayer slA = targetLevel.getLightEngine().getLayerListener(LightLayer.SKY)
-											.getDataLayerData(SectionPos.of(samplePosA));
-									int blockLightA = blA != null ? blA.get(gx & 15, gyA & 15, gz & 15) : 0;
-									int skyLightA = slA != null ? slA.get(gx & 15, gyA & 15, gz & 15) : 15;
-									packedLights[lx][lyA][lz] = LightTexture.pack(blockLightA, skyLightA);
+									int blockLightA = targetLevel
+											.getMaxLocalRawBrightness(new BlockPos(gx, gyA + 1, gz));
+									// int skyLightA = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx,
+									// gyA, gz));
+									packedLights[lx][lyA][lz] = blockLightA;
 								}
 							}
 						}

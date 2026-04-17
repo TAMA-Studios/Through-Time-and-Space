@@ -111,6 +111,13 @@ public class BOTIUtils {
 					Objects.requireNonNull(RenderSystem.getShader()));
 			VertexBuffer.unbind();
 
+			portal.blockEntities.forEach((pos, be) -> {
+				var mc = Minecraft.getInstance();
+				var terDispatcher = mc.getBlockEntityRenderDispatcher();
+				terDispatcher.getRenderer(be).render(be, mc.getPartialTick(), pose, mc.renderBuffers().bufferSource(),
+						0xf000f0, 0);
+			});
+
 			pose.popPose();
 		}
 	}
@@ -190,8 +197,15 @@ public class BOTIUtils {
 				qg *= shade;
 				qb *= shade;
 
-				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, container.getLight(),
-						OverlayTexture.NO_OVERLAY, true);
+				// Apply lighting directly to the shaded color
+
+				float light = (float) (container.getLight()) / 15f; // Divide light by fullbright to get value 0-1
+
+				qr *= light;
+				qg *= light;
+				qb *= light;
+
+				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, 0xf000f0, OverlayTexture.NO_OVERLAY, true);
 			}
 
 			stack.popPose();
