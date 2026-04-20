@@ -17,6 +17,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.material.FluidState;
@@ -162,6 +163,10 @@ public class ChunkGatheringThread extends Thread {
 			boolean[][][] solid = new boolean[sizeX][sizeY][sizeZ];
 			BlockState[][][] blockStates = new BlockState[sizeX][sizeY][sizeZ];
 			FluidState[][][] fluidStates = new FluidState[sizeX][sizeY][sizeZ];
+
+			boolean[][][] TELocations = new boolean[sizeX][sizeY][sizeZ];
+			BlockEntity[][][] tileEntities = new BlockEntity[sizeX][sizeY][sizeZ];
+
 			int[][][] packedLights = new int[sizeX][sizeY][sizeZ];
 
 			// --- Phase 1: gather block data from server thread ---
@@ -196,67 +201,74 @@ public class ChunkGatheringThread extends Thread {
 											targetPos.getY(), chunkPos.getMiddleBlockZ()))) != null);
 
 					final int fu = u, fv = v;
-					targetLevel.getServer().submit(() -> {
-						for (int y = 0; y < 16; y++) {
-							for (int x = 0; x < 16; x++) {
-								for (int z = 0; z < 16; z++) {
-									// --- lower section ---
-									int gx = chunkPos.getMinBlockX() + x;
-									int gy = sectionBaseY + y;
-									int gz = chunkPos.getMinBlockZ() + z;
+					for (int y = 0; y < 16; y++) {
+						for (int x = 0; x < 16; x++) {
+							for (int z = 0; z < 16; z++) {
+								// --- lower section ---
+								int gx = chunkPos.getMinBlockX() + x;
+								int gy = sectionBaseY + y;
+								int gz = chunkPos.getMinBlockZ() + z;
 
-									int lx = gx - worldXMin;
-									int ly = gy - worldYMin;
-									int lz = gz - worldZMin;
+								int lx = gx - worldXMin;
+								int ly = gy - worldYMin;
+								int lz = gz - worldZMin;
 
-									if (lx < 0 || lx >= sizeX || ly < 0 || ly >= sizeY || lz < 0 || lz >= sizeZ)
-										continue;
+								if (lx < 0 || lx >= sizeX || ly < 0 || ly >= sizeY || lz < 0 || lz >= sizeZ)
+									continue;
 
-									BlockState state = section.getBlockState(x, y, z);
-									FluidState fluid = section.getFluidState(x, y, z);
+								BlockState state = section.getBlockState(x, y, z);
+								FluidState fluid = section.getFluidState(x, y, z);
+								if (chunk.getBlockEntity(new BlockPos(gx, gy + 1, gz)) != null) {
+									tileEntities[lx][ly][lz] = chunk.getBlockEntity(new BlockPos(x, y, z));
+									TELocations[lx][ly][lz] = true;
+								} else
+									TELocations[lx][ly][lz] = false;
 
-									blockStates[lx][ly][lz] = state;
-									fluidStates[lx][ly][lz] = fluid;
-									solid[lx][ly][lz] = !state.isAir();
+								blockStates[lx][ly][lz] = state;
+								fluidStates[lx][ly][lz] = fluid;
+								solid[lx][ly][lz] = !state.isAir();
 
-									BlockPos samplePos = new BlockPos(gx, gy, gz);
+								BlockPos samplePos = new BlockPos(gx, gy, gz);
 
-									// Replace the entire light-sampling block for both lower and upper sections:
+								// Replace the entire light-sampling block for both lower and upper sections:
 
-									// Lower section
+								// Lower section
 
-									int blockLight = targetLevel.getMaxLocalRawBrightness(new BlockPos(gx, gy + 1, gz));
-									// int skyLight = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx, gy,
-									// gz));
+								int blockLight = targetLevel.getMaxLocalRawBrightness(new BlockPos(gx, gy + 1, gz));
+								// int skyLight = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx, gy,
+								// gz));
 
-									packedLights[lx][ly][lz] = blockLight;
+								packedLights[lx][ly][lz] = blockLight;
 
-									// Upper section
+								// Upper section
 
-									// --- upper section ---
-									int gyA = sectionBaseYAbove + y;
-									int lyA = gyA - worldYMin;
-									if (lyA < 0 || lyA >= sizeY)
-										continue;
+								// --- upper section ---
+								int gyA = sectionBaseYAbove + y;
+								int lyA = gyA - worldYMin;
+								if (lyA < 0 || lyA >= sizeY)
+									continue;
 
-									BlockState stateA = sectionAbove.getBlockState(x, y, z);
-									FluidState fluidA = sectionAbove.getFluidState(x, y, z);
+								BlockState stateA = sectionAbove.getBlockState(x, y, z);
+								FluidState fluidA = sectionAbove.getFluidState(x, y, z);
+								if (chunk.getBlockEntity(new BlockPos(gx, gyA, gz)) != null) {
+									tileEntities[lx][lyA][lz] = chunk.getBlockEntity(new BlockPos(x, y, z));
+									TELocations[lx][lyA][lz] = true;
+								} else
+									TELocations[lx][lyA][lz] = false;
 
-									blockStates[lx][lyA][lz] = stateA;
-									fluidStates[lx][lyA][lz] = fluidA;
-									solid[lx][lyA][lz] = !stateA.isAir()
-											&& stateA.isSolidRender(chunk, new BlockPos(gx, gyA, gz));
+								blockStates[lx][lyA][lz] = stateA;
+								fluidStates[lx][lyA][lz] = fluidA;
+								solid[lx][lyA][lz] = !stateA.isAir()
+										&& stateA.isSolidRender(chunk, new BlockPos(gx, gyA, gz));
 
-									BlockPos samplePosA = new BlockPos(gx, gyA, gz);
-									int blockLightA = targetLevel
-											.getMaxLocalRawBrightness(new BlockPos(gx, gyA + 1, gz));
-									// int skyLightA = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx,
-									// gyA, gz));
-									packedLights[lx][lyA][lz] = blockLightA;
-								}
+								BlockPos samplePosA = new BlockPos(gx, gyA, gz);
+								int blockLightA = targetLevel.getMaxLocalRawBrightness(new BlockPos(gx, gyA + 1, gz));
+								// int skyLightA = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx,
+								// gyA, gz));
+								packedLights[lx][lyA][lz] = blockLightA;
 							}
 						}
-					}).join();
+					}
 				}
 			}
 
@@ -340,6 +352,10 @@ public class ChunkGatheringThread extends Thread {
 
 						if (fluid == null || fluid.isEmpty())
 							containers.add(new BotiBlockContainer(targetLevel, packed, relPos, state));
+
+						if (TELocations[lx][ly][lz])
+							containers.add(new BotiBlockContainer(targetLevel, state, relPos, packed, true,
+									tileEntities[lx][ly][lz].serializeNBT()));
 						else
 							containers.add(new BotiBlockContainer(targetLevel, state, fluid, relPos, packed));
 
@@ -376,7 +392,7 @@ public class ChunkGatheringThread extends Thread {
 			}
 
 		} catch (Exception e) {
-			TTSMod.LOGGER.error("[ChunkGatheringThread] Exception during gather: {}", e.getMessage(), e);
+			TTSMod.LOGGER.error("[CGT] Exception during gather: {}", e.getMessage(), e);
 		}
 
 		super.run();
