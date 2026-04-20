@@ -13,6 +13,7 @@ import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.data.json.loaders.*;
 
 import net.minecraft.core.BlockPos;
@@ -208,6 +209,8 @@ public class CommonEvents {
 		if (event.phase != TickEvent.Phase.END)
 			return;
 
+		event.level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(ILevelCap::Tick);
+
 		GetTARDISCapSupplier(event.level).ifPresent(level -> {
 			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff()
 					|| !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
@@ -240,6 +243,7 @@ public class CommonEvents {
 			player.getCapability(Capabilities.PLAYER_CAPABILITY)
 					.ifPresent(cap -> Networking.sendToPlayer(player, new SyncViewedTARDISS2C(cap.GetViewingTARDIS())));
 
+			player.level().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(l -> l.OnLoad(player));
 			// event.getLevel().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap
 			// -> cap.OnLoad(player));
 		}
