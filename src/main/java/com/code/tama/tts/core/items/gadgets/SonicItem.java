@@ -2,15 +2,21 @@
 package com.code.tama.tts.core.items.gadgets;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.client.manual.ManualScreen;
 import com.code.tama.tts.core.items.core.IAttunableItem;
 import com.code.tama.tts.core.registries.misc.SonicModeRegistry;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.sonic.SonicBlockMode;
 import com.code.tama.tts.server.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.sonic.SonicMode;
+import com.code.tama.tts.server.sonic.SonicRiftMode;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +52,7 @@ import com.code.tama.triggerapi.GrammarNazi;
 
 public class SonicItem extends Item implements IAttunableItem {
 	private final int Variants;
+	AtomicInteger howClose = new AtomicInteger(0);
 
 	@Getter
 	@Setter
@@ -134,7 +141,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip,
-			@NotNull TooltipFlag flagIn) {
+								@NotNull TooltipFlag flagIn) {
 		tooltip.add(Component.literal("Sonic Screwdriver! Doesn't work on wood and allat"));
 		tooltip.add(Component.literal("Power - " + GetPower(stack)));
 		tooltip.add(Component.translatable("tooltip.tts.ctrl"));
@@ -145,7 +152,7 @@ public class SonicItem extends Item implements IAttunableItem {
 	}
 
 	public boolean canAttackBlock(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-			@NotNull Player p_41444_) {
+								  @NotNull Player p_41444_) {
 		if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode) {
 			sonicBuilderMode.handleInteraction(p_41444_, state, level, pos, false,
 					p_41444_.getItemInHand(InteractionHand.MAIN_HAND), this.getDescriptionId());
@@ -157,7 +164,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack,
-			int i) {
+						  int i) {
 		// if (this.InteractionType != SonicInteractionType.SCANNER) return;
 		// if Item durability (powah) is 0, stop using
 		if (itemStack.getDamageValue() >= itemStack.getMaxDamage() - 1) {
@@ -206,7 +213,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
-			@NotNull InteractionHand interactionHand) {
+														   @NotNull InteractionHand interactionHand) {
 		if (interactionHand == InteractionHand.OFF_HAND) {
 			if (player.isCrouching())
 				CycleVariant(player.getOffhandItem());
@@ -256,5 +263,67 @@ public class SonicItem extends Item implements IAttunableItem {
 
 		this.InteractionType.onUse(useOnContext);
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void inventoryTick(ItemStack p_41404_, Level p_41405_, Entity entity, int p_41407_, boolean p_41408_) {
+		super.inventoryTick(p_41404_, p_41405_, entity, p_41407_, p_41408_);
+		if (this.InteractionType instanceof SonicRiftMode) {
+//			7 16 31 63
+//			if(p_41405_.getGameTime() & 31)
+
+			if (this.howClose.get() == 0)
+				ThreadUtils.RunThread(() -> {
+					p_41405_.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent((cap) -> {
+						cap.GetRiftData().forEach((b, r) -> {
+							if (b.closerToCenterThan(entity.position(), 50)) {
+								this.howClose.set(1);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 100)) {
+								this.howClose.set(2);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 500)) {
+								this.howClose.set(3);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 1000)) {
+								this.howClose.set(4);
+								return;
+							}
+						});
+					});
+				}, "RiftDetection");
+
+			if (this.howClose.get() != 0) {
+				switch (howClose.get()) {
+					case 1:
+						if((p_41405_.getGameTime() & 7) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 1f);
+							howClose.set(0);
+						}
+						break;
+					case 2:
+						if((p_41405_.getGameTime() & 15) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.7f);
+							howClose.set(0);
+						}
+						break;
+					case 3:
+						if((p_41405_.getGameTime() & 31) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.4f);
+							howClose.set(0);
+						}
+						break;
+					case 4:
+						if((p_41405_.getGameTime() & 63) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.1f);
+							howClose.set(0);
+						}
+						break;
+				}
+			}
+		}
 	}
 }

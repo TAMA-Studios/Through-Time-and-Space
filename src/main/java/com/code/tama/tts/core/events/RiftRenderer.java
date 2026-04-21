@@ -37,7 +37,7 @@ public class RiftRenderer {
 
 	@SubscribeEvent
 	public static void onWorldRender(RenderLevelStageEvent event) {
-		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
+		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)
 			return;
 
 		Minecraft mc = Minecraft.getInstance();
@@ -54,12 +54,22 @@ public class RiftRenderer {
 		PoseStack poseStack = event.getPoseStack();
 
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		int t = (int) ((mc.level.getGameTime() >> 3) % 6);
-		int which = t <= 3 ? t : 6 - t;
-		RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
+//		int t = (int) ((mc.level.getGameTime() >> 3) % 6);
+//		int which = t <= 3 ? t : 6 - t;
+//		RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
+
+
+		int t = (int) (mc.level.getGameTime() & 127) + 128;
+
+//System.out.println(t / 255f);
+		RenderSystem.setShaderColor((t >> 3) / 255f, (t >> 2) / 255f, t / 255f, 1f);
+
 		RenderSystem.disableCull();
 
 		cap.GetRiftData().forEach((bp, rift) -> {
+			int which = rift.getUsedTime() / 64;
+			RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
+
 			VertexBuffer vbo = riftVBOs.get(rift.getRiftUUID());
 			if (vbo == null)
 				return;
@@ -88,6 +98,8 @@ public class RiftRenderer {
 
 			poseStack.popPose();
 		});
+
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 		RenderSystem.enableCull();
 	}

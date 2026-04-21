@@ -28,6 +28,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.code.tama.triggerapi.codec.Codecs;
@@ -45,6 +46,7 @@ public class LevelCapability implements ILevelCap {
 					.apply(instance, LevelCapability::new));
 
 	Map<UUID, TIRBlockContainer> TIRBlocks = new HashMap<>();
+	Map<AABB, RiftData> riftAABBs = new HashMap<>(); // This doesn't get saved nor synced to client, this is due to it being directly tied to activeRifts
 	Map<BlockPos, RiftData> activeRifts = new HashMap<>();
 	public final Level level;
 
@@ -68,7 +70,7 @@ public class LevelCapability implements ILevelCap {
 			tag.putUUID("uuid", uuid);
 			tag.put("container",
 					TIRBlockContainer.CODEC.encodeStart(NbtOps.INSTANCE, tirBlockContainer).get().orThrow());
-			nbt.put(String.valueOf(finalI.getAndIncrement()), tag); // was incrementAndGet
+			nbt.put(String.valueOf(finalI.getAndIncrement()), tag);
 		});
 
 		// Rifts
@@ -76,7 +78,7 @@ public class LevelCapability implements ILevelCap {
 		activeRifts.forEach((pos, riftData) -> {
 			CompoundTag tag = new CompoundTag();
 			tag.put("rift", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, riftData).get().orThrow());
-			nbt.put(String.valueOf(finalI1.getAndIncrement()), tag); // was incrementAndGet
+			nbt.put(String.valueOf(finalI1.getAndIncrement()), tag);
 		});
 
 		return nbt;
@@ -109,9 +111,7 @@ public class LevelCapability implements ILevelCap {
 			DataResult<RiftData> result = RiftData.CODEC.parse(NbtOps.INSTANCE, tag.get("rift"));
 
 			result.resultOrPartial(err -> TTSMod.LOGGER.error("[RIFT] Failed to decode RiftData: {}", err))
-					.ifPresent(container -> {
-						this.activeRifts.put(container.getPos(), container);
-					});
+					.ifPresent(container -> this.activeRifts.put(container.getPos(), container));
 		}
 	}
 
@@ -140,9 +140,19 @@ public class LevelCapability implements ILevelCap {
 	}
 
 	@Override
+	public Map<AABB, RiftData> GetRiftDataAABBs() {
+		return this.riftAABBs;
+	}
+
+	@Override
 	public void SetRiftData(Map<BlockPos, RiftData> activeRifts) {
 		this.activeRifts.clear();
+		this.riftAABBs.clear();
 		this.activeRifts = new HashMap<>(activeRifts);
+
+		this.activeRifts.forEach((bp, r) -> {
+			this.riftAABBs.put(new AABB(bp.above().south().west(), bp.below().north().east()), r);
+		});
 	}
 
 	@Override
@@ -156,6 +166,8 @@ public class LevelCapability implements ILevelCap {
 			this.activeRifts.put(pos, rift);
 			MinecraftForge.EVENT_BUS.post(new RiftEvent.NewRift(Minecraft.getInstance().level, rift));
 			UpdateClient();
+
+			this.riftAABBs.put(new AABB(pos.above().south().west(), pos.below().north().east()), rift);
 			System.out.println("Adding rift at: " + pos.toShortString() + " " + rift.getYRot());
 		}
 	}
