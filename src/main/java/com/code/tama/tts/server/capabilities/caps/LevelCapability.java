@@ -2,6 +2,7 @@
 package com.code.tama.tts.server.capabilities.caps;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.code.tama.triggerapi.codec.Codecs;
@@ -165,14 +167,25 @@ public class LevelCapability implements ILevelCap {
 		if (level.getGameTime() % 20 != 0)
 			return; // run every second
 
-		// if (level.random.nextFloat() > 0.05f) return; // 5% chance
+		if (level.random.nextFloat() > 0.05f)
+			return; // 5% chance
 
-		BlockPos spawn = level.getBlockRandomPos(0, 0, 0, 9_000_000);
+		ThreadLocalRandom random = ThreadLocalRandom.current();
 
+		int range = 100000;
+
+		// Pick random X/Z
+		int x = random.nextInt(range * 2) - range;
+		int z = random.nextInt(range * 2) - range;
+
+		// Get height (so you're not spawning in the void or underground)
+		int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+
+		BlockPos spawn = new BlockPos(x, y, z);
 		ChunkAccess chunk = this.level.getChunk(spawn);
 		ChunkPos pos = chunk.getPos();
-		int x = pos.getMinBlockX() + this.level.random.nextInt(16);
-		int z = pos.getMinBlockZ() + this.level.random.nextInt(16);
+		x = pos.getMinBlockX() + this.level.random.nextInt(16);
+		z = pos.getMinBlockZ() + this.level.random.nextInt(16);
 		BlockPos.MutableBlockPos bpos = new BlockPos.MutableBlockPos(x, this.level.getMaxBuildHeight(), z);
 
 		while (bpos.getY() > this.level.getMinBuildHeight()) {

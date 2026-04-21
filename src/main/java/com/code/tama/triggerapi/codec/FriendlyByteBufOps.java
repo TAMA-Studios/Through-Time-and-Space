@@ -1,16 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.codec;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import com.code.tama.tts.TTSMod;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,6 +44,67 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 		return buf;
 	}
 
+	@Override
+	public FriendlyByteBuf createIntList(IntStream input) {
+		FriendlyByteBuf buf = empty();
+		int[] ints = input.toArray();
+		TTSMod.LOGGER.info("[BufOps] createIntList called with {} ints: {}", ints.length, Arrays.toString(ints));
+		buf.writeVarInt(ints.length);
+		for (int i : ints) {
+			buf.writeInt(i);
+		}
+		TTSMod.LOGGER.info("[BufOps] createIntList produced {} bytes", buf.writerIndex());
+		return buf;
+	}
+
+	@Override
+	public DataResult<IntStream> getIntStream(FriendlyByteBuf input) {
+		TTSMod.LOGGER.info("[BufOps] getIntStream called, buffer widx={} ridx={}", input.writerIndex(),
+				input.readerIndex());
+		try {
+			int size = input.readVarInt();
+			TTSMod.LOGGER.info("[BufOps] getIntStream size={}", size);
+			if (size < 0 || size > 4096) {
+				return DataResult.error(() -> "Suspicious int stream size: " + size);
+			}
+			int[] ints = new int[size];
+			for (int i = 0; i < size; i++) {
+				ints[i] = input.readInt();
+			}
+			TTSMod.LOGGER.info("[BufOps] getIntStream read: {}", Arrays.toString(ints));
+			return DataResult.success(Arrays.stream(ints));
+		} catch (Exception e) {
+			return DataResult.error(() -> "Failed to read int stream: " + e);
+		}
+	}
+
+	@Override
+	public FriendlyByteBuf createLongList(LongStream input) {
+		FriendlyByteBuf buf = empty();
+		long[] longs = input.toArray();
+		buf.writeVarInt(longs.length);
+		for (long l : longs) {
+			buf.writeLong(l);
+		}
+		return buf;
+	}
+
+	@Override
+	public DataResult<LongStream> getLongStream(FriendlyByteBuf input) {
+		try {
+			int size = input.readVarInt();
+			if (size < 0 || size > 4096) {
+				return DataResult.error(() -> "Suspicious long stream size: " + size);
+			}
+			long[] longs = new long[size];
+			for (int i = 0; i < size; i++) {
+				longs[i] = input.readLong();
+			}
+			return DataResult.success(Arrays.stream(longs));
+		} catch (Exception e) {
+			return DataResult.error(() -> "Failed to read long stream: " + e);
+		}
+	}
 	// ---------------------------------------------------------
 	// Primitive extractors
 	// ---------------------------------------------------------
@@ -54,14 +115,9 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 		List<FriendlyByteBuf> list = input.toList();
 		buf.writeVarInt(list.size());
 		for (FriendlyByteBuf element : list) {
-			// Ensure array() is called on a buffer with a known backing array and no
-			// offset.
-			// A safer way is using ByteBufUtil.getBytes(element) or element.copy().array()
-			// but relying on element.array() for buffers created by 'create*' methods
-			// should be fine.
-			byte[] data = element.array();
-			buf.writeVarInt(data.length);
-			buf.writeBytes(data);
+			int len = element.readableBytes();
+			buf.writeVarInt(len);
+			buf.writeBytes(element, element.readerIndex(), len); // safe read without consuming
 		}
 		return buf;
 	}
@@ -72,22 +128,50 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 		List<Pair<FriendlyByteBuf, FriendlyByteBuf>> entries = input.toList();
 		buf.writeVarInt(entries.size());
 		for (var entry : entries) {
-			// NOTE: This assumes the key buffer contains only a string and consumes it.
-			// This is generally acceptable in createMap as the key buffer is discarded.
-			String key = entry.getFirst().readUtf();
-			buf.writeUtf(key);
+			FriendlyByteBuf keyBuf = new FriendlyByteBuf(entry.getFirst().copy());
+			buf.writeUtf(keyBuf.readUtf());
 
-			byte[] vData = entry.getSecond().array();
-			buf.writeVarInt(vData.length);
-			buf.writeBytes(vData);
+			FriendlyByteBuf val = entry.getSecond();
+			int len = val.readableBytes();
+			buf.writeVarInt(len);
+			buf.writeBytes(val, val.readerIndex(), len); // safe read without consuming
 		}
 		return buf;
 	}
 
+	// Type tags
+	private static final byte TAG_BYTE = 0;
+	private static final byte TAG_SHORT = 1;
+	private static final byte TAG_INT = 2;
+	private static final byte TAG_LONG = 3;
+	private static final byte TAG_FLOAT = 4;
+	private static final byte TAG_DOUBLE = 5;
+
 	@Override
 	public FriendlyByteBuf createNumeric(Number i) {
 		FriendlyByteBuf buf = empty();
-		buf.writeInt(i.intValue());
+		if (i instanceof Byte b) {
+			buf.writeByte(TAG_BYTE);
+			buf.writeByte(b);
+		} else if (i instanceof Short s) {
+			buf.writeByte(TAG_SHORT);
+			buf.writeShort(s);
+		} else if (i instanceof Integer n) {
+			buf.writeByte(TAG_INT);
+			buf.writeInt(n);
+		} else if (i instanceof Long l) {
+			buf.writeByte(TAG_LONG);
+			buf.writeLong(l);
+		} else if (i instanceof Float f) {
+			buf.writeByte(TAG_FLOAT);
+			buf.writeFloat(f);
+		} else if (i instanceof Double d) {
+			buf.writeByte(TAG_DOUBLE);
+			buf.writeDouble(d);
+		} else {
+			buf.writeByte(TAG_LONG);
+			buf.writeLong(i.longValue());
+		}
 		return buf;
 	}
 
@@ -179,9 +263,16 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	@Override
 	public DataResult<Number> getNumberValue(FriendlyByteBuf input) {
 		try {
-			// NOTE: Using readInt() assumes all numbers are encoded as ints.
-			// If longs/doubles are possible, this needs to be more complex.
-			return DataResult.success(input.readInt());
+			byte tag = input.readByte();
+			return DataResult.success(switch (tag) {
+				case TAG_BYTE -> input.readByte();
+				case TAG_SHORT -> input.readShort();
+				case TAG_INT -> input.readInt();
+				case TAG_LONG -> input.readLong();
+				case TAG_FLOAT -> input.readFloat();
+				case TAG_DOUBLE -> input.readDouble();
+				default -> throw new IllegalStateException("Unknown numeric tag: " + tag);
+			});
 		} catch (Exception e) {
 			return DataResult.error(() -> "Failed to read number: " + e);
 		}
@@ -312,10 +403,16 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 		public static <T> T readWithCodec(FriendlyByteBuf buf, Codec<T> codec) {
 			byte[] data = buf.readByteArray();
 			FriendlyByteBuf temp = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-
-			// The code here was correct for passing the wrapped buffer to the Codec.
-			return codec.parse(FriendlyByteBufOps.INSTANCE, temp)
-					.resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err)).orElseThrow();
+			try {
+				return codec.parse(FriendlyByteBufOps.INSTANCE, temp)
+						.resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err)).orElse(null);
+			} catch (Exception e) {
+				TTSMod.LOGGER.error(
+						"Codec parse threw unchecked exception. Readable bytes remaining: {}. Buffer contents: {}",
+						temp.readableBytes(), ByteBufUtil.hexDump(temp));
+				TTSMod.LOGGER.error("Stack trace:", e);
+				return null;
+			}
 		}
 
 		// Encoding

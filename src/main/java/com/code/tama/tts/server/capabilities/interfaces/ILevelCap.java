@@ -19,5 +19,5 @@ public interface ILevelCap extends INBTSerializable<CompoundTag> {
 	void Tick();
 	Map<BlockPos, RiftData> GetRiftData();
 	void SetRiftData(Map<BlockPos, RiftData> activeRifts);
-
+	void addRift(BlockPos pos, RiftData data);
 }

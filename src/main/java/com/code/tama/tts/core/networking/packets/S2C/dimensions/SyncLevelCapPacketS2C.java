@@ -4,6 +4,7 @@ package com.code.tama.tts.core.networking.packets.S2C.dimensions;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.core.events.RiftRenderer;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
@@ -49,6 +50,8 @@ public class SyncLevelCapPacketS2C implements ImAPacket {
 
 				cap.SetRiftData(packet.cap.GetRiftData());
 				cap.SetTIRBlocks(packet.cap.GetTIRBlocks());
+
+				RiftRenderer.markDirty();
 			}
 		});
 		context.setPacketHandled(true);
