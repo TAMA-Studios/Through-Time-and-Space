@@ -23,8 +23,10 @@ public class SonicModeRegistry {
 	public static final RegistryObject<SonicBlockMode> BLOCKS = SONIC_MODE.register("blocks", SonicBlockMode::new);
 	public static final RegistryObject<SonicRiftMode> rift = SONIC_MODE.register("rift", SonicRiftMode::new);
 	public static final RegistryObject<SonicEntityMode> ENTITY = SONIC_MODE.register("entity", SonicEntityMode::new);
-	public static final RegistryObject<RedstoneSonicMode> REDSTONE = SONIC_MODE.register("redstone", RedstoneSonicMode::new);
-	public static final RegistryObject<SonicBuilderMode> BUILDER = SONIC_MODE.register("builder", SonicBuilderMode::new);
+	public static final RegistryObject<RedstoneSonicMode> REDSTONE = SONIC_MODE.register("redstone",
+			RedstoneSonicMode::new);
+	public static final RegistryObject<SonicBuilderMode> BUILDER = SONIC_MODE.register("builder",
+			SonicBuilderMode::new);
 
 	public static void register(IEventBus modEventBus) {
 		SONIC_MODE.makeRegistry(() -> new RegistryBuilder<SonicMode>().hasTags().disableSaving().disableSync());

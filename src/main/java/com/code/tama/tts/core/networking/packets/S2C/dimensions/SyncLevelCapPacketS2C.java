@@ -27,8 +27,8 @@ public class SyncLevelCapPacketS2C implements ImAPacket {
 
 	public static void encode(SyncLevelCapPacketS2C packet, FriendlyByteBuf buffer) {
 		TTSMod.LOGGER.info("[SYNC] encode called, buffer ridx={} widx={}", buffer.readerIndex(), buffer.writerIndex());
-		TTSMod.LOGGER.info("[SYNC] Encoding {} rifts, {} TIR blocks",
-				packet.cap.GetRiftData().size(), packet.cap.GetTIRBlocks().size());
+		TTSMod.LOGGER.info("[SYNC] Encoding {} rifts, {} TIR blocks", packet.cap.GetRiftData().size(),
+				packet.cap.GetTIRBlocks().size());
 		FriendlyByteBufOps.Helper.writeWithCodec(buffer, LevelCapability.CODEC, packet.cap);
 		// Measure only what WE wrote, not the discriminator byte Forge prepended
 		TTSMod.LOGGER.info("[SYNC] Encoded successfully, {} bytes", buffer.writerIndex() - 1);

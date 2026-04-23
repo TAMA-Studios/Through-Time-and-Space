@@ -27,8 +27,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 
 	/**
 	 * CRITICAL: Returning false disables DFU's "compressed" codec path, which
-	 * encodes record fields by positional index (using getIntStream) rather than
-	 * by name (using getMap). The compressed path assumes a registry-backed
+	 * encodes record fields by positional index (using getIntStream) rather than by
+	 * name (using getMap). The compressed path assumes a registry-backed
 	 * key-compression scheme that doesn't exist here, and breaks whenever fields
 	 * are added/reordered. With compressMaps=false, all records encode as named
 	 * maps, which our getMap/createMap handle correctly.
@@ -76,23 +76,38 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	// Numeric --------------- tagged so round-trips preserve exact type
 	// ---------------------------------------------------------
 
-	private static final byte TAG_BYTE   = 0;
-	private static final byte TAG_SHORT  = 1;
-	private static final byte TAG_INT    = 2;
-	private static final byte TAG_LONG   = 3;
-	private static final byte TAG_FLOAT  = 4;
+	private static final byte TAG_BYTE = 0;
+	private static final byte TAG_SHORT = 1;
+	private static final byte TAG_INT = 2;
+	private static final byte TAG_LONG = 3;
+	private static final byte TAG_FLOAT = 4;
 	private static final byte TAG_DOUBLE = 5;
 
 	@Override
 	public FriendlyByteBuf createNumeric(Number i) {
 		FriendlyByteBuf buf = empty();
-		if      (i instanceof Byte b)    { buf.writeByte(TAG_BYTE);   buf.writeByte(b); }
-		else if (i instanceof Short s)   { buf.writeByte(TAG_SHORT);  buf.writeShort(s); }
-		else if (i instanceof Integer n) { buf.writeByte(TAG_INT);    buf.writeInt(n); }
-		else if (i instanceof Long l)    { buf.writeByte(TAG_LONG);   buf.writeLong(l); }
-		else if (i instanceof Float f)   { buf.writeByte(TAG_FLOAT);  buf.writeFloat(f); }
-		else if (i instanceof Double d)  { buf.writeByte(TAG_DOUBLE); buf.writeDouble(d); }
-		else                             { buf.writeByte(TAG_LONG);   buf.writeLong(i.longValue()); }
+		if (i instanceof Byte b) {
+			buf.writeByte(TAG_BYTE);
+			buf.writeByte(b);
+		} else if (i instanceof Short s) {
+			buf.writeByte(TAG_SHORT);
+			buf.writeShort(s);
+		} else if (i instanceof Integer n) {
+			buf.writeByte(TAG_INT);
+			buf.writeInt(n);
+		} else if (i instanceof Long l) {
+			buf.writeByte(TAG_LONG);
+			buf.writeLong(l);
+		} else if (i instanceof Float f) {
+			buf.writeByte(TAG_FLOAT);
+			buf.writeFloat(f);
+		} else if (i instanceof Double d) {
+			buf.writeByte(TAG_DOUBLE);
+			buf.writeDouble(d);
+		} else {
+			buf.writeByte(TAG_LONG);
+			buf.writeLong(i.longValue());
+		}
 		return buf;
 	}
 
@@ -101,11 +116,11 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 		try {
 			byte tag = input.readByte();
 			return DataResult.success(switch (tag) {
-				case TAG_BYTE   -> input.readByte();
-				case TAG_SHORT  -> input.readShort();
-				case TAG_INT    -> input.readInt();
-				case TAG_LONG   -> input.readLong();
-				case TAG_FLOAT  -> input.readFloat();
+				case TAG_BYTE -> input.readByte();
+				case TAG_SHORT -> input.readShort();
+				case TAG_INT -> input.readInt();
+				case TAG_LONG -> input.readLong();
+				case TAG_FLOAT -> input.readFloat();
 				case TAG_DOUBLE -> input.readDouble();
 				default -> throw new IllegalStateException("Unknown numeric tag: " + tag);
 			});
@@ -135,7 +150,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	}
 
 	// ---------------------------------------------------------
-	// IntStream --------------- separate fast path, NO type tag, used by BlockPos etc.
+	// IntStream --------------- separate fast path, NO type tag, used by BlockPos
+	// etc.
 	// ---------------------------------------------------------
 
 	@Override
@@ -239,7 +255,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	}
 
 	// ---------------------------------------------------------
-	// Map --------------- entry count + (utf key + length-prefixed value blob) per entry
+	// Map --------------- entry count + (utf key + length-prefixed value blob) per
+	// entry
 	// ---------------------------------------------------------
 
 	@Override
@@ -281,8 +298,7 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 			return DataResult.success(new MapLike<>() {
 				@Override
 				public Stream<Pair<FriendlyByteBuf, FriendlyByteBuf>> entries() {
-					return map.entrySet().stream()
-							.map(e -> Pair.of(createString(e.getKey()), e.getValue()));
+					return map.entrySet().stream().map(e -> Pair.of(createString(e.getKey()), e.getValue()));
 				}
 
 				@Override
@@ -323,8 +339,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	@Override
 	public DataResult<FriendlyByteBuf> mergeToList(FriendlyByteBuf list, FriendlyByteBuf value) {
 		try {
-			Stream<FriendlyByteBuf> stream = getStream(new FriendlyByteBuf(list.copy()))
-					.result().orElse(Stream.empty());
+			Stream<FriendlyByteBuf> stream = getStream(new FriendlyByteBuf(list.copy())).result()
+					.orElse(Stream.empty());
 			return DataResult.success(createList(Stream.concat(stream, Stream.of(value))));
 		} catch (Exception e) {
 			return DataResult.error(() -> "Failed mergeToList: " + e);
@@ -366,7 +382,8 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 	@Override
 	public FriendlyByteBuf remove(FriendlyByteBuf input, String key) {
 		MapLike<FriendlyByteBuf> ml = getMap(new FriendlyByteBuf(input.copy())).result().orElse(null);
-		if (ml == null) return input;
+		if (ml == null)
+			return input;
 		Map<String, FriendlyByteBuf> m = ml.entries()
 				.collect(Collectors.toMap(p -> new FriendlyByteBuf(p.getFirst().copy()).readUtf(), Pair::getSecond));
 		m.remove(key);
@@ -392,11 +409,10 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 			TTSMod.LOGGER.info("[Helper] temp hex: {}", ByteBufUtil.hexDump(temp));
 			try {
 				return codec.parse(FriendlyByteBufOps.INSTANCE, temp)
-						.resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err))
-						.orElse(fallback);
+						.resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err)).orElse(fallback);
 			} catch (Exception e) {
-				TTSMod.LOGGER.error("Unchecked exception. Remaining: {}. hex: {}",
-						temp.readableBytes(), ByteBufUtil.hexDump(temp));
+				TTSMod.LOGGER.error("Unchecked exception. Remaining: {}. hex: {}", temp.readableBytes(),
+						ByteBufUtil.hexDump(temp));
 				TTSMod.LOGGER.error("Stack trace:", e);
 				return fallback;
 			}

@@ -4,7 +4,6 @@ package com.code.tama.tts.core.items.gadgets;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.client.manual.ManualScreen;
 import com.code.tama.tts.core.items.core.IAttunableItem;
 import com.code.tama.tts.core.registries.misc.SonicModeRegistry;
@@ -15,8 +14,6 @@ import com.code.tama.tts.server.sonic.SonicMode;
 import com.code.tama.tts.server.sonic.SonicRiftMode;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +29,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -49,6 +47,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.GrammarNazi;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public class SonicItem extends Item implements IAttunableItem {
 	private final int Variants;
@@ -141,7 +140,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip,
-								@NotNull TooltipFlag flagIn) {
+			@NotNull TooltipFlag flagIn) {
 		tooltip.add(Component.literal("Sonic Screwdriver! Doesn't work on wood and allat"));
 		tooltip.add(Component.literal("Power - " + GetPower(stack)));
 		tooltip.add(Component.translatable("tooltip.tts.ctrl"));
@@ -152,7 +151,7 @@ public class SonicItem extends Item implements IAttunableItem {
 	}
 
 	public boolean canAttackBlock(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-								  @NotNull Player p_41444_) {
+			@NotNull Player p_41444_) {
 		if (this.InteractionType instanceof SonicBuilderMode sonicBuilderMode) {
 			sonicBuilderMode.handleInteraction(p_41444_, state, level, pos, false,
 					p_41444_.getItemInHand(InteractionHand.MAIN_HAND), this.getDescriptionId());
@@ -164,7 +163,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack,
-						  int i) {
+			int i) {
 		// if (this.InteractionType != SonicInteractionType.SCANNER) return;
 		// if Item durability (powah) is 0, stop using
 		if (itemStack.getDamageValue() >= itemStack.getMaxDamage() - 1) {
@@ -213,7 +212,7 @@ public class SonicItem extends Item implements IAttunableItem {
 
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
-														   @NotNull InteractionHand interactionHand) {
+			@NotNull InteractionHand interactionHand) {
 		if (interactionHand == InteractionHand.OFF_HAND) {
 			if (player.isCrouching())
 				CycleVariant(player.getOffhandItem());
@@ -269,8 +268,8 @@ public class SonicItem extends Item implements IAttunableItem {
 	public void inventoryTick(ItemStack p_41404_, Level p_41405_, Entity entity, int p_41407_, boolean p_41408_) {
 		super.inventoryTick(p_41404_, p_41405_, entity, p_41407_, p_41408_);
 		if (this.InteractionType instanceof SonicRiftMode) {
-//			7 16 31 63
-//			if(p_41405_.getGameTime() & 31)
+			// 7 16 31 63
+			// if(p_41405_.getGameTime() & 31)
 
 			if (this.howClose.get() == 0)
 				ThreadUtils.RunThread(() -> {
@@ -298,27 +297,31 @@ public class SonicItem extends Item implements IAttunableItem {
 
 			if (this.howClose.get() != 0) {
 				switch (howClose.get()) {
-					case 1:
-						if((p_41405_.getGameTime() & 7) == 0) {
-							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 1f);
+					case 1 :
+						if ((p_41405_.getGameTime() & 7) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 1f);
 							howClose.set(0);
 						}
 						break;
-					case 2:
-						if((p_41405_.getGameTime() & 15) == 0) {
-							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.7f);
+					case 2 :
+						if ((p_41405_.getGameTime() & 15) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.7f);
 							howClose.set(0);
 						}
 						break;
-					case 3:
-						if((p_41405_.getGameTime() & 31) == 0) {
-							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.4f);
+					case 3 :
+						if ((p_41405_.getGameTime() & 31) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.4f);
 							howClose.set(0);
 						}
 						break;
-					case 4:
-						if((p_41405_.getGameTime() & 63) == 0) {
-							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1f, 0.1f);
+					case 4 :
+						if ((p_41405_.getGameTime() & 63) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.1f);
 							howClose.set(0);
 						}
 						break;
