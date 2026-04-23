@@ -84,9 +84,14 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			}
 
 			if (model != null) {
-				model.renderToBuffer(poseStack,
+				poseStack.translate(0, 1.5f, 0);
+				model.getPart("baseRoot").render(poseStack,
 						bufferSource.getBuffer(model.renderType(exteriorModelContainer.getTexture())), 0xf000f0,
-						OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+						OverlayTexture.NO_OVERLAY, r, g, b, flicker);
+
+				model.getPart("baseRoot").render(poseStack,
+						bufferSource.getBuffer(model.renderType(exteriorModelContainer.getLightMap())), 0xf000f0,
+						OverlayTexture.NO_OVERLAY, r, g, b, flicker);
 			}
 			poseStack.popPose();
 
