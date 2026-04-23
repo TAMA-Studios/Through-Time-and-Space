@@ -58,6 +58,7 @@ public class ChunkGatheringThread extends Thread {
 	private final ServerLevel targetLevel; // level whose geometry we are gathering
 	private final BlockPos targetPos;
 	private final float yaw;
+	private int lastLight = 15;
 
 	/**
 	 * Non-null in PORTAL mode.
@@ -219,7 +220,8 @@ public class ChunkGatheringThread extends Thread {
 								BlockState state = section.getBlockState(x, y, z);
 								FluidState fluid = section.getFluidState(x, y, z);
 								if (chunk.getBlockEntity(new BlockPos(gx, gy + 1, gz)) != null) {
-									tileEntities[lx][ly][lz] = chunk.getBlockEntity(new BlockPos(x, y, z));
+									BlockEntity te = chunk.getBlockEntity(new BlockPos(gx, gy + 1, gz));
+									tileEntities[lx][ly][lz] = te;
 									TELocations[lx][ly][lz] = true;
 								} else
 									TELocations[lx][ly][lz] = false;
@@ -251,7 +253,8 @@ public class ChunkGatheringThread extends Thread {
 								BlockState stateA = sectionAbove.getBlockState(x, y, z);
 								FluidState fluidA = sectionAbove.getFluidState(x, y, z);
 								if (chunk.getBlockEntity(new BlockPos(gx, gyA, gz)) != null) {
-									tileEntities[lx][lyA][lz] = chunk.getBlockEntity(new BlockPos(x, y, z));
+									BlockEntity te = chunk.getBlockEntity(new BlockPos(gx, gyA, gz));
+									tileEntities[lx][lyA][lz] = te;
 									TELocations[lx][lyA][lz] = true;
 								} else
 									TELocations[lx][lyA][lz] = false;
@@ -350,12 +353,16 @@ public class ChunkGatheringThread extends Thread {
 						FluidState fluid = fluidStates[lx][ly][lz];
 						int packed = packedLights[lx][ly][lz];
 
+						if (packed == 0)
+							packed = lastLight;
+						lastLight = packed;
+
 						if (fluid == null || fluid.isEmpty())
 							containers.add(new BotiBlockContainer(targetLevel, packed, relPos, state));
 
 						if (TELocations[lx][ly][lz])
 							containers.add(new BotiBlockContainer(targetLevel, state, relPos, packed, true,
-									tileEntities[lx][ly][lz].serializeNBT()));
+									tileEntities[lx][ly][lz].saveWithFullMetadata()));
 						else
 							containers.add(new BotiBlockContainer(targetLevel, state, fluid, relPos, packed));
 

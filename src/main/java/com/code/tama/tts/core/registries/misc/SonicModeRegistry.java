@@ -21,6 +21,7 @@ public class SonicModeRegistry {
 			MODID);
 
 	public static final RegistryObject<SonicBlockMode> BLOCKS = SONIC_MODE.register("blocks", SonicBlockMode::new);
+	public static final RegistryObject<SonicRiftMode> rift = SONIC_MODE.register("rift", SonicRiftMode::new);
 	public static final RegistryObject<SonicEntityMode> ENTITY = SONIC_MODE.register("entity", SonicEntityMode::new);
 	public static final RegistryObject<RedstoneSonicMode> REDSTONE = SONIC_MODE.register("redstone",
 			RedstoneSonicMode::new);

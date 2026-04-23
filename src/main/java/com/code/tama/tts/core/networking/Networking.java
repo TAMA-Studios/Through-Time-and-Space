@@ -14,10 +14,7 @@ import com.code.tama.tts.core.networking.packets.C2S.entities.ControlClickedPack
 import com.code.tama.tts.core.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
-import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncCapLightLevelPacketS2C;
-import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
-import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
-import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
+import com.code.tama.tts.core.networking.packets.S2C.dimensions.*;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C;
@@ -69,6 +66,7 @@ public class Networking {
 		BOTIPackets.registerPackets();
 
 		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
+		UniversalCommon.Networking.registerMsg(SyncLevelCapPacketS2C.class);
 
 		UniversalCommon.Networking.registerMsg(ProgressUpdatePacket.class);
 		UniversalCommon.Networking.registerMsg(GuiStateUpdatePacket.class);

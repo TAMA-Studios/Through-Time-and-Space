@@ -1,7 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.constants;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -11,6 +14,7 @@ import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.data.RiftData;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
@@ -103,9 +107,19 @@ public class TTSCommands {
 	public static LiteralArgumentBuilder<CommandSourceStack> createTardis = Commands.literal("create_tardis")
 			.executes(ctx -> placeTARDIS(ctx.getSource()));
 
+	public static LiteralArgumentBuilder<CommandSourceStack> createRift = Commands.literal("create_rift")
+			.then(Commands.argument("whats_inside", StringArgumentType.string()).suggests((context, builder) -> {
+				List<RiftData.WheelOfFortune> entries = Arrays.stream(RiftData.WheelOfFortune.values()).toList();
+				List<String> s = new ArrayList<>();
+
+				entries.forEach(w -> s.add(w.name()));
+				return SharedSuggestionProvider.suggest(s, builder);
+			}).executes(ctx -> placeRift(ctx.getSource(), StringArgumentType.getString(ctx, "whats_inside"))));
+
 	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
+
 	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(subsystem)
-			.then(createTardis).then(listguis).then(opengui).then(lua);
+			.then(createTardis).then(createRift).then(listguis).then(opengui).then(lua);
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
 		AbstractSubsystem subsystem = SubsystemsRegistry.subsystems.stream().filter(sub -> sub.name().equals(system))
@@ -127,6 +141,7 @@ public class TTSCommands {
 
 	private static int placeTARDIS(CommandSourceStack source) {
 		ServerPlayer player = source.getPlayer();
+		assert player != null;
 		BlockPos blockPos = player.blockPosition();
 		Level level = source.getLevel();
 
@@ -143,10 +158,20 @@ public class TTSCommands {
 
 		tile.ShouldMakeDimOnNextTick = true;
 
-		source.sendSuccess(() -> {
-			assert player != null;
-			return Component.literal("Placed TARDIS at " + player.position());
-		}, true);
+		source.sendSuccess(() -> Component.literal("Placed TARDIS at " + player.position()), true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int placeRift(CommandSourceStack source, String whatsInside) {
+		ServerPlayer player = source.getPlayer();
+		assert player != null;
+		BlockPos blockPos = player.blockPosition();
+		Level level = source.getLevel();
+
+		level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap -> cap.addRift(blockPos,
+				new RiftData(blockPos, player.getDirection().toYRot(), UUID.randomUUID(), whatsInside, level)));
+
+		source.sendSuccess(() -> Component.literal("Placed TARDIS at " + player.position()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 

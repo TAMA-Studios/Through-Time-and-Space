@@ -2,13 +2,16 @@
 package com.code.tama.tts.core.items.gadgets;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.code.tama.tts.client.manual.ManualScreen;
 import com.code.tama.tts.core.items.core.IAttunableItem;
 import com.code.tama.tts.core.registries.misc.SonicModeRegistry;
+import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.sonic.SonicBlockMode;
 import com.code.tama.tts.server.sonic.SonicBuilderMode;
 import com.code.tama.tts.server.sonic.SonicMode;
+import com.code.tama.tts.server.sonic.SonicRiftMode;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +29,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -43,9 +47,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.GrammarNazi;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
 
 public class SonicItem extends Item implements IAttunableItem {
 	private final int Variants;
+	AtomicInteger howClose = new AtomicInteger(0);
 
 	@Getter
 	@Setter
@@ -256,5 +262,71 @@ public class SonicItem extends Item implements IAttunableItem {
 
 		this.InteractionType.onUse(useOnContext);
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void inventoryTick(ItemStack p_41404_, Level p_41405_, Entity entity, int p_41407_, boolean p_41408_) {
+		super.inventoryTick(p_41404_, p_41405_, entity, p_41407_, p_41408_);
+		if (this.InteractionType instanceof SonicRiftMode) {
+			// 7 16 31 63
+			// if(p_41405_.getGameTime() & 31)
+
+			if (this.howClose.get() == 0)
+				ThreadUtils.RunThread(() -> {
+					p_41405_.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent((cap) -> {
+						cap.GetRiftData().forEach((b, r) -> {
+							if (b.closerToCenterThan(entity.position(), 50)) {
+								this.howClose.set(1);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 100)) {
+								this.howClose.set(2);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 500)) {
+								this.howClose.set(3);
+								return;
+							}
+							if (b.closerToCenterThan(entity.position(), 1000)) {
+								this.howClose.set(4);
+								return;
+							}
+						});
+					});
+				}, "RiftDetection");
+
+			if (this.howClose.get() != 0) {
+				switch (howClose.get()) {
+					case 1 :
+						if ((p_41405_.getGameTime() & 7) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 1f);
+							howClose.set(0);
+						}
+						break;
+					case 2 :
+						if ((p_41405_.getGameTime() & 15) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.7f);
+							howClose.set(0);
+						}
+						break;
+					case 3 :
+						if ((p_41405_.getGameTime() & 31) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.4f);
+							howClose.set(0);
+						}
+						break;
+					case 4 :
+						if ((p_41405_.getGameTime() & 63) == 0) {
+							p_41405_.playSound(entity, entity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(),
+									SoundSource.BLOCKS, 1f, 0.1f);
+							howClose.set(0);
+						}
+						break;
+				}
+			}
+		}
 	}
 }

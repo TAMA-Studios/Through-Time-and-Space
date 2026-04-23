@@ -31,7 +31,7 @@ public class SerializableCapabilityProvider<T extends INBTSerializable<C>, C ext
 	}
 
 	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+	public @NotNull <X> LazyOptional<X> getCapability(@NotNull Capability<X> cap, @Nullable Direction side) {
 		return cap == this.INSTANCE ? this.lazyOptional.cast() : LazyOptional.empty();
 	}
 

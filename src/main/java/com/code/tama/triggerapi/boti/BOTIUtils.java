@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -93,10 +94,13 @@ public class BOTIUtils {
 		}
 
 		if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
-			portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
 			BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
+			portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
 		} else {
 			pose.pushPose();
+
+			var mc = Minecraft.getInstance();
+			var terDispatcher = mc.getBlockEntityRenderDispatcher();
 
 			minecraft.level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 				pose.translate(-0.5f, 0.5f, 0.5f);
@@ -111,13 +115,24 @@ public class BOTIUtils {
 					Objects.requireNonNull(RenderSystem.getShader()));
 			VertexBuffer.unbind();
 
+			// After VBO draw, before TE rendering
+			RenderSystem.setProjectionMatrix(RenderSystem.getProjectionMatrix(), VertexSorting.ORTHOGRAPHIC_Z);
+
 			portal.blockEntities.forEach((pos, be) -> {
-				var mc = Minecraft.getInstance();
-				var terDispatcher = mc.getBlockEntityRenderDispatcher();
+				pose.pushPose();
+				pose.translate(pos.getX(), pos.getY(), pos.getZ());
 				terDispatcher.getRenderer(be).render(be, mc.getPartialTick(), pose, mc.renderBuffers().bufferSource(),
 						0xf000f0, 0);
+				pose.popPose();
 			});
 
+			var bufferSource = mc.renderBuffers().bufferSource();
+			// Flush opaque types first, then translucent
+			bufferSource.endBatch(RenderType.solid());
+			bufferSource.endBatch(RenderType.cutout());
+			bufferSource.endBatch(RenderType.cutoutMipped());
+			bufferSource.endBatch(RenderType.translucent());
+			bufferSource.endBatch(); // catch-all for any TE-specific render types
 			pose.popPose();
 		}
 	}

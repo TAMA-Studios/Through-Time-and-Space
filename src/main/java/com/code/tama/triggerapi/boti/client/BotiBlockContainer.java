@@ -108,7 +108,7 @@ public class BotiBlockContainer {
 		}
 
 		if (IsTile) {
-			buf.writeNbt(level.getBlockEntity(pos).saveWithFullMetadata());
+			buf.writeNbt(entityTag);
 		}
 	}
 }
