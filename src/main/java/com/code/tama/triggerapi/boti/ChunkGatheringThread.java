@@ -58,6 +58,7 @@ public class ChunkGatheringThread extends Thread {
 	private final ServerLevel targetLevel; // level whose geometry we are gathering
 	private final BlockPos targetPos;
 	private final float yaw;
+	private int lastLight = 15;
 
 	/**
 	 * Non-null in PORTAL mode.
@@ -351,6 +352,10 @@ public class ChunkGatheringThread extends Thread {
 
 						FluidState fluid = fluidStates[lx][ly][lz];
 						int packed = packedLights[lx][ly][lz];
+
+						if (packed == 0)
+							packed = lastLight;
+						lastLight = packed;
 
 						if (fluid == null || fluid.isEmpty())
 							containers.add(new BotiBlockContainer(targetLevel, packed, relPos, state));
