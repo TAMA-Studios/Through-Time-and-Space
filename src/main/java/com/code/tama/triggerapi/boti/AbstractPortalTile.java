@@ -216,6 +216,9 @@ public abstract class AbstractPortalTile extends TickingTile {
 			if (container.isIsTile()) {
 				BlockEntity entity = BlockEntity.loadStatic(container.getPos(), container.getState(),
 						container.getEntityTag());
+				assert entity != null;
+				assert Minecraft.getInstance().level != null;
+				entity.setLevel(Minecraft.getInstance().level);
 				blockEntities.put(container.getPos(), entity);
 				containers.remove(container);
 			}

@@ -28,8 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
 	public static final ResourceLocation GALLIFREYAN = new ResourceLocation(TTSMod.MODID,
 			"textures/tiles/monitor/galifrayan.png");
@@ -44,71 +42,72 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 	}
 
 	@Override
-	public void render(@NotNull T monitor, float partialTicks, @NotNull PoseStack poseStack,
+	public void render(@NotNull T monitor, float partialTicks, @NotNull PoseStack pose,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 		if (monitor.getLevel() == null)
 			return;
-		StencilUtils.DrawStencil(poseStack, (pose) -> {
-			pose.pushPose();
-			this.ApplyDefaultTransforms(pose, monitor);
-			// poseStack.translate(0.5, 0.5, 0);
+		// StencilUtils.DrawStencil(poseStack, (pose) -> {
+		// pose.pushPose();
+		// this.ApplyDefaultTransforms(pose, monitor);
+		// // poseStack.translate(0.5, 0.5, 0);
+		//
+		// pose.translate(-44, -0.5, 0);
+		// pose.scale(5.5f, 5.5f, 0);
+		//
+		// renderFrame(monitor, pose, bufferSource, fullBright);
+		// pose.popPose();
+		// }, (pose) -> {
 
-			pose.translate(-44, -0.5, 0);
-			pose.scale(5.5f, 5.5f, 0);
+		// GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 
-			renderFrame(monitor, pose, bufferSource, fullBright);
-			pose.popPose();
-		}, (pose) -> {
+		boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
 
-			// GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
+		pose.pushPose();
 
-			boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
+		this.ApplyDefaultTransforms(pose, monitor);
 
-			pose.pushPose();
+		if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+			UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
+				if (reg.get().getID() == monitor.getCategoryID()) {
+					this.category = reg.get();
+				}
+			});
+		}
 
-			this.ApplyDefaultTransforms(pose, monitor);
+		if (monitor.isPowered()) {
+			if (isInTARDIS)
+				this.category.Render(monitor, pose, bufferSource, combinedLight);
+			else
+				RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
+		}
 
-			if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
-				UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
-					if (reg.get().getID() == monitor.getCategoryID()) {
-						this.category = reg.get();
-					}
-				});
-			}
+		pose.popPose();
+		pose.pushPose();
 
-			if (monitor.isPowered()) {
-				if (isInTARDIS)
-					this.category.Render(monitor, pose, bufferSource, combinedLight);
-				else
-					RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
-			}
+		this.ApplyDefaultTransforms(pose, monitor);
 
-			pose.popPose();
-			pose.pushPose();
+		renderUIComponents(monitor, pose, bufferSource, light);
 
-			this.ApplyDefaultTransforms(pose, monitor);
+		pose.popPose();
+		pose.pushPose();
 
-			renderUIComponents(monitor, pose, bufferSource, light);
+		this.ApplyDefaultTransforms(pose, monitor);
 
-			pose.popPose();
-			pose.pushPose();
+		renderRotatingImage(monitor, pose, bufferSource, light);
 
-			this.ApplyDefaultTransforms(pose, monitor);
+		pose.popPose();
 
-			renderRotatingImage(monitor, pose, bufferSource, light);
+		pose.pushPose();
 
-			pose.popPose();
+		this.ApplyDefaultTransforms(pose, monitor);
 
-			pose.pushPose();
+		renderBackground(monitor, pose, bufferSource, light);
 
-			this.ApplyDefaultTransforms(pose, monitor);
+		pose.popPose();
 
-			renderBackground(monitor, pose, bufferSource, light);
-
-			pose.popPose();
-
-			RenderSystem.enableDepthTest();
-		});
+		RenderSystem.enableDepthTest();
+		RenderSystem.disableBlend();
+		// });
 	}
 
 	private void renderRotatingImage(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
@@ -118,8 +117,10 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 		ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/tiles/monitor/galifrayan.png");
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.disableBlend();
+
 		RenderSystem.enableDepthTest();
+		RenderSystem.disableBlend();
+
 		RenderSystem.setShaderTexture(0, texture);
 
 		assert monitor.getLevel() != null;
@@ -140,8 +141,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		buffer.vertex(matrix, -0.5f, 0.5f, 0).uv(0, 1).endVertex();
 
 		BufferUploader.drawWithShader(buffer.end());
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableBlend();
 
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
 	}
@@ -150,11 +149,12 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			int combinedLight) {
 		ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.disableBlend();
+
 		RenderSystem.enableDepthTest();
+		RenderSystem.disableBlend();
 
 		poseStack.translate(-45.41, -1.7, 0);
-		poseStack.scale(5.67f, 5.67f, 0);
+		poseStack.scale(5.67f, 5.67f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -194,9 +194,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			// BufferUploader.drawWithShader(buffer.end());
 		}
 
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableBlend();
-
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
 	}
 
@@ -214,7 +211,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		RenderSystem.enableDepthTest();
 
 		poseStack.translate(-44, -0.5, 0);
-		poseStack.scale(5.5f, 5.5f, 0);
+		poseStack.scale(5.5f, 5.5f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -247,7 +244,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		RenderSystem.enableDepthTest();
 
 		poseStack.translate(-0.25, -0.25, 0);
-		poseStack.scale(1.0325f, 1.0325f, 0);
+		poseStack.scale(1.0325f, 1.0325f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
@@ -266,7 +263,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		BufferUploader.drawWithShader(buffer.end());
-
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 

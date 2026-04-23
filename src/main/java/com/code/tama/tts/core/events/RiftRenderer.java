@@ -15,10 +15,15 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 @Mod.EventBusSubscriber(modid = TTSMod.MODID)
 public class RiftRenderer {
@@ -34,6 +39,8 @@ public class RiftRenderer {
 		riftVBOs.values().forEach(VertexBuffer::close);
 		riftVBOs.clear();
 	}
+
+	static Creeper creeper;
 
 	@SubscribeEvent
 	public static void onWorldRender(RenderLevelStageEvent event) {
@@ -54,20 +61,20 @@ public class RiftRenderer {
 		PoseStack poseStack = event.getPoseStack();
 
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//		int t = (int) ((mc.level.getGameTime() >> 3) % 6);
-//		int which = t <= 3 ? t : 6 - t;
-//		RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
-
+		// int t = (int) ((mc.level.getGameTime() >> 3) % 6);
+		// int which = t <= 3 ? t : 6 - t;
+		// RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
 
 		int t = (int) (mc.level.getGameTime() & 127) + 128;
 
-//System.out.println(t / 255f);
+		// System.out.println(t / 255f);
 		RenderSystem.setShaderColor((t >> 3) / 255f, (t >> 2) / 255f, t / 255f, 1f);
 
 		RenderSystem.disableCull();
 
+		final int c[] = {0};
 		cap.GetRiftData().forEach((bp, rift) -> {
-			int which = rift.getUsedTime() / 64;
+			int which = rift.getUsedTime() / 8;
 			RenderSystem.setShaderTexture(0, RIFT_FRAMES[which]);
 
 			VertexBuffer vbo = riftVBOs.get(rift.getRiftUUID());
@@ -76,11 +83,6 @@ public class RiftRenderer {
 
 			poseStack.pushPose();
 
-			// FIX 1: Translate to block position relative to camera FIRST (per frame, not
-			// baked)
-			// This keeps the actual numbers small, fixing float precision jitter
-			// Direction dir = Direction.fromYRot(rift.getYRot());
-
 			float offsetX, offsetZ;
 
 			offsetX = rift.getYRot() == 0 ? 0.002f : rift.getYRot() == 180 ? 0.998f : 0.5f;
@@ -88,14 +90,40 @@ public class RiftRenderer {
 
 			poseStack.translate(bp.getX() + offsetZ - camPos.x, bp.getY() - camPos.y, bp.getZ() + offsetX - camPos.z);
 
-			// FIX 2: Rotate AFTER translate so rotation is around the block's own center
 			poseStack.mulPose(Axis.YP.rotationDegrees(rift.getYRot()));
 
-			vbo.bind();
-			vbo.drawWithShader(poseStack.last().pose(), RenderSystem.getProjectionMatrix(),
-					Objects.requireNonNull(RenderSystem.getShader()));
-			VertexBuffer.unbind();
+			if (creeper == null)
+				creeper = new Creeper(EntityType.CREEPER, mc.level);
 
+			if (rift.fboHelper == null)
+				rift.fboHelper = new FBOHelper();
+
+			rift.fboHelper.Render(poseStack, (poseStack1, buffer) -> {
+				poseStack1.pushPose();
+				if (which == 3) {
+					poseStack.translate(0, -0.5, 0);
+					poseStack1.scale(1, 2, 1);
+				}
+
+				vbo.bind();
+				vbo.drawWithShader(poseStack1.last().pose(), RenderSystem.getProjectionMatrix(),
+						Objects.requireNonNull(RenderSystem.getShader()));
+				VertexBuffer.unbind();
+				buffer.endBatch();
+				poseStack1.popPose();
+			}, (poseStack1, buffer) -> {
+			}, (poseStack1, buffer) -> {
+				poseStack1.pushPose();
+				StencilUtils.drawColoredCube(poseStack1, 4, new Vec3(255, 255, 255));
+				buffer.endBatch();
+
+				poseStack1.translate(0, -0.5, -2f);
+
+				rift.WhatsInside().render.accept(rift, poseStack1, buffer);
+				buffer.endBatch();
+				poseStack1.popPose();
+			});
+			//
 			poseStack.popPose();
 		});
 
@@ -112,13 +140,9 @@ public class RiftRenderer {
 			if (!mc.player.blockPosition().getCenter().closerThan(rift.getPos().getCenter(), 100))
 				return;
 
-			// FIX 1: Bake vertices in LOCAL space (centered at origin, small numbers)
-			// The world position is handled per-frame in the render matrix above
 			BufferBuilder builder = new BufferBuilder(256);
 			builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-			// Simple quad centered at origin, 3 wide x 1 tall
-			// X: -1.5 to 1.5, Y: 0 to 1, Z: 0 (flat on XY plane, rotation handles facing)
 			builder.vertex(-1.5f, 1.0f, 0).uv(0, 0).endVertex();
 			builder.vertex(1.5f, 1.0f, 0).uv(1, 0).endVertex();
 			builder.vertex(1.5f, 0.0f, 0).uv(1, 1).endVertex();

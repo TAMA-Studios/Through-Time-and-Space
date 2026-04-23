@@ -53,6 +53,37 @@ public class StencilUtils {
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
 	}
 
+	public static void DrawStencilNumerous(PoseStack pose, Consumer<PoseStack> drawFrame, Consumer<PoseStack> drawScene,
+			int value) {
+		RenderSystem.assertOnRenderThread();
+
+		// Re-enable stencil test and writing for this rift's mask pass
+		GL11.glEnable(GL11.GL_STENCIL_TEST);
+		GL11.glStencilMask(0xFF);
+		GL11.glStencilFunc(GL11.GL_ALWAYS, value, 0xFF);
+		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+
+		pose.pushPose();
+		RenderSystem.colorMask(false, false, false, false);
+		RenderSystem.depthMask(false);
+		drawFrame.accept(pose);
+		RenderSystem.colorMask(true, true, true, true);
+		RenderSystem.depthMask(true);
+		pose.popPose();
+
+		// Scene pass — only draw where stencil == value
+		GL11.glStencilMask(0x00);
+		GL11.glStencilFunc(GL11.GL_EQUAL, value, 0xFF);
+
+		pose.pushPose();
+		drawScene.accept(pose);
+		pose.popPose();
+
+		// Leave stencil disabled for whatever renders after
+		GL11.glDisable(GL11.GL_STENCIL_TEST);
+		GL11.glStencilMask(0xFF); // restore mask so next rift's clear/write works
+	}
+
 	public static void drawColoredCube(PoseStack stack, float size, Vec3 color) {
 		for (int i = 0; i < 4; i++) {
 			stack.pushPose();
@@ -143,10 +174,13 @@ public class StencilUtils {
 
 	public static void drawColoredFrame(PoseStack poseStack, float width, float height, Vec3 color) {
 		RenderSystem.setShader(GameRenderer::getPositionShader);
-		BufferBuilder builder = Tesselator.getInstance().getBuilder();
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+		poseStack.pushPose();
 		poseStack.translate(-width / 2, -height / 2, 0);
 		var matrix = poseStack.last().pose();
+
+		BufferBuilder builder = Tesselator.getInstance().getBuilder();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
 		RenderSystem.setShaderColor((float) color.x, (float) color.y, (float) color.z, 1);
 
@@ -157,10 +191,14 @@ public class StencilUtils {
 
 		Tesselator.getInstance().end();
 
+		poseStack.popPose();
+
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
 
 	public static void drawFrame(PoseStack poseStack, float width, float height) {
+		poseStack.pushPose();
+
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		BufferBuilder builder = Tesselator.getInstance().getBuilder();
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -173,6 +211,7 @@ public class StencilUtils {
 		builder.vertex(matrix, width, 0, 0).endVertex();
 
 		Tesselator.getInstance().end();
+		poseStack.popPose();
 	}
 
 	public static void endStencil() {

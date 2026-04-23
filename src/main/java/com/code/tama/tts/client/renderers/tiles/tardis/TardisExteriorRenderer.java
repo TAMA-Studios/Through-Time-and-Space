@@ -24,6 +24,7 @@ import net.minecraftforge.client.model.data.ModelData;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
@@ -116,17 +117,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		ModelPart boti = parsed.getPart("BOTI").modelPart;
 		ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
 
-		if (false) {
+		if (false) { // TODO: CONFIG!
 			HalfBOTIRenderer.render(exteriorTile.getLevel(), exteriorTile, stack, bufferSource, partialTicks,
 					combinedLight, combinedOverlay);
 		} else {
 			stack.pushPose();
 			stack.translate(0, 0, 0.5);
-
-			// Flush Minecraft's pending geometry to main BEFORE hijacking the FBO binding.
-			// Without this, geometry from other block entities sitting in bufferSource
-			// gets drawn into the BOTI FBO instead of main.
-			((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
 			exteriorTile.getFBOContainer().Render(stack,
 
@@ -150,7 +146,23 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 					// SCENE PASS — sky > BOTI blocks → door overlay (front-most)
 					(pose, botiSource) -> {
 						pose.pushPose();
+						pose.translate(0, 0.5, -0.5);
+						// boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
+						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+						// if (true) // TODO: CONFIG FOR PARTIAL BOTI
+						// partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
+						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+						// botiSource.endBatch();
+
+						StencilUtils.drawColoredFrame(pose, 2, 4, exteriorTile.SkyColor);
+						botiSource.endBatch();
+						pose.popPose();
+
+						pose.pushPose();
 						pose.translate(-0.5, 1.4, -0.62);
+						// StencilUtils.drawColoredFrame(pose, 2, 4, exteriorTile.SkyColor);
+						// botiSource.endBatch();
+
 						pose.mulPose(Axis.XP.rotationDegrees(180));
 						BOTIUtils.RenderScene(pose, exteriorTile);
 						botiSource.endBatch();

@@ -1,35 +1,23 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
-import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSItems;
-import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.data.RiftData;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.misc.progressable.IWeldable;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.GlassBlock;
-import net.minecraft.world.level.block.SandBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
 public class SonicRiftMode extends SonicMode {
 	public Item getIcon() {
@@ -61,24 +49,35 @@ public class SonicRiftMode extends SonicMode {
 
 		BlockPos usedPos = ((BlockHitResult) hitResult).getBlockPos(); // context.getClickedPos();
 
-		if(cachedPos != usedPos) {
-			cap.GetRiftDataAABBs().forEach((aabb, rift) -> {
+		if (cachedPos != usedPos) {
+			for (AABB aabb : cap.GetRiftDataAABBs().keySet()) {
 				if (aabb.contains(usedPos.getCenter())) {
 					isTargetingRift = true;
-					targetedRiftPos = rift.getPos();
-				}
-				else {
+					targetedRiftPos = cap.GetRiftDataAABBs().get(aabb).getPos();
+					break;
+				} else {
 					isTargetingRift = false;
 					targetedRiftPos = null;
 				}
-			});
+			}
 		}
 
 		if (isTargetingRift) {
 			RiftData rift = cap.GetRiftData().get(targetedRiftPos);
 
+			if (rift == null) { // Just check to make sure it hasn't been deleted but not updated due to
+								// multithreading
+				isTargetingRift = false;
+				targetedRiftPos = null;
+				return;
+			}
+
 			rift.setUsedTime(rift.getUsedTime() + 1);
-			System.out.println(rift.getUsedTime());
+
+			if (rift.getUsedTime() >= 32) {
+				rift.WhatsInside().onOpen.accept(rift);
+				rift.GetOuttaEre();
+			}
 		}
 	}
 }

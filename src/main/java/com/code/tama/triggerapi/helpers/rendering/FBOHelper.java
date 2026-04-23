@@ -234,6 +234,12 @@ public class FBOHelper {
 	public void Render(PoseStack stack, BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawStencil,
 			BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawFrame,
 			BiConsumer<PoseStack, MultiBufferSource.BufferSource> drawScene) {
+
+		// Flush Minecraft's pending geometry to main BEFORE hijacking the FBO binding.
+		// Without this, geometry from other block entities sitting in bufferSource
+		// gets drawn into the BOTI FBO instead of main.
+		Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+
 		RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
 
 		if (!((IHelpWithFBOs) mainTarget).tts$IsStencilBufferEnabled())
@@ -339,6 +345,7 @@ public class FBOHelper {
 	}
 
 	public void start() {
+		RenderSystem.assertOnGameThread();
 		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_DEBUG, GLFW.GLFW_TRUE);
 
 		Window window = Minecraft.getInstance().getWindow();

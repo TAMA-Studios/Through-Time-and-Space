@@ -46,7 +46,8 @@ public class LevelCapability implements ILevelCap {
 					.apply(instance, LevelCapability::new));
 
 	Map<UUID, TIRBlockContainer> TIRBlocks = new HashMap<>();
-	Map<AABB, RiftData> riftAABBs = new HashMap<>(); // This doesn't get saved nor synced to client, this is due to it being directly tied to activeRifts
+	Map<AABB, RiftData> riftAABBs = new HashMap<>(); // This doesn't get saved nor synced to client, this is due to it
+														// being directly tied to activeRifts
 	Map<BlockPos, RiftData> activeRifts = new HashMap<>();
 	public final Level level;
 
@@ -173,9 +174,15 @@ public class LevelCapability implements ILevelCap {
 	}
 
 	@Override
+	public void removeRift(RiftData rift) {
+		this.GetRiftData().remove(rift.getPos());
+	}
+
+	@Override
 	public void Tick() {
 		if (level.isClientSide)
 			return;
+
 		if (level.getGameTime() % 20 != 0)
 			return; // run every second
 
@@ -210,7 +217,7 @@ public class LevelCapability implements ILevelCap {
 		if (!level.getBlockState(bpos).isSolid())
 			return;
 
-		BlockPos riftPos = BlockPos.ZERO;
+		BlockPos riftPos = null;
 		Direction facing = Direction.NORTH;
 
 		BlockPos base = bpos.above(); // where rift center would be
@@ -240,8 +247,12 @@ public class LevelCapability implements ILevelCap {
 			break;
 		}
 
-		if (riftPos != BlockPos.ZERO)
-			addRift(riftPos, new RiftData(riftPos, facing.toYRot(), UUID.randomUUID()));
+		if (riftPos != null)
+			addRift(riftPos,
+					new RiftData(riftPos, facing.toYRot(), UUID.randomUUID(),
+							RiftData.WheelOfFortune.values()[ThreadLocalRandom.current()
+									.nextInt(RiftData.WheelOfFortune.values().length)].name(),
+							this.level));
 	}
 
 }
