@@ -56,8 +56,10 @@ jobs:
             pack_directory = './build/resources/main/'
             output_file_path = '/tmp/pack.zip'
 
+      - name: Grant Execute Permissions for combine script
+        run: chmod +x ./scripts/merge_jar.sh
       - name: Combine
-        run: ./scripts/merge_jar ./build/libs/ /tmp/pack.zip
+        run: ./scripts/merge_jar.sh ./build/libs/ /tmp/pack.zip
     
       - name: Publish artifacts
         uses: DrTheodor/discord-webhook-upload-action@v0.2
