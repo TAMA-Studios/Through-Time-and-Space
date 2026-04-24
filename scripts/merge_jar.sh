@@ -1,1 +1,56 @@
-#!/bin/bash set -e # Exit on any error if [ $# -eq 0 ]; then echo "Usage: $0 <folder_path> <other_zip>" exit 1 fi FOLDER_PATH="$1" OTHER_ZIP="$2" if [ ! -d "$FOLDER_PATH" ]; then echo "Error: Folder '$FOLDER_PATH' does not exist" exit 1 fi JAR_FILE=$(find "$FOLDER_PATH" -maxdepth 1 -name "*shadowed.jar" -type f | head -n 1) if [ -z "$JAR_FILE" ]; then echo "Error: No .jar files found in '$FOLDER_PATH'" exit 1 fi echo "Found jar file: $JAR_FILE" if [ ! -f $OTHER_ZIP ]; then echo "Error: $OTHER_ZIP does not exist" exit 1 fi if [ -d "/tmp/unzipped" ]; then echo "Removing previous /tmp/unzipped directory" rm -rf "/tmp/unzipped" fi mkdir -p "/tmp/unzipped" echo "Unzipping $JAR_FILE to /tmp/unzipped" unzip -q "$JAR_FILE" -d "/tmp/unzipped/" echo "Unzipping /tmp/pack.zip to /tmp/unzipped" unzip -qo $OTHER_ZIP -d "/tmp/unzipped/" rm -f "$JAR_FILE" echo "Creating new jar file: $JAR_FILE" #zip -qr "$JAR_FILE" "/tmp/unzipped" jar --create --file=$JAR_FILE -C /tmp/unzipped . echo "Cleaning up temporary files" rm -rf "/tmp/unzipped" echo "Process completed successfully!" echo "Original file backed up as: $BACKUP_FILE" echo "New jar file created: $JAR_FILE"
+#!/bin/bash
+
+set -e  # Exit on any error
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <folder_path> <other_zip>"
+    exit 1
+fi
+
+FOLDER_PATH="$1"
+OTHER_ZIP="$2"
+
+if [ ! -d "$FOLDER_PATH" ]; then
+    echo "Error: Folder '$FOLDER_PATH' does not exist"
+    exit 1
+fi
+
+JAR_FILE=$(find "$FOLDER_PATH" -maxdepth 1 -name "*-shadowed.jar" -type f | head -n 1)
+
+if [ -z "$JAR_FILE" ]; then
+    echo "Error: No .jar files found in '$FOLDER_PATH'"
+    exit 1
+fi
+
+echo "Found jar file: $JAR_FILE"
+
+if [ ! -f $OTHER_ZIP ]; then
+    echo "Error: $OTHER_ZIP does not exist"
+    exit 1
+fi
+
+if [ -d "/tmp/unzipped" ]; then
+    echo "Removing previous /tmp/unzipped directory"
+    rm -rf "/tmp/unzipped"
+fi
+
+mkdir -p "/tmp/unzipped"
+
+echo "Unzipping $JAR_FILE to /tmp/unzipped"
+unzip -q "$JAR_FILE" -d "/tmp/unzipped/"
+
+echo "Unzipping /tmp/pack.zip to /tmp/unzipped"
+unzip -qo $OTHER_ZIP -d "/tmp/unzipped/"
+
+rm -f "$JAR_FILE"
+
+echo "Creating new jar file: $JAR_FILE"
+#zip -qr "$JAR_FILE" "/tmp/unzipped"
+jar --create --file=$JAR_FILE -C /tmp/unzipped .
+
+echo "Cleaning up temporary files"
+rm -rf "/tmp/unzipped"
+
+echo "Process completed successfully!"
+echo "Original file backed up as: $BACKUP_FILE"
+echo "New jar file created: $JAR_FILE"
