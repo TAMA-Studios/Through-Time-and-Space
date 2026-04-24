@@ -80,7 +80,7 @@ jobs:
             chmod +x ./gradlew
           fi
 
-      - name: Spotless (optional)
+      - name: Spotless
         run: |
           if ./gradlew -q tasks --all | grep -q "^spotlessApply"; then
             ./gradlew --no-daemon --stacktrace --info spotlessApply
@@ -94,6 +94,17 @@ jobs:
 
       - name: Build
         run: ./gradlew --no-daemon --stacktrace --info ${{ inputs.gradle_tasks }}
+
+      - name: Run PackSquash
+        uses: ComunidadAylas/PackSquash-action@v4
+        with:
+          packsquash_version: latest
+          options: |
+            pack_directory = './build/resources/main/'
+            output_file_path = '/tmp/pack.zip'
+
+      - name: Combine
+        run: ./scripts/merge_jar ./build/libs/ /tmp/pack.zip
 
       - name: Rename artifacts with run number and ref
         shell: bash
