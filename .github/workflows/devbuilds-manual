@@ -104,7 +104,7 @@ jobs:
             output_file_path = '/tmp/pack.zip'
 
       - name: Combine
-        run: ./scripts/merge_jar ./build/libs/ /tmp/pack.zip
+        run: ./scripts/merge_jar.sh ./build/libs/ /tmp/pack.zip
 
       - name: Rename artifacts with run number and ref
         shell: bash
