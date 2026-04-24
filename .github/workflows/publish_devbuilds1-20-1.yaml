@@ -13,7 +13,9 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-    
+        with:
+          fetch-depth: 0 # For PackSquash
+          
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
