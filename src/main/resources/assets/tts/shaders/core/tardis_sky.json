@@ -1,14 +1,36 @@
 {
-    "vertex": "tts:tardis_sky",
-    "fragment": "tts:tardis_sky",
-    "attributes": [
-        "Position",
-        "UV0"
-    ],
-    "uniforms": [
-        { "name": "ModelViewMat",  "type": "matrix4x4", "count": 16, "values": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1] },
-        { "name": "ProjMat",       "type": "matrix4x4", "count": 16, "values": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1] },
-        { "name": "uTime",         "type": "float",     "count": 1,  "values": [0.0] },
-        { "name": "uResolution",   "type": "float",     "count": 2,  "values": [1920.0, 1080.0] }
-    ]
+  "attributes" : [ "Position", "UV0" ],
+  "fragment" : "tts:tardis_sky",
+  "uniforms" : [ {
+    "count" : 16,
+    "name" : "ModelViewMat",
+    "type" : "matrix4x4",
+    "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
+  }, {
+    "count" : 16,
+    "name" : "ProjMat",
+    "type" : "matrix4x4",
+    "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
+  }, {
+    "count" : 16,
+    "name" : "InvProjMat",
+    "type" : "matrix4x4",
+    "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
+  }, {
+    "count" : 16,
+    "name" : "InvViewMat",
+    "type" : "matrix4x4",
+    "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
+  }, {
+    "count" : 1,
+    "name" : "uTime",
+    "type" : "float",
+    "values" : [ 0.0 ]
+  }, {
+    "count" : 2,
+    "name" : "uResolution",
+    "type" : "float",
+    "values" : [ 1920.0, 1080.0 ]
+  } ],
+  "vertex" : "tts:tardis_sky"
 }

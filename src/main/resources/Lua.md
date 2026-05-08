@@ -135,7 +135,7 @@ Scripts can be **inline** or **file references**:
 **File reference** (ends with `.lua`):
 ```json
 "script": "your_namespace:button_handler.lua"
-```
+``` 
 
 File location: `data/your_namespace/triggerapi/gui/scripts/button_handler.lua`
 

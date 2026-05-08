@@ -96,10 +96,7 @@ public class ClientSetup {
 			// Register the shader instance with your handler
 			event.registerShader(shader, SkyBlock::setSkyShader);
 
-			TardisSkyEffects.registerShaders(
-					event.getResourceProvider(),
-                    event::registerShader
-			);
+			TardisSkyEffects.registerShaders(event.getResourceProvider(), event::registerShader);
 		} catch (IOException ex) {
 			System.err.println("Failed to load shader");
 			ex.printStackTrace();

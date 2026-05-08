@@ -41,8 +41,8 @@ jobs:
         #   BETA: 1 # exclude assets if it's a beta dev build
       - name: Rename artifact with run number
         run: |
-          for f in build/libs/*.jar; do
-            base="${f%.jar}"
+          for f in build/reobfJarJar/output.jar; do
+            base=tts.jar #"${f%.jar}"
             mv "$f" "${base}-B${{ github.run_number }}-${{ github.ref_name }}.jar"
           done
     
