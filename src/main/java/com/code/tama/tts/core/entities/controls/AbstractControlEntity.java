@@ -3,9 +3,12 @@ package com.code.tama.tts.core.entities.controls;
 
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
+import java.util.List;
+
 import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
+import com.code.tama.tts.server.tardis.control_lists.RotatedHitboxUtil;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.network.chat.Component;
@@ -21,14 +24,25 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 import com.code.tama.triggerapi.ReflectionBuddy;
 
 public abstract class AbstractControlEntity extends Entity {
+
+	/**
+	 * How many AABB slices to use per control. 3 is fine for small controls, bump
+	 * to 4 for larger ones. TODO: Figure out how to integrate this into the BB
+	 * plugin
+	 **/
+	protected int hitboxSlices() {
+		return 3;
+	}
+
 	public AbstractControlEntity(EntityType<?> entity, Level level) {
 		super(entity, level);
-		this.setNoGravity(true); // Prevent it from falling
+		this.setNoGravity(true);
 	}
 
 	public void onTwineInteract(Player player) {
@@ -42,15 +56,44 @@ public abstract class AbstractControlEntity extends Entity {
 		});
 	}
 
-	@Override
-	protected @NotNull AABB makeBoundingBox() {
-		return this.getAABB() != null ? this.getAABB().move(this.position()) : super.makeBoundingBox();
+	// Hitboxes
+
+	/**
+	 * Local-space AABB slices for this control (centered on origin, before entity
+	 * position is applied). Automatically uses the entity's yRot and the base AABB
+	 * from getLocalAABB(). Override hitboxSlices() in subclasses if a specific
+	 * control needs more precision.
+	 */
+	public List<AABB> getLocalHitboxSlices() {
+		AABB base = getLocalAABB();
+		if (base == null)
+			return List.of();
+		return RotatedHitboxUtil.makeSlices(base.getXsize() / 2.0, base.getYsize() / 2.0, base.getZsize() / 2.0,
+				this.getYRot(), hitboxSlices());
 	}
 
-	/** Called when this control is clicked (Right Click) * */
+	/**
+	 * The "master" bounding box is the union of all slices. Minecraft uses this for
+	 * broad-phase collision and rendering culling.
+	 */
+	@Override
+	protected @NotNull AABB makeBoundingBox() {
+		List<AABB> slices = getLocalHitboxSlices();
+		if (slices.isEmpty())
+			return super.makeBoundingBox();
+
+		Vec3 pos = this.position();
+		AABB union = slices.get(0).move(pos);
+		for (int i = 1; i < slices.size(); i++) {
+			union = union.minmax(slices.get(i).move(pos));
+		}
+		return union;
+	}
+
+	/** Called when this control is clicked (Right Click). */
 	public abstract void OnControlClicked(ITARDISLevel capability, Player player);
 
-	/** Called when this control is hit (Left Click) * */
+	/** Called when this control is hit (Left Click). */
 	public abstract void OnControlHit(ITARDISLevel capability, Entity entity);
 
 	public void SetDimensions(EntityDimensions t) {
@@ -65,7 +108,17 @@ public abstract class AbstractControlEntity extends Entity {
 		return true;
 	}
 
-	public abstract AABB getAABB();
+	/**
+	 * The un-rotated local AABB for this control, centered on origin. Subclasses
+	 * return their shape here; rotation is handled automatically via getYRot().
+	 */
+	public abstract AABB getLocalAABB();
+
+	/** @deprecated Use getLocalAABB(), kept for backwards compat. */
+	@Deprecated
+	public AABB getAABB() {
+		return getLocalAABB();
+	}
 
 	@Override
 	public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
@@ -84,18 +137,12 @@ public abstract class AbstractControlEntity extends Entity {
 		} else {
 			source.getEntity().level();
 		}
-
-		// Networking.sendToServer(new ControlHitPacketC2S(this.uuid));
 		GetTARDISCapSupplier(source.getEntity().level()).ifPresent(c -> this.OnControlHit(c, source.getEntity()));
 		return false;
 	}
 
 	@Override
 	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
-		// if (player.level().isClientSide) {
-		// Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
-		// }
-
 		GetTARDISCapSupplier(player.level()).ifPresent(cap -> this.OnControlClicked(cap, player));
 		return InteractionResult.SUCCESS;
 	}

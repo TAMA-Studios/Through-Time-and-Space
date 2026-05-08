@@ -51,11 +51,16 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	public Vec3 Position;
 	public AbstractConsoleTile consoleTile;
 	private BlockPos consolePos;
+
+	/**
+	 * Local-space AABB centered on origin (no rotation applied). Rotation is
+	 * handled by AbstractControlEntity.makeBoundingBox() via getYRot().
+	 */
 	public AABB size;
 
 	/**
 	 * DO NOT CALL THIS! Use
-	 * {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}*
+	 * {@code ModularControl(Level, AbstractConsoleTile, ControlEntityRecord)}
 	 */
 	@ApiStatus.Internal
 	public ModularControl(EntityType<ModularControl> modularControlEntityType, Level level) {
@@ -66,98 +71,142 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
 		assert consoleTile.getLevel() != null;
 		this.consolePos = consoleTile.getBlockPos();
+
 		float offs;
 		if (level.getBlockState(consoleTile.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
 			offs = -1;
 		else
 			offs = BlockUtils
 					.getReverseHeightModifier(consoleTile.getLevel().getBlockState(consoleTile.getBlockPos().below()));
-		this.Position = new Vec3(record.minX(), record.minY() - offs, record.minZ());
-		double Y = record.maxY() - offs;
-		this.size = new AABB(0, 0 - offs, 0, record.maxX(), Y, record.maxZ());
-		this.SetDimensions(EntityDimensions.scalable(record.maxX(), (float) Y));
+
+		// record.cx/cy/cz is the spawn offset from the console center (set by
+		// summonButtons)
+		// the Y offset correction is already applied in summonButtons, but we store
+		// Position for NBT
+		this.Position = new Vec3(record.cx(), record.cy() - offs, record.cz());
+
+		// Local AABB centered on origin using half-extents
+		this.size = new AABB(-record.hw(), -record.hh(), -record.hd(), record.hw(), record.hh(), record.hd());
+
+		this.SetDimensions(EntityDimensions.scalable(record.hw() * 2f, record.hh() * 2f));
 		this.consoleTile = consoleTile;
 		this.SetIdentifier(record.ID());
+
+		// Yaw is already stamped by summonButtons via entity.setYRot(), but set it here
+		// too
+		// in case ModularControl is constructed without going through summonButtons
+		this.setYRot(record.yawDeg());
+		this.yRotO = record.yawDeg();
 	}
 
+	// Hitbox
+
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag Tag) {
-		Tag.putDouble("aabb_min_x", this.size.minX);
-		Tag.putDouble("aabb_min_y", this.size.minY);
-		Tag.putDouble("aabb_min_z", this.size.minZ);
-		Tag.putDouble("aabb_max_x", this.size.maxX);
-		Tag.putDouble("aabb_max_y", this.size.maxY);
-		Tag.putDouble("aabb_max_z", this.size.maxZ);
+	public AABB getLocalAABB() {
+		return this.size;
+	}
 
-		Tag.putDouble("pos_x", this.Position.x);
-		Tag.putDouble("pos_y", this.Position.y);
-		Tag.putDouble("pos_z", this.Position.z);
+	/** @deprecated Kept for backwards compat */
+	@Deprecated
+	@Override
+	public AABB getAABB() {
+		return getLocalAABB();
+	}
 
-		Tag.putInt("control", ControlsRegistry.getOrdinal(this.GetControl()));
+	// Save / Load
+
+	@Override
+	protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+		// Store as half-extents so we can reconstruct the centered AABB on load
+		tag.putDouble("aabb_hw", this.size.getXsize() / 2.0);
+		tag.putDouble("aabb_hh", this.size.getYsize() / 2.0);
+		tag.putDouble("aabb_hd", this.size.getZsize() / 2.0);
+
+		tag.putDouble("pos_x", this.Position.x);
+		tag.putDouble("pos_y", this.Position.y);
+		tag.putDouble("pos_z", this.Position.z);
+
+		tag.putFloat("yaw", this.getYRot());
+
+		tag.putInt("control", ControlsRegistry.getOrdinal(this.GetControl()));
 
 		if (this.consoleTile != null) {
-			Tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
-			Tag.putInt("console_y", this.consoleTile.getBlockPos().getY());
-			Tag.putInt("console_z", this.consoleTile.getBlockPos().getZ());
+			tag.putInt("console_x", this.consoleTile.getBlockPos().getX());
+			tag.putInt("console_y", this.consoleTile.getBlockPos().getY());
+			tag.putInt("console_z", this.consoleTile.getBlockPos().getZ());
 		}
-		Tag.putDouble("vec_x", this.Position.x);
-		Tag.putDouble("vec_y", this.Position.y);
-		Tag.putDouble("vec_z", this.Position.z);
-		Tag.putInt("identifier", this.Identifier());
+
+		tag.putInt("identifier", this.Identifier());
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		this.entityData.define(CONTROL, 0);
-		this.entityData.define(IDENTIFIER, 0);
-	}
+	protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+		this.SetControl(ControlsRegistry.getFromOrdinal(tag.getInt("control")).get());
 
-	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag Tag) {
-		this.SetControl(ControlsRegistry.getFromOrdinal(Tag.getInt("control")).get());
+		double hw = tag.getDouble("aabb_hw");
+		double hh = tag.getDouble("aabb_hh");
+		double hd = tag.getDouble("aabb_hd");
+		this.size = new AABB(-hw, -hh, -hd, hw, hh, hd);
 
-		double minX = Tag.getDouble("aabb_min_x");
-		double minY = Tag.getDouble("aabb_min_y");
-		double minZ = Tag.getDouble("aabb_min_z");
-		double maxX = Tag.getDouble("aabb_max_x");
-		double maxY = Tag.getDouble("aabb_max_y");
-		double maxZ = Tag.getDouble("aabb_max_z");
+		this.Position = new Vec3(tag.getDouble("pos_x"), tag.getDouble("pos_y"), tag.getDouble("pos_z"));
 
-		this.size = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-
-		this.Position = new Vec3(Tag.getDouble("pos_x"), Tag.getDouble("pos_y"), Tag.getDouble("pos_z"));
+		float yaw = tag.getFloat("yaw");
+		this.setYRot(yaw);
+		this.yRotO = yaw;
 
 		if (this.level().getServer() != null) {
-			if (this.level().getServer().getLevel(this.level().dimension()).getBlockEntity(
-					new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"), Tag.getInt("console_z"))) != null)
-				this.consoleTile = (AbstractConsoleTile) this.level().getServer().getLevel(this.level().dimension())
-						.getBlockEntity(new BlockPos(Tag.getInt("console_x"), Tag.getInt("console_y"),
-								Tag.getInt("console_z")));
+			BlockPos consoleBlockPos = new BlockPos(tag.getInt("console_x"), tag.getInt("console_y"),
+					tag.getInt("console_z"));
+			var be = this.level().getServer().getLevel(this.level().dimension()).getBlockEntity(consoleBlockPos);
+			if (be instanceof AbstractConsoleTile tile)
+				this.consoleTile = tile;
+			this.consolePos = consoleBlockPos;
 		}
-		this.Position = new Vec3(Tag.getDouble("vecX"), Tag.getDouble("vecY"), Tag.getDouble("vecZ"));
 
-		this.SetIdentifier(Tag.getInt("identifier"));
-
+		this.SetIdentifier(tag.getInt("identifier"));
 		this.GetControl().SetNeedsUpdate(true);
 	}
 
-	void CycleControlBackward() {
-		this.SetControl(ControlsRegistry.CycleBackwards(this.GetControl()));
+	// Spawn data (client sync)
+
+	@Override
+	public void writeSpawnData(FriendlyByteBuf buf) {
+		buf.writeDouble(this.Position.x);
+		buf.writeDouble(this.Position.y);
+		buf.writeDouble(this.Position.z);
+
+		// Half-extents
+		buf.writeDouble(this.size.getXsize() / 2.0);
+		buf.writeDouble(this.size.getYsize() / 2.0);
+		buf.writeDouble(this.size.getZsize() / 2.0);
+
+		buf.writeFloat(this.getYRot());
+
+		buf.writeInt(this.GetControl() != null ? ControlsRegistry.getOrdinal(this.GetControl()) : 0);
+		buf.writeInt(this.Identifier());
 	}
 
-	void CycleControlForward() {
-		this.SetControl(ControlsRegistry.Cycle(this.GetControl()));
-	}
-
+	@Override
 	@SuppressWarnings("unchecked")
-	public AbstractControl GetControl() {
-		return ((RegistryObject<AbstractControl>) ControlsRegistry.CONTROLS.getEntries().toArray()[this.entityData
-				.get(CONTROL)]).get();
+	public void readSpawnData(FriendlyByteBuf buf) {
+		this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+
+		double hw = buf.readDouble();
+		double hh = buf.readDouble();
+		double hd = buf.readDouble();
+		this.size = new AABB(-hw, -hh, -hd, hw, hh, hd);
+
+		float yaw = buf.readFloat();
+		this.setYRot(yaw);
+		this.yRotO = yaw;
+
+		this.SetControl(
+				((RegistryObject<AbstractControl>) ControlsRegistry.CONTROLS.getEntries().toArray()[buf.readInt()])
+						.get());
+		this.SetIdentifier(buf.readInt());
 	}
 
-	public int Identifier() {
-		return this.entityData.get(IDENTIFIER);
-	}
+	// Interactions
 
 	@Override
 	public void OnControlClicked(ITARDISLevel capability, Player player) {
@@ -166,7 +215,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 			CompoundTag tag = stack.getOrCreateTag();
 			tag.putInt("BoundEntityId", this.getId());
 			tag.putUUID("BoundEntityUUID", this.getUUID());
-			player.displayClientMessage(net.minecraft.network.chat.Component.literal("Twine tied to control!"), true);
+			player.displayClientMessage(Component.literal("Twine tied to control!"), true);
 			return;
 		}
 
@@ -192,6 +241,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 			}
 			return;
 		}
+
 		InteractionResult interactionResult = this.GetControl().OnRightClick(capability, player);
 
 		this.level().playSound(player, this.blockPosition(),
@@ -239,6 +289,32 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		}
 	}
 
+	// Misc
+
+	@Override
+	protected void defineSynchedData() {
+		this.entityData.define(CONTROL, 0);
+		this.entityData.define(IDENTIFIER, 0);
+	}
+
+	void CycleControlBackward() {
+		this.SetControl(ControlsRegistry.CycleBackwards(this.GetControl()));
+	}
+
+	void CycleControlForward() {
+		this.SetControl(ControlsRegistry.Cycle(this.GetControl()));
+	}
+
+	@SuppressWarnings("unchecked")
+	public AbstractControl GetControl() {
+		return ((RegistryObject<AbstractControl>) ControlsRegistry.CONTROLS.getEntries().toArray()[this.entityData
+				.get(CONTROL)]).get();
+	}
+
+	public int Identifier() {
+		return this.entityData.get(IDENTIFIER);
+	}
+
 	public void SetControl(AbstractControl control) {
 		this.entityData.set(CONTROL, ControlsRegistry.getOrdinal(control));
 	}
@@ -250,7 +326,6 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	@Override
 	public Component TranslationKey() {
 		MutableComponent component = Component.translatable(this.GetControl().getTranslationKey());
-
 		if (Minecraft.getInstance().options.advancedItemTooltips)
 			component.append(String.format("ID: %s", this.Identifier()));
 		return component;
@@ -268,41 +343,10 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	}
 
 	@Override
-	public AABB getAABB() {
-		return this.size;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public void readSpawnData(FriendlyByteBuf buf) {
-		this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		this.size = new AABB(0, 0, 0, buf.readDouble(), buf.readDouble(), buf.readDouble());
-		this.SetControl(
-				((RegistryObject<AbstractControl>) ControlsRegistry.CONTROLS.getEntries().toArray()[buf.readInt()])
-						.get());
-		this.SetIdentifier(buf.readInt());
-	}
-
-	@Override
 	public void tick() {
 		if (this.consoleTile != null && this.GetControl().NeedsUpdate())
 			this.UpdateConsoleAnimationMap();
 		super.tick();
-	}
-
-	@Override
-	public void writeSpawnData(FriendlyByteBuf buf) {
-		buf.writeDouble(this.Position.x);
-		buf.writeDouble(this.Position.y);
-		buf.writeDouble(this.Position.z);
-
-		buf.writeDouble(this.size.getXsize());
-		buf.writeDouble(this.size.getYsize());
-		buf.writeDouble(this.size.getZsize());
-
-		if (this.GetControl() != null)
-			buf.writeInt(ControlsRegistry.getOrdinal(this.GetControl()));
-		buf.writeInt(this.Identifier());
 	}
 
 	public AbstractConsoleTile getConsoleTile() {
