@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.client.models; // Made with Blockbench 4.12.2
+package com.code.tama.tts.client.models.consoles; // Made with Blockbench 4.12.2
 
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
@@ -7,7 +7,7 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.2
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.animations.consoles.HudolinConsoleAnimation;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.core.tileentities.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;

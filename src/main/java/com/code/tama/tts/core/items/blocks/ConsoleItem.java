@@ -4,7 +4,7 @@ package com.code.tama.tts.core.items.blocks;
 import java.util.function.Consumer;
 
 import com.code.tama.tts.client.renderers.items.ConsoleItemRenderer;
-import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import net.minecraft.client.Minecraft;

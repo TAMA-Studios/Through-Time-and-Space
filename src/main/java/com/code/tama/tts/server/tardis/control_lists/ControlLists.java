@@ -6,6 +6,10 @@ public class ControlLists {
 		return new HudolinControlList();
 	}
 
+	public static AbstractControlList GetCoral() {
+		return new CoralControlList();
+	}
+
 	public static AbstractControlList GetNESS() {
 		return new NESSControlList();
 	}

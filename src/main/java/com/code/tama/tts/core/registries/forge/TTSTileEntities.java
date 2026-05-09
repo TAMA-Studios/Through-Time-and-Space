@@ -8,6 +8,7 @@ import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
 import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.CoralConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.HartnellDoorRenderer;
@@ -22,6 +23,9 @@ import com.code.tama.tts.core.registries.TTSRegistrate;
 import com.code.tama.tts.core.tileentities.*;
 import com.code.tama.tts.core.tileentities.boti.BotiWindowRenderer;
 import com.code.tama.tts.core.tileentities.boti.BotiWindowTile;
+import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
 import com.code.tama.tts.core.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorTile;
@@ -84,6 +88,10 @@ public class TTSTileEntities {
 	public static final BlockEntityEntry<HudolinConsoleTile> HUDOLIN_CONSOLE_TILE = registrate()
 			.blockEntity("hudolin_console_tile", HudolinConsoleTile::new).validBlocks(TTSBlocks.HUDOLIN_CONSOLE_BLOCK)
 			.renderer(() -> HudolinConsoleRenderer::new).register();
+
+	public static final BlockEntityEntry<CoralConsoleTile> CORAL_CONSOLE_TILE = registrate()
+			.blockEntity("coral_console_tile", CoralConsoleTile::new).validBlocks(TTSBlocks.CORAL_CONSOLE_BLOCK)
+			.renderer(() -> CoralConsoleRenderer::new).register();
 
 	public static final BlockEntityEntry<NESSConsoleTile> NESS_CONSOLE_TILE = registrate()
 			.blockEntity("ness_console_tile", NESSConsoleTile::new).validBlocks(TTSBlocks.NESS_CONSOLE_BLOCK)

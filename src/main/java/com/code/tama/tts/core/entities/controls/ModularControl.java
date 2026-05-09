@@ -7,7 +7,7 @@ import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimatio
 import com.code.tama.tts.core.registries.forge.TTSEntities;
 import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
-import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
@@ -33,13 +33,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.RegistryObject;
-
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class ModularControl extends AbstractControlEntity implements IEntityAdditionalSpawnData {
 	private static final EntityDataAccessor<Integer> CONTROL = SynchedEntityData.defineId(ModularControl.class,
@@ -68,52 +65,54 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	}
 
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
+
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
+		System.out.println("Record " + record.ID() + " cx=" + record.cx() + " cy=" + record.cy() + " cz=" + record.cz()
+				+ " hw=" + record.hw() + " hh=" + record.hh() + " hd=" + record.hd() + " yaw=" + record.yawDeg());
 		assert consoleTile.getLevel() != null;
 		this.consolePos = consoleTile.getBlockPos();
 
-		float offs;
-		if (level.getBlockState(consoleTile.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
-			offs = -1;
-		else
-			offs = BlockUtils
-					.getReverseHeightModifier(consoleTile.getLevel().getBlockState(consoleTile.getBlockPos().below()));
+		// Position is purely for NBT storage — actual spawn position is set by
+		// summonButtons
+		// via entity.setPos(), which already applies the offs correction. Don't touch
+		// offs here.
+		this.Position = new Vec3(record.cx(), record.cy(), record.cz());
 
-		// record.cx/cy/cz is the spawn offset from the console center (set by
-		// summonButtons)
-		// the Y offset correction is already applied in summonButtons, but we store
-		// Position for NBT
-		this.Position = new Vec3(record.cx(), record.cy() - offs, record.cz());
+		// X/Z are centered on origin (entity position is the horizontal center of the
+		// control).
+		// Y starts at 0 and goes up — entity position is the bottom of the control,
+		// matching
+		// the old min/max corner behavior so position + size stay in sync.
+		float fullH = record.hh() * 2f;
+		this.size = new AABB(-record.hw(), 0, -record.hd(), record.hw(), fullH, record.hd());
 
-		// Local AABB centered on origin using half-extents
-		this.size = new AABB(-record.hw(), -record.hh(), -record.hd(), record.hw(), record.hh(), record.hd());
-
-		this.SetDimensions(EntityDimensions.scalable(record.hw() * 2f, record.hh() * 2f));
+		this.SetDimensions(EntityDimensions.scalable(record.hw() * 2f, fullH));
 		this.consoleTile = consoleTile;
 		this.SetIdentifier(record.ID());
 
-		// Yaw is already stamped by summonButtons via entity.setYRot(), but set it here
-		// too
-		// in case ModularControl is constructed without going through summonButtons
 		this.setYRot(record.yawDeg());
 		this.yRotO = record.yawDeg();
 	}
 
+	// ------------------------------------------------------------------
 	// Hitbox
+	// ------------------------------------------------------------------
 
 	@Override
 	public AABB getLocalAABB() {
 		return this.size;
 	}
 
-	/** @deprecated Kept for backwards compat */
+	/** @deprecated Kept for any external callers — delegates to getLocalAABB(). */
 	@Deprecated
 	@Override
 	public AABB getAABB() {
 		return getLocalAABB();
 	}
 
+	// ------------------------------------------------------------------
 	// Save / Load
+	// ------------------------------------------------------------------
 
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
@@ -167,7 +166,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		this.GetControl().SetNeedsUpdate(true);
 	}
 
+	// ------------------------------------------------------------------
 	// Spawn data (client sync)
+	// ------------------------------------------------------------------
 
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buf) {
@@ -187,14 +188,13 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void readSpawnData(FriendlyByteBuf buf) {
 		this.Position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
 
 		double hw = buf.readDouble();
 		double hh = buf.readDouble();
 		double hd = buf.readDouble();
-		this.size = new AABB(-hw, -hh, -hd, hw, hh, hd);
+		this.size = new AABB(-hw, 0, -hd, hw, hh * 2, hd);
 
 		float yaw = buf.readFloat();
 		this.setYRot(yaw);
@@ -204,9 +204,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 				((RegistryObject<AbstractControl>) ControlsRegistry.CONTROLS.getEntries().toArray()[buf.readInt()])
 						.get());
 		this.SetIdentifier(buf.readInt());
+
+		// Force bounding box rebuild now that yaw and size are both set
+		this.setBoundingBox(this.makeBoundingBox());
 	}
 
+	// ------------------------------------------------------------------
 	// Interactions
+	// ------------------------------------------------------------------
 
 	@Override
 	public void OnControlClicked(ITARDISLevel capability, Player player) {
@@ -289,7 +294,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		}
 	}
 
+	// ------------------------------------------------------------------
 	// Misc
+	// ------------------------------------------------------------------
 
 	@Override
 	protected void defineSynchedData() {
@@ -344,6 +351,15 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 	@Override
 	public void tick() {
+		if (this.consoleTile != null && this.GetControl().NeedsUpdate())
+			this.UpdateConsoleAnimationMap();
+		super.tick();
+		if (!this.level().isClientSide) {
+			AABB bb = this.getBoundingBox();
+			System.out.println(
+					"Control " + this.Identifier() + " pos=" + this.position() + " bb=" + bb.minX + "," + bb.minY + ","
+							+ bb.minZ + " -> " + bb.maxX + "," + bb.maxY + "," + bb.maxZ + " size=" + this.size);
+		}
 		if (this.consoleTile != null && this.GetControl().NeedsUpdate())
 			this.UpdateConsoleAnimationMap();
 		super.tick();

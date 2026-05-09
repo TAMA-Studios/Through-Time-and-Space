@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.core.tileentities;
+package com.code.tama.tts.core.tileentities.consoles;
 
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
 import com.code.tama.tts.server.tardis.control_lists.ControlLists;

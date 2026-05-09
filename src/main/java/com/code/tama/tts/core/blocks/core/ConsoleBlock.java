@@ -2,7 +2,7 @@
 package com.code.tama.tts.core.blocks.core;
 
 import com.code.tama.tts.core.entities.controls.ModularControl;
-import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
