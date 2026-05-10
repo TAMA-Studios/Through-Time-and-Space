@@ -53,11 +53,11 @@ jobs:
       - name: Grant Execute Permissions for Combine script
         run: chmod +x ./scripts/merge_jar.sh
       - name: Combine
-        run: ./scripts/merge_jar.sh ./build/libs/ /tmp/pack.zip
+        run: ./scripts/merge_jar.sh ./build/reobfJarJar/ /tmp/pack.zip
 
       - name: Rename artifact with run number
         run: |
-          for f in build/libs/*.jar; do
+          for f in build/reobfJarJar/*.jar; do
             base="${f%.jar}"
             mv "$f" "${base}-B${{ github.run_number }}-${{ github.ref_name }}.jar"
           done
