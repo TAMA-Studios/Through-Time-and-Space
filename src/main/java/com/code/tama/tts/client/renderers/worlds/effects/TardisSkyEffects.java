@@ -4,6 +4,8 @@ package com.code.tama.tts.client.renderers.worlds.effects;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
+import java.util.Objects;
+
 import com.code.tama.tts.TTSMod;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -16,7 +18,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceKey;
@@ -24,19 +25,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Objects;
-
 public class TardisSkyEffects extends DimensionSpecialEffects {
 
 	private static ShaderInstance skyShader = null;
 
-	public static void registerShaders(net.minecraft.server.packs.resources.ResourceProvider provider,
-									   ShaderSink sink) throws java.io.IOException {
-		sink.register(
-				new ShaderInstance(provider,
-						new ResourceLocation(TTSMod.MODID, "tardis_sky"),
-						DefaultVertexFormat.POSITION_TEX),
-				shader -> skyShader = shader);
+	public static void registerShaders(net.minecraft.server.packs.resources.ResourceProvider provider, ShaderSink sink)
+			throws java.io.IOException {
+		sink.register(new ShaderInstance(provider, new ResourceLocation(TTSMod.MODID, "tardis_sky"),
+				DefaultVertexFormat.POSITION_TEX), shader -> skyShader = shader);
 	}
 
 	@FunctionalInterface
@@ -63,8 +59,7 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		Minecraft mc = Minecraft.getInstance();
 		assert mc.level != null;
 
-		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f
-				+ mc.getPartialTick() / 20.0f;
+		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + mc.getPartialTick() / 20.0f;
 
 		float resX = (float) mc.getWindow().getWidth();
 		float resY = (float) mc.getWindow().getHeight();
@@ -80,10 +75,12 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		skyShader.PROJECTION_MATRIX.set(new Matrix4f());
 
 		var uTime = skyShader.getUniform("uTime");
-		if (uTime != null) uTime.set(time);
+		if (uTime != null)
+			uTime.set(time);
 
 		var uRes = skyShader.getUniform("uResolution");
-		if (uRes != null) uRes.set(resX, resY);
+		if (uRes != null)
+			uRes.set(resX, resY);
 
 		skyShader.apply();
 		RenderSystem.setShader(() -> skyShader);
@@ -92,9 +89,9 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(-1f, -1f, -1f).uv(0f, 0f).endVertex();
-		buffer.vertex( 1f, -1f, -1f).uv(1f, 0f).endVertex();
-		buffer.vertex( 1f,  1f, -1f).uv(1f, 1f).endVertex();
-		buffer.vertex(-1f,  1f, -1f).uv(0f, 1f).endVertex();
+		buffer.vertex(1f, -1f, -1f).uv(1f, 0f).endVertex();
+		buffer.vertex(1f, 1f, -1f).uv(1f, 1f).endVertex();
+		buffer.vertex(-1f, 1f, -1f).uv(0f, 1f).endVertex();
 		BufferUploader.drawWithShader(buffer.end());
 
 		skyShader.clear();
@@ -106,8 +103,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		RenderSystem.enableBlend();
 	}
 
-	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f projectionMatrix,
-								 @NotNull Vec3 position, Quaternionf rotation, Vec3 pivotPoint, float size) {
+	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f projectionMatrix, @NotNull Vec3 position,
+			Quaternionf rotation, Vec3 pivotPoint, float size) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
@@ -154,9 +151,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 	}
 
 	@Override
-	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick,
-							 PoseStack poseStack, @NotNull Camera camera,
-							 @NotNull Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, PoseStack poseStack,
+			@NotNull Camera camera, @NotNull Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 
 		Minecraft mc = Minecraft.getInstance();
 		assert mc.level != null;
@@ -169,11 +165,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		poseStack.popPose();
 
 		poseStack.pushPose();
-		renderSun(poseStack, projectionMatrix,
-				new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
-				Axis.YP.rotation(mc.level.getSunAngle(partialTick)),
-				new Vec3(0, 0, 0),
-				10);
+		renderSun(poseStack, projectionMatrix, new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
+				Axis.YP.rotation(mc.level.getSunAngle(partialTick)), new Vec3(0, 0, 0), 10);
 		poseStack.popPose();
 
 		setupFog.run();

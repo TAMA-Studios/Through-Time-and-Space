@@ -37,7 +37,7 @@ public abstract class AbstractControlEntity extends Entity {
 	 * plugin
 	 **/
 	protected int hitboxSlices() {
-		return 3;
+		return this.getYRot() == 0 ? 1 : 5;
 	}
 
 	public AbstractControlEntity(EntityType<?> entity, Level level) {
@@ -56,7 +56,9 @@ public abstract class AbstractControlEntity extends Entity {
 		});
 	}
 
-	// Hitboxes
+	// ------------------------------------------------------------------
+	// Hitbox
+	// ------------------------------------------------------------------
 
 	/**
 	 * Local-space AABB slices for this control (centered on origin, before entity
@@ -68,8 +70,9 @@ public abstract class AbstractControlEntity extends Entity {
 		AABB base = getLocalAABB();
 		if (base == null)
 			return List.of();
-		return RotatedHitboxUtil.makeSlices(base.getXsize() / 2.0, base.getYsize() / 2.0, base.getZsize() / 2.0,
-				this.getYRot(), hitboxSlices());
+		return RotatedHitboxUtil.makeSlices(base.getXsize() / 2.0, base.minY, base.maxY, // pass Y bounds directly so
+																							// slices honour 0-based Y
+				base.getZsize() / 2.0, this.getYRot(), hitboxSlices());
 	}
 
 	/**
@@ -79,6 +82,12 @@ public abstract class AbstractControlEntity extends Entity {
 	@Override
 	protected @NotNull AABB makeBoundingBox() {
 		List<AABB> slices = getLocalHitboxSlices();
+		System.out
+				.println("makeBoundingBox id=" + this.getId() + " yrot=" + this.getYRot() + " slices=" + slices.size());
+		for (AABB s : slices) {
+			System.out.println("  slice: " + s);
+		}
+
 		if (slices.isEmpty())
 			return super.makeBoundingBox();
 
@@ -114,7 +123,10 @@ public abstract class AbstractControlEntity extends Entity {
 	 */
 	public abstract AABB getLocalAABB();
 
-	/** @deprecated Use getLocalAABB(), kept for backwards compat. */
+	/**
+	 * @deprecated Use getLocalAABB() — kept so any subclasses that override
+	 *             getAABB() still compile.
+	 */
 	@Deprecated
 	public AABB getAABB() {
 		return getLocalAABB();

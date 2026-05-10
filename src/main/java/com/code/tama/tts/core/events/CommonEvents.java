@@ -5,10 +5,13 @@ import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
@@ -31,13 +34,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -50,6 +58,59 @@ import com.code.tama.triggerapi.helpers.OxygenHelper;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
+
+	@SubscribeEvent
+	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
+		if (!(event.getTarget() instanceof ModularControl control))
+			return;
+
+		if (!rayHitsSlices(event.getEntity(), control)) {
+			event.setCanceled(true);
+		}
+	}
+
+	/**
+	 * Cancels a left-click attack if the player's looking at a modular control AND
+	 * look ray misses all hitbox slices.
+	 */
+	@SubscribeEvent
+	public static void onAttackEntity(AttackEntityEvent event) {
+		if (!(event.getTarget() instanceof ModularControl control))
+			return;
+
+		if (!rayHitsSlices(event.getEntity(), control)) {
+			event.setCanceled(true);
+		}
+	}
+
+	/**
+	 * Returns true if the player's look ray intersects any of the control's local
+	 * hitbox slices. Slices are in local space (relative to entity origin), so we
+	 * offset them by entity position before clipping.
+	 */
+	private static boolean rayHitsSlices(Player player, ModularControl control) {
+		List<AABB> slices = control.getLocalHitboxSlices();
+		if (slices.isEmpty())
+			return true;
+
+		Vec3 origin = player.getEyePosition();
+		Vec3 reach = player.getLookAngle().scale(getReach(player));
+		Vec3 end = origin.add(reach);
+
+		Vec3 entityPos = control.position();
+
+		for (AABB local : slices) {
+			AABB world = local.move(entityPos);
+			Optional<Vec3> hit = world.clip(origin, end);
+			if (hit.isPresent())
+				return true;
+		}
+		return false;
+	}
+
+	private static double getReach(Player player) {
+		return player.getAttributeValue(ForgeMod.BLOCK_REACH.get());
+	}
 
 	@SubscribeEvent
 	public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {

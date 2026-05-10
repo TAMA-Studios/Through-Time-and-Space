@@ -10,6 +10,7 @@ import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
+import com.code.tama.tts.server.tardis.control_lists.RotatedHitboxUtil;
 import com.code.tama.tts.server.tardis.controls.AbstractControl;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -67,6 +68,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
 
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
+
 		System.out.println("Record " + record.ID() + " cx=" + record.cx() + " cy=" + record.cy() + " cz=" + record.cz()
 				+ " hw=" + record.hw() + " hh=" + record.hh() + " hd=" + record.hd() + " yaw=" + record.yawDeg());
 		assert consoleTile.getLevel() != null;
@@ -84,7 +86,8 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		// matching
 		// the old min/max corner behavior so position + size stay in sync.
 		float fullH = record.hh() * 2f;
-		this.size = new AABB(-record.hw(), 0, -record.hd(), record.hw(), fullH, record.hd());
+		this.size = RotatedHitboxUtil.rotatedTightAABB(record.hw(), record.hh(), record.hd(), record.yawDeg());
+		this.SetDimensions(EntityDimensions.scalable((float) (this.size.getXsize()), (float) (this.size.getYsize())));
 
 		this.SetDimensions(EntityDimensions.scalable(record.hw() * 2f, fullH));
 		this.consoleTile = consoleTile;
@@ -354,12 +357,14 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		if (this.consoleTile != null && this.GetControl().NeedsUpdate())
 			this.UpdateConsoleAnimationMap();
 		super.tick();
-		if (!this.level().isClientSide) {
-			AABB bb = this.getBoundingBox();
-			System.out.println(
-					"Control " + this.Identifier() + " pos=" + this.position() + " bb=" + bb.minX + "," + bb.minY + ","
-							+ bb.minZ + " -> " + bb.maxX + "," + bb.maxY + "," + bb.maxZ + " size=" + this.size);
-		}
+		// if (!this.level().isClientSide) {
+		// AABB bb = this.getBoundingBox();
+		// System.out.println(
+		// "Control " + this.Identifier() + " pos=" + this.position() + " bb=" + bb.minX
+		// + "," + bb.minY + ","
+		// + bb.minZ + " -> " + bb.maxX + "," + bb.maxY + "," + bb.maxZ + " size=" +
+		// this.size);
+		// }
 		if (this.consoleTile != null && this.GetControl().NeedsUpdate())
 			this.UpdateConsoleAnimationMap();
 		super.tick();
