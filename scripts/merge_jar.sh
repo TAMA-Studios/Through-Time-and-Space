@@ -1,56 +1,59 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e  # Exit on any error
-
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <folder_path> <other_zip>"
-    exit 1
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <jar-folder> <pack-zip>"
+  exit 1
 fi
 
 FOLDER_PATH="$1"
 OTHER_ZIP="$2"
 
 if [ ! -d "$FOLDER_PATH" ]; then
-    echo "Error: Folder '$FOLDER_PATH' does not exist"
-    exit 1
+  echo "Error: folder does not exist: $FOLDER_PATH"
+  exit 1
 fi
 
-JAR_FILE=$(find "$FOLDER_PATH" -maxdepth 1 -name "*-shadowed.jar" -type f | head -n 1)
+if [ ! -f "$OTHER_ZIP" ]; then
+  echo "Error: optimized pack zip does not exist: $OTHER_ZIP"
+  exit 1
+fi
+
+JAR_FILE="$(find "$FOLDER_PATH" -maxdepth 1 -type f -name "*-shadowed.jar" | head -n 1)"
 
 if [ -z "$JAR_FILE" ]; then
-    echo "Error: No .jar files found in '$FOLDER_PATH'"
-    exit 1
+  echo "Error: no *-shadowed.jar found in: $FOLDER_PATH"
+  echo "Available jars:"
+  find "$FOLDER_PATH" -maxdepth 1 -type f -name "*.jar" -print || true
+  exit 1
 fi
 
-echo "Found jar file: $JAR_FILE"
+TEMP_DIR="$(mktemp -d)"
+BACKUP_FILE="${JAR_FILE}.bak"
 
-if [ ! -f $OTHER_ZIP ]; then
-    echo "Error: $OTHER_ZIP does not exist"
-    exit 1
-fi
+cleanup() {
+  rm -rf "$TEMP_DIR"
+}
+trap cleanup EXIT
 
-if [ -d "/tmp/unzipped" ]; then
-    echo "Removing previous /tmp/unzipped directory"
-    rm -rf "/tmp/unzipped"
-fi
+echo "Found jar: $JAR_FILE"
+echo "Found optimized pack: $OTHER_ZIP"
 
-mkdir -p "/tmp/unzipped"
+echo "Backing up original jar to: $BACKUP_FILE"
+cp "$JAR_FILE" "$BACKUP_FILE"
 
-echo "Unzipping $JAR_FILE to /tmp/unzipped"
-unzip -q "$JAR_FILE" -d "/tmp/unzipped/"
+echo "Extracting jar..."
+unzip -q "$JAR_FILE" -d "$TEMP_DIR"
 
-echo "Unzipping /tmp/pack.zip to /tmp/unzipped"
-unzip -qo $OTHER_ZIP -d "/tmp/unzipped/"
+echo "Merging optimized resources..."
+unzip -qo "$OTHER_ZIP" -d "$TEMP_DIR"
 
+echo "Removing old jar..."
 rm -f "$JAR_FILE"
 
-echo "Creating new jar file: $JAR_FILE"
-#zip -qr "$JAR_FILE" "/tmp/unzipped"
-jar --create --file=$JAR_FILE -C /tmp/unzipped .
+echo "Rebuilding jar..."
+jar --create --file="$JAR_FILE" -C "$TEMP_DIR" .
 
-echo "Cleaning up temporary files"
-rm -rf "/tmp/unzipped"
-
-echo "Process completed successfully!"
-echo "Original file backed up as: $BACKUP_FILE"
-echo "New jar file created: $JAR_FILE"
+echo "Merge complete."
+echo "Backup file: $BACKUP_FILE"
+echo "New jar file: $JAR_FILE"
