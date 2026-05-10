@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.core.tileentities;
+package com.code.tama.tts.core.tileentities.consoles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,11 +48,6 @@ public class AbstractConsoleTile extends BlockEntity {
 				if (level.isClientSide)
 					tile.GetRotorAnimation().animateWhen(cap.GetFlightData().isPlayRotorAnimation(),
 							(int) level.getGameTime());
-				// if(cap.IsTakingOff()) {
-				// if(!cap.GetFlightScheme().GetTakeoff().IsFinished())
-				// cap.GetFlightScheme().GetTakeoff().PlayIfFinished(level,
-				// pos);
-				// }
 				else if (cap.GetFlightData().isInFlight()) {
 					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, pos);
 				} else
@@ -71,10 +66,6 @@ public class AbstractConsoleTile extends BlockEntity {
 			tag.putDouble("z_" + this.ControlSize, pos.z);
 			tag.putUUID("control_" + this.ControlSize, uuid);
 		});
-		// for (UUID uuid1 : this.ControlUUIDList) {
-		// this.ControlSize++;
-		// tag.putUUID("control_" + this.ControlSize, uuid1);
-		// }
 		tag.putInt("ControlSize", this.ControlSize);
 		super.saveAdditional(tag);
 	}
@@ -82,24 +73,45 @@ public class AbstractConsoleTile extends BlockEntity {
 	private void summonButtons(Level level) {
 		BlockPos blockPos = this.getBlockPos();
 		Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
+
 		this.GetControlList().getPositionSizeMap().forEach((record) -> {
 			assert this.getLevel() != null;
+
 			float offs;
 			if (this.getLevel().getBlockState(this.getBlockPos().below()).getBlock() instanceof SnowLayerBlock)
 				offs = 1;
 			else
 				offs = BlockUtils.getReverseHeightModifier(this.getLevel().getBlockState(this.getBlockPos().below()));
-			Vec3 summonPos = centerPos.add(new Vec3(record.minX(), record.minY() - offs, record.minZ()));
+
+			offs -= 0.05f;
+
+			// Spawn position uses the record's center (cx/cy/cz)
+			Vec3 summonPos = centerPos.add(record.cx(), record.cy() - record.hh() - offs, record.cz());
+
 			ModularControl entity = new ModularControl(level, this, record);
 			entity.setPos(summonPos);
+
+			// Stamp the yaw from the record onto the entity so getLocalHitboxSlices() works
+			// correctly
+			entity.setYRot(record.yawDeg());
+			entity.yRotO = record.yawDeg();
+
+			entity.setPos(summonPos);
+			entity.setYRot(record.yawDeg());
+			entity.yRotO = record.yawDeg();
+			entity.refreshDimensions(); // forces makeBoundingBox to re-run with correct yaw
+
 			level.addFreshEntity(entity);
 			this.ControlSize++;
 			this.ControlAnimationMap.put(record.ID(), 0.0f);
+
 			if (this.GetControlList().GetDefaultControlAssignment().containsKey(entity.Identifier())) {
 				entity.SetControl(this.GetControlList().GetDefaultControlAssignment().get(entity.Identifier()));
 			}
+
 			this.ControlMap.put(summonPos, entity.getUUID());
 		});
+
 		level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 	}
 
@@ -150,9 +162,7 @@ public class AbstractConsoleTile extends BlockEntity {
 
 	@Override
 	public void handleUpdateTag(CompoundTag tag) {
-		// Empty Map
 		this.ControlAnimationMap = new HashMap<>();
-		// Start syncing
 		this.AnimationMapSize = tag.getInt("animation_map_size");
 		for (int i = 1; i <= this.ControlSize; i++) {
 			this.ControlAnimationMap.put(tag.getInt("id"), tag.getFloat("state_" + i));
@@ -164,7 +174,6 @@ public class AbstractConsoleTile extends BlockEntity {
 	public void load(CompoundTag tag) {
 		this.ControlSize = tag.getInt("ControlSize");
 		for (int i = 1; i <= this.ControlSize; i++) {
-			// this.ControlUUIDList.add(tag.getUUID("control_" + i));
 			this.ControlMap.put(new Vec3(tag.getDouble("x_" + i), tag.getDouble("y_" + i), tag.getDouble("z_" + i)),
 					tag.getUUID("control_" + i));
 		}
@@ -174,7 +183,6 @@ public class AbstractConsoleTile extends BlockEntity {
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		// Only summon the entity server-side to avoid duplication
 		if (!level.isClientSide && this.ControlMap.isEmpty()) {
 			this.summonButtons(level);
 		}

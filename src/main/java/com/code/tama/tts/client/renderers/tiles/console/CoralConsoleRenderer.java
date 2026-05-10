@@ -3,9 +3,9 @@ package com.code.tama.tts.client.renderers.tiles.console;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.client.models.consoles.HudolinConsoleModel;
+import com.code.tama.tts.client.models.consoles.CoralConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
@@ -24,22 +24,22 @@ import net.minecraft.world.phys.Vec3;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
-public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
+public class CoralConsoleRenderer<T extends CoralConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
 			BlockEntityRenderer<T> {
 	public static final ResourceLocation EMMISIVE = new ResourceLocation(MODID,
-			"textures/tiles/console/hudolin_emmisives.png");
+			"textures/tiles/console/coral/emmisives_blue.png");
 	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID,
-			"textures/tiles/console/hudolin_console.png");
+			"textures/tiles/console/coral/console.png");
 	public final C MODEL;
 
-	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
-		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
+	public CoralConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
+		this.MODEL = model;
 	}
 
 	@SuppressWarnings("unchecked")
-	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context) {
-		this.MODEL = (C) new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION));
+	public CoralConsoleRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new CoralConsoleModel<>(context.bakeLayer(CoralConsoleModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
-		poseStack.translate(-0.5, 0, 0.5);
+		poseStack.translate(-0.5, -1.55f, 0.5);
 		assert ConsoleTile.getLevel() != null;
 		if (ConsoleTile.getLevel() != null) {
 			float offs;
@@ -62,6 +62,7 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 			poseStack.translate(0, offs, 0);
 		}
 		poseStack.scale(1f, 1f, 1f);
+
 		assert Minecraft.getInstance().level != null;
 		float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
 		this.MODEL.SetupAnimations(ConsoleTile, ticks);

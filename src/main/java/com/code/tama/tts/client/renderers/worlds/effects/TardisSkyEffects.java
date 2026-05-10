@@ -6,6 +6,7 @@ import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRender
 
 import java.util.Objects;
 
+import com.code.tama.tts.TTSMod;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
@@ -17,22 +18,30 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
 public class TardisSkyEffects extends DimensionSpecialEffects {
 
-	private static VertexBuffer StarsVBO = null;
-	private static VertexBuffer SunVBO = null;
+	private static ShaderInstance skyShader = null;
 
-	// Private field to store the light value
-	private float lightValue = 1.0f; // Default light value is 1.0 (full brightness)
+	public static void registerShaders(net.minecraft.server.packs.resources.ResourceProvider provider, ShaderSink sink)
+			throws java.io.IOException {
+		sink.register(new ShaderInstance(provider, new ResourceLocation(TTSMod.MODID, "tardis_sky"),
+				DefaultVertexFormat.POSITION_TEX), shader -> skyShader = shader);
+	}
+
+	@FunctionalInterface
+	public interface ShaderSink {
+		void register(ShaderInstance shader, java.util.function.Consumer<ShaderInstance> onLoad)
+				throws java.io.IOException;
+	}
+
+	private static VertexBuffer SunVBO = null;
 
 	private final ResourceKey<DimensionType> targetType;
 
@@ -41,78 +50,61 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		this.targetType = targetType;
 	}
 
-	private static void RenderStars(@NotNull PoseStack poseStack, Matrix4f matrix4f) {
-		poseStack.pushPose();
-
-		if (StarsVBO == null) {
-			RandomSource randomsource = RandomSource.create(10842L);
-
-			StarsVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
-
-			BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-			if (buffer.building())
-				return;
-			buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-			for (int i = 0; i < 1500; ++i) {
-				double d0 = randomsource.nextFloat() * 2.0F - 1.0F;
-				double d1 = randomsource.nextFloat() * 2.0F - 1.0F;
-				double d2 = randomsource.nextFloat() * 2.0F - 1.0F;
-				double d3 = 0.15F + randomsource.nextFloat() * 0.1F;
-				double d4 = d0 * d0 + d1 * d1 + d2 * d2;
-				if (d4 < 1.0 && d4 > 0.01) {
-					d4 = 1.0 / Math.sqrt(d4);
-					d0 *= d4;
-					d1 *= d4;
-					d2 *= d4;
-					double d5 = d0 * 100.0;
-					double d6 = d1 * 100.0;
-					double d7 = d2 * 100.0;
-					double d8 = Math.atan2(d0, d2);
-					double d9 = Math.sin(d8);
-					double d10 = Math.cos(d8);
-					double d11 = Math.atan2(Math.sqrt(d0 * d0 + d2 * d2), d1);
-					double d12 = Math.sin(d11);
-					double d13 = Math.cos(d11);
-					double d14 = randomsource.nextDouble() * Math.PI * 2.0;
-					double d15 = Math.sin(d14);
-					double d16 = Math.cos(d14);
-
-					for (int j = 0; j < 4; ++j) {
-						double d18 = (double) ((j & 2) - 1) * d3;
-						double d19 = (double) ((j + 1 & 2) - 1) * d3;
-						double d21 = d18 * d16 - d19 * d15;
-						double d22 = d19 * d16 + d18 * d15;
-						double d23 = d21 * d12 + 0.0 * d13;
-						double d24 = 0.0 * d12 - d21 * d13;
-						double d25 = d24 * d9 - d22 * d10;
-						double d26 = d22 * d9 + d24 * d10;
-						buffer.vertex(d5 + d25, d6 + d23, d7 + d26).endVertex();
-					}
-				}
-			}
-
-			StarsVBO.bind();
-			StarsVBO.upload(buffer.end());
-			VertexBuffer.unbind();
+	private static void renderSpaceSky(PoseStack poseStack, Matrix4f projectionMatrix) {
+		if (skyShader == null) {
+			TTSMod.LOGGER.warn("[TardisSkyEffects] tardis_sky shader not loaded");
+			return;
 		}
 
-		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		FogRenderer.setupNoFog();
+		Minecraft mc = Minecraft.getInstance();
+		assert mc.level != null;
 
+		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + mc.getPartialTick() / 20.0f;
+
+		float resX = (float) mc.getWindow().getWidth();
+		float resY = (float) mc.getWindow().getHeight();
+
+		// State
 		RenderSystem.disableDepthTest();
-		StarsVBO.bind();
-		assert GameRenderer.getPositionShader() != null;
-		StarsVBO.drawWithShader(poseStack.last().pose(), matrix4f, GameRenderer.getPositionShader());
+		RenderSystem.depthMask(false);
+		RenderSystem.disableBlend();
+		RenderSystem.disableCull();
 
-		VertexBuffer.unbind();
+		// use identity matrices so our NDC quad passes through unchanged
+		skyShader.MODEL_VIEW_MATRIX.set(new Matrix4f());
+		skyShader.PROJECTION_MATRIX.set(new Matrix4f());
+
+		var uTime = skyShader.getUniform("uTime");
+		if (uTime != null)
+			uTime.set(time);
+
+		var uRes = skyShader.getUniform("uResolution");
+		if (uRes != null)
+			uRes.set(resX, resY);
+
+		skyShader.apply();
+		RenderSystem.setShader(() -> skyShader);
+
+		// Fullscreen NDC quad, UV 0-1 maps to screen, Z=-1 is far plane
+		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		buffer.vertex(-1f, -1f, -1f).uv(0f, 0f).endVertex();
+		buffer.vertex(1f, -1f, -1f).uv(1f, 0f).endVertex();
+		buffer.vertex(1f, 1f, -1f).uv(1f, 1f).endVertex();
+		buffer.vertex(-1f, 1f, -1f).uv(0f, 1f).endVertex();
+		BufferUploader.drawWithShader(buffer.end());
+
+		skyShader.clear();
+
+		// Restore
 		RenderSystem.enableDepthTest();
-
-		poseStack.popPose();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableCull();
+		RenderSystem.enableBlend();
 	}
 
-	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f matrix4f, @NotNull Vec3 position,
-			Quaternionf rotation, Vec3 PivotPoint, float size) {
+	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f projectionMatrix, @NotNull Vec3 position,
+			Quaternionf rotation, Vec3 pivotPoint, float size) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
@@ -121,8 +113,10 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		RenderSystem.disableBlend();
 		RenderSystem.enableDepthTest();
+		RenderSystem.depthMask(true);
+
 		poseStack.translate(position.x, position.y, position.z);
-		poseStack.rotateAround(rotation, (float) PivotPoint.x, (float) PivotPoint.y, (float) PivotPoint.z);
+		poseStack.rotateAround(rotation, (float) pivotPoint.x, (float) pivotPoint.y, (float) pivotPoint.z);
 
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
@@ -136,11 +130,10 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		if (!SunVBO.isInvalid()) {
 			SunVBO.bind();
-			SunVBO.drawWithShader(poseStack.last().pose(), matrix4f, Objects.requireNonNull(RenderSystem.getShader()));
+			SunVBO.drawWithShader(poseStack.last().pose(), projectionMatrix,
+					Objects.requireNonNull(RenderSystem.getShader()));
 			VertexBuffer.unbind();
 		}
-
-		SunVBO.close();
 
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
@@ -149,20 +142,7 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 	@Override
 	public @NotNull Vec3 getBrightnessDependentFogColor(@NotNull Vec3 skyColor, float brightness) {
-		// Get the current level
-		Level level = Minecraft.getInstance().level;
-		if (level != null) {
-			// Retrieve the ambient light value from the level's capability
-			float ambientLightValue = 0.0f;
-			// float ambientLightValue =
-			// level.getCapability(CapabilityConstants.TARDIS_LEVEL_CAPABILITY)
-			// .map(ITARDISLevel::GetLightLevel)
-			// .orElse(0.0f); // Default to 0.0 if no capability is found
-
-			// Modify the sky color based on the ambient light value
-			return skyColor.add(ambientLightValue, ambientLightValue, ambientLightValue);
-		}
-		return skyColor;
+		return skyColor; // pure SPAAAAAAAAAAAAAAAAAAAAAACE
 	}
 
 	@Override
@@ -174,25 +154,22 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 	public boolean renderSky(@NotNull ClientLevel level, int ticks, float partialTick, PoseStack poseStack,
 			@NotNull Camera camera, @NotNull Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 
-		assert Minecraft.getInstance().player != null;
-		Vec3 position = Minecraft.getInstance().player.position();
+		Minecraft mc = Minecraft.getInstance();
+		assert mc.level != null;
+		assert mc.player != null;
+
+		Vec3 position = mc.player.position();
 
 		poseStack.pushPose();
-
-		// poseStack.translate(0 - position.x, 0 - position.y, 0 - position.z);
-
-		assert Minecraft.getInstance().level != null;
-		renderSun(poseStack, projectionMatrix, new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
-				Axis.YP.rotation(Minecraft.getInstance().level.getSunAngle(partialTick)), new Vec3(0, 0, 0), 10);
-
+		renderSpaceSky(poseStack, projectionMatrix);
 		poseStack.popPose();
 
 		poseStack.pushPose();
-		RenderStars(poseStack, projectionMatrix);
+		renderSun(poseStack, projectionMatrix, new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
+				Axis.YP.rotation(mc.level.getSunAngle(partialTick)), new Vec3(0, 0, 0), 10);
 		poseStack.popPose();
 
 		setupFog.run();
 		return false;
 	}
-
 }

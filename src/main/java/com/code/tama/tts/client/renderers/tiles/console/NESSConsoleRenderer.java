@@ -3,9 +3,9 @@ package com.code.tama.tts.client.renderers.tiles.console;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.client.models.NESSConsoleModel;
+import com.code.tama.tts.client.models.consoles.NESSConsoleModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.core.tileentities.NESSConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
