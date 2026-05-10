@@ -26,17 +26,17 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.8"
 
       - name: Make scripts executable
-        run: |
-          chmod +x ./gradlew
-          chmod +x ./scripts/merge_jar.sh
+        run: chmod +x ./scripts/merge_jar.sh
 
       - name: Apply Spotless formatting
-        run: ./gradlew spotlessApply --no-daemon
+        run: gradle spotlessApply --no-daemon
 
       - name: Build mod
-        run: ./gradlew build --no-daemon
+        run: gradle build --no-daemon
 
       - name: Run PackSquash
         uses: ComunidadAylas/PackSquash-action@v4
@@ -57,6 +57,7 @@ jobs:
 
           if [ -z "$jar" ]; then
             echo "No reobfuscated shadowed jar found in build/reobfJarJar"
+            echo "Available jars:"
             find build -type f -name '*.jar'
             exit 1
           fi
@@ -81,6 +82,6 @@ jobs:
           file: "build/discord-artifacts/*.jar"
           username: TheMaster
           avatar: "https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png"
-          message_commit: "> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)"
           message_header: |
             <:new1:1253371736510959636><:new2:1253371805734015006> New `Through Time and Space` dev build `#${{ github.run_number }}`:
+          message_commit: "> :sparkles: [${commitMessage}](<${commitUrl}>) by [${authorName}](<${authorUrl}>)"
