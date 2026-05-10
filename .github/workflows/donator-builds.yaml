@@ -1,0 +1,124 @@
+name: Automated donator builds
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+concurrency:
+  group: donator-builds-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and publish mod
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Set up Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.8"
+
+      - name: Build mod
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gradle spotlessApply --no-daemon --stacktrace
+          gradle build reobfJarJar --no-daemon --stacktrace
+
+      - name: Rename final jar
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p build/upload
+
+          echo "Available jars:"
+          find build -type f -name "*.jar" -print
+
+          jar=""
+
+          # Prefer the reobfuscated JarJar/shadowed output.
+          if find build/reobfJarJar -maxdepth 1 -type f -name "*.jar" | grep -q .; then
+            jar="$(find build/reobfJarJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          # Fallback to reobfuscated shadow jar if present.
+          if [ -z "$jar" ] && find build/reobfShadowJar -maxdepth 1 -type f -name "*.jar" 2>/dev/null | grep -q .; then
+            jar="$(find build/reobfShadowJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          # Final fallback to build/libs, excluding source/dev/javadoc jars.
+          if [ -z "$jar" ]; then
+            jar="$(find build/libs -maxdepth 1 -type f -name "*.jar" \
+              ! -name "*-sources.jar" \
+              ! -name "*-javadoc.jar" \
+              ! -name "*-dev.jar" \
+              | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ]; then
+            echo "No final jar found."
+            exit 1
+          fi
+
+          repo="${{ github.event.repository.name }}"
+          branch="${{ github.ref_name }}"
+          branch="${branch//\//-}"
+          branch="${branch// /-}"
+
+          ext="${jar##*.}"
+          output="build/upload/${repo}-${branch}-${{ github.run_number }}.${ext}"
+
+          cp "$jar" "$output"
+
+          echo "artifact_path=$output" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$(basename "$output")" >> "$GITHUB_OUTPUT"
+
+          echo "Prepared artifact:"
+          ls -lh "$output"
+
+      - name: Upload artifact to GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.artifact_name }}
+          path: ${{ steps.artifact.outputs.artifact_path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload artifact to Discord
+        uses: TheDJGamerYT/discord-webhook-upload-action@v0.3.0
+        with:
+          url: ${{ secrets.DEV_BUILDS }}
+          file: ${{ steps.artifact.outputs.artifact_path }}
+          file_attach_mode: last
+          username: TheMaster
+          avatar: "https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png"
+          message_header: |
+            <:new1:1253371736510959636><:new2:1253371805734015006> New `${repoName}` dev build `${buildNumber}` for `${branch}`:
+
+            File: `${{ steps.artifact.outputs.artifact_name }}`
+            Run: ${runUrl}
+
+            %COMMITS%
+          message_commit: "> :sparkles: [`${shortSha}`](<${commitUrl}>) ${commitMessage} by [${authorName}](<${authorUrl}>)"
+          retry_count: 3
+          retry_delay_ms: 1000
