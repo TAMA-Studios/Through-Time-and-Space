@@ -1,0 +1,136 @@
+name: Automated donator builds
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: donator-builds-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and publish mod
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Set up Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.8"
+
+      - name: Build mod
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gradle spotlessApply --no-daemon --stacktrace
+          gradle build reobfJarJar --no-daemon --stacktrace
+
+      - name: Rename final jar
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf build/upload
+          mkdir -p build/upload
+
+          echo "Available jars:"
+          find build -type f -name "*.jar" -print
+
+          jar=""
+
+          if [ -d build/reobfJarJar ]; then
+            jar="$(find build/reobfJarJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ] && [ -d build/reobfShadowJar ]; then
+            jar="$(find build/reobfShadowJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ] && [ -d build/reobfJar ]; then
+            jar="$(find build/reobfJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ] && [ -d build/libs ]; then
+            jar="$(find build/libs -maxdepth 1 -type f -name "*.jar" \
+              ! -name "*-sources.jar" \
+              ! -name "*-javadoc.jar" \
+              ! -name "*-dev.jar" \
+              | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ]; then
+            echo "No final jar found."
+            exit 1
+          fi
+
+          repo="${{ github.event.repository.name }}"
+          branch="${{ github.ref_name }}"
+
+          # "/" cannot exist inside a filename, so branch names like feat/test become feat-test.
+          safe_repo="$(echo "$repo" | sed 's#[^A-Za-z0-9._-]#-#g')"
+          safe_branch="$(echo "$branch" | sed 's#[^A-Za-z0-9._-]#-#g')"
+
+          ext="${jar##*.}"
+          filename="${safe_repo}-${safe_branch}-${{ github.run_number }}.${ext}"
+          output="build/upload/$filename"
+
+          cp "$jar" "$output"
+
+          echo "artifact_path=$output" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$filename" >> "$GITHUB_OUTPUT"
+          echo "upload_dir=build/upload" >> "$GITHUB_OUTPUT"
+
+          echo "Prepared artifact:"
+          ls -lh build/upload
+
+      - name: Upload artifact to GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.artifact_name }}
+          path: ${{ steps.artifact.outputs.artifact_path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload artifact to Discord
+        uses: TheDJGamerYT/discord-webhook-upload-action@v0.3.1
+        with:
+          url: ${{ secrets.DEV_BUILDS }}
+
+          # Workaround for v0.3.0 exact-file matching bug:
+          # pass the directory containing only the final jar.
+          file: ${{ steps.artifact.outputs.upload_dir }}
+          file_attach_mode: last
+
+          username: TheMaster
+          avatar: "https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png"
+
+          message_header: |
+            <:new1:1253371736510959636><:new2:1253371805734015006> New `${repoName}` dev build `${buildNumber}` for `${branch}`:
+
+            File: `${{ steps.artifact.outputs.artifact_name }}`
+            Run: ${runUrl}
+
+            %COMMITS%
+
+          message_commit: "> :sparkles: [`${shortSha}`](<${commitUrl}>) ${commitMessage} by [${authorName}](<${authorUrl}>)"
+
+          retry_count: 3
+          retry_delay_ms: 1000
