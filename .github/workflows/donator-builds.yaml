@@ -2,7 +2,6 @@ name: Automated donator builds
 
 on:
   push:
-    branches: ["master"]
   workflow_dispatch:
 
 concurrency:
@@ -49,6 +48,7 @@ jobs:
         run: |
           set -euo pipefail
 
+          rm -rf build/upload
           mkdir -p build/upload
 
           echo "Available jars:"
@@ -56,18 +56,19 @@ jobs:
 
           jar=""
 
-          # Prefer the reobfuscated JarJar/shadowed output.
-          if find build/reobfJarJar -maxdepth 1 -type f -name "*.jar" | grep -q .; then
+          if [ -d build/reobfJarJar ]; then
             jar="$(find build/reobfJarJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
           fi
 
-          # Fallback to reobfuscated shadow jar if present.
-          if [ -z "$jar" ] && find build/reobfShadowJar -maxdepth 1 -type f -name "*.jar" 2>/dev/null | grep -q .; then
+          if [ -z "$jar" ] && [ -d build/reobfShadowJar ]; then
             jar="$(find build/reobfShadowJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
           fi
 
-          # Final fallback to build/libs, excluding source/dev/javadoc jars.
-          if [ -z "$jar" ]; then
+          if [ -z "$jar" ] && [ -d build/reobfJar ]; then
+            jar="$(find build/reobfJar -maxdepth 1 -type f -name "*.jar" | sort | head -n 1)"
+          fi
+
+          if [ -z "$jar" ] && [ -d build/libs ]; then
             jar="$(find build/libs -maxdepth 1 -type f -name "*.jar" \
               ! -name "*-sources.jar" \
               ! -name "*-javadoc.jar" \
@@ -82,19 +83,23 @@ jobs:
 
           repo="${{ github.event.repository.name }}"
           branch="${{ github.ref_name }}"
-          branch="${branch//\//-}"
-          branch="${branch// /-}"
+
+          # "/" cannot exist inside a filename, so branch names like feat/test become feat-test.
+          safe_repo="$(echo "$repo" | sed 's#[^A-Za-z0-9._-]#-#g')"
+          safe_branch="$(echo "$branch" | sed 's#[^A-Za-z0-9._-]#-#g')"
 
           ext="${jar##*.}"
-          output="build/upload/${repo}-${branch}-${{ github.run_number }}.${ext}"
+          filename="${safe_repo}-${safe_branch}-${{ github.run_number }}.${ext}"
+          output="build/upload/$filename"
 
           cp "$jar" "$output"
 
           echo "artifact_path=$output" >> "$GITHUB_OUTPUT"
-          echo "artifact_name=$(basename "$output")" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$filename" >> "$GITHUB_OUTPUT"
+          echo "upload_dir=build/upload" >> "$GITHUB_OUTPUT"
 
           echo "Prepared artifact:"
-          ls -lh "$output"
+          ls -lh build/upload
 
       - name: Upload artifact to GitHub Actions
         uses: actions/upload-artifact@v4
@@ -108,10 +113,15 @@ jobs:
         uses: TheDJGamerYT/discord-webhook-upload-action@v0.3.0
         with:
           url: ${{ secrets.DEV_BUILDS }}
-          file: ${{ steps.artifact.outputs.artifact_path }}
+
+          # Workaround for v0.3.0 exact-file matching bug:
+          # pass the directory containing only the final jar.
+          file: ${{ steps.artifact.outputs.upload_dir }}
           file_attach_mode: last
+
           username: TheMaster
           avatar: "https://media.forgecdn.net/avatars/thumbnails/983/766/256/256/638492366759883163.png"
+
           message_header: |
             <:new1:1253371736510959636><:new2:1253371805734015006> New `${repoName}` dev build `${buildNumber}` for `${branch}`:
 
@@ -119,6 +129,8 @@ jobs:
             Run: ${runUrl}
 
             %COMMITS%
+
           message_commit: "> :sparkles: [`${shortSha}`](<${commitUrl}>) ${commitMessage} by [${authorName}](<${authorUrl}>)"
+
           retry_count: 3
           retry_delay_ms: 1000
