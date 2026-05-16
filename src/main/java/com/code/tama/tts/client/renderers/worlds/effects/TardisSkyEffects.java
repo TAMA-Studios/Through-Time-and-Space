@@ -58,7 +58,7 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 	// Sky render
 
-	private static void renderSpaceSky(PoseStack poseStack, Camera camera, Matrix4f projectionMatrix) {
+	private static void renderSpaceSky(Camera camera, float partialTick) {
 		if (skyShader == null) {
 			TTSMod.LOGGER.warn("[TardisSkyEffects] tardis_sky shader not loaded");
 			return;
@@ -67,20 +67,20 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		Minecraft mc = Minecraft.getInstance();
 		assert mc.level != null;
 
-		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + mc.getPartialTick() / 20.0f;
+		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + partialTick / 20.0f;
 
 		float resX = (float) mc.getWindow().getWidth();
 		float resY = (float) mc.getWindow().getHeight();
 
-		// Build inverse matrices
-		// Inverse projection: unprojects NDC → view space
-		Matrix4f invProj = new Matrix4f(projectionMatrix).invert();
+		float fov = (float) Math.toRadians(mc.gameRenderer.getFov(camera, partialTick, true));
+		float aspect = resX / resY;
+		Matrix4f cleanProj = new Matrix4f().perspective(fov, aspect, 0.05f, 1024.0f);
+		Matrix4f invProj = new Matrix4f(cleanProj).invert();
 
-		// View matrix = camera rotation only (no translation, sky is infinitely far)
-		// The poseStack at this point already has the camera rotation applied by
-		// vanilla's sky setup, so we can use it directly and just invert it.
-		Matrix4f viewMat = new Matrix4f(poseStack.last().pose());
-		Matrix4f invView = new Matrix4f(viewMat).invert();
+		float yaw = (float) Math.toRadians(camera.getYRot());
+		float pitch = (float) Math.toRadians(camera.getXRot());
+
+		Matrix4f invView = new Matrix4f().rotateY((float) Math.PI - yaw).rotateX(-pitch);
 
 		// State
 		RenderSystem.disableDepthTest();
@@ -88,13 +88,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		RenderSystem.disableBlend();
 		RenderSystem.disableCull();
 
-		var mvm = skyShader.getUniform("ModelViewMat");
-		if (mvm != null)
-			mvm.set(new Matrix4f());
-
-		var pm = skyShader.getUniform("ProjMat");
-		if (pm != null)
-			pm.set(new Matrix4f());
+		skyShader.apply();
+		RenderSystem.setShader(() -> skyShader);
 
 		var invProjUniform = skyShader.getUniform("InvProjMat");
 		if (invProjUniform != null)
@@ -112,10 +107,6 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		if (uRes != null)
 			uRes.set(resX, resY);
 
-		skyShader.apply();
-		RenderSystem.setShader(() -> skyShader);
-
-		// Fullscreen NDC quad
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(-1f, -1f, -1f).uv(0f, 0f).endVertex();
@@ -194,10 +185,7 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		Vec3 position = mc.player.position();
 
-		// 1. Space sky , fullscreen GLSL, no depth write, renders behind everything
-		poseStack.pushPose();
-		renderSpaceSky(poseStack, camera, projectionMatrix);
-		poseStack.popPose();
+		renderSpaceSky(camera, partialTick);
 
 		// 2. Sun
 		poseStack.pushPose();

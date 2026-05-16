@@ -1,7 +1,6 @@
 #version 150
 
 in vec2 texCoord;
-
 out vec4 fragColor;
 
 uniform mat4 InvProjMat;
@@ -23,17 +22,15 @@ vec3 hash33(vec3 p) {
     return fract((p.xxy + p.yxx) * p.zyx);
 }
 
-//  NOISE
-
 float vnoise(vec3 p) {
     vec3 i = floor(p);
     vec3 f = fract(p);
     vec3 u = f * f * (3.0 - 2.0 * f);
     return mix(
-    mix(mix(hash13(i+vec3(0,0,0)), hash13(i+vec3(1,0,0)), u.x),
-    mix(hash13(i+vec3(0,1,0)), hash13(i+vec3(1,1,0)), u.x), u.y),
-    mix(mix(hash13(i+vec3(0,0,1)), hash13(i+vec3(1,0,1)), u.x),
-    mix(hash13(i+vec3(0,1,1)), hash13(i+vec3(1,1,1)), u.x), u.y), u.z);
+        mix(mix(hash13(i+vec3(0,0,0)), hash13(i+vec3(1,0,0)), u.x),
+            mix(hash13(i+vec3(0,1,0)), hash13(i+vec3(1,1,0)), u.x), u.y),
+        mix(mix(hash13(i+vec3(0,0,1)), hash13(i+vec3(1,0,1)), u.x),
+            mix(hash13(i+vec3(0,1,1)), hash13(i+vec3(1,1,1)), u.x), u.y), u.z);
 }
 
 float fbm(vec3 p, int oct) {
@@ -105,42 +102,35 @@ vec3 allStars(vec3 dir) {
 }
 
 //  NEBULA
-//  Noise sampled at dir * 45 so small nebulae have internal detail
 
 vec3 nebulaCloud(vec3 dir, vec3 center, vec3 hue, float radius,
-float density, float seed, float driftSpeed) {
+                 float density, float seed, float driftSpeed) {
 
     float alignment   = dot(normalize(dir), normalize(center));
     float angularDist = acos(clamp(alignment, -1.0, 1.0));
-
-    // Tighter cull
     if (angularDist > radius * 1.5) return vec3(0.0);
 
     vec3 drift = vec3(uTime * driftSpeed * 0.003,
-    uTime * driftSpeed * 0.002,
-    uTime * driftSpeed * 0.0025);
+                      uTime * driftSpeed * 0.002,
+                      uTime * driftSpeed * 0.0025);
 
-    // Center bias, gentle gaussian falloff, not a mask
-    float centerBias = exp(-angularDist * angularDist / (radius * radius * 0.5));
+    float outerFade = smoothstep(radius * 1.5, radius * 0.2, angularDist);
 
-    // LOW frequency, dir * 6 means large smooth features, not tiny sharp cells
-    // This is what makes individual cloud features blurry and soft
+    float centerBias = exp(-angularDist * angularDist / (radius * radius * 1.2)) * 0.15;
+
     vec3 p = dir * 6.0 + seed * 6.1 + drift;
 
-    // Light warp, just enough to break symmetry, not enough to create creases
     vec3 warp = vec3(fbm(p * 0.8 + 1.7, 3),
-    fbm(p * 0.8 + 4.3, 3),
-    fbm(p * 0.8 + 7.9, 3)) - 0.5;
+                     fbm(p * 0.8 + 4.3, 3),
+                     fbm(p * 0.8 + 7.9, 3)) - 0.5;
 
     float n = fbm(p + warp * 0.6, 5);
 
-    // Sliding threshold, center is denser, edges require higher noise to show
-    float threshold = 0.52 - centerBias * 0.25;
+    float threshold = 0.48 - centerBias;
     float cloud = max(n - threshold, 0.0);
-
     if (cloud < 0.001) return vec3(0.0);
 
-    float alpha = cloud * density * 4.0;
+    float alpha = cloud * outerFade * density * 4.0;
 
     vec3 coreCol = hue * 1.8;
     vec3 edgeCol = hue * 0.6;
@@ -158,12 +148,11 @@ vec3 allNebulae(vec3 dir) {
     return col;
 }
 
-//  DISTANT STAR CLUSTERS, faint smudges for depth
+//  DISTANT STAR CLUSTERS
 
 vec3 starClusters(vec3 dir) {
     vec3 col = vec3(0.0);
 
-    // Hardcoded cluster centers
     vec3 c0 = normalize(vec3( 0.30,  0.60,  0.50));
     vec3 c1 = normalize(vec3(-0.70, -0.30,  0.40));
     vec3 c2 = normalize(vec3( 0.10,  0.20, -0.90));
@@ -194,18 +183,15 @@ vec3 starClusters(vec3 dir) {
 void main() {
     vec3 dir = getRayDir();
 
-    vec3 color = vec3(0.0); // pure black base
-
+    vec3 color = vec3(0.0);
     color += starClusters(dir);
     color += allNebulae(dir);
     color += allStars(dir);
 
-    // Tone map
     color *= 1.8;
     color  = color / (color + vec3(1.0));
     color  = pow(max(color, 0.0), vec3(1.0 / 2.0));
 
-    // Saturation
     float lum = dot(color, vec3(0.2126, 0.7152, 0.0722));
     color = mix(vec3(lum), color, 1.25);
 
