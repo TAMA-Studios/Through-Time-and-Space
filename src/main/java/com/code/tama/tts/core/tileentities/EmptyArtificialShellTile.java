@@ -2,13 +2,14 @@
 package com.code.tama.tts.core.tileentities;
 
 import com.code.tama.tts.server.misc.progressable.IWeldable;
-import net.royawesome.jlibnoise.MathHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class EmptyArtificialShellTile extends BlockEntity implements IWeldable {
 	public int PlasmicShellPlates, StructuralBeams, Weld;
@@ -33,7 +34,7 @@ public class EmptyArtificialShellTile extends BlockEntity implements IWeldable {
 
 	@Override
 	public void setWeld(int weld) {
-		this.Weld = MathHelper.clamp(weld, 0, this.getMaxWeld());
+		this.Weld = Math.toIntExact(MathUtils.clamp(weld, 0, this.getMaxWeld()));
 	}
 
 	@Override
