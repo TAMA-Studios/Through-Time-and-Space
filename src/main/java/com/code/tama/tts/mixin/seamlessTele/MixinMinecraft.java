@@ -21,7 +21,7 @@ public abstract class MixinMinecraft {
 
 	@Unique private static final Logger LOGGER = LogManager.getLogger("TTS$SeamlessTele#Minecraft");
 
-	@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"), cancellable = true)
 	private void tts$suppressLoadingScreen(Screen screen, CallbackInfo ci) {
 		if (screen == null)
 			return;

@@ -3,12 +3,12 @@
   "fragment" : "tts:tardis_sky",
   "uniforms" : [ {
     "count" : 16,
-    "name" : "ModelViewMat",
+    "name" : "InvProjMat",
     "type" : "matrix4x4",
     "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
   }, {
     "count" : 16,
-    "name" : "ProjMat",
+    "name" : "InvViewMat",
     "type" : "matrix4x4",
     "values" : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]
   }, {

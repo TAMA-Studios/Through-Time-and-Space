@@ -27,6 +27,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class TardisSkyEffects extends DimensionSpecialEffects {
 
+	// Shader
+
 	private static ShaderInstance skyShader = null;
 
 	public static void registerShaders(net.minecraft.server.packs.resources.ResourceProvider provider, ShaderSink sink)
@@ -41,7 +43,11 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 				throws java.io.IOException;
 	}
 
-	private static VertexBuffer SunVBO = null;
+	// Sun VBO
+
+	private static VertexBuffer sunVBO = null;
+
+	// Constructor
 
 	private final ResourceKey<DimensionType> targetType;
 
@@ -50,7 +56,9 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		this.targetType = targetType;
 	}
 
-	private static void renderSpaceSky(PoseStack poseStack, Matrix4f projectionMatrix) {
+	// Sky render
+
+	private static void renderSpaceSky(Camera camera, float partialTick) {
 		if (skyShader == null) {
 			TTSMod.LOGGER.warn("[TardisSkyEffects] tardis_sky shader not loaded");
 			return;
@@ -59,10 +67,20 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		Minecraft mc = Minecraft.getInstance();
 		assert mc.level != null;
 
-		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + mc.getPartialTick() / 20.0f;
+		float time = (mc.level.getGameTime() % 1_000_000L) / 20.0f + partialTick / 20.0f;
 
 		float resX = (float) mc.getWindow().getWidth();
 		float resY = (float) mc.getWindow().getHeight();
+
+		float fov = (float) Math.toRadians(mc.gameRenderer.getFov(camera, partialTick, true));
+		float aspect = resX / resY;
+		Matrix4f cleanProj = new Matrix4f().perspective(fov, aspect, 0.05f, 1024.0f);
+		Matrix4f invProj = new Matrix4f(cleanProj).invert();
+
+		float yaw = (float) Math.toRadians(camera.getYRot());
+		float pitch = (float) Math.toRadians(camera.getXRot());
+
+		Matrix4f invView = new Matrix4f().rotateY((float) Math.PI - yaw).rotateX(-pitch);
 
 		// State
 		RenderSystem.disableDepthTest();
@@ -70,9 +88,16 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		RenderSystem.disableBlend();
 		RenderSystem.disableCull();
 
-		// use identity matrices so our NDC quad passes through unchanged
-		skyShader.MODEL_VIEW_MATRIX.set(new Matrix4f());
-		skyShader.PROJECTION_MATRIX.set(new Matrix4f());
+		skyShader.apply();
+		RenderSystem.setShader(() -> skyShader);
+
+		var invProjUniform = skyShader.getUniform("InvProjMat");
+		if (invProjUniform != null)
+			invProjUniform.set(invProj);
+
+		var invViewUniform = skyShader.getUniform("InvViewMat");
+		if (invViewUniform != null)
+			invViewUniform.set(invView);
 
 		var uTime = skyShader.getUniform("uTime");
 		if (uTime != null)
@@ -82,10 +107,6 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		if (uRes != null)
 			uRes.set(resX, resY);
 
-		skyShader.apply();
-		RenderSystem.setShader(() -> skyShader);
-
-		// Fullscreen NDC quad, UV 0-1 maps to screen, Z=-1 is far plane
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(-1f, -1f, -1f).uv(0f, 0f).endVertex();
@@ -102,6 +123,8 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		RenderSystem.enableCull();
 		RenderSystem.enableBlend();
 	}
+
+	// Sun
 
 	public static void renderSun(@NotNull PoseStack poseStack, Matrix4f projectionMatrix, @NotNull Vec3 position,
 			Quaternionf rotation, Vec3 pivotPoint, float size) {
@@ -120,17 +143,17 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-		if (SunVBO == null || SunVBO.isInvalid()) {
+		if (sunVBO == null || sunVBO.isInvalid()) {
 			buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			SunVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
-			SunVBO.bind();
-			SunVBO.upload(drawPlanet(buffer, size));
+			sunVBO = new VertexBuffer(VertexBuffer.Usage.STATIC);
+			sunVBO.bind();
+			sunVBO.upload(drawPlanet(buffer, size));
 			VertexBuffer.unbind();
 		}
 
-		if (!SunVBO.isInvalid()) {
-			SunVBO.bind();
-			SunVBO.drawWithShader(poseStack.last().pose(), projectionMatrix,
+		if (!sunVBO.isInvalid()) {
+			sunVBO.bind();
+			sunVBO.drawWithShader(poseStack.last().pose(), projectionMatrix,
 					Objects.requireNonNull(RenderSystem.getShader()));
 			VertexBuffer.unbind();
 		}
@@ -140,9 +163,11 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 		poseStack.popPose();
 	}
 
+	// DimensionSpecialEffects overrides
+
 	@Override
 	public @NotNull Vec3 getBrightnessDependentFogColor(@NotNull Vec3 skyColor, float brightness) {
-		return skyColor; // pure SPAAAAAAAAAAAAAAAAAAAAAACE
+		return skyColor;
 	}
 
 	@Override
@@ -160,10 +185,9 @@ public class TardisSkyEffects extends DimensionSpecialEffects {
 
 		Vec3 position = mc.player.position();
 
-		poseStack.pushPose();
-		renderSpaceSky(poseStack, projectionMatrix);
-		poseStack.popPose();
+		renderSpaceSky(camera, partialTick);
 
+		// 2. Sun
 		poseStack.pushPose();
 		renderSun(poseStack, projectionMatrix, new Vec3(20.0 - position.x, 200 - position.y, 20.0 - position.z),
 				Axis.YP.rotation(mc.level.getSunAngle(partialTick)), new Vec3(0, 0, 0), 10);
