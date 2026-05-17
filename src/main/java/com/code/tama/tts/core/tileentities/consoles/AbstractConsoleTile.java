@@ -1,5 +1,5 @@
 /* (C) TAMA Studios 2025 */
-package com.code.tama.tts.core.tileentities;
+package com.code.tama.tts.core.tileentities.consoles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,8 +83,10 @@ public class AbstractConsoleTile extends BlockEntity {
 			else
 				offs = BlockUtils.getReverseHeightModifier(this.getLevel().getBlockState(this.getBlockPos().below()));
 
+			offs -= 0.05f;
+
 			// Spawn position uses the record's center (cx/cy/cz)
-			Vec3 summonPos = centerPos.add(record.cx(), record.cy() - offs, record.cz());
+			Vec3 summonPos = centerPos.add(record.cx(), record.cy() - record.hh() - offs, record.cz());
 
 			ModularControl entity = new ModularControl(level, this, record);
 			entity.setPos(summonPos);
@@ -93,6 +95,11 @@ public class AbstractConsoleTile extends BlockEntity {
 			// correctly
 			entity.setYRot(record.yawDeg());
 			entity.yRotO = record.yawDeg();
+
+			entity.setPos(summonPos);
+			entity.setYRot(record.yawDeg());
+			entity.yRotO = record.yawDeg();
+			entity.refreshDimensions(); // forces makeBoundingBox to re-run with correct yaw
 
 			level.addFreshEntity(entity);
 			this.ControlSize++;

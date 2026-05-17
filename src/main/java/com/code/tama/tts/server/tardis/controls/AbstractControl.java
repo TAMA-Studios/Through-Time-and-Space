@@ -7,7 +7,7 @@ import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.core.registries.forge.TTSParticles;
-import com.code.tama.tts.core.tileentities.AbstractConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.AbstractConsoleTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.systems.RenderSystem;

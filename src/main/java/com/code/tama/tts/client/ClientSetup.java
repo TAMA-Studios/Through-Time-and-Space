@@ -6,6 +6,9 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.io.IOException;
 
 import com.code.tama.tts.client.models.*;
+import com.code.tama.tts.client.models.consoles.CoralConsoleModel;
+import com.code.tama.tts.client.models.consoles.HudolinConsoleModel;
+import com.code.tama.tts.client.models.consoles.NESSConsoleModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
@@ -114,6 +117,7 @@ public class ClientSetup {
 		event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION,
 				ColinRichmondInteriorDoors::createBodyLayer);
 		event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
+		event.registerLayerDefinition(CoralConsoleModel.LAYER_LOCATION, CoralConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(ShellBaseModel.LAYER_LOCATION, ShellBaseModel::createBodyLayer);
 	}

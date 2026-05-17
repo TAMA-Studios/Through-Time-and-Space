@@ -28,9 +28,10 @@ import com.code.tama.tts.core.items.blocks.ExteriorItem;
 import com.code.tama.tts.core.items.tabs.*;
 import com.code.tama.tts.core.registries.TTSBlockBuilder;
 import com.code.tama.tts.core.registries.TTSRegistrate;
-import com.code.tama.tts.core.tileentities.HudolinConsoleTile;
-import com.code.tama.tts.core.tileentities.NESSConsoleTile;
 import com.code.tama.tts.core.tileentities.boti.BotiWindowBlock;
+import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
 import com.code.tama.tts.core.worlds.tree.GallifreyanOakTreeGrower;
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
@@ -176,6 +177,13 @@ public class TTSBlocks {
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion).airState()
 			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<ConsoleBlock<CoralConsoleTile>> CORAL_CONSOLE_BLOCK = Builder("coral_console_block",
+			p -> new ConsoleBlock<CoralConsoleTile>(p, TTSTileEntities.CORAL_CONSOLE_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.CORAL_CONSOLE_TILE, block, prop)).build()
 			.simpleItem().register();
 
 	@MainTab
