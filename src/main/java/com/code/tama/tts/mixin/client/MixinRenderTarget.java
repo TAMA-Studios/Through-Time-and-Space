@@ -8,7 +8,6 @@ import java.nio.IntBuffer;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlUtil;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL30C;
@@ -67,6 +66,9 @@ public abstract class MixinRenderTarget implements IHelpWithFBOs {
 	// Returns true if your GPU is shi-I mean NVIDIA And should use compatibility
 	// mode
 	@Unique private static boolean isShitImeanNVIDIAAndShouldUseCompatMode() {
-		return GlUtil.getVendor().toLowerCase().contains("nvidia");
+		return true; // GlUtil.getVendor().toLowerCase().contains("nvidia"); // Worked just fine when
+						// I was on AMD and had this true, works fine on NVIDIA when it's true, it'll
+						// hopefully work on intel when it's true, and when it's false people report
+						// doom-OOB graphics. // TODO: Figure out if this fixes shit.
 	}
 }
