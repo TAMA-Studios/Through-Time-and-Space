@@ -154,9 +154,7 @@ vec3 allNebulae(vec3 dir) {
     return col;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  DISTANT STAR CLUSTERS
-// ═══════════════════════════════════════════════════════════════════════════════
 
 vec3 starClusters(vec3 dir) {
     vec3 col = vec3(0.0);
@@ -186,11 +184,9 @@ vec3 starClusters(vec3 dir) {
     return col;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  GALAXY
 //  A distant spiral rendered as an elongated elliptical smear with a bright core
 //  and faint arm structure. Placed upper-back where no nebulae sit.
-// ═══════════════════════════════════════════════════════════════════════════════
 
 vec3 galaxy(vec3 dir) {
     // Galaxy center direction — upper back-right, away from nebulae
@@ -243,11 +239,9 @@ vec3 galaxy(vec3 dir) {
     return col * total * 0.35;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  DARK NEBULA
 //  A region that subtracts star/background light, creating an eerie void patch.
 //  Returns a scalar 0-1 where 1 = fully dark.
-// ═══════════════════════════════════════════════════════════════════════════════
 
 float darkNebula(vec3 dir) {
     // Two dark patches — placed where background stars are dense
@@ -278,10 +272,8 @@ float darkNebula(vec3 dir) {
     return dark;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  PULSARS
 //  Two point sources that rhythmically pulse with a directional jet
-// ═══════════════════════════════════════════════════════════════════════════════
 
 vec3 pulsars(vec3 dir) {
     vec3 col = vec3(0.0);
@@ -326,11 +318,9 @@ vec3 pulsars(vec3 dir) {
     return col;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  SHOOTING STARS / METEORS
 //  A handful of streaks cycling on staggered timers.
 //  Each meteor has a random direction and a head + fading trail.
-// ═══════════════════════════════════════════════════════════════════════════════
 
 vec3 shootingStars(vec3 dir) {
     vec3 col = vec3(0.0);
@@ -379,11 +369,9 @@ vec3 shootingStars(vec3 dir) {
     return col;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  AURORA
 //  Vertical curtains of shifting color. Anchored to a region of the sky and
 //  animated with sine waves + noise for the rippling ribbon look.
-// ═══════════════════════════════════════════════════════════════════════════════
 
 vec3 aurora(vec3 dir) {
     if (dir.y > 0.55 || dir.y < -0.55) return vec3(0.0);
@@ -406,7 +394,7 @@ vec3 aurora(vec3 dir) {
     // v = actual world-space vertical — drives curtain height and color
     float v = dir.y;
 
-    // ── CURTAIN COLUMNS ───────────────────────────────────────────────────────
+    //  CURTAIN COLUMNS 
     // vnoise sampled only on u — smooth horizontal variation, no snapping
     vec3 colP = vec3(u * 3.0 + uTime * 0.025, 0.5, 0.5);
     float columns = vnoise(colP) * 0.55
@@ -414,7 +402,7 @@ vec3 aurora(vec3 dir) {
     + vnoise(colP * vec3(5.1, 1.0, 1.0) + 7.9) * 0.15;
     columns = columns * 0.75 + 0.25; // lift floor, no gaps
 
-    // ── VERTICAL SHAPE ────────────────────────────────────────────────────────
+    //  VERTICAL SHAPE 
     // Curtain top: gently wavy in u, around y=0.25
     float topEdge = 0.25 + 0.04 * sin(u * 2.1 + uTime * 0.06)
     + 0.02 * sin(u * 4.8 + uTime * 0.08 + 1.3);
@@ -426,14 +414,14 @@ vec3 aurora(vec3 dir) {
     float vShape = topFade * botFade;
     if (vShape < 0.001) return vec3(0.0);
 
-    // ── RIPPLE ────────────────────────────────────────────────────────────────
+    //  RIPPLE 
     float ripple = sin(v * 10.0 - uTime * 0.5 + u * 1.5) * 0.5 + 0.5;
     ripple = mix(0.65, 1.0, ripple);
 
     float intensity = columns * vShape * ripple * regionFade * elevFade;
     if (intensity < 0.005) return vec3(0.0);
 
-    // ── COLOR — green bottom, blue-violet mid, magenta top ───────────────────
+    //  COLOR — green bottom, blue-violet mid, magenta top 
     float vT = clamp((v + 0.40) / 0.65, 0.0, 1.0); // 0 at bottom, 1 at top
     vec3 botCol = vec3(0.04, 0.88, 0.22);
     vec3 midCol = vec3(0.22, 0.42, 0.95);
@@ -448,16 +436,14 @@ vec3 aurora(vec3 dir) {
     return col * (intensity + fringe * columns) * 0.75;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
 //  MAIN
-// ═══════════════════════════════════════════════════════════════════════════════
 
 void main() {
     vec3 dir = getRayDir();
 
     vec3 color = vec3(0.0);
 
-    // Dark nebulae computed first — applied as a multiplier after base layers
+    // Dark nebulae computed first and applied as a multiplier after base layers
     float dark = darkNebula(dir);
 
     color += starClusters(dir);
@@ -468,7 +454,7 @@ void main() {
     // Dark nebula suppresses stars and background behind it
     color *= (1.0 - dark * 0.92);
 
-    // Additive effects on top — not affected by dark nebula
+    // Additive effects on top which are not affected by dark nebula
     color += pulsars(dir);
     color += shootingStars(dir);
     color += aurora(dir);
