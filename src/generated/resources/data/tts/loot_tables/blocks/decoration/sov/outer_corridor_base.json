@@ -1,0 +1,15 @@
+{
+  "pools" : [ {
+    "bonus_rolls" : 0.0,
+    "conditions" : [ {
+      "condition" : "minecraft:survives_explosion"
+    } ],
+    "entries" : [ {
+      "name" : "tts:decoration/sov/outer_corridor_base",
+      "type" : "minecraft:item"
+    } ],
+    "rolls" : 1.0
+  } ],
+  "random_sequence" : "tts:blocks/decoration/sov/outer_corridor_base",
+  "type" : "minecraft:block"
+}

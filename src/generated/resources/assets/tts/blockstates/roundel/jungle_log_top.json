@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "tts:roundel/jungle_log_top"
+    }
+  }
+}

@@ -18,6 +18,7 @@ import com.tterrag.registrate.util.nullness.*;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -25,8 +26,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.code.tama.triggerapi.helpers.MathUtils;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings("unchecked")
 public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
@@ -207,6 +210,23 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	public TTSBlockBuilder<T, P> defaultBlockstate() {
 		try {
 			return this.blockstate((ctx, prov) -> prov.simpleBlock((Block) ctx.getEntry()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return this;
+	}
+
+	public TTSBlockBuilder<T, P> offsetBlockState() {
+		try {
+			return this.blockstate((ctx, prov) -> {
+				String pre, suf, key;
+				key = ForgeRegistries.BLOCKS.getKey(ctx.getEntry()).getPath();
+				pre = prov.blockTexture(getEntry()).getNamespace();
+				suf = prov.blockTexture(getEntry()).getPath();
+				ResourceLocation tex = UniversalCommon.newRL(pre, suf.replace("_offset", ""));
+				prov.models().singleTexture(key, UniversalCommon.modRL("block/cube_all_offset"), "all", tex);
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

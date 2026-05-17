@@ -27,7 +27,7 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
 	/**
 	 * TODO: Config! Or just, yk, keybind... Or F3+B...
 	 */
-	public static boolean SHOW_HITBOXES = true;
+	public static boolean SHOW_HITBOXES = false;
 
 	// Slice colours — each slice gets a distinct hue so you can count them
 	// visually.

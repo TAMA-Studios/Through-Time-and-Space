@@ -1,0 +1,15 @@
+{
+  "pools" : [ {
+    "bonus_rolls" : 0.0,
+    "conditions" : [ {
+      "condition" : "minecraft:survives_explosion"
+    } ],
+    "entries" : [ {
+      "name" : "tts:decoration/sov/bridge/brown_divot",
+      "type" : "minecraft:item"
+    } ],
+    "rolls" : 1.0
+  } ],
+  "random_sequence" : "tts:blocks/decoration/sov/bridge/brown_divot",
+  "type" : "minecraft:block"
+}

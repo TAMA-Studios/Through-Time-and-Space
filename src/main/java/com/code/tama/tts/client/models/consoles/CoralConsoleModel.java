@@ -1,5 +1,6 @@
-/* (C) TAMA Studios 2026 */
-package com.code.tama.tts.client.models.consoles;// Made with Blockbench 5.0.7
+/* (C) TAMA Studios 2025 */
+package com.code.tama.tts.client.models.consoles; // Made with Blockbench 4.12.2
+
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
@@ -7,7 +8,6 @@ import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -17,15 +17,13 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
-@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-
 public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalModel<Entity>
 		implements
 			IAnimateableModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in
 	// the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation("aseoha", "coralconsolemodel"), "main");
+			new ResourceLocation("modid", "coralconsolemodel"), "main");
 	private final ModelPart root;
 	private final ModelPart bb_main8;
 	private final ModelPart bb_main7;
@@ -730,7 +728,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r2 = arm6.addOrReplaceChild("arm6_r2",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r3 = arm6.addOrReplaceChild("arm6_r3",
@@ -748,7 +746,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r5 = arm2.addOrReplaceChild("arm6_r5",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r6 = arm2.addOrReplaceChild("arm6_r6",
@@ -766,7 +764,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r8 = arm3.addOrReplaceChild("arm6_r8",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r9 = arm3.addOrReplaceChild("arm6_r9",
@@ -784,7 +782,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r11 = arm4.addOrReplaceChild("arm6_r11",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r12 = arm4.addOrReplaceChild("arm6_r12",
@@ -802,7 +800,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r14 = arm5.addOrReplaceChild("arm6_r14",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r15 = arm5.addOrReplaceChild("arm6_r15",
@@ -820,7 +818,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition arm6_r17 = arm7.addOrReplaceChild("arm6_r17",
 				CubeListBuilder.create().texOffs(98, 35).addBox(-5.7062F, -0.0698F, -2.0F, 5.0F, 2.0F, 4.0F,
-						new CubeDeformation(0.0F)),
+						new CubeDeformation(-0.025F)),
 				PartPose.offsetAndRotation(-13.307F, -17.5021F, 0.0F, 0.0F, 0.0F, -0.384F));
 
 		PartDefinition arm6_r18 = arm7.addOrReplaceChild("arm6_r18",
@@ -1648,7 +1646,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition bone37 = root.addOrReplaceChild("bone37", CubeListBuilder.create().texOffs(96, 61)
 				.addBox(-4.5897F, -18.0F, -7.4821F, 8.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)),
-				PartPose.offset(0.6F, -44.05F, -0.35F));
+				PartPose.offset(0.6F, -42.05F, -0.35F));
 
 		PartDefinition cube_r33 = bone37.addOrReplaceChild("cube_r33",
 				CubeListBuilder.create().texOffs(92, 92).addBox(0.0F, -2.0F, 0.0F, 1.0F, 1.0F, 1.0F,
@@ -1718,7 +1716,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition bone55 = root.addOrReplaceChild("bone55", CubeListBuilder.create().texOffs(90, 79)
 				.addBox(-4.9558F, -43.4F, -9.5801F, 10.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)),
-				PartPose.offset(0.0F, -20.7F, 0.0F));
+				PartPose.offset(0.0F, -18.7F, 0.0F));
 
 		PartDefinition cube_r43 = bone55.addOrReplaceChild("cube_r43",
 				CubeListBuilder.create().texOffs(5, 8).addBox(0.0F, -2.0F, -1.0F, 1.0F, 1.0F, 2.0F,
@@ -2055,7 +2053,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 
 		PartDefinition bone25 = bone19.addOrReplaceChild("bone25", CubeListBuilder.create().texOffs(17, 121)
 				.addBox(-2.634F, -41.0F, 4.5622F, 6.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
-				PartPose.offset(0.0F, 0.0F, 0.0F));
+				PartPose.offset(0.0F, 2.0F, 0.0F));
 
 		PartDefinition cube_r81 = bone25
 				.addOrReplaceChild("cube_r81",
@@ -2188,7 +2186,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 				CubeListBuilder.create().texOffs(53, 84)
 						.addBox(-0.5F, -70.6F, 2.5F, 1.0F, 25.0F, 1.0F, new CubeDeformation(0.2F)).texOffs(59, 73)
 						.addBox(-1.0F, -70.6F, -4.0F, 2.0F, 25.0F, 2.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, 0.0F, -1.0472F, 0.0F));
+				PartPose.offsetAndRotation(0.0F, 5.7F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
 		PartDefinition rotor_ring_top3_r1 = rotor_top.addOrReplaceChild("rotor_ring_top3_r1",
 				CubeListBuilder.create().texOffs(59, 73).addBox(-1.0F, -66.3F, -4.0F, 2.0F, 25.0F, 2.0F,
@@ -2649,113 +2647,120 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -3.098F, -0.5236F, -3.1416F));
 
-		PartDefinition ttsControls = partdefinition.addOrReplaceChild("ttsControls",
-				CubeListBuilder.create().texOffs(242, 248)
-						.addBox(-1.4F, -20.35F, -17.0F, 3.0F, 4.2F, 4.0F, new CubeDeformation(0.0F)).texOffs(246, 253)
-						.addBox(-13.85F, -13.75F, 10.4F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(246, 253)
-						.addBox(-15.1F, -12.5F, 11.8F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(246, 253)
-						.addBox(-12.9F, -13.3F, 13.1F, 1.275F, 1.725F, 1.45F, new CubeDeformation(0.0F))
-						.texOffs(242, 248).addBox(-1.1F, -17.8F, 14.875F, 2.2F, 4.0F, 6.575F, new CubeDeformation(0.0F))
-						.texOffs(246, 252).addBox(-0.35F, -14.1F, 21.2F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-						.texOffs(246, 252).addBox(2.15F, -12.6F, 17.45F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(5.9F, -13.25F, 15.95F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(6.8F, -13.25F, 15.45F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(7.7F, -13.25F, 14.85F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(7.0F, -13.5F, 13.95F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(8.3F, -13.5F, 13.25F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(9.2F, -13.5F, 12.75F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(10.05F, -13.5F, 12.25F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(6.15F, -13.5F, 14.45F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 255).addBox(5.25F, -13.5F, 14.95F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(248, 253).addBox(8.7F, -13.25F, 13.15F, 2.6F, 1.0F, 2.1F, new CubeDeformation(0.0F))
-						.texOffs(244, 251).addBox(-1.6F, -17.75F, 9.75F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-						.texOffs(244, 251).addBox(-13.65F, -16.3F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-						.texOffs(250, 254).addBox(-16.55F, -13.5F, 5.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 254).addBox(-18.35F, -12.7F, 5.3F, 1.4F, 0.7F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(250, 254).addBox(-18.1F, -12.8F, -0.8F, 1.4F, 0.8F, 1.1F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-17.35F, -12.75F, 3.8F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-18.25F, -12.25F, 3.75F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-17.3F, -12.75F, 2.3F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-18.2F, -12.25F, 2.25F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-17.25F, -12.75F, 0.8F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(251, 254).addBox(-18.15F, -12.25F, 0.75F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
-						.texOffs(250, 254).addBox(-16.5F, -13.5F, 4.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(250, 254).addBox(-16.5F, -13.5F, 3.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(-16.45F, -13.5F, 2.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(-16.4F, -13.5F, 1.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
-						.texOffs(249, 254).addBox(-16.35F, -13.55F, 0.3F, 0.9F, 0.55F, 0.6F, new CubeDeformation(0.0F)),
+		PartDefinition ttsControls = partdefinition.addOrReplaceChild("ttsControls", CubeListBuilder.create()
+				.texOffs(242, 248).addBox(-1.4F, -20.35F, -17.0F, 3.0F, 4.2F, 4.0F, new CubeDeformation(0.0F))
+				.texOffs(246, 253).addBox(-13.85F, -13.75F, 10.4F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(246, 253).addBox(-15.1F, -12.5F, 11.8F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(246, 253).addBox(-12.9F, -13.3F, 13.1F, 1.275F, 1.725F, 1.45F, new CubeDeformation(0.0F))
+				.texOffs(242, 248).addBox(-1.1F, -17.8F, 14.875F, 2.2F, 4.0F, 6.575F, new CubeDeformation(0.0F))
+				.texOffs(246, 252).addBox(-0.35F, -14.1F, 21.2F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(246, 252).addBox(2.15F, -12.6F, 17.45F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(5.9F, -13.25F, 15.95F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(6.8F, -13.25F, 15.45F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(7.7F, -13.25F, 14.85F, 0.6F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(7.0F, -13.5F, 13.95F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(8.3F, -13.5F, 13.25F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(9.2F, -13.5F, 12.75F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(10.05F, -13.5F, 12.25F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(6.15F, -13.5F, 14.45F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 255).addBox(5.25F, -13.5F, 14.95F, 0.6F, 1.0F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(248, 253).addBox(8.7F, -13.25F, 13.15F, 2.6F, 1.0F, 2.1F, new CubeDeformation(0.0F))
+				.texOffs(244, 251).addBox(-1.6F, -17.75F, 9.75F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(244, 251).addBox(-13.65F, -16.3F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(250, 254).addBox(-16.55F, -13.5F, 5.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 254).addBox(-18.35F, -12.7F, 5.3F, 1.4F, 0.7F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(250, 254).addBox(-18.1F, -12.8F, -0.8F, 1.4F, 0.8F, 1.1F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-17.35F, -12.75F, 3.8F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-18.25F, -12.25F, 3.75F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-17.3F, -12.75F, 2.3F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-18.2F, -12.25F, 2.25F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-17.25F, -12.75F, 0.8F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(251, 254).addBox(-18.15F, -12.25F, 0.75F, 0.4F, 0.3F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(250, 254).addBox(-16.5F, -13.5F, 4.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(250, 254).addBox(-16.5F, -13.5F, 3.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(-16.45F, -13.5F, 2.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(-16.4F, -13.5F, 1.3F, 0.9F, 0.5F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(249, 254).addBox(-16.35F, -13.55F, 0.3F, 0.9F, 0.55F, 0.6F, new CubeDeformation(0.0F))
+				.texOffs(244, 251).addBox(15.65F, -13.6F, -0.925F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(240, 249).addBox(11.75F, -16.025F, -2.175F, 3.0F, 3.0F, 5.0F, new CubeDeformation(0.0F))
+				.texOffs(245, 252).addBox(15.65F, -13.6F, 4.125F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		PartDefinition cube_r118 = ttsControls.addOrReplaceChild("cube_r118",
+				CubeListBuilder.create().texOffs(242, 251).addBox(-2.0F, -1.5F, -1.5F, 4.0F, 3.0F, 3.0F,
+						new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(16.025F, -13.1F, -4.275F, 0.0F, -0.0436F, 0.0F));
+
+		PartDefinition cube_r119 = ttsControls.addOrReplaceChild("cube_r119",
 				CubeListBuilder.create().texOffs(244, 251).addBox(-2.3F, -3.0F, -1.9F, 3.3F, 2.0F, 3.6F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-14.0F, -14.25F, -7.85F, 0.0F, -0.48F, 0.0F));
 
-		PartDefinition cube_r119 = ttsControls.addOrReplaceChild("cube_r119",
+		PartDefinition cube_r120 = ttsControls.addOrReplaceChild("cube_r120",
 				CubeListBuilder.create().texOffs(245, 252).addBox(-0.85F, -2.0F, -1.025F, 2.0F, 1.0F, 2.0F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-11.5F, -16.0F, -6.35F, 0.0F, -0.5061F, 0.0F));
 
-		PartDefinition cube_r120 = ttsControls.addOrReplaceChild("cube_r120",
+		PartDefinition cube_r121 = ttsControls.addOrReplaceChild("cube_r121",
 				CubeListBuilder.create().texOffs(244, 253).addBox(-1.4F, -1.0F, -1.075F, 3.0F, 2.0F, 2.2F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-4.15F, -15.3F, 11.0F, 0.0F, -0.5236F, 0.0F));
 
-		PartDefinition cube_r121 = ttsControls.addOrReplaceChild("cube_r121",
+		PartDefinition cube_r122 = ttsControls.addOrReplaceChild("cube_r122",
 				CubeListBuilder.create().texOffs(245, 253).addBox(-2.1F, -1.0F, -0.95F, 4.05F, 2.0F, 1.9F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-6.15F, -12.5F, 15.75F, 0.0F, -0.5236F, 0.0F));
 
-		PartDefinition cube_r122 = ttsControls.addOrReplaceChild("cube_r122",
+		PartDefinition cube_r123 = ttsControls.addOrReplaceChild("cube_r123",
 				CubeListBuilder.create().texOffs(244, 252).addBox(-0.95F, -1.175F, -1.075F, 2.0F, 2.0F, 2.0F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-6.65F, -14.55F, 12.25F, 0.0F, -0.5236F, 0.0F));
 
-		PartDefinition cube_r123 = ttsControls.addOrReplaceChild("cube_r123",
+		PartDefinition cube_r124 = ttsControls.addOrReplaceChild("cube_r124",
 				CubeListBuilder.create().texOffs(247, 254).addBox(-0.5F, -0.5F, -0.375F, 0.975F, 1.0F, 0.95F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-9.55F, -13.75F, 12.35F, 0.0F, -0.5236F, 0.0F));
 
-		PartDefinition cube_r124 = ttsControls.addOrReplaceChild("cube_r124",
+		PartDefinition cube_r125 = ttsControls.addOrReplaceChild("cube_r125",
 				CubeListBuilder.create().texOffs(247, 254).addBox(-0.525F, -0.5F, -0.475F, 0.975F, 1.0F, 0.975F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-11.05F, -13.75F, 11.6F, 0.0F, -0.5236F, 0.0F));
 
-		PartDefinition cube_r125 = ttsControls.addOrReplaceChild("cube_r125",
+		PartDefinition cube_r126 = ttsControls.addOrReplaceChild("cube_r126",
 				CubeListBuilder.create().texOffs(246, 255)
 						.addBox(-2.5F, -2.0F, -0.7F, 6.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(246, 255)
 						.addBox(-2.5F, -2.0F, 0.7F, 6.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-18.85F, -15.25F, 10.65F, 0.0F, 0.5236F, 0.0F));
 
-		PartDefinition cube_r126 = ttsControls.addOrReplaceChild("cube_r126",
+		PartDefinition cube_r127 = ttsControls.addOrReplaceChild("cube_r127",
 				CubeListBuilder.create().texOffs(246, 252).addBox(-1.65F, -1.5F, -1.575F, 3.4F, 3.0F, 3.275F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-17.35F, -13.25F, -5.35F, 0.0F, 0.2793F, 0.0F));
 
-		PartDefinition cube_r127 = ttsControls.addOrReplaceChild("cube_r127",
+		PartDefinition cube_r128 = ttsControls.addOrReplaceChild("cube_r128",
 				CubeListBuilder.create().texOffs(245, 252).addBox(-0.975F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-18.1F, -14.5F, -9.85F, 0.0F, -0.48F, 0.0F));
 
-		PartDefinition cube_r128 = ttsControls.addOrReplaceChild("cube_r128",
+		PartDefinition cube_r129 = ttsControls.addOrReplaceChild("cube_r129",
 				CubeListBuilder.create().texOffs(246, 251).addBox(-0.9F, -1.0F, -1.025F, 2.0F, 2.4F, 3.0F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-5.0F, -13.25F, -16.5F, 0.0F, 0.5236F, 0.0F));
 
-		PartDefinition cube_r129 = ttsControls.addOrReplaceChild("cube_r129",
+		PartDefinition cube_r130 = ttsControls.addOrReplaceChild("cube_r130",
 				CubeListBuilder.create().texOffs(240, 250).addBox(-0.725F, -1.0F, -3.1F, 4.45F, 2.0F, 5.7F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-17.025F, -10.0F, -14.6F, 0.0F, -0.7854F, 0.0F));
 
-		PartDefinition cube_r130 = ttsControls.addOrReplaceChild("cube_r130",
+		PartDefinition cube_r131 = ttsControls.addOrReplaceChild("cube_r131",
 				CubeListBuilder.create().texOffs(241, 251).addBox(-2.0F, -1.0F, -2.0F, 4.0F, 2.0F, 3.5F,
 						new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-9.75F, -12.5F, -14.0F, 0.0F, -1.0472F, 0.0F));
 
-		PartDefinition cube_r131 = ttsControls.addOrReplaceChild("cube_r131",
-				CubeListBuilder.create().texOffs(233, 247).addBox(-4.8F, -3.5F, -3.125F, 9.0F, 7.0F, 3.325F,
+		PartDefinition cube_r132 = ttsControls.addOrReplaceChild("cube_r132",
+				CubeListBuilder.create().texOffs(233, 247).addBox(-4.5F, -3.5F, -1.6625F, 9.0F, 7.0F, 3.0F,
 						new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(-6.0F, -19.5F, -11.5F, 0.0F, 0.5236F, 0.0F));
+				PartPose.offsetAndRotation(-6.9911F, -19.5F, -12.6166F, 0.0F, 0.5236F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
@@ -2763,6 +2768,7 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 	@Override
 	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
 			float headPitch) {
+
 	}
 
 	@Override
@@ -2774,13 +2780,12 @@ public class CoralConsoleModel<T extends CoralConsoleTile> extends HierarchicalM
 	}
 
 	@Override
-	public @NotNull ModelPart root() {
+	public ModelPart root() {
 		return this.root;
 	}
 
 	@Override
 	public void SetupAnimations(T tile, float ageInTicks) {
-		this.root().getAllParts().forEach(ModelPart::resetPose);
 
 	}
 }

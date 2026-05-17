@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "tts:roundel/stripped_acacia_log"
+    }
+  }
+}

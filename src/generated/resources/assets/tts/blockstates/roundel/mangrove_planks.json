@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "tts:roundel/mangrove_planks"
+    }
+  }
+}

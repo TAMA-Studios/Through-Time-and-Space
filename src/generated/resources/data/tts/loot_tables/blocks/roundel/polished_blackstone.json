@@ -5,7 +5,7 @@
       "condition" : "minecraft:survives_explosion"
     } ],
     "entries" : [ {
-      "name" : "minecraft:air",
+      "name" : "tts:roundel/polished_blackstone",
       "type" : "minecraft:item"
     } ],
     "rolls" : 1.0

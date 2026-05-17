@@ -49,7 +49,7 @@ public class CoralConsoleRenderer<T extends CoralConsoleTile, C extends Hierarch
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
 		poseStack.mulPose(Axis.YP.rotationDegrees(180));
-		poseStack.translate(-0.5, -1.55f, 0.5);
+		poseStack.translate(-0.5, -1.5f, 0.5);
 		assert ConsoleTile.getLevel() != null;
 		if (ConsoleTile.getLevel() != null) {
 			float offs;
@@ -86,6 +86,7 @@ public class CoralConsoleRenderer<T extends CoralConsoleTile, C extends Hierarch
 
 	@Override
 	public int getViewDistance() {
+
 		return BlockEntityRenderer.super.getViewDistance();
 	}
 }

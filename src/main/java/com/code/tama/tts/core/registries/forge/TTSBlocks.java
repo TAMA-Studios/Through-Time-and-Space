@@ -87,6 +87,320 @@ public class TTSBlocks {
 	@Roundel
 	public static final BlockEntry<Block> POLISHED_BLACKSTONE_ROUNDEL = SetupRoundel("polished_blackstone");
 
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_LOG_ROUNDEL = SetupRoundel("acacia_log");
+
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_LOG_TOP_ROUNDEL = SetupRoundel("acacia_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_PLANKS_ROUNDEL = SetupRoundel("acacia_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> BAMBOO_PLANKS_ROUNDEL = SetupRoundel("bamboo_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_LOG_ROUNDEL = SetupRoundel("birch_log");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_LOG_TOP_ROUNDEL = SetupRoundel("birch_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_PLANKS_ROUNDEL = SetupRoundel("birch_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_LOG_ROUNDEL = SetupRoundel("cherry_log");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_LOG_TOP_ROUNDEL = SetupRoundel("cherry_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_PLANKS_ROUNDEL = SetupRoundel("cherry_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> CRIMSON_PLANKS_ROUNDEL = SetupRoundel("crimson_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_LOG_ROUNDEL = SetupRoundel("dark_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_LOG_TOP_ROUNDEL = SetupRoundel("dark_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_PLANKS_ROUNDEL = SetupRoundel("dark_oak_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_LOG_ROUNDEL = SetupRoundel("jungle_log");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_LOG_TOP_ROUNDEL = SetupRoundel("jungle_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_PLANKS_ROUNDEL = SetupRoundel("jungle_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_LOG_ROUNDEL = SetupRoundel("mangrove_log");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_LOG_TOP_ROUNDEL = SetupRoundel("mangrove_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_PLANKS_ROUNDEL = SetupRoundel("mangrove_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_LOG_ROUNDEL = SetupRoundel("oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_LOG_TOP_ROUNDEL = SetupRoundel("oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_PLANKS_ROUNDEL = SetupRoundel("oak_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_LOG_ROUNDEL = SetupRoundel("spruce_log");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_LOG_TOP_ROUNDEL = SetupRoundel("spruce_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_PLANKS_ROUNDEL = SetupRoundel("spruce_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_ACACIA_LOG_ROUNDEL = SetupRoundel("stripped_acacia_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_ACACIA_LOG_TOP_ROUNDEL = SetupRoundel("stripped_acacia_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BAMBOO_BLOCK_ROUNDEL = SetupRoundel("stripped_bamboo_block");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BAMBOO_BLOCK_TOP_ROUNDEL = SetupRoundel("stripped_bamboo_block_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BIRCH_LOG_ROUNDEL = SetupRoundel("stripped_birch_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BIRCH_LOG_TOP_ROUNDEL = SetupRoundel("stripped_birch_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CHERRY_LOG_ROUNDEL = SetupRoundel("stripped_cherry_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CHERRY_LOG_TOP_ROUNDEL = SetupRoundel("stripped_cherry_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CRIMSON_STEM_ROUNDEL = SetupRoundel("stripped_crimson_stem");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CRIMSON_STEM_TOP_ROUNDEL = SetupRoundel("stripped_crimson_stem_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_DARK_OAK_LOG_ROUNDEL = SetupRoundel("stripped_dark_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_DARK_OAK_LOG_TOP_ROUNDEL = SetupRoundel("stripped_dark_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_JUNGLE_LOG_ROUNDEL = SetupRoundel("stripped_jungle_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_JUNGLE_LOG_TOP_ROUNDEL = SetupRoundel("stripped_jungle_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_MANGROVE_LOG_ROUNDEL = SetupRoundel("stripped_mangrove_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_MANGROVE_LOG_TOP_ROUNDEL = SetupRoundel("stripped_mangrove_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_OAK_LOG_ROUNDEL = SetupRoundel("stripped_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_OAK_LOG_TOP_ROUNDEL = SetupRoundel("stripped_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_SPRUCE_LOG_ROUNDEL = SetupRoundel("stripped_spruce_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_SPRUCE_LOG_TOP_ROUNDEL = SetupRoundel("stripped_spruce_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_WARPED_STEM_ROUNDEL = SetupRoundel("stripped_warped_stem");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_WARPED_STEM_TOP_ROUNDEL = SetupRoundel("stripped_warped_stem_top");
+
+	@Roundel
+	public static final BlockEntry<Block> WARPED_PLANKS_ROUNDEL = SetupRoundel("warped_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("acacia_log");
+
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("acacia_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> ACACIA_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("acacia_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> BAMBOO_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("bamboo_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("birch_log");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("birch_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> BIRCH_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("birch_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("cherry_log");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("cherry_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> CHERRY_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("cherry_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> CRIMSON_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("crimson_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("dark_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("dark_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> DARK_OAK_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("dark_oak_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("jungle_log");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("jungle_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> JUNGLE_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("jungle_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("mangrove_log");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("mangrove_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> MANGROVE_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("mangrove_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> OAK_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("oak_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("spruce_log");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel("spruce_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> SPRUCE_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("spruce_planks");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_ACACIA_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_acacia_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_ACACIA_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_acacia_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BAMBOO_BLOCK_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_bamboo_block");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BAMBOO_BLOCK_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_bamboo_block_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BIRCH_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("stripped_birch_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_BIRCH_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_birch_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CHERRY_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_cherry_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CHERRY_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_cherry_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CRIMSON_STEM_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_crimson_stem");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_CRIMSON_STEM_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_crimson_stem_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_DARK_OAK_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_dark_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_DARK_OAK_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_dark_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_JUNGLE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_jungle_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_JUNGLE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_jungle_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_MANGROVE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_mangrove_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_MANGROVE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_mangrove_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_OAK_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel("stripped_oak_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_OAK_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_oak_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_SPRUCE_LOG_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_spruce_log");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_SPRUCE_LOG_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_spruce_log_top");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_WARPED_STEM_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_warped_stem");
+
+	@Roundel
+	public static final BlockEntry<Block> STRIPPED_WARPED_STEM_TOP_OFFSET_ROUNDEL = SetupOffsetRoundel(
+			"stripped_warped_stem_top");
+
+	@Roundel
+	public static final BlockEntry<Block> WARPED_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("warped_planks");
+
 	@MainTab
 	public static final BlockEntry<Block> CHROMIUM_BLOCK = registrate()
 			.block("chromium_block", Block::new).properties((properties) -> properties
@@ -729,7 +1043,13 @@ public class TTSBlocks {
 	/** Registers the block and a {@link BlockItem} */
 	public static BlockEntry<Block> SetupRoundel(String name) {
 		return Builder("roundel/" + name, Block::new).properties(p -> p.strength(1.25f).lightLevel(BlockState -> 15))
-				.register();
+				.simpleItem().register();
+	}
+
+	public static BlockEntry<Block> SetupOffsetRoundel(String name) {
+		return registrate().block("roundel/" + name + "_offset", Block::new)
+				.properties(p -> p.strength(1.25f).lightLevel(BlockState -> 15)).offsetBlockState().simpleItem()
+				.defaultLoot().defaultLang().register();
 	}
 
 	/**

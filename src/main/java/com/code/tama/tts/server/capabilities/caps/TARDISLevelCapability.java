@@ -38,7 +38,6 @@ import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import lombok.Getter;
-import net.royawesome.jlibnoise.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -62,6 +61,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private final PowerHandler powerHandler = new PowerHandler(this);
@@ -580,7 +581,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		// this.flightData.setInFlight(false);
 		this.data.setSparking(true);
 		this.environmentalData
-				.SetLightLevel((float) MathHelper.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
+				.SetLightLevel((float) MathUtils.clamp((double) this.level.random.nextInt(10) / 10, 0.3, 0.7));
 
 		this.Rematerialize();
 		// new CrashThread(this).start();
