@@ -11,8 +11,11 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //                                                             \/ Replace with Tile Entity class
+@OnlyIn(Dist.CLIENT)
 public class ExampleRenderer implements BlockEntityRenderer<ExampleTileEntity> {
 	public static final int fullBright = LightTexture.pack(15, 15);
 	public final BlockEntityRendererProvider.Context context;

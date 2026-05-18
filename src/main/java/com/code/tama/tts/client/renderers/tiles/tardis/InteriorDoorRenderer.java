@@ -17,12 +17,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
+@OnlyIn(Dist.CLIENT)
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 	// Door animation constants — keep in sync with TardisExteriorRenderer

@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import com.code.tama.triggerapi.data.AbstractDPLoaderGSON;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
-public class MoodDPLoader extends AbstractDPLoaderGSON<MoodDPLoader.TARDISMood> {
-	public static ResourceLocation ID = UniversalCommon.modRL("tardis/mood");
+public class InteriorHumDPLoader extends AbstractDPLoaderGSON<InteriorHumDPLoader.InteriorHum> {
+	public static ResourceLocation ID = UniversalCommon.modRL("tardis/interior_hum");
 
 	@Override
 	public ResourceLocation id() {
@@ -15,15 +15,15 @@ public class MoodDPLoader extends AbstractDPLoaderGSON<MoodDPLoader.TARDISMood> 
 	}
 
 	@Override
-	public Class<TARDISMood> GetClass() {
-		return TARDISMood.class;
+	public Class<InteriorHum> GetClass() {
+		return InteriorHum.class;
 	}
 
 	@Override
 	public String dataPath() {
-		return "tts/tardis/mood";
+		return "tts/tardis/interior_hum";
 	}
 
-	public record TARDISMood(float base_weight) {
+	public record InteriorHum(ResourceLocation hum, int duration) {
 	}
 }

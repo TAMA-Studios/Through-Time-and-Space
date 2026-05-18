@@ -30,35 +30,27 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		tempList.clear();
 
-		// Iterate over all namespaces
-		for (String namespace : resourceManager.getNamespaces()) {
-			Map<ResourceLocation, Resource> resources = resourceManager.listResources(dataPath(),
-					fileName -> fileName.toString().endsWith(".json"));
+		Map<ResourceLocation, Resource> resources = resourceManager.listResources(dataPath(),
+				fileName -> fileName.toString().endsWith(".json"));
 
-			if (resources.isEmpty()) {
-				LOGGER.warn("No resources found for namespace: {}", namespace);
-			}
+		for (ResourceLocation rl : resources.keySet()) {
+			Resource resource = resources.get(rl);
 
-			for (ResourceLocation rl : resources.keySet()) {
-				Resource resource = resources.get(rl);
+			try (InputStreamReader reader = new InputStreamReader(resource.open())) {
+				JsonElement jsonElement = GsonHelper.parse(reader);
 
-				try (InputStreamReader reader = new InputStreamReader(resource.open())) {
-					JsonElement jsonElement = GsonHelper.parse(reader);
-
-					if (jsonElement.isJsonObject()) {
-						JsonObject jsonObject = jsonElement.getAsJsonObject();
-						if (isValidJson(jsonObject)) {
-							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							T t = getHolder(jsonObject);
-							if (!tempList.contains(t))
-								tempList.add(t);
-						} else {
-							LOGGER.warn("Invalid JSON structure in {}", rl);
-						}
+				if (jsonElement.isJsonObject()) {
+					JsonObject jsonObject = jsonElement.getAsJsonObject();
+					if (isValidJson(jsonObject)) {
+						T t = getHolder(jsonObject);
+						if (!tempList.contains(t))
+							tempList.add(t);
+					} else {
+						LOGGER.warn("Invalid JSON structure in {}", rl);
 					}
-				} catch (IOException e) {
-					LOGGER.error("Error reading or parsing JSON file: {}", rl, e);
 				}
+			} catch (IOException e) {
+				LOGGER.error("Error reading or parsing JSON file: {}", rl, e);
 			}
 		}
 

@@ -13,11 +13,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.JavaInJSON.IUseJavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONParsed;
 
+@OnlyIn(Dist.CLIENT)
 public class HartnellDoorRenderer implements BlockEntityRenderer<HartnellDoorTile>, IUseJavaJSON {
 	double Frame = 0;
 	float OldFrame = 0;

@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -50,8 +49,7 @@ public record UpdateDimensionsS2C(Set<ResourceKey<Level>> keys, boolean add) imp
 	private static class ClientHandler // making client calls in the static class prevents classloading errors
 	{
 		private static void handle(UpdateDimensionsS2C packet) {
-			@SuppressWarnings("resource")
-			final LocalPlayer player = Minecraft.getInstance().player;
+			final var player = Minecraft.getInstance().player;
 			if (player == null)
 				return;
 

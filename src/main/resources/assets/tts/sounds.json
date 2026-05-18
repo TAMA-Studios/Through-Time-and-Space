@@ -5,9 +5,21 @@
       "streaming" : false
     } ]
   },
+  "copper_hum" : {
+    "sounds" : [ {
+      "name" : "tts:copper_hum",
+      "streaming" : false
+    } ]
+  },
   "keyboard_press_01" : {
     "sounds" : [ {
       "name" : "tts:keyboard_press_01",
+      "streaming" : false
+    } ]
+  },
+  "mccoy_hum" : {
+    "sounds" : [ {
+      "name" : "tts:mccoy_hum",
       "streaming" : false
     } ]
   },

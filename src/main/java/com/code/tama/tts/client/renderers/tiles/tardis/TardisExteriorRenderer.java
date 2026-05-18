@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
@@ -27,6 +29,7 @@ import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
+@OnlyIn(Dist.CLIENT)
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
 
 	// Door animation constants — tweak these to taste

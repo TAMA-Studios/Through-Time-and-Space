@@ -27,6 +27,7 @@ public class InteriorPropsUICategory extends UICategory {
 			String feLine = getPowerFE(cap.getEnergy().getPower());
 			String flow = cap.getEnergy().getPowerFlow() + " FE/t";
 			String voltage = cap.getEnergy().getVoltageInt() + " Volts";
+			String Gravity = "Gravity: " + cap.GetEnvironmentalData().getGravityLevel();
 
 			RenderSystem.disableDepthTest();
 
@@ -54,6 +55,9 @@ public class InteriorPropsUICategory extends UICategory {
 					Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
 			fontRenderer.drawInBatch(voltage, -30, 65, color(monitor), false, poseStack.last().pose(), bufferSource,
+					Font.DisplayMode.NORMAL, 0, 0xf000f0);
+
+			fontRenderer.drawInBatch(Gravity, -30, 75, color(monitor), false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, 0xf000f0);
 
 			poseStack.translate(40, 0, 0);

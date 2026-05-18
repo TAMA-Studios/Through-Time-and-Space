@@ -9,7 +9,6 @@ import com.code.tama.tts.server.data.json.loaders.MoodDPLoader;
 import com.code.tama.tts.server.data.json.loaders.PersonalityDPLoader;
 
 import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class BehaviorHelper {
 
@@ -28,14 +27,14 @@ public class BehaviorHelper {
 		ThreadLocalRandom rng = ThreadLocalRandom.current();
 
 		List<BehaviorLoader.TARDIBehavior> behaviors = (List<BehaviorLoader.TARDIBehavior>) DatapackRegistry
-				.getLoader(UniversalCommon.modRL("tardis_behavior")).list.getList();
+				.getLoader(BehaviorLoader.ID).list.getList();
 
 		if (behaviors.isEmpty()) {
 			throw new IllegalStateException("No behaviors registered!");
 		}
 
 		// ------------------------------------------------------------
-		// 1) Compute target weight (personality ↔ mood midpoint)
+		// 1) Compute target weight (personality <-> mood midpoint)
 		// ------------------------------------------------------------
 		float target = (personality.weight() + mood.base_weight()) * 0.5f;
 		target = clamp01(target);

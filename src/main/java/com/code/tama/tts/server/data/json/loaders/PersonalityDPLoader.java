@@ -7,9 +7,11 @@ import com.code.tama.triggerapi.data.AbstractDPLoaderGSON;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class PersonalityDPLoader extends AbstractDPLoaderGSON<PersonalityDPLoader.TARDISPersonality> {
+	public static ResourceLocation ID = UniversalCommon.modRL("tardis/personality");
+
 	@Override
 	public ResourceLocation id() {
-		return UniversalCommon.modRL("tardis/personality");
+		return ID;
 	}
 
 	@Override

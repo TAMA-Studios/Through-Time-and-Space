@@ -16,9 +16,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.boti.BOTIUtils;
 
+@OnlyIn(Dist.CLIENT)
 public class PortalTileEntityRenderer implements BlockEntityRenderer<PortalTileEntity> {
 	private final Minecraft mc = Minecraft.getInstance();
 

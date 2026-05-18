@@ -14,10 +14,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
+@OnlyIn(Dist.CLIENT)
 public class EmptyArtificialShellRenderer<T extends EmptyArtificialShellTile> implements BlockEntityRenderer<T> {
 	public final ShellBaseModel<T> model;
 	public static final ResourceLocation TEXTURE = UniversalCommon.modRL("textures/tiles/empty_shell.png");

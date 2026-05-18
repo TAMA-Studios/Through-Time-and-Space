@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ChromiumBlockEntityRenderer implements BlockEntityRenderer<ChromiumBlockEntity> {
 
 	public ChromiumBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

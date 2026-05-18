@@ -4,6 +4,8 @@ package com.code.tama.triggerapi.JavaInJSON;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IUseJavaJSON {
 	default ResourceLocation getAlphaMap() {
@@ -22,6 +24,7 @@ public interface IUseJavaJSON {
 		return JavaJSON.getLightMap(this);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	default Model getModel() {
 		return JavaJSON.getModel(this);
 	}

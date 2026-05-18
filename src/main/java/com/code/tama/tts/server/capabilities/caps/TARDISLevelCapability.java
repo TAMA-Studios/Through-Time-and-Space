@@ -13,6 +13,7 @@ import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.misc.LoopingSound;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
@@ -30,6 +31,7 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.json.lists.DataFlightEventList;
+import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.data.tardis.PowerHandler;
@@ -51,6 +53,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
@@ -62,6 +65,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.code.tama.triggerapi.data.DatapackRegistry;
 import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
@@ -69,9 +73,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
-	private TARDISEnvironmentalData environmentalData = new TARDISEnvironmentalData(this);
+	private TARDISInteriorData environmentalData = new TARDISInteriorData(this);
 	@OnlyIn(Dist.CLIENT)
 	private final TARDISClientData clientData = new TARDISClientData(this);
+	private LoopingSound interiorHum;
 
 	@Getter
 	private final List<String> InterCommsMessages = new ArrayList<>();
@@ -94,7 +99,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		tag.put("navigational_data",
 				TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
 		tag.put("environmental_data",
-				TARDISEnvironmentalData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
+				TARDISInteriorData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
 
 		for (int i = 0; i < InterCommsMessages.size(); i++) {
 			tag.putString("mes_" + i, InterCommsMessages.get(i));
@@ -112,8 +117,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.navigationalData = TARDISNavigationalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("navigational_data")).get()
 				.orThrow();
 		this.flightData = TARDISFlightData.CODEC.parse(NbtOps.INSTANCE, nbt.get("flight_data")).get().orThrow();
-		this.environmentalData = TARDISEnvironmentalData.CODEC.parse(NbtOps.INSTANCE, nbt.get("environmental_data"))
-				.get().orThrow();
+		this.environmentalData = TARDISInteriorData.CODEC.parse(NbtOps.INSTANCE, nbt.get("environmental_data")).get()
+				.orThrow();
 
 		this.data.setTARDIS(this);
 		this.navigationalData.setTARDIS(this);
@@ -130,7 +135,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public TARDISEnvironmentalData GetEnvironmentalData() {
+	public TARDISInteriorData GetEnvironmentalData() {
 		return this.environmentalData;
 	}
 
@@ -632,9 +637,44 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		// }, this, toUpdate, "tardis_update_thread");
 	}
 
+	@SuppressWarnings("unchecked")
+	List<InteriorHumDPLoader.InteriorHum> getHumList() {
+		return (List<InteriorHumDPLoader.InteriorHum>) Objects
+				.requireNonNull(DatapackRegistry.getLoader(InteriorHumDPLoader.ID)).list.getList();
+	}
+
+	SoundEvent GetHum() {
+		if (this.environmentalData.getHum() > getHumList().size() - 1 || this.environmentalData.getHum() < 0)
+			this.environmentalData.setHum(getHumList().size() - 1);
+
+		return SoundEvent.createFixedRangeEvent((getHumList().get(this.environmentalData.getHum())).hum(), 1f);
+	}
+
 	@Override
 	public void Tick() {
 		this.ticks++;
+
+		// 1. Get the current target sound event safely
+		SoundEvent targetSound = this.GetHum();
+		if (targetSound == null)
+			return;
+
+		if (this.interiorHum == null || (this.interiorHum.getSound() != null
+				&& !this.interiorHum.getSound().getLocation().equals(targetSound.getLocation()))) {
+
+			if (this.interiorHum != null) {
+				this.interiorHum.Stop();
+			}
+
+			this.interiorHum = new LoopingSound(targetSound);
+			this.interiorHum.setVolume(0.2f);
+
+			Minecraft mc = Minecraft.getInstance();
+			mc.tell(() -> {
+				mc.getMusicManager().stopPlaying();
+				mc.getSoundManager().play(this.interiorHum);
+			});
+		}
 
 		if (TickThread == null || !TickThread.isAlive()) {
 			TickThread = CommonThreads.TARDISTickThread(this);

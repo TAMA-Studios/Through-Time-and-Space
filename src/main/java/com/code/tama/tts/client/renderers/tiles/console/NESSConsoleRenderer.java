@@ -20,9 +20,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
+@OnlyIn(Dist.CLIENT)
 public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
 			BlockEntityRenderer<T> {

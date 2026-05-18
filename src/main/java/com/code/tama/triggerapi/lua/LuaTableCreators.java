@@ -10,8 +10,8 @@ import java.util.UUID;
 
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.data.TARDISData;
-import com.code.tama.tts.server.data.tardis.data.TARDISEnvironmentalData;
 import com.code.tama.tts.server.data.tardis.data.TARDISFlightData;
+import com.code.tama.tts.server.data.tardis.data.TARDISInteriorData;
 import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -798,7 +798,7 @@ public class LuaTableCreators {
 		TARDIS.set("navigational",
 				LuaCodecBridge.encodeToLua(TARDISNavigationalData.CODEC, tardis.GetNavigationalData()));
 		TARDIS.set("environmental",
-				LuaCodecBridge.encodeToLua(TARDISEnvironmentalData.CODEC, tardis.GetEnvironmentalData()));
+				LuaCodecBridge.encodeToLua(TARDISInteriorData.CODEC, tardis.GetEnvironmentalData()));
 
 		LuaTable util = new LuaTable();
 

@@ -12,7 +12,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class CompressedMultiblockRenderer<T extends CompressedMultiblockTile> implements BlockEntityRenderer<T> {
 	public static final int fullBright = 0xf000f0;
 	public final BlockEntityRendererProvider.Context context;

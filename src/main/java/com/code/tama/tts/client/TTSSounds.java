@@ -30,6 +30,10 @@ public class TTSSounds {
 
 	public static final RegistryObject<SoundEvent> THUD = registerSound("thud");
 
+	public static final RegistryObject<SoundEvent> COPPER_HUM = registerSound("copper_hum");
+
+	public static final RegistryObject<SoundEvent> MCCOY_HUM = registerSound("mccoy_hum");
+
 	private static RegistryObject<SoundEvent> registerSound(String soundName) {
 		return SOUNDS.register(soundName,
 				() -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, soundName)));

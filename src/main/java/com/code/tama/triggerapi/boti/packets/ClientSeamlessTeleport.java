@@ -3,7 +3,6 @@ package com.code.tama.triggerapi.boti.packets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -48,7 +47,7 @@ public class ClientSeamlessTeleport implements ImAPacket {
 		// Grab the registry access and level data we need
 		// (mirrors vanilla handleRespawn logic, minus the loading screen)
 
-		LocalPlayer oldPlayer = mc.player;
+		// Player oldPlayer = mc.player;
 
 		// Tell vanilla we're doing a dimension change by invoking the internals
 		// cleanly, we use a mixin accessor to call the normally-private

@@ -77,7 +77,6 @@ minecraft {
 		}
 
 		client {
-
 			property 'forge.enabledGameTestNamespaces', mod_id
 			workingDirectory project.file('run')
 			jvmArg "-XX:+AllowEnhancedClassRedefinition"
@@ -99,6 +98,7 @@ minecraft {
 		server {
 			property 'forge.enabledGameTestNamespaces', mod_id
 			args '--nogui'
+			// Flywheel and Ponder are intentionally excluded here
 		}
 
 
@@ -165,17 +165,23 @@ repositories {
 
 
 dependencies {
-	// Flywheel
+	// Flywheel - Forge mod, must be on the full dev runtime classpath so FML loads it.
+	// The server-side exclusion has to be handled in code with @OnlyIn / DistExecutor,
+	// not in the build — FML's ModuleClassLoader won't find client-only mods otherwise.
 	compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:1.0.5-264")
 	runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:1.0.5-264")
 
+	// Flywheel jarJar kept so it ships with the built mod jar for client users
 	jarJar("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:[1.0.5-264, 2)") {
 		jarJar.pin(it, "1.0.5-264")
 	}
 
-	// Ponder
-	implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+	// Ponder - same situation: must be runtimeOnly so FML's classloader picks it up.
+	// Both Ponder and Flywheel handle server-side gracefully internally via DistExecutor.
+	compileOnly(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+	runtimeOnly(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
 
+	// Ponder jarJar kept so it ships with the built mod jar for client users
 	jarJar("net.createmod.ponder:Ponder-Forge-${minecraft_version}:[${ponder_version},)") {
 		jarJar.pin(it, ponder_version)
 	}
@@ -211,7 +217,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:worldedit-225608:4586218")
 
 	// Panorama
-	implementation fg.deobf("curse.maven:panorama-440465:4633630")
+//	implementation fg.deobf("curse.maven:panorama-440465:4633630")
 
 	// Patchouli
 	compileOnly(fg.deobf("vazkii.patchouli:Patchouli:${patchouliVersion}:api"))

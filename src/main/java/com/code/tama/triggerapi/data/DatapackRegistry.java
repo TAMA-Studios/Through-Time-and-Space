@@ -26,7 +26,7 @@ public class DatapackRegistry {
 
 	public static AbstractDPLoader<?> getLoader(ResourceLocation location) {
 		if (loaders.containsKey(location))
-			loaders.get(location);
+			return loaders.get(location);
 
 		return null;
 	}

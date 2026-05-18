@@ -1,8 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds;
 
+import com.code.tama.tts.core.misc.LoopingSound;
 import com.code.tama.tts.server.threads.FlightSoundThread;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
@@ -12,6 +14,8 @@ public abstract class AbstractFlightSound {
 	private boolean finished = false;
 	private FlightSoundThread soundThread;
 	private long startedTime = 0;
+
+	private LoopingSound loopey;
 
 	public abstract int GetLength();
 
@@ -44,6 +48,12 @@ public abstract class AbstractFlightSound {
 	 * looping sounds like flight loops.
 	 */
 	public void PlayLooped(Level level, BlockPos blockPos) {
+		if (loopey == null)
+			Minecraft.getInstance().getSoundManager().play((loopey = new LoopingSound(this.GetSound())));
+
+		if (true)
+			return;
+
 		long currentTime = level.getGameTime();
 
 		// Initialize start time on first call
@@ -67,6 +77,13 @@ public abstract class AbstractFlightSound {
 	 * Stop the currently playing sound.
 	 */
 	public void Stop() {
+		if (this.loopey != null) {
+			this.loopey.Stop();
+			this.loopey = null;
+		}
+
+		if (true)
+			return;
 		if (this.soundThread != null) {
 			this.soundThread.stop();
 			this.soundThread = null;

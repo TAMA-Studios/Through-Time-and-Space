@@ -12,7 +12,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class SonicConfiguratorRenderer implements BlockEntityRenderer<SonicConfiguratorTileEntity> {
 	public static final int fullBright = 0xf000f0;
 	public final BlockEntityRendererProvider.Context context;

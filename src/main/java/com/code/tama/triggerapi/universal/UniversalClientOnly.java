@@ -3,7 +3,7 @@ package com.code.tama.triggerapi.universal;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,7 +19,7 @@ public class UniversalClientOnly {
 	/**
 	 * @return The Minecraft Client Player
 	 */
-	public static LocalPlayer player() {
+	public static Player player() {
 		return Minecraft.getInstance().player;
 	}
 

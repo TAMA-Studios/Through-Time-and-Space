@@ -12,23 +12,26 @@ import com.code.tama.triggerapi.helpers.MathUtils;
 
 @Getter
 @Setter
-public class TARDISEnvironmentalData {
-	public static final Codec<TARDISEnvironmentalData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(Codec.FLOAT.fieldOf("light_level").forGetter(TARDISEnvironmentalData::getLightLevel),
-					Codec.FLOAT.fieldOf("gravity_level").forGetter(TARDISEnvironmentalData::getGravityLevel),
-					Codec.FLOAT.fieldOf("oxygen_level").forGetter(TARDISEnvironmentalData::getOxygenLevel))
-			.apply(instance, TARDISEnvironmentalData::new));
+public class TARDISInteriorData {
+	public static final Codec<TARDISInteriorData> CODEC = RecordCodecBuilder.create(instance -> instance
+			.group(Codec.FLOAT.fieldOf("light_level").forGetter(TARDISInteriorData::getLightLevel),
+					Codec.FLOAT.fieldOf("gravity_level").forGetter(TARDISInteriorData::getGravityLevel),
+					Codec.FLOAT.fieldOf("oxygen_level").forGetter(TARDISInteriorData::getOxygenLevel),
+					Codec.INT.fieldOf("humId").forGetter(TARDISInteriorData::getHum))
+			.apply(instance, TARDISInteriorData::new));
 
 	float LightLevel, gravityLevel = 0.08f, oxygenLevel;
 	ITARDISLevel TARDIS;
+	int hum;
 
-	public TARDISEnvironmentalData(float lightLevel, float gravityLevel, float oxygenLevel) {
+	public TARDISInteriorData(float lightLevel, float gravityLevel, float oxygenLevel, int hum) {
 		LightLevel = lightLevel;
 		this.gravityLevel = gravityLevel;
 		this.oxygenLevel = oxygenLevel;
+		this.hum = hum;
 	}
 
-	public TARDISEnvironmentalData(TARDISLevelCapability TARDIS) {
+	public TARDISInteriorData(TARDISLevelCapability TARDIS) {
 		this.TARDIS = TARDIS;
 	}
 

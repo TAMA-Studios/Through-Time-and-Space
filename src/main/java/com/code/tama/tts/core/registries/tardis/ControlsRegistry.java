@@ -3,6 +3,10 @@ package com.code.tama.tts.core.registries.tardis;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
+import java.awt.*;
+import java.util.List;
+
+import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.tardis.controls.*;
 
@@ -13,6 +17,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
+
+import com.code.tama.triggerapi.data.DatapackRegistry;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -49,9 +55,31 @@ public class ControlsRegistry {
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(false)));
 
+	public static final RegistryObject<SimplestControl> HUM_CONTROL = CONTROLS.register("interior_hum",
+			() -> new SimplestControl("interior_hum", (tardis) -> {
+				InteriorHumDPLoader loader = (InteriorHumDPLoader) DatapackRegistry.getLoader(InteriorHumDPLoader.ID);
+				assert loader != null;
+				List<InteriorHumDPLoader.InteriorHum> list = loader.list.getList();
+				int hum = tardis.GetEnvironmentalData().getHum();
+				tardis.GetEnvironmentalData().setHum(hum >= list.size() - 1 ? 0 : hum + 1);
+			}, (tardis) -> {
+				InteriorHumDPLoader loader = (InteriorHumDPLoader) DatapackRegistry.getLoader(InteriorHumDPLoader.ID);
+				assert loader != null;
+				List<InteriorHumDPLoader.InteriorHum> list = loader.list.getList();
+				int hum = tardis.GetEnvironmentalData().getHum();
+				tardis.GetEnvironmentalData().setHum(hum > 0 ? hum - 1 : list.size());
+			}));
+
 	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
 			() -> new SimplestControl("engine_break", tardis -> tardis.GetData().getControlData().setEngineBrake(true),
 					tardis -> tardis.GetData().getControlData().setEngineBrake(false)));
+
+	public static final RegistryObject<SimplestControl> MAVITY = CONTROLS.register("mavity",
+			() -> new SimplestControl("mavity",
+					tardis -> tardis.GetEnvironmentalData()
+							.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() + 0.01f),
+					tardis -> tardis.GetEnvironmentalData()
+							.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() - 0.01f)));
 
 	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
 			() -> new SimplestControl("simple_mode", tardis -> tardis.GetData().getControlData().setSimpleMode(true),

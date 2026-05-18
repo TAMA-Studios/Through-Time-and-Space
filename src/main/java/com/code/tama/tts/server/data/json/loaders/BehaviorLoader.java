@@ -7,12 +7,14 @@ import com.code.tama.triggerapi.data.AbstractDPLoaderGSON;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class BehaviorLoader extends AbstractDPLoaderGSON<BehaviorLoader.TARDIBehavior> {
+	public static ResourceLocation ID = UniversalCommon.modRL("tardis/behavior");
+
 	public Class<TARDIBehavior> GetClass() {
 		return TARDIBehavior.class;
 	}
 
 	public ResourceLocation id() {
-		return UniversalCommon.modRL("tardis/behavior");
+		return ID;
 	}
 
 	@Override

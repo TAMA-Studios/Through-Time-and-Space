@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class SkyTileRenderer<T extends SkyTile> implements BlockEntityRenderer<T> {
 	public SkyTileRenderer(BlockEntityRendererProvider.Context context) {
 	}
