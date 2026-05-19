@@ -75,11 +75,12 @@ public class TTSMod {
 
 		// Register the commonSetup method for modloading
 		modEventBus.addListener(this::commonSetup);
-		CustomLevelRenderer.Register();
 		Loaders.registerAll();
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			CustomLevelRenderer.Register();
+			MinecraftForge.EVENT_BUS.register(CustomLevelRenderer.class);
+		});
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TTSConfig.ClientConfig.SPEC,
 				"through_time_and_space-client-config.toml");

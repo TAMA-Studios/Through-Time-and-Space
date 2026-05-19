@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
+import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -195,8 +197,21 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
 
 			if (!level.isClientSide && exteriorTile.GetInterior() != null)
-				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior()))
-						.ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior())).ifPresent(cap -> {
+					cap.GetData().getInteriorDoorData().CycleDoor();
+					int oDoorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
+					cap.GetData().getInteriorDoorData().CycleDoor();
+					int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
+
+					if (oDoorsOpen - doorsOpen == -1) {
+						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_CLOSE.get(), SoundSource.BLOCKS, 1f, 1f,
+								true);
+					}
+					if (oDoorsOpen - doorsOpen == 1) {
+						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_OPEN.get(), SoundSource.BLOCKS, 1f, 1f,
+								true);
+					}
+				});
 
 			exteriorTile.CycleDoors();
 		}

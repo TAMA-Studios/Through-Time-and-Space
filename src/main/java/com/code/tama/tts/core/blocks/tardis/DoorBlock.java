@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.events.TardisEvent;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -179,7 +181,18 @@ public class DoorBlock extends Block implements EntityBlock {
 			InteractionHand hand, BlockHitResult p_60508_) {
 		if (hand.equals(InteractionHand.OFF_HAND))
 			return InteractionResult.PASS;
-		GetTARDISCapSupplier(Level).ifPresent(cap -> cap.GetData().getInteriorDoorData().CycleDoor());
+		GetTARDISCapSupplier(Level).ifPresent(cap -> {
+			int oDoorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
+			cap.GetData().getInteriorDoorData().CycleDoor();
+			int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
+
+			if (doorsOpen - oDoorsOpen == -2) {
+				Level.playLocalSound(p_60505_, TTSSounds.TARDIS_DOOR_CLOSE.get(), SoundSource.BLOCKS, 0.5f, 1f, true);
+			}
+			if (doorsOpen - oDoorsOpen == 1) {
+				Level.playLocalSound(p_60505_, TTSSounds.TARDIS_DOOR_OPEN.get(), SoundSource.BLOCKS, 0.5f, 1f, true);
+			}
+		});
 		return super.use(p_60503_, Level, p_60505_, p_60506_, hand, p_60508_);
 	}
 }

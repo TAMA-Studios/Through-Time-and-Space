@@ -44,7 +44,6 @@ import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
 import com.code.tama.triggerapi.tileEntities.TickingTile;
 
 /** Other tiles implement this to get data for portals */
-@OnlyIn(Dist.CLIENT)
 public abstract class AbstractPortalTile extends TickingTile {
 
 	@OnlyIn(Dist.CLIENT)

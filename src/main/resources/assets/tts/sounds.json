@@ -23,6 +23,18 @@
       "streaming" : false
     } ]
   },
+  "tardis_door_close" : {
+    "sounds" : [ {
+      "name" : "tts:tardis_door_close",
+      "streaming" : false
+    } ]
+  },
+  "tardis_door_open" : {
+    "sounds" : [ {
+      "name" : "tts:tardis_door_open",
+      "streaming" : false
+    } ]
+  },
   "tardis_flight_loop" : {
     "sounds" : [ {
       "name" : "tts:tardis_flight_loop",
