@@ -203,12 +203,12 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 					cap.GetData().getInteriorDoorData().CycleDoor();
 					int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
 
-					if (oDoorsOpen - doorsOpen == -1) {
-						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_CLOSE.get(), SoundSource.BLOCKS, 1f, 1f,
+					if (doorsOpen - oDoorsOpen == -2) {
+						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_CLOSE.get(), SoundSource.BLOCKS, 0.5f, 1f,
 								true);
 					}
-					if (oDoorsOpen - doorsOpen == 1) {
-						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_OPEN.get(), SoundSource.BLOCKS, 1f, 1f,
+					if (doorsOpen - oDoorsOpen == 1) {
+						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_OPEN.get(), SoundSource.BLOCKS, 0.5f, 1f,
 								true);
 					}
 				});
