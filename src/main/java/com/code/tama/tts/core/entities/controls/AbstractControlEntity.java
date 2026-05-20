@@ -82,11 +82,12 @@ public abstract class AbstractControlEntity extends Entity {
 	@Override
 	protected @NotNull AABB makeBoundingBox() {
 		List<AABB> slices = getLocalHitboxSlices();
-		System.out
-				.println("makeBoundingBox id=" + this.getId() + " yrot=" + this.getYRot() + " slices=" + slices.size());
-		for (AABB s : slices) {
-			System.out.println("  slice: " + s);
-		}
+		// System.out
+		// .println("makeBoundingBox id=" + this.getId() + " yrot=" + this.getYRot() + "
+		// slices=" + slices.size());
+		// for (AABB s : slices) {
+		// System.out.println(" slice: " + s);
+		// }
 
 		if (slices.isEmpty())
 			return super.makeBoundingBox();

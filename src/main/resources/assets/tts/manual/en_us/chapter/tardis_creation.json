@@ -1,4 +1,4 @@
 {
   "display_name" : "Standard TARDIS Type 1 Creation",
-  "pages" : [ "tts:tardis_creation/creation_intro", "tts:tardis_creation/artificial" ]
+  "pages" : [ "tts:tardis_creation/creation_intro", "tts:tardis_creation/artificial", "tts:tardis_creation/subsystems", "tts:tardis_creation/step_one", "tts:tardis_creation/step_two", "tts:tardis_creation/step_three", "tts:tardis_creation/step_four" ]
 }

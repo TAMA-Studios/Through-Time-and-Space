@@ -32,7 +32,7 @@ import com.code.tama.triggerapi.helpers.world.BlockUtils;
 @OnlyIn(Dist.CLIENT)
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
 
-	// Door animation constants — tweak these to taste
+	// Door animation constants -- tweak these to taste
 	private static final float DOOR_MAX = 5.625f; // counter range 0 → this
 	private static final float DOOR_SPEED = 0.10f; // counter units per frame (~37 frames = ~1.8s)
 	// (What the fuck was I on when I did that math... at 60fps 37 frames is roughly
@@ -92,8 +92,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		}
 
 		// Normalize 0–DOOR_MAX to 0.0–1.0, run through curve, scale to degrees
-		float leftAngle = easing(data.FrameLeft / DOOR_MAX) * DOOR_MAX_DEG;
-		float rightAngle = easing(data.FrameRight / DOOR_MAX) * DOOR_MAX_DEG;
+		// float leftAngle = easing(data.FrameLeft / DOOR_MAX) *
+		// exteriorTile.Model.getMaxDoorDeg();
+		// float rightAngle = easing(data.FrameRight / DOOR_MAX) *
+		// exteriorTile.Model.getMaxDoorDeg();
 
 		stack.pushPose();
 		float offs;
@@ -105,17 +107,26 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		stack.translate(0.5, offs + 1.5, 0.5);
 
 		if (exteriorTile.getLevel() != null) {
-			stack.mulPose(exteriorTile.getLevel().getBlockState(exteriorTile.getBlockPos())
-					.getValue(ExteriorBlock.FACING).getOpposite().getRotation());
-			stack.mulPose(Axis.XN.rotationDegrees(90));
+			if (exteriorTile.getBlockState().getBlock() instanceof ExteriorBlock)
+				stack.mulPose(exteriorTile.getBlockState().getValue(ExteriorBlock.FACING).getOpposite().getRotation());
+
+			stack.mulPose(exteriorTile.getFacing().getRotation());
+			stack.mulPose(Axis.YP.rotationDegrees(180));
+			// stack.mulPose(Axis.XN.rotationDegrees(90));
 			stack.mulPose(Axis.ZN.rotationDegrees(180));
 		}
 
 		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
 		JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
-		parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(leftAngle);
-		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-rightAngle);
+		// parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(leftAngle);
+		// parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-rightAngle);
+
+		float maxDeg = exteriorTile.Model.getMaxDoorDeg();
+
+		// Left/right symmetry is a fixed ±1 — door direction comes from maxDeg's sign
+		parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(easing(data.FrameLeft / DOOR_MAX) * maxDeg);
+		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-easing(data.FrameRight / DOOR_MAX) * maxDeg);
 
 		ModelPart boti = parsed.getPart("BOTI").modelPart;
 		ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
@@ -129,7 +140,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 			exteriorTile.getFBOContainer().Render(stack,
 
-					// STENCIL PASS — mark portal opening pixels, no color output
+					// STENCIL PASS -- mark portal opening pixels, no color output
 					(pose, botiSource) -> {
 						pose.pushPose();
 						pose.translate(0, 1.5, 0);
@@ -142,11 +153,11 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						pose.popPose();
 					},
 
-					// FRAME PASS — unused, sky handled in scene pass
+					// FRAME PASS -- unused, sky handled in scene pass
 					(pose, buffer) -> {
 					},
 
-					// SCENE PASS — sky > BOTI blocks → door overlay (front-most)
+					// SCENE PASS -- sky > BOTI blocks > door overlay (front-most)
 					(pose, botiSource) -> {
 						pose.pushPose();
 						pose.translate(0, 0.5, -0.5);
@@ -186,7 +197,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						pose.popPose();
 					});
 
-			// Flush again after FBOHelper returns — anything queued inside the lambdas
+			// Flush again after FBOHelper returns -- anything queued inside the lambdas
 			// via bufferSource lands on main while we know mainTarget is correctly bound.
 			((MultiBufferSource.BufferSource) bufferSource).endBatch();
 

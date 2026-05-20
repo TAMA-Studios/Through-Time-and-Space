@@ -1,0 +1,4 @@
+{
+  "text" : "TARDIS Setup: Subsystems\nBefore you can do anything, you must know how to install Subsystems. You can visit either the Wiki, or simply ponder, to figure out how to MAKE subsystems, however, installing them in a way that gets your TARDIS to acknowledge their existence is different. In order to install your subystems, you must link the sybsystem's core to the TARDIS Engine Interface using Fragment Links, as if they were redstone, and then Sonic'ing the Fragment Links. You should hear a \"Ding\" upon successful installation",
+  "type" : "normal"
+}

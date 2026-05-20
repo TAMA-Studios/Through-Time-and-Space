@@ -11,10 +11,8 @@ import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.CoralConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.HartnellDoorRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.HartnellRotorRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.PortalTileEntityRenderer;
-import com.code.tama.tts.client.renderers.tiles.decoration.SkyTileRenderer;
+import com.code.tama.tts.client.renderers.tiles.decoration.*;
+import com.code.tama.tts.client.renderers.tiles.decoration.CoralConsoleTopperRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
@@ -42,6 +40,10 @@ public class TTSTileEntities {
 	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
 			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
 			.renderer(() -> ChameleonCircuitRenderer::new).validBlocks(TTSBlocks.CHAMELEON_CIRCUIT_BLOCK).register();
+
+	public static final BlockEntityEntry<VortexCannonTile> VORTEX_CANNON = registrate()
+			.blockEntity("vortex_cannon", VortexCannonTile::new).renderer(() -> VortexCannonRenderer::new)
+			.validBlocks(TTSBlocks.VORTEX_CANNON).register();
 
 	public static final BlockEntityEntry<TARDISEnergyPortBlockEntity> TARDIS_ENERGY_PORT = registrate()
 			.blockEntity("tardis_energy_port", TARDISEnergyPortBlockEntity::new)
@@ -104,6 +106,16 @@ public class TTSTileEntities {
 	public static final BlockEntityEntry<CRTMonitorTile> CRT_MONITOR_TILE = registrate()
 			.blockEntity("crt_monitor_tile", CRTMonitorTile::new).validBlocks(TTSBlocks.CRT_MONITOR_BLOCK)
 			.renderer(() -> CRTMonitorRenderer::new).register();
+
+	public static final BlockEntityEntry<TardisCoralTile> TARDIS_CORAL = registrate()
+			.blockEntity("tardis_coral", TardisCoralTile::new).validBlocks(TTSBlocks.CORAL).register();
+
+	public static final BlockEntityEntry<CoralConsoleTopperTile> CORAL_CONSOLE_TOPPER = registrate()
+			.blockEntity("coral_console_topper", CoralConsoleTopperTile::new)
+			.validBlocks(TTSBlocks.CORAL_CONSOLE_TOPPER).renderer(() -> CoralConsoleTopperRenderer::new).register();
+
+	public static final BlockEntityEntry<BlockEntity> WIRES = registrate().blockEntity("wires", WireBlockEntity::new)
+			.validBlocks(TTSBlocks.WIRES).renderer(() -> WireBlockEntityRenderer::new).register();
 
 	public static final BlockEntityEntry<MonitorPanelTile> MONITOR_PANEL_TILE = registrate()
 			.blockEntity("monitor_panel_tile", MonitorPanelTile::new).validBlocks(TTSBlocks.MONITOR_PANEL)

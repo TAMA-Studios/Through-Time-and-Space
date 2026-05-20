@@ -21,11 +21,11 @@ public class DataExteriorList {
 
 		for (DataExterior exterior : exteriorList) {
 			ExteriorModelContainer toAdd = new ExteriorModelContainer(exterior.ModelName(), exterior.texture(),
-					exterior.light(), exterior.name());
+					exterior.light(), exterior.maxRot(), exterior.name());
 			AtomicReference<Boolean> ExistsOrNot = new AtomicReference<>();
 			ExistsOrNot.set(false);
 			for (ExteriorModelContainer existing : ExteriorsRegistry.EXTERIORS) {
-				if (existing.getModel().equals(toAdd.getModel()))
+				if (existing.toString().equals(toAdd.toString()))
 					ExistsOrNot.set(true);
 			}
 

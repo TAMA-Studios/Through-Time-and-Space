@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -74,11 +75,21 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	}
 
 	public static VoxelShape createShapeClosed() {
-		return Stream
-				.of(Block.box(0, 0, -0.5, 16, 0.5, 16), Block.box(0, 31.5, -0.5, 16, 32, 16),
-						Block.box(0, 0.5, -0.5, 16, 31.5, 16), Block.box(16, 0, -0.5, 16.5, 32, 16.5),
-						Block.box(-0.5, 0, -0.5, 0, 32, 16.5), Block.box(0, 0, 16, 16, 32, 16.5))
+		// Bottom half (y 0–16)
+		VoxelShape bottom = Stream
+				.of(Block.box(0, 0, -0.5, 16, 0.5, 16), Block.box(0, 15.5, -0.5, 16, 16, 16),
+						Block.box(0, 0.5, -0.5, 16, 15.5, 16), Block.box(16, 0, -0.5, 16.5, 16, 16.5),
+						Block.box(-0.5, 0, -0.5, 0, 16, 16.5), Block.box(0, 0, 16, 16, 16, 16.5))
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+		// Top half (y 16–32)
+		VoxelShape top = Stream
+				.of(Block.box(0, 16, -0.5, 16, 16.5, 16), Block.box(0, 31.5, -0.5, 16, 32, 16),
+						Block.box(0, 16.5, -0.5, 16, 31.5, 16), Block.box(16, 16, -0.5, 16.5, 32, 16.5),
+						Block.box(-0.5, 16, -0.5, 0, 32, 16.5), Block.box(0, 16, 16, 16, 32, 16.5))
+				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+		return Shapes.join(bottom, top, BooleanOp.OR);
 	}
 
 	public static VoxelShape createShapeB() {
@@ -86,6 +97,13 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 				.of(Block.box(0, 0, 0, 1, 32, 16), Block.box(15, 0, 0, 16, 32, 16), Block.box(1, 0, 15, 15, 32, 16),
 						Block.box(1, 0, 0, 15, 1, 15), Block.box(1, 31, 0, 15, 32, 15))
 				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+	}
+
+	@Override
+	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter getter,
+			@NotNull BlockPos pos, @NotNull CollisionContext context) {
+		// Reuse the same logic as getShape — collision needs the split shapes too
+		return getShape(state, getter, pos, context);
 	}
 
 	public static VoxelShape createShapeClosedB() {
@@ -204,16 +222,21 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 					int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
 
 					if (doorsOpen - oDoorsOpen == -2) {
-						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_CLOSE.get(), SoundSource.BLOCKS, 0.5f, 1f,
-								true);
+						level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_CLOSE.get(),
+								SoundSource.BLOCKS, 0.5f, 1f);
 					}
 					if (doorsOpen - oDoorsOpen == 1) {
-						level.playLocalSound(blockPos, TTSSounds.TARDIS_DOOR_OPEN.get(), SoundSource.BLOCKS, 0.5f, 1f,
-								true);
+						level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_OPEN.get(),
+								SoundSource.BLOCKS, 0.5f, 1f);
 					}
 				});
 
-			exteriorTile.CycleDoors();
+			if (level.getGameTime() - exteriorTile.timeCreated < 1200) {
+				player.displayClientMessage(Component.translatable("tts.tooEarly",
+						(60 - (level.getGameTime() - exteriorTile.timeCreated)) / 20), true);
+				return InteractionResult.FAIL;
+			} else
+				exteriorTile.CycleDoors();
 		}
 		return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
 	}

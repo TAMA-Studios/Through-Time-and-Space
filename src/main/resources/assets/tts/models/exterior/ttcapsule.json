@@ -1,153 +1,76 @@
 {
-  "credit" : "Made with Blockbench",
   "groups" : [ {
     "children" : [ {
       "children" : [ {
         "cubes" : [ {
           "inflate" : 0,
           "mirror" : false,
-          "origin" : [ 0, -32, 0 ],
-          "size" : [ 7, 32, 1 ],
-          "uv" : [ 1, 102 ]
-        } ],
-        "group_name" : "RightDoor",
-        "pivot" : [ -7, -4, -7 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -7, -32, 0 ],
-          "size" : [ 7, 32, 1 ],
-          "uv" : [ 15, 69 ]
-        } ],
-        "group_name" : "LeftDoor",
-        "pivot" : [ 7, -4, -7 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "children" : [ {
-          "cubes" : [ {
-            "inflate" : 0,
-            "mirror" : true,
-            "origin" : [ 7, -36, -7 ],
-            "size" : [ 1, 32, 14 ],
-            "uv" : [ 3, 2 ]
-          } ],
-          "group_name" : "bone",
-          "pivot" : [ 0, 0, 0 ],
-          "rotation" : [ 0, 90, 0 ]
-        } ],
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -8, -36, -8 ],
-          "size" : [ 1, 32, 16 ],
-          "uv" : [ 1, 0 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -9, -4, -9 ],
-          "size" : [ 18, 4, 18 ],
-          "uv" : [ 0, 48 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : true,
-          "origin" : [ 7, -36, -8 ],
-          "size" : [ 1, 32, 16 ],
-          "uv" : [ 1, 0 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -9, -40, -9 ],
-          "size" : [ 18, 4, 18 ],
-          "uv" : [ 0, 48 ]
-        } ],
-        "group_name" : "Base",
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      } ],
-      "group_name" : "baseRoot",
-      "pivot" : [ 0, 0, 0 ],
-      "rotation" : [ 0, 0, 0 ]
-    }, {
-      "children" : [ {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ 0, -32, -1 ],
-          "size" : [ 7, 32, 1 ],
-          "uv" : [ 1, 102 ]
+          "origin" : [ -5, -35, -8 ],
+          "size" : [ 6, 31, 1 ],
+          "uv" : [ 92, 39 ]
         } ],
         "group_name" : "IntRightDoor",
-        "pivot" : [ -7, -4, -7 ],
+        "pivot" : [ -2, 0, 0 ],
         "rotation" : [ 0, 0, 0 ]
       }, {
         "cubes" : [ {
           "inflate" : 0,
           "mirror" : false,
-          "origin" : [ -7, -32, -1 ],
-          "size" : [ 7, 32, 1 ],
-          "uv" : [ 15, 69 ]
+          "origin" : [ -1, -35, -8 ],
+          "size" : [ 6, 31, 1 ],
+          "uv" : [ 92, 71 ]
         } ],
         "group_name" : "IntLeftDoor",
-        "pivot" : [ 7, -4, -7 ],
+        "pivot" : [ 0, 0, 0 ],
         "rotation" : [ 0, 0, 0 ]
       } ],
       "cubes" : [ {
         "inflate" : 0,
         "mirror" : true,
-        "origin" : [ -9, -40, -8 ],
-        "size" : [ 18, 4, 4 ],
-        "uv" : [ 14, 62 ]
+        "origin" : [ -10.5, -36, -9 ],
+        "size" : [ 4, 33, 2 ],
+        "uv" : [ 17, 69 ]
       }, {
         "inflate" : 0,
         "mirror" : false,
-        "origin" : [ -9, -4, -8 ],
-        "size" : [ 18, 4, 4 ],
-        "uv" : [ 14, 62 ]
+        "origin" : [ 4.5, -36, -9 ],
+        "size" : [ 4, 34, 2 ],
+        "uv" : [ 17, 69 ]
       }, {
         "inflate" : 0,
         "mirror" : false,
-        "origin" : [ -8, -36, -8 ],
-        "size" : [ 1, 32, 3 ],
-        "uv" : [ 14, 13 ]
+        "origin" : [ -11, -4, -9.5 ],
+        "size" : [ 20, 4, 3 ],
+        "uv" : [ 17, 45 ]
       }, {
         "inflate" : 0,
-        "mirror" : true,
-        "origin" : [ 7, -36, -8 ],
-        "size" : [ 1, 32, 3 ],
-        "uv" : [ 14, 13 ]
+        "mirror" : false,
+        "origin" : [ -11, -43, -9.5 ],
+        "size" : [ 20, 8, 3 ],
+        "uv" : [ 17, 17 ]
       } ],
       "group_name" : "InteriorDoor",
-      "pivot" : [ 0, 0, 0 ],
+      "pivot" : [ 0, 0, 15.5 ],
       "rotation" : [ 0, 0, 0 ]
     }, {
       "children" : [ {
-        "group_name" : "PartialInteriorBOTI",
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
         "cubes" : [ {
           "inflate" : 0,
           "mirror" : false,
-          "origin" : [ -7, -36, -7.25 ],
-          "size" : [ 14, 32, 0 ],
-          "uv" : [ 2, 188 ]
+          "origin" : [ -6.45, -35, -6 ],
+          "size" : [ 11, 31, 0 ],
+          "uv" : [ 106, 97 ]
         } ],
-        "group_name" : "InteriorBOTI",
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "group_name" : "PartialBOTI",
-        "pivot" : [ 0, 0, 0 ],
+        "group_name" : "InteriorBoti",
+        "pivot" : [ 0, 0, 14.4 ],
         "rotation" : [ 0, 0, 0 ]
       }, {
         "cubes" : [ {
           "inflate" : 0,
           "mirror" : false,
-          "origin" : [ -7, -36, -6.925 ],
-          "size" : [ 14, 32, 0 ],
-          "uv" : [ 222, 0 ]
+          "origin" : [ -6.45, -35, -6 ],
+          "size" : [ 11, 31, 0 ],
+          "uv" : [ 106, 97 ]
         } ],
         "group_name" : "BOTI",
         "pivot" : [ 0, 0, 0 ],
@@ -156,13 +79,75 @@
       "group_name" : "BOTIRoot",
       "pivot" : [ 0, 0, 0 ],
       "rotation" : [ 0, 0, 0 ]
+    }, {
+      "children" : [ {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -10.5, -42, -9.5 ],
+          "size" : [ 20, 8, 20 ],
+          "uv" : [ 0, 0 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -10.5, -3, -9.5 ],
+          "size" : [ 20, 4, 20 ],
+          "uv" : [ 0, 28 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : true,
+          "origin" : [ -10, -35, -9 ],
+          "size" : [ 4, 33, 19 ],
+          "uv" : [ 0, 52 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -10, -35, 6 ],
+          "size" : [ 19, 35, 4 ],
+          "uv" : [ 80, 0 ]
+        }, {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ 5, -35, -9 ],
+          "size" : [ 4, 34, 19 ],
+          "uv" : [ 0, 52 ]
+        } ],
+        "group_name" : "Base",
+        "pivot" : [ 1, 0, -1 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -1, -35, -8 ],
+          "size" : [ 6, 31, 1 ],
+          "uv" : [ 92, 71 ]
+        } ],
+        "group_name" : "RightDoor",
+        "pivot" : [ 1.5, 1, -1 ],
+        "rotation" : [ 0, 0, 0 ]
+      }, {
+        "cubes" : [ {
+          "inflate" : 0,
+          "mirror" : false,
+          "origin" : [ -5, -35, -8 ],
+          "size" : [ 6, 31, 1 ],
+          "uv" : [ 92, 39 ]
+        } ],
+        "group_name" : "LeftDoor",
+        "pivot" : [ -0.5, 1, -1 ],
+        "rotation" : [ 0, 0, 0 ]
+      } ],
+      "group_name" : "baseRoot",
+      "pivot" : [ -1.5, -1, 1 ],
+      "rotation" : [ 0, 0, 0 ]
     } ],
     "group_name" : "root",
-    "pivot" : [ 0, 24, 0 ],
+    "pivot" : [ 1, 24, -0.5 ],
     "rotation" : [ 0, 0, 0 ]
   } ],
   "scale" : 1,
-  "texture" : "tts:exteriors/ttcapsule",
-  "texture_height" : 256,
-  "texture_width" : 256
+  "texture" : "tts:tiles/exterior/ttcapsule/ttcapsule",
+  "texture_height" : 128,
+  "texture_width" : 128
 }

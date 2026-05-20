@@ -219,8 +219,11 @@ public class ChunkGatheringThread extends Thread {
 
 								BlockState state = section.getBlockState(x, y, z);
 								FluidState fluid = section.getFluidState(x, y, z);
-								if (chunk.getBlockEntity(new BlockPos(gx, gy + 1, gz)) != null) {
-									BlockEntity te = chunk.getBlockEntity(new BlockPos(gx, gy + 1, gz));
+								BlockPos pos = new BlockPos(gx, gy + 1, gz);
+								if (pos.equals(this.portalTile.getTargetPos()))
+									continue;
+								if (chunk.getBlockEntity(pos) != null) {
+									BlockEntity te = chunk.getBlockEntity(pos);
 									tileEntities[lx][ly][lz] = te;
 									TELocations[lx][ly][lz] = true;
 								} else
@@ -252,8 +255,12 @@ public class ChunkGatheringThread extends Thread {
 
 								BlockState stateA = sectionAbove.getBlockState(x, y, z);
 								FluidState fluidA = sectionAbove.getFluidState(x, y, z);
-								if (chunk.getBlockEntity(new BlockPos(gx, gyA, gz)) != null) {
-									BlockEntity te = chunk.getBlockEntity(new BlockPos(gx, gyA, gz));
+
+								BlockPos gpos = new BlockPos(gx, gyA, gz);
+								if (gpos.equals(this.portalTile.getTargetPos()))
+									continue;
+								if (chunk.getBlockEntity(gpos) != null) {
+									BlockEntity te = chunk.getBlockEntity(gpos);
 									tileEntities[lx][lyA][lz] = te;
 									TELocations[lx][lyA][lz] = true;
 								} else
@@ -261,10 +268,9 @@ public class ChunkGatheringThread extends Thread {
 
 								blockStates[lx][lyA][lz] = stateA;
 								fluidStates[lx][lyA][lz] = fluidA;
-								solid[lx][lyA][lz] = !stateA.isAir()
-										&& stateA.isSolidRender(chunk, new BlockPos(gx, gyA, gz));
+								solid[lx][lyA][lz] = !stateA.isAir() && stateA.isSolidRender(chunk, gpos);
 
-								BlockPos samplePosA = new BlockPos(gx, gyA, gz);
+								BlockPos samplePosA = gpos;
 								int blockLightA = targetLevel.getMaxLocalRawBrightness(new BlockPos(gx, gyA + 1, gz));
 								// int skyLightA = targetLevel.getBrightness(LightLayer.SKY, new BlockPos(gx,
 								// gyA, gz));

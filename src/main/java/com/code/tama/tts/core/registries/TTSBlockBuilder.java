@@ -65,8 +65,7 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	public TTSBlockBuilder<T, P> controlPanelState() {
-		return this.itemWithPath(BlockItem::new, "control/").build().blockstate(DataBlockStateProvider::controlPanel)
-				.simpleBlockItemBlockParentPath("control/");
+		return this.blockstate(DataBlockStateProvider::controlPanel).simpleBlockItemBlockParentPath("control/");
 	}
 
 	public TTSBlockBuilder<T, P> airState() {
@@ -167,8 +166,9 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	private TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
 		try {
-			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) -> prov
-					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + this.getName()))).build();
+			return (TTSBlockBuilder<T, P>) this.item().model(
+					(ctx, prov) -> prov.withExistingParent(this.getName(), prov.modLoc("block/" + this.getName())))
+					.build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -177,8 +177,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	private TTSBlockBuilder<T, P> simpleBlockItemBlockParentPath(String path) {
 		try {
-			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) -> prov
-					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + path + this.getName())))
+			return (TTSBlockBuilder<T, P>) this.item(BlockItem::new).model((ctx, prov) -> prov
+					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + path + this.getName() + "_0")))
 					.build();
 		} catch (Exception e) {
 			e.printStackTrace();

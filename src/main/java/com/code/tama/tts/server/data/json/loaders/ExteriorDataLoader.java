@@ -95,14 +95,20 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 							String modelname = valuesObject.get("modelname").getAsString();
 							String texture = valuesObject.get("texture").getAsString();
 							String light = valuesObject.get("lightmap").getAsString();
+
+							float maxDeg = 75f;
+							if (valuesObject.has("doorMaxDegrees"))
+								maxDeg = valuesObject.get("doorMaxDegrees").getAsFloat();
+
 							ResourceLocation modelLocation = new ResourceLocation(modelname);
 							ResourceLocation lightmapLoc = new ResourceLocation(light);
 							ResourceLocation textureLoc = new ResourceLocation(texture);
 
 							// Create DataExterior and add it to the list
 							if (!dataExteriorList
-									.contains(new DataExterior(name, modelLocation, textureLoc, lightmapLoc)))
-								dataExteriorList.add(new DataExterior(name, modelLocation, textureLoc, lightmapLoc));
+									.contains(new DataExterior(name, modelLocation, textureLoc, lightmapLoc, maxDeg)))
+								dataExteriorList
+										.add(new DataExterior(name, modelLocation, textureLoc, lightmapLoc, maxDeg));
 
 							// LOGGER.info("Loaded DataExterior from {}: {}", location,
 							// dataExterior);

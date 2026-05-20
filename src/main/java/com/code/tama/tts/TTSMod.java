@@ -108,7 +108,7 @@ public class TTSMod {
 		TTSFeatures.FEATURES.register(modEventBus);
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-		// Register the item to a creative tab
+		// Register the items to a creative tab
 		modEventBus.addListener(this::addCreative);
 		Biomes.BIOME_MODIFIERS.register(modEventBus);
 		Biomes.CHUNK_GENERATORS.register(modEventBus);

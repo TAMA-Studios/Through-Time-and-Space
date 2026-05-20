@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -31,6 +32,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
@@ -120,9 +122,11 @@ public class BOTIUtils {
 
 			portal.blockEntities.forEach((pos, be) -> {
 				pose.pushPose();
+
 				pose.translate(pos.getX(), pos.getY(), pos.getZ());
-				terDispatcher.getRenderer(be).render(be, mc.getPartialTick(), pose, mc.renderBuffers().bufferSource(),
-						0xf000f0, 0);
+				BlockEntityRenderer<BlockEntity> renderer = terDispatcher.getRenderer(be);
+				if (renderer != null)
+					renderer.render(be, mc.getPartialTick(), pose, mc.renderBuffers().bufferSource(), 0xf000f0, 0);
 				pose.popPose();
 			});
 

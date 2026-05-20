@@ -64,6 +64,7 @@ public class ClientSetup {
 
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_BLOCK.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.WIRES.get(), RenderType.cutout());
 
 			// Rotors
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.COPPER_ROTOR.get(), RenderType.cutout());
@@ -114,6 +115,8 @@ public class ClientSetup {
 	@SubscribeEvent
 	public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
 		event.registerLayerDefinition(HartnellRotorModel.LAYER_LOCATION, HartnellRotorModel::createBodyLayer);
+		event.registerLayerDefinition(CoralConsoleTopper.LAYER_LOCATION, CoralConsoleTopper::createBodyLayer);
+		event.registerLayerDefinition(VortexCannon.LAYER_LOCATION, VortexCannon::createBodyLayer);
 		event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION,
 				ColinRichmondInteriorDoors::createBodyLayer);
 		event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);

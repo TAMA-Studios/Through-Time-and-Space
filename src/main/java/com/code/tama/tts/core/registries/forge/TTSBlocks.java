@@ -9,12 +9,10 @@ import com.code.tama.tts.core.blocks.EmptyShellBlock;
 import com.code.tama.tts.core.blocks.HardLightBlock;
 import com.code.tama.tts.core.blocks.Panels.*;
 import com.code.tama.tts.core.blocks.TARDISEnergyPort;
+import com.code.tama.tts.core.blocks.TardisCoralBlock;
 import com.code.tama.tts.core.blocks.core.*;
 import com.code.tama.tts.core.blocks.cosmetic.*;
-import com.code.tama.tts.core.blocks.gadgets.CompressedMultiblockBlock;
-import com.code.tama.tts.core.blocks.gadgets.FaultLocatorBlock;
-import com.code.tama.tts.core.blocks.gadgets.SonicConfiguratorBlock;
-import com.code.tama.tts.core.blocks.gadgets.WorkbenchBlock;
+import com.code.tama.tts.core.blocks.gadgets.*;
 import com.code.tama.tts.core.blocks.monitor.CRTMonitorBlock;
 import com.code.tama.tts.core.blocks.monitor.MonitorBlock;
 import com.code.tama.tts.core.blocks.monitor.MonitorPanel;
@@ -61,6 +59,9 @@ public class TTSBlocks {
 
 	public static final BlockEntry<ExampleTileBlock> EXAMPLE_TILE_BLOCK = registrate()
 			.block("example_tile_block", ExampleTileBlock::new).simpleItem().defaultBlockstate().register();
+
+	public static final BlockEntry<WireBlock> WIRES = registrate().block("wires", WireBlock::new)
+			.properties((p) -> p.noOcclusion()).simpleItem().airState().register();
 
 	public static final BlockEntry<FaultLocatorBlock> FAULT_LOCATOR = registrate()
 			.block("fault_locator", FaultLocatorBlock::new).simpleItem().defaultBlockstate().register();
@@ -487,6 +488,14 @@ public class TTSBlocks {
 			.properties(BlockBehaviour.Properties::noOcclusion).airState().simpleItem().register();
 
 	@MainTab
+	public static final BlockEntry<TardisCoralBlock> CORAL = Builder("tardis_coral", TardisCoralBlock::new)
+			.properties(BlockBehaviour.Properties::noOcclusion).airState().simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<VortexCannonBlock> VORTEX_CANNON = Builder("vortex_cannon", VortexCannonBlock::new)
+			.airState().simpleItem().properties(p -> p.noOcclusion()).register();
+
+	@MainTab
 	public static final BlockEntry<ConsoleBlock<HudolinConsoleTile>> HUDOLIN_CONSOLE_BLOCK = Builder(
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion).airState()
@@ -534,6 +543,11 @@ public class TTSBlocks {
 	public static final BlockEntry<CRTMonitorBlock> CRT_MONITOR_BLOCK = Builder("crt_monitor_block",
 			CRTMonitorBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).stateWithExistingModel("crt_monitor")
 			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<CoralConsoleTopperBlock> CORAL_CONSOLE_TOPPER = Builder("coral_console_topper",
+			CoralConsoleTopperBlock::new).properties(p -> copy(Blocks.TERRACOTTA, p)).airState().simpleItem()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<MonitorPanel> MONITOR_PANEL = Builder("monitor_panel", MonitorPanel::new)

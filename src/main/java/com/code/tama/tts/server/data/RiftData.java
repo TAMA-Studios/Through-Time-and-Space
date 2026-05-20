@@ -4,6 +4,7 @@ package com.code.tama.tts.server.data;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
@@ -98,6 +99,13 @@ public class RiftData {
 		}, (riftData) -> {
 			ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, riftData.level);
 			itemEntity.setItem(Items.DIAMOND.getDefaultInstance());
+			riftData.level.addFreshEntity(itemEntity);
+		}), GETCORAL("get_coral", (riftData, pose, bugger) -> {
+			Minecraft.getInstance().getItemRenderer().renderStatic(TTSBlocks.CORAL.get().asItem().getDefaultInstance(),
+					ItemDisplayContext.NONE, 0xf000f0, OverlayTexture.NO_OVERLAY, pose, bugger, riftData.level, 1);
+		}, (riftData) -> {
+			ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, riftData.level);
+			itemEntity.setItem(TTSBlocks.CORAL.get().asItem().getDefaultInstance());
 			riftData.level.addFreshEntity(itemEntity);
 		});
 		WheelOfFortune(String name, TriConsumer<RiftData, PoseStack, MultiBufferSource> render,

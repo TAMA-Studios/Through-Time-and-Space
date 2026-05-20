@@ -5,10 +5,11 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.resources.ResourceLocation;
 
-public record DataExterior(String name, ResourceLocation ModelName, ResourceLocation texture, ResourceLocation light) {
+public record DataExterior(String name, ResourceLocation ModelName, ResourceLocation texture, ResourceLocation light,
+		float maxRot) {
 	@Override
 	public @NotNull String toString() {
 		return "DataExterior{" + "name='" + name + '\'' + ", modelname=" + ModelName + '\'' + "texture=" + texture
-				+ '\'' + "lightmap=" + light + '}';
+				+ '\'' + "maxRot=" + maxRot + '\'' + "lightmap=" + light + '}';
 	}
 }

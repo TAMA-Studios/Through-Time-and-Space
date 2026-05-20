@@ -26,6 +26,7 @@ import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,6 +64,12 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
 
+	@ApiStatus.Internal
+	public long timeCreated = 0;
+
+	@Getter
+	Direction facing = Direction.NORTH;
+
 	@Getter
 	private float transparency = 1.0f; // Default fully visible
 	int DoorState;
@@ -74,7 +81,9 @@ public class ExteriorTile extends AbstractPortalTile {
 	public String PlacerName;
 	public UUID PlacerUUID;
 
-	public boolean ShouldMakeDimOnNextTick = false, isArtificial;
+	@ApiStatus.Internal
+	public boolean ShouldMakeDimOnNextTick = false;
+	public boolean isArtificial;
 
 	public boolean ThreadWorking = false;
 
@@ -86,6 +95,10 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag) {
+		if (this.getBlockState().getBlock() instanceof ExteriorBlock)
+			tag.putString("facing", this.getBlockState().getValue(ExteriorBlock.FACING).getName());
+		else
+			tag.putString("facing", this.facing.getName());
 		tag.putInt("doorsOpen", this.DoorsOpen());
 		if (this.PlacerUUID != null)
 			tag.putUUID("placerUUID", this.PlacerUUID);
@@ -226,6 +239,8 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.getLevel() == null || this.getLevel().isClientSide || this.INTERIOR_DIMENSION == null)
 			return;
 
+		if (level.getGameTime() - this.timeCreated < 1200)
+			return;
 		// Don't teleport if the entity in question is viewing the exterior via
 		// Environment Scanner
 		if (EntityToTeleport.getCapability(Capabilities.PLAYER_CAPABILITY).isPresent()
@@ -303,6 +318,11 @@ public class ExteriorTile extends AbstractPortalTile {
 
 	@Override
 	public void load(CompoundTag tag) {
+		if (this.getBlockState().getBlock() instanceof ExteriorBlock) {
+			this.facing = this.getBlockState().getValue(ExteriorBlock.FACING);
+		} else if (tag.contains("facing")) {
+			this.facing = Direction.byName(tag.getString("facing"));
+		}
 
 		if (tag.hasUUID("placerUUID")) {
 			this.PlacerUUID = tag.getUUID("placerUUID");
@@ -438,8 +458,10 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.state.equals(ExteriorState.SHOULDNTEXIST))
 			this.UtterlyDestroy();
 
-		if (this.ShouldMakeDimOnNextTick)
+		if (this.ShouldMakeDimOnNextTick) {
+			this.timeCreated = this.level.getGameTime();
 			makeInterior(this.isArtificial);
+		}
 
 		if (this.GetInterior() == null)
 			return;
