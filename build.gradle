@@ -272,7 +272,9 @@ def cargoHome = System.getenv('CARGO_HOME') ?: "${System.getenv('HOME')}/.cargo"
 def rustTargets = [
 		[target: 'x86_64-pc-windows-gnu',   libName: 'tts_native.dll',    destDir: 'windows', tool: 'cross'],
 		[target: 'x86_64-unknown-linux-gnu', libName: 'libtts_native.so',  destDir: 'linux',   tool: 'cargo'],
-		[target: 'x86_64-apple-darwin',      libName: 'libtts_native.dylib', destDir: 'macos', tool: 'cross'],
+//		[target: 'x86_64-apple-darwin',      libName: 'libtts_native.dylib', destDir: 'macos', tool: 'cross'],
+		// macOS is built natively on a macOS runner in CI (see .github/workflows/release.yml)
+    	// cross can't do Linux - macOS without osxcross which can't be distributed and is 45 fucking gigabytes.
 ]
 
 def rustSrcDir    = 'src/native'
