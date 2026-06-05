@@ -26,8 +26,8 @@ public class MiscUtils {
 		}
 
 		if (!DimNameMap.containsKey(dimLoc)) {
-			DimNameMap.put(dimLoc, GrammarNazi.CleanString(dimLoc.getPath()) + "["
-					+ GrammarNazi.CleanString(dimLoc.getNamespace()) + "]");
+			DimNameMap.put(dimLoc, GrammarNazi.cleanString(dimLoc.getPath()) + "["
+					+ GrammarNazi.cleanString(dimLoc.getNamespace()) + "]");
 		}
 
 		return DimNameMap.get(dimLoc);

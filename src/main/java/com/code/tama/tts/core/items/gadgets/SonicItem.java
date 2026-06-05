@@ -225,7 +225,7 @@ public class SonicItem extends Item implements IAttunableItem {
 					.getFromOrdinal((SonicModeRegistry.ordinal(this.InteractionType) + 1));
 			if (!player.level().isClientSide) {
 				this.InteractionType = nextMode.get();
-				player.sendSystemMessage(Component.literal(GrammarNazi.CleanString(nextMode.get().getName())));
+				player.sendSystemMessage(Component.literal(GrammarNazi.cleanString(nextMode.get().getName())));
 			}
 
 		} else {

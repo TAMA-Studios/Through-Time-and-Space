@@ -2,7 +2,6 @@
 package com.code.tama.triggerapi;
 
 import static com.code.tama.tts.TTSMod.LOGGER;
-import static com.code.tama.tts.TTSMod.MODID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,137 +14,97 @@ import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 import com.code.tama.triggerapi.exceptions.GrammarException;
 
 /**
- * This is for functions related to string manipulation
+ * Native (Rust) bridge for string/grammar utilities. Drop-in faster replacement
+ * for GrammarNazi methods.
  *
- * @version 2.6
+ * @version 1.0
  */
 public class GrammarNazi {
-	private static final List<String> MissingTranslations = new ArrayList<>();
 
-	public GrammarNazi() {
+	static {
+		NativeLoader.load("tts_native");
 	}
+
+	// -- Core string ops ------------------------------------------------------
+
+	/** Capitalizes the first letter of every word. */
+	public static native String capitalizeFirstLetters(String text);
+
+	/** Replaces underscores with spaces and capitalizes first letters. */
+	public static native String cleanString(String text);
+
+	/** Replaces '_' with ' '. */
+	public static native String scoreToSpace(String text);
+
+	// -- Block / Item ID extraction -------------------------------------------
 
 	/**
-	 * @return The ID of an Item
+	 * Pass {@code blockPos.toString()} — returns "x y z" with all formatting
+	 * stripped.
 	 */
-	public static String BlockPosToString(BlockPos blockPos) {
-		return blockPos.toString().toLowerCase().replace("blockpos", "").replaceAll("[{}:xyz=]", "");
-	}
+	public static native String blockPosToString(String blockPosToString);
 
 	/**
-	 * @return The Original text with all first letters capitalized
+	 * Strips namespace, braces, colons; lowercases; drops the leading "block"
+	 * prefix. Pass {@code block.toString()}.
 	 */
-	public static String CapitalizeFirstLetters(String text) {
-		String firstLetter = text.substring(0, 1).toUpperCase();
-		/*
-		 * - - Find any characters coming after a space char and replace it with the -
-		 * uppercase variant -
-		 */
-		for (int i = 0; i < text.length(); i++) {
-			if (text.substring(i, i + 1).contains(" "))
-				text = text.replace(text.substring(i, i + 2), text.substring(i, i + 2).toUpperCase());
-		}
-		return firstLetter + text.substring(1);
-	}
+	public static native String idFromBlock(String blockToString);
 
 	/**
-	 * Replaces Underscore characters ('_') with space characters (' ') and
-	 * capitalizes the first letter of every word
+	 * Like idFromBlock but keeps the namespace prefix. Pass
+	 * {@code block.toString()}.
 	 */
-	public static String CleanString(String text) {
-		return CapitalizeFirstLetters(ScoreToSpace(text));
-	}
+	public static native String fullIdFromBlock(String blockToString);
 
 	/**
-	 * Made to accept Item#toString(), remove the minecraft:item@modid, and
-	 * capitalize every first letter of every word while also replacing underscores
-	 * with spaces
-	 *
-	 * @param text
-	 *            Item#toString()
-	 * @return Item#toString() without minecraft:item@modid and every first letter
-	 *         of every word capitalized
+	 * Strips modid, braces, and colons from an item's toString(). Pass
+	 * {@code item.toString()} and your MODID.
 	 */
-	public static String CleanItemString(String text) {
-		/** remove minecraft:item@modid */
-		text = text.replace("minecraft:item@" + MODID + ":", "");
-		return CapitalizeFirstLetters(ScoreToSpace(text));
-	}
+	public static native String idFromItem(String itemToString, String modid);
 
 	/**
-	 * @return The ID of a Block (With Namespace)
+	 * Strips the "minecraft:item@modid:" prefix, replaces underscores with spaces,
+	 * and capitalizes first letters.
 	 */
-	public static String FullIDFromBlock(Block block) {
-		return block.toString().replace("{", "").replace("}", "").toLowerCase().substring(5);
-	}
+	public static native String cleanItemString(String itemToString, String modid);
+
+	// -- String building ------------------------------------------------------
+
+	/** Concatenates all strings with no separator. */
+	public static native String stitch(String[] strings);
+
+	/** Concatenates all strings with the given delimiter between each. */
+	public static native String stitchWithDelimiter(String delimiter, String[] strings);
+
+	// -- Extras ---------------------------------------------------------------
+
+	/** Case-insensitive contains check. */
+	public static native boolean containsIgnoreCase(String haystack, String needle);
 
 	/**
-	 * @return The ID of a Block
+	 * Truncates text to maxLen characters, appending "..." if cut. The returned
+	 * string will be at most maxLen characters long.
 	 */
-	public static String IDFromBlock(Block block) {
-		return block.toString().replaceAll("aseoha:", "").replaceAll("minecraft:", "").replace("{", "").replace("}", "")
-				.replace(":", "").toLowerCase().substring(5);
-	}
+	public static native String truncate(String text, int maxLen);
 
 	/**
-	 * @return The ID of an Item
+	 * Strips the "namespace:" prefix from a resource location string. e.g.
+	 * "minecraft:stone" → "stone"
 	 */
-	public static String IDFromItem(Item item) {
-		return item.toString().replaceAll(MODID, "").replaceAll("[{}:]", "").toLowerCase();
-	}
-
-	/**
-	 * Replace _ chars with space chars
-	 */
-	public static String ScoreToSpace(String text) {
-		return text.replace("_", " ");
-	}
-
-	/**
-	 *
-	 * @param strings
-	 *            Strings to stitch together
-	 * @return All the strings as one string
-	 */
-	public static String Stitch(String... strings) {
-		StringBuilder toReturn = new StringBuilder();
-		for (String string : strings) {
-			toReturn.append(string);
-		}
-
-		return toReturn.toString();
-	}
-
-	/**
-	 * @param delimiter
-	 *            Delimiter to put in between Strings
-	 * @param strings
-	 *            Strings to stitch together
-	 * @return All the strings as one string
-	 */
-	public static String StitchWithDelimeter(String delimiter, String... strings) {
-		StringBuilder toReturn = new StringBuilder();
-		for (String string : strings) {
-			toReturn.append(delimiter).append(string);
-		}
-
-		return toReturn.toString();
-	}
+	public static native String stripNamespace(String resourceLocation);
 
 	public static void checkTranslation(String key) {
 		String translation = I18n.get(key); // I18n.get(key);
 		if (translation == null || translation.equals(key) || translation.isEmpty()) {
 			MissingTranslations.add(key);
-			// throw new RuntimeException("Missing translation key: " + key);
 		}
 	}
+
+	private static final List<String> MissingTranslations = new ArrayList<>();
 
 	public static void checkAllTranslations() throws GrammarException {
 		TTSItems.AllValues().forEach(item -> {
@@ -185,5 +144,4 @@ public class GrammarNazi {
 			throw new GrammarException(MissingTranslations);
 		}
 	}
-
 }

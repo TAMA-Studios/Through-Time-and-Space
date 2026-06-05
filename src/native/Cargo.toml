@@ -1,0 +1,17 @@
+[package]
+name = "tts_native"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21"
+
+[profile.release]
+opt-level = 2
+lto = true          # link-time optimization — smaller + faster binary
+codegen-units = 1   # slower compile, better output
+panic = "abort"     # don't need Rust's unwinding machinery in a JNI lib
+strip = true        # strip debug symbols from release.yaml build

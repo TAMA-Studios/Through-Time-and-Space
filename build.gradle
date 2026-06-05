@@ -253,6 +253,84 @@ tasks.named('jarJar', Jar).configure {
 	rename 'mixins.tts.refmap.json', 'mixins-refmap.tts.json'
 }
 
+// -- Rust cross-compilation ----------------------------------------------------
+//
+// Prerequisites (run once on your machine):
+//   cargo install cross          # Docker-based cross-compiler
+//   # OR install the raw targets if you have the SDKs locally:
+//   rustup target add x86_64-pc-windows-gnu
+//   rustup target add x86_64-apple-darwin   # macOS cross needs osxcross
+//   rustup target add x86_64-unknown-linux-gnu
+//
+// `cross` (https://github.com/cross-rs/cross) is the easiest path —
+// it handles all the C toolchain deps via Docker automatically.
+// Set ext.useCross = false below if you'd rather use raw cargo + local toolchains.
+// -----------------------------------------------------------------------------
+
+def useCross = true
+
+// Find the real `cross` binary, bypassing ccache symlinks in /usr/lib/ccache/bin
+def crossBin = ['which', 'cross'].execute().text.trim()
+// If that still resolves to ccache, hard-code it:
+// def crossBin = '/home/kyle/.cargo/bin/cross'
+
+def rustTargets = [
+		[target: 'x86_64-pc-windows-gnu',   libName: 'tts_native.dll',      destDir: 'windows', tool: 'cross'],
+		[target: 'x86_64-unknown-linux-gnu', libName: 'libtts_native.so',    destDir: 'linux',   tool: 'cargo'],
+		[target: 'x86_64-apple-darwin',      libName: 'libtts_native.dylib', destDir: 'macos',   tool: 'cross'],
+]
+
+def rustSrcDir    = 'src/native'
+def nativesOutDir = 'src/main/resources/natives'
+
+def cargoHome = '/home/kyle/.cargo/bin'
+
+def rustBuildTasks = rustTargets.collect { cfg ->
+	def safeTarget = cfg.target.replace('-', '_')
+	tasks.register("buildRust_${safeTarget}", Exec) {
+		group       = 'rust'
+		description = "Compile Rust → ${cfg.target}"
+		workingDir  = rustSrcDir
+
+		def toolBin = "${cargoHome}/${cfg.tool}"
+		commandLine toolBin, 'build', '--release.yaml', '--target', cfg.target
+
+		inputs.dir   "${rustSrcDir}/src"
+		inputs.file  "${rustSrcDir}/Cargo.toml"
+		outputs.file "${rustSrcDir}/target/${cfg.target}/release.yaml/${cfg.libName}"
+
+		environment 'PATH', "${cargoHome}:/usr/local/bin:/usr/bin:/bin"
+		environment 'CARGO_HOME',  '/home/kyle/.cargo'
+		environment 'RUSTUP_HOME', '/home/kyle/.rustup'
+	}
+}
+
+def rustCopyTasks = [rustBuildTasks, rustTargets].transpose().collect { buildTask, cfg ->
+	def safeTarget = cfg.target.replace('-', '_')
+	tasks.register("copyNative_${safeTarget}", Copy) {
+		group       = 'rust'
+		description = "Copy ${cfg.target} native lib into resources"
+		dependsOn   buildTask
+		from "${rustSrcDir}/target/${cfg.target}/release.yaml/${cfg.libName}"
+		into "${nativesOutDir}/${cfg.destDir}/"
+	}
+}
+
+tasks.register('buildRust') {
+	group       = 'rust'
+	description = 'Compile Rust for all three platforms'
+	dependsOn   rustBuildTasks
+}
+
+tasks.register('copyNativeLibs') {
+	group       = 'rust'
+	description = 'Copy all platform native libs into resources'
+	dependsOn   rustCopyTasks
+}
+
+processResources.dependsOn 'copyNativeLibs'
+processResources.dependsOn copyNativeLibs
+
 shadowJar {
 	archiveClassifier.set('shadowed')
 	configurations = [project.configurations.commonShadow]

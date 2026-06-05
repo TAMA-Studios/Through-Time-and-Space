@@ -178,7 +178,7 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 						tardisLevelCapability.GetNavigationalData().setDestinationFacing(
 								tardisLevelCapability.GetNavigationalData().NextDestinationFacing());
 						player.displayClientMessage(
-								Component.literal("Exterior Facing = " + GrammarNazi.CleanString(
+								Component.literal("Exterior Facing = " + GrammarNazi.cleanString(
 										tardisLevelCapability.GetNavigationalData().getDestinationFacing().getName())),
 								true);
 						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);

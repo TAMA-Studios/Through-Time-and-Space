@@ -65,7 +65,7 @@ public class DimensionControl extends AbstractControl {
 			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 
 			player.displayClientMessage(
-					Component.literal("Destination Level = " + GrammarNazi.CleanString(
+					Component.literal("Destination Level = " + GrammarNazi.cleanString(
 							itardisLevel.GetNavigationalData().getDestination().getLevelKey().location().getPath())),
 					true);
 		}

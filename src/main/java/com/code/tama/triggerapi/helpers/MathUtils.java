@@ -3,126 +3,86 @@ package com.code.tama.triggerapi.helpers;
 
 import net.minecraft.world.phys.Vec3;
 
+import com.code.tama.triggerapi.NativeLoader;
+
+/**
+ * Math utilities.
+ */
 public class MathUtils {
-	public static int ReverseRoundTo48(int num) {
-		return MathUtils.reverseRound((float) num / 48) * 48;
+
+	static {
+		NativeLoader.load("tts_native");
 	}
 
-	public static int RoundTo48(int num) {
-		return RoundToMultiple(num, 48);
-	}
+	// -- Native (Rust) --------------------------------------------------------
+
+	public static native int roundToMultipleInt(int num, int multiple);
+	public static native int roundToMultipleFloat(float num, int multiple);
+	public static native int roundToMultipleDouble(double num, int multiple);
+	public static native int roundTo48(int num);
+	public static native int reverseRoundTo48(int num);
+	public static native int reverseRound(double value);
+	public static native double angleBetween(double x1, double y1, double z1, double x2, double y2, double z2);
+	public static native float clampFloat(float value, float min, float max);
+	public static native long clampLong(long value, long min, long max);
+	public static native double clampDouble(double value, double min, double max);
+	public static native float getSlopedRotation(float slope, float desiredRot);
+	public static native float lerp(float start, float end, float t);
+	public static native int packLight(int blockLight, int skyLight);
 
 	/**
-	 * @return The number rounded to the nearest multiple
+	 * blockType encoding: 0=full block, 1=bottom slab, 2=snow (pass layers 1-8),
+	 * 3=carpet, 4=air
 	 */
+	public static native float heightModifier(int blockType, int snowLayers);
+	public static native float differenceInHeight(int fromType, int fromLayers, int toType, int toLayers);
+
+	// -- Convenience overloads (delegate to natives) --------------------------
+
+	/** @see #roundToMultipleInt */
 	public static int RoundToMultiple(int num, int multiple) {
-		return Math.round((float) num / multiple) * multiple;
+		return roundToMultipleInt(num, multiple);
 	}
-
-	/**
-	 * @return The number rounded to the nearest multiple
-	 */
+	/** @see #roundToMultipleFloat */
 	public static int RoundToMultiple(float num, int multiple) {
-		return Math.round((float) num / multiple) * multiple;
+		return roundToMultipleFloat(num, multiple);
 	}
-
-	/**
-	 * @return The number rounded to the nearest multiple
-	 */
+	/** @see #roundToMultipleDouble */
 	public static int RoundToMultiple(double num, int multiple) {
-		return Math.round((float) num / multiple) * multiple;
+		return roundToMultipleDouble(num, multiple);
 	}
-
-	public static double angleBetween(Vec3 vec1, Vec3 vec2) {
-		double dot = vec1.dot(vec2);
-		double mag = vec1.length() * vec2.length();
-		return Math.toDegrees(Math.acos(dot / mag));
+	/** @see #roundTo48 */
+	public static int RoundTo48(int num) {
+		return roundTo48(num);
 	}
-
-	/**
-	 * @param value
-	 *            The value to clamp
-	 * @param min
-	 *            the minimum allowed amount (inclusive)
-	 * @param max
-	 *            the maximum allowed amount (inclusive)
-	 * @return a value that is no less than min, and also no greater than max
-	 */
+	/** @see #reverseRoundTo48 */
+	public static int ReverseRoundTo48(int num) {
+		return reverseRoundTo48(num);
+	}
+	/** @see #reverseRound */
+	public static int reverseRound(double value, boolean unused) {
+		return reverseRound(value);
+	} // kept for compat
+	/** @see #clampFloat */
 	public static float clamp(float value, float min, float max) {
-		return Math.max(min, Math.min(max, value));
+		return clampFloat(value, min, max);
 	}
-
-	/**
-	 * @param value
-	 *            The value to clamp
-	 * @param min
-	 *            the minimum allowed amount (inclusive)
-	 * @param max
-	 *            the maximum allowed amount (inclusive)
-	 * @return a value that is no less than min, and also no greater than max
-	 */
+	/** @see #clampLong */
 	public static long clamp(long value, long min, long max) {
-		return Math.max(min, Math.min(max, value));
+		return clampLong(value, min, max);
 	}
-
-	/**
-	 * @param value
-	 *            The value to clamp
-	 * @param min
-	 *            the minimum allowed amount (inclusive)
-	 * @param max
-	 *            the maximum allowed amount (inclusive)
-	 * @return a value that is no less than min, and also no greater than max
-	 */
+	/** @see #clampDouble */
 	public static double clamp(double value, double min, double max) {
-		return Math.max(min, Math.min(max, value));
+		return clampDouble(value, min, max);
 	}
+
+	// -- MC-dependent (kept in Java — needs Vec3 object) ----------------------
 
 	/**
-	 * Adjusts the slope based on the desired rotation around the Y-axis.
-	 *
-	 * @param slope
-	 *            The slope (pitch).
-	 * @param desiredRot
-	 *            The desired rotation around the Y-axis in degrees.
-	 * @return The adjusted slope after applying the rotation.
+	 * Angle (degrees) between two Vec3 vectors. Delegates to native using raw
+	 * components to avoid JObject overhead.
 	 */
-	public static float getSlopedRotation(float slope, float desiredRot) {
-		// Normalize desiredRot to [0, 360)
-		desiredRot = ((desiredRot % 360) + 360) % 360;
-
-		// If no rotation, keep slope
-		if (desiredRot == 0f) {
-			return slope;
-		}
-
-		// For 180° around Y, invert the slope
-		if (desiredRot == 180f) {
-			return -slope;
-		}
-
-		// Otherwise interpolate based on rotation
-		// After 90 yaw, slope pitch becomes 0
-		// After 270 yaw, slope pitch becomes 0
-		double radians = Math.toRadians(desiredRot);
-
-		return (float) (slope * Math.cos(radians));
-	}
-
-	public static float lerp(float start, float end, float t) {
-		return start + t * (end - start);
-	}
-
-	public static int reverseRound(double value) {
-		int intPart = (int) value;
-		double decimalPart = Math.abs(value - intPart);
-
-		if (decimalPart >= 0.5) {
-			// Round toward zero
-			return intPart;
-		} else {
-			// Round away from zero
-			return value >= 0 ? intPart + 1 : intPart - 1;
-		}
+	public static double angleBetween(Vec3 vec1, Vec3 vec2) {
+		return angleBetween(vec1.x, vec1.y, vec1.z, vec2.x, vec2.y, vec2.z);
 	}
 }

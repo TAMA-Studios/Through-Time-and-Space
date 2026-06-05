@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ItemHelper {
+
 	/** Counts how many of a specific item a player has in their inventory. */
 	public static int countItem(Player player, ItemStack itemToCount) {
 		int count = 0;
@@ -18,18 +19,35 @@ public class ItemHelper {
 		return count;
 	}
 
-	/** Gives an item to a player or drops it if inventory is full. */
+	/**
+	 * Returns true if the player has the given item in their main inventory. Fixed:
+	 * removed dead `ret` variable, fixed broken `.equals(stack.getItem())`
+	 * comparison (ItemStack vs Item mismatch that always returned false).
+	 */
+	public static boolean hasItem(Player player, ItemStack item) {
+		for (ItemStack stack : player.getInventory().items) {
+			if (ItemStack.isSameItem(stack, item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Gives an item to a player or drops it at their feet if inventory is full. */
 	public static void giveItemToPlayer(Player player, ItemStack stack) {
 		if (!player.addItem(stack)) {
 			player.drop(stack, false);
 		}
 	}
 
-	/** Spawns an item entity in the world at the specified coordinates. */
+	/**
+	 * Spawns an item entity in the world at the specified coordinates (server-side
+	 * only).
+	 */
 	public static void spawnItem(Level world, ItemStack stack, double x, double y, double z) {
 		if (!world.isClientSide && !stack.isEmpty()) {
 			ItemEntity itemEntity = new ItemEntity(world, x, y, z, stack.copy());
-			itemEntity.setDefaultPickUpDelay(); // Sets a 10-tick pickup delay
+			itemEntity.setDefaultPickUpDelay();
 			world.addFreshEntity(itemEntity);
 		}
 	}

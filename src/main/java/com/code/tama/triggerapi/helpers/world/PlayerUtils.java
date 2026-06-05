@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class PlayerUtils {
+
 	public static void addExperienceLevels(Player player, int levels) {
 		if (player != null) {
 			player.experienceLevel += levels;
