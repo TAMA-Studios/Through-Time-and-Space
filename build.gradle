@@ -274,7 +274,7 @@ def rustTargets = [
 		[target: 'x86_64-unknown-linux-gnu', libName: 'libtts_native.so',  destDir: 'linux',   tool: 'cargo'],
 //		[target: 'x86_64-apple-darwin',      libName: 'libtts_native.dylib', destDir: 'macos', tool: 'cross'],
 		// macOS is built natively on a macOS runner in CI (see .github/workflows/release.yml)
-    	// cross can't do Linux - macOS without osxcross which can't be distributed and is 45 fucking gigabytes.
+		// cross can't do Linux - macOS without osxcross which can't be distributed and is 45 fucking gigabytes.
 ]
 
 def rustSrcDir    = 'src/native'
@@ -307,7 +307,7 @@ def rustCopyTasks = [rustBuildTasks, rustTargets].transpose().collect { buildTas
 		group       = 'rust'
 		description = "Copy ${cfg.target} native lib into resources"
 		dependsOn   buildTask
-		from "${rustSrcDir}/target/${cfg.target}/release.yaml/${cfg.libName}"
+		from "${rustSrcDir}/target/${cfg.target}/release/${cfg.libName}"
 		into "${nativesOutDir}/${cfg.destDir}/"
 	}
 }
@@ -402,12 +402,12 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 spotless {
-	json {
-		target 'src/**/*.json'
-		jackson()
-				.feature('INDENT_OUTPUT', true)                // optional: true by default
-				.feature('ORDER_MAP_ENTRIES_BY_KEYS', true)    // optional: false by default
-	}
+//	json {
+//		target 'src/**/*.json'
+//		jackson()
+//				.feature('INDENT_OUTPUT', true)                // optional: true by default
+//				.feature('ORDER_MAP_ENTRIES_BY_KEYS', true)    // optional: false by default
+//	}
 	format 'misc', {
 		// define the files to apply `misc` to
 		target '*.gradle', '.gitattributes', '.gitignore'

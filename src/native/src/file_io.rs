@@ -9,7 +9,7 @@ use std::path::Path;
 // ── WriteFile (create/overwrite) ──────────────────────────────────────────────
 // Java: native boolean writeFile(String absolutePath, String content);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_writeFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_writeFile(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -27,7 +27,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_wr
 // ── AppendFile ────────────────────────────────────────────────────────────────
 // Java: native boolean appendFile(String absolutePath, String content);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_appendFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_appendFile(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -46,7 +46,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_ap
 // Returns null on failure (matches Java behaviour of returning null on missing file).
 // Java: native String readFile(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_readFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_readFile(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -62,7 +62,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_re
 // ── FileExists ────────────────────────────────────────────────────────────────
 // Java: native boolean fileExists(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_fileExists(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_fileExists(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -74,7 +74,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_fi
 // ── DeleteFile ────────────────────────────────────────────────────────────────
 // Java: native boolean deleteFile(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_deleteFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_deleteFile(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -87,7 +87,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_de
 // Creates directory and all parents. Returns false only on actual failure.
 // Java: native boolean ensureDirExists(String absoluteDirPath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_ensureDirExists(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_ensureDirExists(
     mut env: JNIEnv,
     _class: JClass,
     absolute_dir: JString,
@@ -102,7 +102,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_en
 // since it doesn't need to hold the whole content + trimmed copy in memory.
 // Java: native String readLines(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_readLines(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_readLines(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -121,7 +121,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_re
 // Lines are joined with '\n'; pass them newline-separated from Java.
 // Java: native boolean appendLines(String absolutePath, String lines);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_appendLines(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_appendLines(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -140,7 +140,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_ap
 // ── CopyFile ──────────────────────────────────────────────────────────────────
 // Java: native boolean copyFile(String srcPath, String destPath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_copyFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_copyFile(
     mut env: JNIEnv,
     _class: JClass,
     src_path: JString,
@@ -161,7 +161,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_co
 // Returns -1 if the file doesn't exist or can't be read.
 // Java: native long getFileSize(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_getFileSize(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_getFileSize(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,
@@ -175,7 +175,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_ge
 // Returns null if the directory doesn't exist or can't be read.
 // Java: native String listFiles(String absoluteDirPath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_listFiles(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_listFiles(
     mut env: JNIEnv,
     _class: JClass,
     absolute_dir: JString,
@@ -201,7 +201,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_li
 // Wipes the content of a file without deleting it.
 // Java: native boolean truncateFile(String absolutePath);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelperNative_truncateFile(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_truncateFile(
     mut env: JNIEnv,
     _class: JClass,
     absolute_path: JString,

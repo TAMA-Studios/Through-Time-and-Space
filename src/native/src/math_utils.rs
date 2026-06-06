@@ -5,7 +5,7 @@ use jni::sys::{jint, jfloat, jdouble, jlong};
 // ── RoundToMultiple (int) ─────────────────────────────────────────────────────
 // Java: native int roundToMultiple(int num, int multiple);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_roundToMultipleInt(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_roundToMultipleInt(
     _env: JNIEnv, _class: JClass,
     num: jint, multiple: jint,
 ) -> jint {
@@ -15,7 +15,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_rou
 // ── RoundToMultiple (float) ───────────────────────────────────────────────────
 // Java: native int roundToMultipleFloat(float num, int multiple);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_roundToMultipleFloat(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_roundToMultipleFloat(
     _env: JNIEnv, _class: JClass,
     num: jfloat, multiple: jint,
 ) -> jint {
@@ -25,7 +25,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_rou
 // ── RoundToMultiple (double) ──────────────────────────────────────────────────
 // Java: native int roundToMultipleDouble(double num, int multiple);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_roundToMultipleDouble(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_roundToMultipleDouble(
     _env: JNIEnv, _class: JClass,
     num: jdouble, multiple: jint,
 ) -> jint {
@@ -35,7 +35,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_rou
 // ── RoundTo48 ─────────────────────────────────────────────────────────────────
 // Java: native int roundTo48(int num);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_roundTo48(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_roundTo48(
     _env: JNIEnv, _class: JClass,
     num: jint,
 ) -> jint {
@@ -45,7 +45,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_rou
 // ── ReverseRoundTo48 ──────────────────────────────────────────────────────────
 // Java: native int reverseRoundTo48(int num);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_reverseRoundTo48(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_reverseRoundTo48(
     _env: JNIEnv, _class: JClass,
     num: jint,
 ) -> jint {
@@ -56,7 +56,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_rev
 // Rounds toward zero if decimal >= 0.5, away from zero otherwise.
 // Java: native int reverseRound(double value);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_reverseRound(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_reverseRound(
     _env: JNIEnv, _class: JClass,
     value: jdouble,
 ) -> jint {
@@ -79,7 +79,7 @@ pub fn reverse_round(value: f64) -> i32 {
 // Angle (degrees) between two 3D vectors passed as x,y,z components.
 // Java: native double angleBetween(double x1, double y1, double z1, double x2, double y2, double z2);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_angleBetween(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_angleBetween(
     _env: JNIEnv, _class: JClass,
     x1: jdouble, y1: jdouble, z1: jdouble,
     x2: jdouble, y2: jdouble, z2: jdouble,
@@ -94,7 +94,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_ang
 // ── Clamp (float) ─────────────────────────────────────────────────────────────
 // Java: native float clampFloat(float value, float min, float max);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_clampFloat(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_clampFloat(
     _env: JNIEnv, _class: JClass,
     value: jfloat, min: jfloat, max: jfloat,
 ) -> jfloat {
@@ -104,7 +104,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_cla
 // ── Clamp (long) ──────────────────────────────────────────────────────────────
 // Java: native long clampLong(long value, long min, long max);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_clampLong(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_clampLong(
     _env: JNIEnv, _class: JClass,
     value: jlong, min: jlong, max: jlong,
 ) -> jlong {
@@ -114,7 +114,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_cla
 // ── Clamp (double) ────────────────────────────────────────────────────────────
 // Java: native double clampDouble(double value, double min, double max);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_clampDouble(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_clampDouble(
     _env: JNIEnv, _class: JClass,
     value: jdouble, min: jdouble, max: jdouble,
 ) -> jdouble {
@@ -124,7 +124,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_cla
 // ── GetSlopedRotation ─────────────────────────────────────────────────────────
 // Java: native float getSlopedRotation(float slope, float desiredRot);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_getSlopedRotation(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_getSlopedRotation(
     _env: JNIEnv, _class: JClass,
     slope: jfloat, desired_rot: jfloat,
 ) -> jfloat {
@@ -141,7 +141,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_get
 // ── Lerp (float) ──────────────────────────────────────────────────────────────
 // Java: native float lerp(float start, float end, float t);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_lerp(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_lerp(
     _env: JNIEnv, _class: JClass,
     start: jfloat, end: jfloat, t: jfloat,
 ) -> jfloat {
@@ -153,7 +153,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_ler
 // (The actual level query stays in Java; this just does the bit-packing math.)
 // Java: native int packLight(int blockLight, int skyLight);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_packLight(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_packLight(
     _env: JNIEnv, _class: JClass,
     block_light: jint, sky_light: jint,
 ) -> jint {
@@ -168,7 +168,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_pac
 // For snow, pass snowLayers (1-8). Ignored for other types.
 // Java: native float heightModifier(int blockType, int snowLayers);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_heightModifier(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_heightModifier(
     _env: JNIEnv, _class: JClass,
     block_type: jint, snow_layers: jint,
 ) -> jfloat {
@@ -184,7 +184,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_hei
 // ── DifferenceInHeight ────────────────────────────────────────────────────────
 // Java: native float differenceInHeight(int fromType, int fromLayers, int toType, int toLayers);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtilsNative_differenceInHeight(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_MathUtils_differenceInHeight(
     _env: JNIEnv, _class: JClass,
     from_type: jint, from_layers: jint,
     to_type: jint, to_layers: jint,

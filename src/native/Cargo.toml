@@ -11,7 +11,7 @@ jni = "0.21"
 
 [profile.release]
 opt-level = 2
-lto = true          # link-time optimization — smaller + faster binary
-codegen-units = 1   # slower compile, better output
-panic = "abort"     # don't need Rust's unwinding machinery in a JNI lib
-strip = true        # strip debug symbols from release.yaml build
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"

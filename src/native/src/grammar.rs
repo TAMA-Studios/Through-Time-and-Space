@@ -5,7 +5,7 @@ use jni::sys::{jstring, jboolean, jobjectArray};
 // ── CapitalizeFirstLetters ────────────────────────────────────────────────────
 // Java: native String capitalizeFirstLetters(String text);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_capitalizeFirstLetters(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_capitalizeFirstLetters(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -39,7 +39,7 @@ pub fn capitalize_first_letters(text: &str) -> String {
 // ── CleanString (underscore → space + capitalize) ─────────────────────────────
 // Java: native String cleanString(String text);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_cleanString(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_cleanString(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -52,7 +52,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_cleanStri
 // ── ScoreToSpace ──────────────────────────────────────────────────────────────
 // Java: native String scoreToSpace(String text);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_scoreToSpace(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_scoreToSpace(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -66,7 +66,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_scoreToSp
 // Java: native String blockPosToString(String blockPosToString);
 // (Pass blockPos.toString() from Java side — avoids needing a full JObject mapping)
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_blockPosToString(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_blockPosToString(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -93,7 +93,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_blockPosT
 // drops first 5 chars (the "Block" prefix left by toString)
 // Java: native String idFromBlock(String blockToString);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_idFromBlock(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_idFromBlock(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -116,7 +116,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_idFromBlo
 // Like IDFromBlock but keeps the namespace
 // Java: native String fullIdFromBlock(String blockToString);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_fullIdFromBlock(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_fullIdFromBlock(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -132,7 +132,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_fullIdFro
 // ── IDFromItem ────────────────────────────────────────────────────────────────
 // Java: native String idFromItem(String itemToString, String modid);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_idFromItem(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_idFromItem(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -152,7 +152,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_idFromIte
 // ── Stitch ────────────────────────────────────────────────────────────────────
 // Java: native String stitch(String[] strings);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_stitch(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_stitch(
     mut env: JNIEnv,
     _class: JClass,
     strings: JObjectArray,
@@ -164,7 +164,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_stitch(
 // ── StitchWithDelimiter ───────────────────────────────────────────────────────
 // Java: native String stitchWithDelimiter(String delimiter, String[] strings);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_stitchWithDelimiter(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_stitchWithDelimiter(
     mut env: JNIEnv,
     _class: JClass,
     delimiter: JString,
@@ -178,7 +178,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_stitchWit
 // ── CleanItemString ───────────────────────────────────────────────────────────
 // Java: native String cleanItemString(String itemToString, String modid);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_cleanItemString(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_cleanItemString(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -198,7 +198,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_cleanItem
 // Bonus — useful and not in your Java but you'll want it
 // Java: native boolean containsIgnoreCase(String haystack, String needle);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_containsIgnoreCase(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_containsIgnoreCase(
     mut env: JNIEnv,
     _class: JClass,
     haystack: JString,
@@ -212,7 +212,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_containsI
 // ── TruncateWithEllipsis ──────────────────────────────────────────────────────
 // Java: native String truncate(String text, int maxLen);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_truncate(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_truncate(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -235,7 +235,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_truncate(
 // Strips "namespace:" prefix from a resource location string
 // Java: native String stripNamespace(String resourceLocation);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNaziNative_stripNamespace(
+pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_stripNamespace(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,

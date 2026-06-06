@@ -7,7 +7,7 @@ use jni::objects::JString;
 // Pass the raw block/sky brightness values from Java — we do the bit math.
 // Java: native int getPackedLight(int blockLight, int skyLight);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_getPackedLight(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getPackedLight(
     _env: JNIEnv, _class: JClass,
     block_light: jint, sky_light: jint,
 ) -> jint {
@@ -20,7 +20,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // Java: native String getRelativeBlockPos(int bx, int by, int bz, int ox, int oy, int oz);
 // Returns "x,y,z"
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_getRelativeBlockPos(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getRelativeBlockPos(
     mut env: JNIEnv, _class: JClass,
     bx: jint, by: jint, bz: jint,
     ox: jint, oy: jint, oz: jint,
@@ -34,7 +34,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // Java: native String fromChunkAndLocal(int chunkX, int chunkZ, int localX, int localY, int localZ);
 // Returns "x,y,z"
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_fromChunkAndLocal(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_fromChunkAndLocal(
     mut env: JNIEnv, _class: JClass,
     chunk_x: jint, chunk_z: jint,
     local_x: jint, local_y: jint, local_z: jint,
@@ -51,7 +51,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // blockType: 0=full, 1=slab_bottom, 2=snow(layers 1-8), 3=carpet, 4=air
 // Java: native float getReverseHeightModifier(int blockType, int snowLayers);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_getReverseHeightModifier(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getReverseHeightModifier(
     _env: JNIEnv, _class: JClass,
     block_type: jint, snow_layers: jint,
 ) -> jfloat {
@@ -61,7 +61,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // ── GetDifferenceInHeight ─────────────────────────────────────────────────────
 // Java: native float getDifferenceInHeight(int fromType, int fromLayers, int toType, int toLayers);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_getDifferenceInHeight(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getDifferenceInHeight(
     _env: JNIEnv, _class: JClass,
     from_type: jint, from_layers: jint,
     to_type: jint, to_layers: jint,
@@ -73,7 +73,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // Same Minecraft BlockPos.asLong() encoding. Kept here alongside block logic.
 // Java: native long packBlockPos(int x, int y, int z);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_packBlockPos(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_packBlockPos(
     _env: JNIEnv, _class: JClass,
     x: jint, y: jint, z: jint,
 ) -> jlong {
@@ -86,7 +86,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // ── Distance ──────────────────────────────────────────────────────────────────
 // Java: native double blockDistance(int x1, int y1, int z1, int x2, int y2, int z2);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_blockDistance(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_blockDistance(
     _env: JNIEnv, _class: JClass,
     x1: jint, y1: jint, z1: jint,
     x2: jint, y2: jint, z2: jint,
@@ -100,7 +100,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // ── IsWithinRadius ────────────────────────────────────────────────────────────
 // Java: native boolean isWithinRadius(int x1,int y1,int z1, int x2,int y2,int z2, double radius);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_isWithinRadius(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_isWithinRadius(
     _env: JNIEnv, _class: JClass,
     x1: jint, y1: jint, z1: jint,
     x2: jint, y2: jint, z2: jint,
@@ -115,7 +115,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNat
 // ── SameChunk ─────────────────────────────────────────────────────────────────
 // Java: native boolean sameChunk(int x1, int z1, int x2, int z2);
 #[no_mangle]
-pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtilsNative_sameChunk(
+pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_sameChunk(
     _env: JNIEnv, _class: JClass,
     x1: jint, z1: jint,
     x2: jint, z2: jint,
