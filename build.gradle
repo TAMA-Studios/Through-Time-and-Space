@@ -259,22 +259,32 @@ tasks.named('jarJar', Jar).configure {
 //   cargo install cross          # Docker-based cross-compiler
 //   # OR install the raw targets if you have the SDKs locally:
 //   rustup target add x86_64-pc-windows-gnu
-//   rustup target add x86_64-apple-darwin   # macOS cross needs osxcross
 //   rustup target add x86_64-unknown-linux-gnu
 //
-// `cross` (https://github.com/cross-rs/cross) is the easiest path —
-// it handles all the C toolchain deps via Docker automatically.
-// Set ext.useCross = false below if you'd rather use raw cargo + local toolchains.
+// macOS targets (x86_64-apple-darwin, aarch64-apple-darwin) are intentionally
+// excluded from buildRust / copyNativeLibs — they require a macOS machine and
+// are built exclusively in CI (see .github/workflows/release.yml).
+// To build/copy them manually you must be on macOS and run the explicit tasks:
+//   ./gradlew buildRust_x86_64_apple_darwin
+//   ./gradlew buildRust_aarch64_apple_darwin
+//   ./gradlew copyNativeMac   ← builds both + lipo-merges into a universal dylib
+//
+// cross can't do Linux→macOS without osxcross (45+ GB, non-distributable).
 // -----------------------------------------------------------------------------
 
 def cargoHome = System.getenv('CARGO_HOME') ?: "${System.getenv('HOME')}/.cargo"
 
+// Non-mac targets — included in buildRust / copyNativeLibs / processResources
 def rustTargets = [
-		[target: 'x86_64-pc-windows-gnu',   libName: 'tts_native.dll',    destDir: 'windows', tool: 'cross'],
-		[target: 'x86_64-unknown-linux-gnu', libName: 'libtts_native.so',  destDir: 'linux',   tool: 'cargo'],
-//		[target: 'x86_64-apple-darwin',      libName: 'libtts_native.dylib', destDir: 'macos', tool: 'cross'],
-		// macOS is built natively on a macOS runner in CI (see .github/workflows/release.yml)
-		// cross can't do Linux - macOS without osxcross which can't be distributed and is 45 fucking gigabytes.
+		[target: 'x86_64-pc-windows-gnu',   libName: 'tts_native.dll',   destDir: 'windows', tool: 'cross'],
+		[target: 'x86_64-unknown-linux-gnu', libName: 'libtts_native.so', destDir: 'linux',   tool: 'cargo'],
+]
+
+// macOS targets — registered as individual tasks but NOT wired into buildRust
+// or copyNativeLibs so they never run on a non-mac machine automatically.
+def macTargets = [
+		[target: 'x86_64-apple-darwin',  libName: 'libtts_native.dylib', tool: 'cargo'],
+		[target: 'aarch64-apple-darwin',  libName: 'libtts_native.dylib', tool: 'cargo'],
 ]
 
 def rustSrcDir    = 'src/native'
@@ -287,7 +297,6 @@ def rustBuildTasks = rustTargets.collect { cfg ->
 		description = "Compile Rust → ${cfg.target}"
 		workingDir  = rustSrcDir
 
-		// Resolve at execution time so it works on any machine
 		def toolBin = "${cargoHome}/bin/${cfg.tool}"
 		commandLine toolBin, 'build', '--release', '--target', cfg.target
 
@@ -312,15 +321,57 @@ def rustCopyTasks = [rustBuildTasks, rustTargets].transpose().collect { buildTas
 	}
 }
 
+// Individual macOS build tasks — available explicitly but not in buildRust
+macTargets.each { cfg ->
+	def safeTarget = cfg.target.replace('-', '_')
+	tasks.register("buildRust_${safeTarget}", Exec) {
+		group       = 'rust'
+		description = "Compile Rust → ${cfg.target} (macOS only, not in buildRust)"
+		workingDir  = rustSrcDir
+
+		def toolBin = "${cargoHome}/bin/${cfg.tool}"
+		commandLine toolBin, 'build', '--release', '--target', cfg.target
+
+		inputs.dir   "${rustSrcDir}/src"
+		inputs.file  "${rustSrcDir}/Cargo.toml"
+		outputs.file "${rustSrcDir}/target/${cfg.target}/release/${cfg.libName}"
+
+		environment 'PATH',        "${cargoHome}/bin:/usr/local/bin:/usr/bin:/bin"
+		environment 'CARGO_HOME',  cargoHome
+		environment 'RUSTUP_HOME', System.getenv('RUSTUP_HOME') ?: "${System.getenv('HOME')}/.rustup"
+	}
+}
+
+// copyNativeMac — builds both macOS arches, lipo-merges into a universal dylib,
+// then copies it into resources/natives/macos/. Run this on macOS only.
+tasks.register('copyNativeMac') {
+	group       = 'rust'
+	description = 'Build universal macOS dylib (x86_64 + arm64) and copy into resources. macOS only.'
+	dependsOn 'buildRust_x86_64_apple_darwin', 'buildRust_aarch64_apple_darwin'
+
+	doLast {
+		def x86Out  = "${rustSrcDir}/target/x86_64-apple-darwin/release/libtts_native.dylib"
+		def armOut  = "${rustSrcDir}/target/aarch64-apple-darwin/release/libtts_native.dylib"
+		def destDir = "${nativesOutDir}/macos"
+		def fatOut  = "${destDir}/libtts_native.dylib"
+
+		mkdir destDir
+		exec {
+			commandLine 'lipo', '-create', x86Out, armOut, '-output', fatOut
+		}
+		println "Universal macOS dylib written to ${fatOut}"
+	}
+}
+
 tasks.register('buildRust') {
 	group       = 'rust'
-	description = 'Compile Rust for all three platforms'
+	description = 'Compile Rust for Windows + Linux (not macOS — use copyNativeMac on a Mac)'
 	dependsOn   rustBuildTasks
 }
 
 tasks.register('copyNativeLibs') {
 	group       = 'rust'
-	description = 'Copy all platform native libs into resources'
+	description = 'Copy Windows + Linux native libs into resources (not macOS — use copyNativeMac on a Mac)'
 	dependsOn   rustCopyTasks
 }
 

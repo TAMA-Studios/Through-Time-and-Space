@@ -17,7 +17,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
       - name: Cache Cargo registry + build
         uses: actions/cache@v4
@@ -26,18 +26,30 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             src/native/target
-          key: macos-cargo-${{ hashFiles('src/native/Cargo.toml', 'src/native/Cargo.lock') }}
+          key: macos-cargo-${{ hashFiles('src/native/Cargo.toml', 'src/native/Cargo.lock', 'src/native/src/**') }}
           restore-keys: macos-cargo-
 
-      - name: Build dylib
+      - name: Build dylib (x86_64)
         working-directory: src/native
         run: cargo build --release --target x86_64-apple-darwin
+
+      - name: Build dylib (aarch64 / Apple Silicon)
+        working-directory: src/native
+        run: cargo build --release --target aarch64-apple-darwin
+
+      - name: Create universal (fat) dylib
+        working-directory: src/native
+        run: |
+          lipo -create \
+            target/x86_64-apple-darwin/release/libtts_native.dylib \
+            target/aarch64-apple-darwin/release/libtts_native.dylib \
+            -output libtts_native.dylib
 
       - name: Upload dylib artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-native
-          path: src/native/target/x86_64-apple-darwin/release/libtts_native.dylib
+          path: src/native/libtts_native.dylib
           if-no-files-found: error
 
   build-mod-jar:
@@ -66,7 +78,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             src/native/target
-          key: linux-cargo-${{ hashFiles('src/native/Cargo.toml', 'src/native/Cargo.lock') }}
+          key: linux-cargo-${{ hashFiles('src/native/Cargo.toml', 'src/native/Cargo.lock', 'src/native/src/**') }}
           restore-keys: linux-cargo-
 
       - name: Cache Gradle
@@ -97,7 +109,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [build-macos-native, build-mod-jar]
+    needs: [ build-macos-native, build-mod-jar ]
 
     permissions:
       contents: write
@@ -137,6 +149,14 @@ jobs:
         id: tag
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          # Fetch all tags, sort by version, grab the one before the current tag
+          git fetch --tags
+          PREV=$(git tag --sort=-version:refname | grep -v "^${{ steps.tag.outputs.TAG }}$" | head -n 1)
+          echo "PREV_TAG=$PREV" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -150,7 +170,7 @@ jobs:
             ### Platforms
             - Windows (x86_64)
             - Linux (x86_64)
-            - macOS (x86_64)
+            - macOS (x86_64 Intel + aarch64 Apple Silicon)
 
             ### Installation
             Drop the jar into your `mods/` folder.
@@ -158,8 +178,7 @@ jobs:
             ### NOTICE
             This mod was designed and built against Forge 47.1.3 for Minecraft 1.20.1. Other versions of Minecraft/Forge MAY work but are not guaranteed to do so. If you're encountering an issue with the mod, first make sure you're on a supported version of Forge and Minecraft. If you are on, say, Minecraft 1.20.4, or Forge 47.4.20, Support may be limited.
 
-            **Full Changelog**: https://github.com/TAMA-Studios/Through-Time-and-Space/compare/v0.1.3-alpha...${{ steps.tag.outputs.TAG }}
-            
+            **Full Changelog**: https://github.com/TAMA-Studios/Through-Time-and-Space/compare/${{ steps.prev_tag.outputs.PREV_TAG }}...${{ steps.tag.outputs.TAG }}
 
           files: ${{ env.JAR_PATH }}
           draft: false
