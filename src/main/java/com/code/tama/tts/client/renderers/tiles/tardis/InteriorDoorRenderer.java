@@ -28,12 +28,12 @@ import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 @OnlyIn(Dist.CLIENT)
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
-	// Door animation constants — keep in sync with TardisExteriorRenderer
+	// Door animation constants, keep in sync with TardisExteriorRenderer
 	private static final float DOOR_MAX = 5.625f;
 	private static final float DOOR_SPEED = 0.15f;
 	private static final float DOOR_MAX_DEG = 75f;
 
-	// Per-instance animation state — right opens on DoorsOpen() >= 1, left on == 2
+	// Per-instance animation state, right opens on DoorsOpen() >= 1, left on == 2
 	private float doorFrameRight = 0f;
 	private float doorFrameLeft = 0f;
 	private float frameTimeO = Float.NaN;
@@ -118,7 +118,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 			poseStack.mulPose(Axis.YP.rotationDegrees(180));
 			poseStack.translate(-0.5, 0.15, 0.5);
 
-			// Set bone rotations directly on the model — rotating the pose stack would
+			// Set bone rotations directly on the model, rotating the pose stack would
 			// swing the entire frame. These bones are on the exterior renderer's JSON,
 			// matching what setupInteriorDoorPose() does, but with eased angles.
 			cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntRightDoor").yRot = (float) Math

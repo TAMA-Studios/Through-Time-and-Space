@@ -39,7 +39,7 @@ public class FileHelper {
 
 	/**
 	 * Appends multiple lines at once in a single buffered write. Pass lines joined
-	 * with '\n' — far faster than looping appendFile().
+	 * with '\n', far faster than looping appendFile().
 	 */
 	private static native boolean appendLines(String absolutePath, String lines);
 
@@ -79,7 +79,7 @@ public class FileHelper {
 		return FMLPaths.GAMEDIR.get().resolve(getBaseDir()).toAbsolutePath().toString();
 	}
 
-	// -- Public API — same signatures as original FileHelper ------------------
+	// -- Public API, same signatures as original FileHelper ------------------
 
 	public static boolean appendToStoredFile(String fileName, String content) {
 		boolean ok = appendFile(storedPath(fileName), content);
@@ -114,7 +114,7 @@ public class FileHelper {
 	}
 
 	public static boolean getOrCreateFileAndAppend(String fileName, String toAppend) {
-		// appendFile already creates the file if absent — single native call
+		// appendFile already creates the file if absent, single native call
 		return appendFile(storedPath(fileName), toAppend);
 	}
 

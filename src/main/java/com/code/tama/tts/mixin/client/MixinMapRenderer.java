@@ -56,11 +56,11 @@ public abstract class MixinMapRenderer {
 		int scale = mapData.scale; // 0-4
 
 		Matrix4f matrix = poseStack.last().pose();
-		// Use the debug-line render type — it ignores depth and draws as solid quads.
+		// Use the debug-line render type, it ignores depth and draws as solid quads.
 		// gui_overlay is also fine; we use POSITION_COLOR explicitly.
 		VertexConsumer buf = bufferSource.getBuffer(RenderType.debugFilledBox());
 
-		// Current location — blue (R=0.27, G=0.53, B=1.0)
+		// Current location, blue (R=0.27, G=0.53, B=1.0)
 		SpaceTimeCoordinate loc = nav.getLocation();
 
 		// After getting mapData, get the map's dimension
@@ -74,7 +74,7 @@ public abstract class MixinMapRenderer {
 			}
 		}
 
-		// Destination — pink (R=1.0, G=0.41, B=0.71)
+		// Destination, pink (R=1.0, G=0.41, B=0.71)
 		SpaceTimeCoordinate dest = nav.getDestination();
 
 		if (dest != null && mapDimension.equals(dest.getLevel())) {

@@ -76,7 +76,7 @@ public class MathUtils {
 		return clampDouble(value, min, max);
 	}
 
-	// -- MC-dependent (kept in Java — needs Vec3 object) ----------------------
+	// -- MC-dependent (kept in Java, needs Vec3 object) ----------------------
 
 	/**
 	 * Angle (degrees) between two Vec3 vectors. Delegates to native using raw

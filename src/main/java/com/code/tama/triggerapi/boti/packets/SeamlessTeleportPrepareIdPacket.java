@@ -24,9 +24,9 @@ import com.code.tama.triggerapi.networking.ImAPacket;
  * packets can be matched against the correct in-flight teleport.
  *
  * This is intentionally separate from {@link SeamlessPreparePacket}: -
- * {@code SeamlessTeleportPrepareIdPacket} — "here comes geometry for UUID X"
+ * {@code SeamlessTeleportPrepareIdPacket}, "here comes geometry for UUID X"
  * (sent early, before geometry, during prepare()) -
- * {@code SeamlessPreparePacket} — "the respawn packet is coming NOW, suppress
+ * {@code SeamlessPreparePacket}, "the respawn packet is coming NOW, suppress
  * the loading screen" (sent just before changeDimension)
  */
 public class SeamlessTeleportPrepareIdPacket implements ImAPacket {

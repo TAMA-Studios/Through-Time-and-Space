@@ -16,7 +16,7 @@ import com.code.tama.triggerapi.boti.AbstractPortalTile;
 
 public class BotiWindowTile extends AbstractPortalTile {
 
-	// Cached master pos — null means "not computed yet", equal to getBlockPos()
+	// Cached master pos, null means "not computed yet", equal to getBlockPos()
 	// means "I am master"
 	@Nullable private BlockPos masterPos = null;
 	boolean invalidated = false;

@@ -125,7 +125,7 @@ public abstract class AbstractControlEntity extends Entity {
 	public abstract AABB getLocalAABB();
 
 	/**
-	 * @deprecated Use getLocalAABB() — kept so any subclasses that override
+	 * @deprecated Use getLocalAABB(), kept so any subclasses that override
 	 *             getAABB() still compile.
 	 */
 	@Deprecated

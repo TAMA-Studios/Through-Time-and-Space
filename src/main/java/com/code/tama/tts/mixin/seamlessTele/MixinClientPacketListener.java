@@ -29,11 +29,11 @@ public abstract class MixinClientPacketListener {
 		boolean pending = ClientSeamlessTeleportState.isSeamlessPending();
 		boolean expecting = ClientSeamlessTeleportState.isExpectingSeamlessRespawn();
 
-		LOGGER.info("[SMLS] handleRespawn HEAD — pending={}, expecting={}, thread={}", pending, expecting,
+		LOGGER.info("[SMLS] handleRespawn HEAD, pending={}, expecting={}, thread={}", pending, expecting,
 				Thread.currentThread().getName());
 
 		if (pending) {
-			// COMMIT arrived before the respawn packet — normal fast path.
+			// COMMIT arrived before the respawn packet, normal fast path.
 			// Only push suppression once; the Render thread is the one that
 			// actually executes vanilla handleRespawn body and calls setScreen.
 			ClientSeamlessTeleportState.pushSuppression();
@@ -43,7 +43,7 @@ public abstract class MixinClientPacketListener {
 		}
 
 		if (expecting) {
-			// Respawn arrived before COMMIT — hold it and cancel this call.
+			// Respawn arrived before COMMIT, hold it and cancel this call.
 			// replayHeldRespawnIfAny() will re-invoke handleRespawn after
 			// pushing suppression itself.
 			ClientSeamlessTeleportState.holdRespawn(packet);
@@ -51,13 +51,13 @@ public abstract class MixinClientPacketListener {
 			return;
 		}
 
-		// Not a seamless teleport — let vanilla run.
+		// Not a seamless teleport, let vanilla run.
 		tts$pushedSuppression = false;
 	}
 
 	@Inject(method = "handleRespawn", at = @At("RETURN"))
 	private void tts$onHandleRespawnReturn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		LOGGER.info("[SMLS] handleRespawn RETURN — pushedSuppression={}, thread={}", tts$pushedSuppression,
+		LOGGER.info("[SMLS] handleRespawn RETURN, pushedSuppression={}, thread={}", tts$pushedSuppression,
 				Thread.currentThread().getName());
 		if (tts$pushedSuppression) {
 			ClientSeamlessTeleportState.popSuppression();

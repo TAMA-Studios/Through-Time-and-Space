@@ -102,7 +102,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	@Override
 	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter getter,
 			@NotNull BlockPos pos, @NotNull CollisionContext context) {
-		// Reuse the same logic as getShape — collision needs the split shapes too
+		// Reuse the same logic as getShape, collision needs the split shapes too
 		return getShape(state, getter, pos, context);
 	}
 

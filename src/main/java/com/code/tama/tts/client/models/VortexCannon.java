@@ -43,7 +43,7 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(76, 60)
-				.addBox(-1.0F, -1.578F, -16.5456F, 2.0F, 11.0F, 8.0F, new CubeDeformation(0.0F)),
+						.addBox(-1.0F, -1.578F, -16.5456F, 2.0F, 11.0F, 8.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 14.578F, 1.5456F));
 
 		PartDefinition cube_r1 = base.addOrReplaceChild("cube_r1",
@@ -68,7 +68,7 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 
 	@Override
 	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-			float headPitch) {
+	                      float headPitch) {
 
 	}
 
@@ -80,38 +80,8 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-			float red, float green, float blue, float alpha) {
+	                           float red, float green, float blue, float alpha) {
 		this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
-
-	public static class VortexCannonAnimation {
-		public static final AnimationDefinition FIRE = AnimationDefinition.Builder.withLength(1.3333F)
-				.addAnimation("wheels",
-						new AnimationChannel(AnimationChannel.Targets.ROTATION,
-								new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(0.5F, KeyframeAnimations.degreeVec(15.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(1.25F, KeyframeAnimations.degreeVec(90.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM)))
-				.addAnimation("base",
-						new AnimationChannel(AnimationChannel.Targets.ROTATION,
-								new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(0.5F, KeyframeAnimations.degreeVec(5.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(1.25F, KeyframeAnimations.degreeVec(1.25F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(1.3333F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM)))
-				.addAnimation("base",
-						new AnimationChannel(AnimationChannel.Targets.POSITION,
-								new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(0.5F, KeyframeAnimations.posVec(0.0F, 1.9924F, -2.1743F),
-										AnimationChannel.Interpolations.CATMULLROM),
-								new Keyframe(1.25F, KeyframeAnimations.posVec(0.0F, 0.5F, -11.04F),
-										AnimationChannel.Interpolations.CATMULLROM)))
-				.build();
-	}
 }
+

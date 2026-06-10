@@ -92,7 +92,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 	/**
 	 * How often (in ticks) the proximity check runs. Running it every tick is
-	 * wasteful; every 10 ticks (~0.5 s) is fine — players can't cover 16 blocks in
+	 * wasteful; every 10 ticks (~0.5 s) is fine, players can't cover 16 blocks in
 	 * half a second at walking speed.
 	 */
 	private static final int PREPARE_CHECK_INTERVAL = 10;
@@ -142,7 +142,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 		}
 
 		if (this.targetLevel != null) {
-			// Target is known — run the proximity pre-load check on the server side.
+			// Target is known, run the proximity pre-load check on the server side.
 			tickProximityPrepare();
 			return;
 		}

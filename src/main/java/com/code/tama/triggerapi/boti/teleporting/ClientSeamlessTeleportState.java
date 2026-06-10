@@ -34,7 +34,7 @@ public final class ClientSeamlessTeleportState {
 	private static final Logger LOGGER = LogManager.getLogger("TTS$ClientSeamlessTeleportState");
 
 	// -------------------------------------------------------------------------
-	// Pending flag — set by COMMIT packet, cleared when handleRespawn sees it
+	// Pending flag, set by COMMIT packet, cleared when handleRespawn sees it
 	// -------------------------------------------------------------------------
 
 	private static volatile boolean pending = false;
@@ -50,7 +50,7 @@ public final class ClientSeamlessTeleportState {
 	}
 
 	// -------------------------------------------------------------------------
-	// Expecting flag — set by PREPARE packet, tells the mixin to HOLD the next
+	// Expecting flag, set by PREPARE packet, tells the mixin to HOLD the next
 	// respawn packet rather than letting it through unsuppressed
 	// -------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ public final class ClientSeamlessTeleportState {
 	}
 
 	// -------------------------------------------------------------------------
-	// Held respawn — populated when the respawn packet arrives before the COMMIT
+	// Held respawn, populated when the respawn packet arrives before the COMMIT
 	// -------------------------------------------------------------------------
 
 	@Nullable private static volatile ClientboundRespawnPacket heldRespawn = null;
@@ -89,12 +89,12 @@ public final class ClientSeamlessTeleportState {
 
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.getConnection() == null) {
-			LOGGER.warn("[SMLS] replayHeldRespawnIfAny — no connection, dropping held packet");
+			LOGGER.warn("[SMLS] replayHeldRespawnIfAny, no connection, dropping held packet");
 			return;
 		}
 
 		LOGGER.info("[SMLS] Replaying held respawn packet now that COMMIT arrived");
-		// Do NOT push suppression here — the HEAD inject sees pending=true and
+		// Do NOT push suppression here, the HEAD inject sees pending=true and
 		// pushes exactly once. Pushing here too would double-push with one pop,
 		// permanently leaking suppressDepth by 1 on every held-path teleport.
 		mc.getConnection().handleRespawn(held);
@@ -102,7 +102,7 @@ public final class ClientSeamlessTeleportState {
 	}
 
 	// -------------------------------------------------------------------------
-	// Suppression counter — incremented when handleRespawn is ours, decremented
+	// Suppression counter, incremented when handleRespawn is ours, decremented
 	// when it returns. MixinMinecraft checks this to suppress ReceivingLevelScreen.
 	// -------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ public final class ClientSeamlessTeleportState {
 	}
 
 	// -------------------------------------------------------------------------
-	// Staging buffer — geometry pre-gathered before the teleport
+	// Staging buffer, geometry pre-gathered before the teleport
 	// -------------------------------------------------------------------------
 
 	@Nullable private static volatile UUID currentTeleportId = null;

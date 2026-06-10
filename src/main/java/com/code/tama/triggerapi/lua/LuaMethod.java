@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * Supports up to 10 parameters (matching the {@code createFunctionWrapper}
  * limit in {@link LuaBridge}). Methods returning {@code void} return
  * {@code nil} in Lua. Parameter and return types follow the same conversion
- * rules as {@link LuaField} fields — primitives, Strings, and nested
+ * rules as {@link LuaField} fields, primitives, Strings, and nested
  * {@link LuaSerializable} objects are all handled automatically.
  *
  * <p>

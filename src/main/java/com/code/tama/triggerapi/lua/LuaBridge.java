@@ -240,7 +240,7 @@ public class LuaBridge {
 					}
 				}
 
-				// -- @LuaMethod methods — each wrapper closes over the live Java object,
+				// -- @LuaMethod methods, each wrapper closes over the live Java object,
 				// so mutations to fields are visible to subsequent method calls. ----
 				for (MethodInfo mi : getCachedAnnotatedMethods(obj.getClass())) {
 					LibFunction fn = createFunctionWrapper(obj, mi.method(), mi.method().getParameterCount(), false);

@@ -43,7 +43,7 @@ public class GrammarNazi {
 	// -- Block / Item ID extraction -------------------------------------------
 
 	/**
-	 * Pass {@code blockPos.toString()} — returns "x y z" with all formatting
+	 * Pass {@code blockPos.toString()}, returns "x y z" with all formatting
 	 * stripped.
 	 */
 	public static native String blockPosToString(String blockPosToString);

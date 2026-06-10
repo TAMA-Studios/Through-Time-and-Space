@@ -16,11 +16,11 @@ import com.code.tama.triggerapi.networking.ImAPacket;
 /**
  * Two modes, distinguished by whether a UUID is present:
  *
- * PREPARE — new SeamlessPreparePacket(uuid) Sent when a gather starts. Opens
+ * PREPARE, new SeamlessPreparePacket(uuid) Sent when a gather starts. Opens
  * the staging buffer and sets expectingSeamlessRespawn so the mixin knows to
  * HOLD the next ClientboundRespawnPacket until the COMMIT arrives.
  *
- * COMMIT — new SeamlessPreparePacket() Sent immediately before changeDimension
+ * COMMIT, new SeamlessPreparePacket() Sent immediately before changeDimension
  * on the server. Sets pending=true and replays the held respawn packet if it
  * already arrived.
  */
@@ -31,12 +31,12 @@ public class SeamlessPreparePacket implements ImAPacket {
 	/** null = COMMIT, non-null = PREPARE */
 	private final UUID teleportId;
 
-	/** PREPARE constructor — opens staging buffer. */
+	/** PREPARE constructor, opens staging buffer. */
 	public SeamlessPreparePacket(UUID teleportId) {
 		this.teleportId = teleportId;
 	}
 
-	/** COMMIT constructor — arms the pending flag. */
+	/** COMMIT constructor, arms the pending flag. */
 	public SeamlessPreparePacket() {
 		this.teleportId = null;
 	}
@@ -63,7 +63,7 @@ public class SeamlessPreparePacket implements ImAPacket {
 	}
 
 	// -------------------------------------------------------------------------
-	// Handler — runs on the main client thread via enqueueWork
+	// Handler, runs on the main client thread via enqueueWork
 	// -------------------------------------------------------------------------
 
 	public static void handle(SeamlessPreparePacket msg, Supplier<NetworkEvent.Context> ctxSupplier) {

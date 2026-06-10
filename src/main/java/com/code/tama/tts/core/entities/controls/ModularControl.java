@@ -74,7 +74,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		assert consoleTile.getLevel() != null;
 		this.consolePos = consoleTile.getBlockPos();
 
-		// Position is purely for NBT storage — actual spawn position is set by
+		// Position is purely for NBT storage, actual spawn position is set by
 		// summonButtons
 		// via entity.setPos(), which already applies the offs correction. Don't touch
 		// offs here.
@@ -82,7 +82,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 
 		// X/Z are centered on origin (entity position is the horizontal center of the
 		// control).
-		// Y starts at 0 and goes up — entity position is the bottom of the control,
+		// Y starts at 0 and goes up, entity position is the bottom of the control,
 		// matching
 		// the old min/max corner behavior so position + size stay in sync.
 		float fullH = record.hh() * 2f;
@@ -106,7 +106,7 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		return this.size;
 	}
 
-	/** @deprecated Kept for any external callers — delegates to getLocalAABB(). */
+	/** @deprecated Kept for any external callers, delegates to getLocalAABB(). */
 	@Deprecated
 	@Override
 	public AABB getAABB() {

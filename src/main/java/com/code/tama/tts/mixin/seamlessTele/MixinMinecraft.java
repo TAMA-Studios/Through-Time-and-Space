@@ -29,7 +29,7 @@ public abstract class MixinMinecraft {
 		boolean suppressing = ClientSeamlessTeleportState.isSuppressingLoadingScreen()
 				&& (screen instanceof ReceivingLevelScreen || screen instanceof ProgressScreen);
 
-		LOGGER.info("[SMLS] setScreen — screen={}, suppressing={}", screen.getClass().getSimpleName(), suppressing);
+		LOGGER.info("[SMLS] setScreen, screen={}, suppressing={}", screen.getClass().getSimpleName(), suppressing);
 
 		if (!suppressing)
 			return;

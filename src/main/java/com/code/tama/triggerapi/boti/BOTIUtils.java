@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.mixin.BlockAccessor;
@@ -141,6 +142,61 @@ public class BOTIUtils {
 		}
 	}
 
+	/**
+	 * Computes per-vertex ambient occlusion for a quad by sampling the light of
+	 * the 3 blocks surrounding each corner (face-adjacent, edge-adjacent, corner).
+	 * Returns 4 floats (0-1), one per vertex.
+	 */
+	private static float[] computeQuadAO(BakedQuad quad, BlockPos pos,
+	                                     int centerLight, Map<BlockPos, BotiBlockContainer> map) {
+
+		Direction face = quad.getDirection();
+		float[] result = new float[4];
+
+		// The 4 corners of this face, relative to block pos
+		// We need to sample the 3 neighbours at each corner for AO
+		int[][] corners = getFaceCornerOffsets(face);
+
+		for (int v = 0; v < 4; v++) {
+			int[] c = corners[v];
+			// The three neighbours that affect this corner's AO:
+			// side1 (along u), side2 (along v), and the diagonal corner
+			BlockPos n1 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
+					.offset(c[0], c[1], 0);
+			BlockPos n2 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
+					.offset(0, c[2], c[3]);
+			BlockPos nc = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
+					.offset(c[0], c[1] + c[2], c[3]);
+
+			float l1 = getLightAt(n1, centerLight, map);
+			float l2 = getLightAt(n2, centerLight, map);
+			float lc = getLightAt(nc, centerLight, map);
+
+			// Average the corner + its two edge neighbours
+			result[v] = (getLightAt(pos, centerLight, map) + l1 + l2 + lc) / 4f / 15f;
+		}
+		return result;
+	}
+
+	private static float getLightAt(BlockPos p, int fallback, Map<BlockPos, BotiBlockContainer> map) {
+		BotiBlockContainer c = map.get(p);
+		if (c == null) return fallback;
+		// Air neighbours (no container) contribute full light; solid ones contribute their stored light
+		return c.getState().isAir() ? fallback : c.getLight();
+	}
+
+	// Corner offsets for each face — (u1, v1, u2, v2) per vertex
+	private static int[][] getFaceCornerOffsets(Direction face) {
+		return switch (face) {
+			case UP    -> new int[][]{{-1,0,0,-1},{1,0,0,-1},{1,0,0,1},{-1,0,0,1}};
+			case DOWN  -> new int[][]{{-1,0,0,1},{1,0,0,1},{1,0,0,-1},{-1,0,0,-1}};
+			case NORTH -> new int[][]{{1,0,0,-1},{-1,0,0,-1},{-1,0,1,0},{1,0,1,0}};
+			case SOUTH -> new int[][]{{-1,0,0,-1},{1,0,0,-1},{1,0,1,0},{-1,0,1,0}};
+			case WEST  -> new int[][]{{0,-1,0,-1},{0,1,0,-1},{0,1,0,1},{0,-1,0,1}};
+			case EAST  -> new int[][]{{0,-1,0,1},{0,1,0,1},{0,1,0,-1},{0,-1,0,-1}};
+		};
+	}
+
 	public static VertexBuffer buildModelVBO(List<BotiBlockContainer> containers, AbstractPortalTile tile) {
 		Minecraft mc = Minecraft.getInstance();
 
@@ -178,7 +234,7 @@ public class BOTIUtils {
 
 					assert Minecraft.getInstance().level != null;
 					Minecraft.getInstance().getBlockRenderer().renderLiquid(BlockPos.ZERO, // world pos for neighbor
-																							// sampling — wrong dim but
+																							// sampling, wrong dim but
 																							// geometry shape is all we
 																							// need
 							Minecraft.getInstance().level, fluidCollector, container.getState(), fluidState);
@@ -191,46 +247,54 @@ public class BOTIUtils {
 				}
 			}
 
-			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap, direction)) {
-				// Only apply tint color if this quad actually uses it
-				float qr, qg, qb;
-				if (quad.isTinted()) {
-					qr = r;
-					qg = g;
-					qb = b;
-				} else {
-					qr = 1.0f;
-					qg = 1.0f;
-					qb = 1.0f;
-				}
+					// In buildModelVBO, replace the quad loop:
+					for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap, direction)) {
+						float qr, qg, qb;
+						if (quad.isTinted()) { qr = r; qg = g; qb = b; }
+						else                 { qr = 1f; qg = 1f; qb = 1f; }
 
-				// Apply directional shading like vanilla does
-				float shade = switch (quad.getDirection()) {
-					case DOWN -> 0.5f;
-					case UP -> 1.0f;
-					case NORTH, SOUTH -> 0.8f;
-					case EAST, WEST -> 0.6f;
-				};
+						float shade = switch (quad.getDirection()) {
+							case DOWN          -> 0.5f;
+							case UP            -> 1.0f;
+							case NORTH, SOUTH  -> 0.8f;
+							case EAST, WEST    -> 0.6f;
+						};
+						qr *= shade; qg *= shade; qb *= shade;
 
-				qr *= shade;
-				qg *= shade;
-				qb *= shade;
+						// Per-vertex smooth lighting instead of flat per-block
+						float[] ao = computeQuadAO(quad, pos, container.getLight(), chunkMap);
 
-				// Apply lighting directly to the shaded color
+						int[] vertices = quad.getVertices();
+						// BakedQuad vertex format: x,y,z,color,u,v,lightmap,normal — 8 ints per vertex
+						for (int v = 0; v < 4; v++) {
+							int base = v * 8;
+							float vx = Float.intBitsToFloat(vertices[base]);
+							float vy = Float.intBitsToFloat(vertices[base + 1]);
+							float vz = Float.intBitsToFloat(vertices[base + 2]);
+							float vu = Float.intBitsToFloat(vertices[base + 4]);
+							float vv = Float.intBitsToFloat(vertices[base + 5]);
 
-				float light = (float) (container.getLight()) / 15f; // Divide light by fullbright to get value 0-1
+							float vertLight = ao[v];
+							float fr = qr * vertLight;
+							float fg = qg * vertLight;
+							float fb = qb * vertLight;
 
-				qr *= light;
-				qg *= light;
-				qb *= light;
+							// Pack light as proper lightmap (block light in lower bits, sky in upper)
+							// Replace the whole light section in your quad loop:
 
-				buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, 0xf000f0, OverlayTexture.NO_OVERLAY, true);
-			}
+							int rawLight = Math.max(container.getLight(), 4);
+							int lightmap  = (rawLight << 20) | (rawLight << 4);
+
+							buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, lightmap, OverlayTexture.NO_OVERLAY, true);
+						}
+					}
 
 			stack.popPose();
 		});
 
 		BufferBuilder.RenderedBuffer rendered = buffer.end();
+		TTSMod.LOGGER.debug("[BOTI VBO] Built VBO with {} containers, buffer vertex count: {}",
+				containers.size(), rendered.drawState().vertexCount());
 
 		VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		vbo.bind();
@@ -253,8 +317,8 @@ public class BOTIUtils {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BakedModel model = blockRenderer.getBlockModel(state);
 		List<BakedQuad> quads = new java.util.ArrayList<>();
-
 		quads.addAll(model.getQuads(state, null, rand));
+		TTSMod.LOGGER.debug("[BOTI] block {} null-face quads: {}", state, quads.size());
 
 		for (Direction dir : Direction.values()) {
 			if (viewingFrom != null && dir.equals(viewingFrom.getOpposite()))

@@ -43,7 +43,7 @@ public class SeamlessTeleport {
 	 * Kicks off a background geometry gather so that when the player actually walks
 	 * through the portal the geometry is already (or nearly) staged.
 	 *
-	 * This is purely a performance hint — teleportTo() does NOT wait for it. Safe
+	 * This is purely a performance hint, teleportTo() does NOT wait for it. Safe
 	 * to call every tick; the ACTIVE_PREPARES guard debounces it.
 	 */
 	public static void prepare(ServerPlayer player, ServerLevel destLevel, BlockPos destPos, float yaw) {
@@ -95,9 +95,9 @@ public class SeamlessTeleport {
 		boolean geometryPreloaded = oldPrepareId != null && SeamlessTeleportState.isPrepared(player);
 
 		if (!geometryPreloaded) {
-			// No preloaded geometry — kick off an async gather so it arrives
+			// No preloaded geometry, kick off an async gather so it arrives
 			// shortly after the player lands.
-			LOGGER.info("[ST] No pre-loaded geometry — firing async gather.");
+			LOGGER.info("[ST] No pre-loaded geometry, firing async gather.");
 			UUID teleportId = UUID.randomUUID();
 			// PREPARE packet: opens the staging buffer AND arms the respawn-hold.
 			Networking.sendToPlayer(player, new SeamlessPreparePacket(teleportId));
@@ -119,7 +119,7 @@ public class SeamlessTeleport {
 		try {
 			// COMMIT: tells the client "the next respawn packet is ours".
 			// Both this packet and the vanilla respawn go through the same
-			// player.connection channel, so ordering is guaranteed — no sleep needed.
+			// player.connection channel, so ordering is guaranteed, no sleep needed.
 			Networking.sendToPlayer(player, new SeamlessPreparePacket());
 			player.connection.connection.channel().flush(); // drain before changeDimension writes respawn
 

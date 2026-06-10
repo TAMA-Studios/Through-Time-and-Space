@@ -24,7 +24,7 @@ public class BlockUtils {
 		NativeLoader.load("tts_native");
 	}
 
-	// -- Native (Rust) — pure math, no MC objects ------------------------------
+	// -- Native (Rust), pure math, no MC objects ------------------------------
 
 	private static native int getPackedLight(int blockLight, int skyLight);
 	private static native String getRelativeBlockPos(int bx, int by, int bz, int ox, int oy, int oz);
@@ -36,7 +36,7 @@ public class BlockUtils {
 	private static native boolean isWithinRadius(int x1, int y1, int z1, int x2, int y2, int z2, double radius);
 	private static native boolean sameChunk(int x1, int z1, int x2, int z2);
 
-	// -- Public API — same signatures as before --------------------------------
+	// -- Public API, same signatures as before --------------------------------
 
 	/** Breaks a block at the given position. */
 	public static void breakBlock(Level world, BlockPos pos) {

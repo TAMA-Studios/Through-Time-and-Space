@@ -57,7 +57,7 @@ public class WireBlockEntity extends BlockEntity {
 	}
 
 	// -------------------------------------------------------------------------
-	// NBT save / load — persists the relative offset
+	// NBT save / load, persists the relative offset
 	// -------------------------------------------------------------------------
 
 	@Override
@@ -81,7 +81,7 @@ public class WireBlockEntity extends BlockEntity {
 	}
 
 	// -------------------------------------------------------------------------
-	// Client sync — send full NBT on block update
+	// Client sync, send full NBT on block update
 	// -------------------------------------------------------------------------
 
 	@Override

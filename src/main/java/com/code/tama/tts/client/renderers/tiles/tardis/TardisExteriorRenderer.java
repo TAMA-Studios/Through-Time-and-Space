@@ -124,7 +124,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 		float maxDeg = exteriorTile.Model.getMaxDoorDeg();
 
-		// Left/right symmetry is a fixed ±1 — door direction comes from maxDeg's sign
+		// Left/right symmetry is a fixed ±1, door direction comes from maxDeg's sign
 		parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(easing(data.FrameLeft / DOOR_MAX) * maxDeg);
 		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-easing(data.FrameRight / DOOR_MAX) * maxDeg);
 

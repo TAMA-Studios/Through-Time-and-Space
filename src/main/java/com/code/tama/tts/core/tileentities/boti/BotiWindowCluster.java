@@ -45,7 +45,7 @@ public class BotiWindowCluster {
 	}
 
 	// -------------------------------------------------------------------------
-	// Master election — block closest to geometric center, tie-break: min X, then
+	// Master election, block closest to geometric center, tie-break: min X, then
 	// Y, then Z
 	// -------------------------------------------------------------------------
 

@@ -71,7 +71,7 @@ public class StencilUtils {
 		RenderSystem.depthMask(true);
 		pose.popPose();
 
-		// Scene pass — only draw where stencil == value
+		// Scene pass, only draw where stencil == value
 		GL11.glStencilMask(0x00);
 		GL11.glStencilFunc(GL11.GL_EQUAL, value, 0xFF);
 

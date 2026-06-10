@@ -30,7 +30,7 @@ public class Crater extends Feature<ProbabilityFeatureConfiguration> {
 		RandomSource random = context.random();
 		ProbabilityFeatureConfiguration config = context.config();
 
-		// Forge doesn't distinguish between client and server levels here — features
+		// Forge doesn't distinguish between client and server levels here, features
 		// only generate server-side.
 		if (random.nextFloat() >= config.probability) {
 			return false;

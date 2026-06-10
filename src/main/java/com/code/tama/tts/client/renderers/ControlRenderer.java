@@ -29,13 +29,13 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
 	 */
 	public static boolean SHOW_HITBOXES = false;
 
-	// Slice colours — each slice gets a distinct hue so you can count them
+	// Slice colours, each slice gets a distinct hue so you can count them
 	// visually.
 	// RGBA, values 0-255.
-	private static final int[][] SLICE_COLORS = {{255, 80, 80, 180}, // slice 0 — red
-			{80, 200, 80, 180}, // slice 1 — green
-			{80, 130, 255, 180}, // slice 2 — blue
-			{255, 200, 50, 180}, // slice 3 — yellow (if ever 4 slices)
+	private static final int[][] SLICE_COLORS = {{255, 80, 80, 180}, // slice 0, red
+			{80, 200, 80, 180}, // slice 1, green
+			{80, 130, 255, 180}, // slice 2, blue
+			{255, 200, 50, 180}, // slice 3, yellow (if ever 4 slices)
 	};
 	// Fallback colour for any slice beyond the array above
 	private static final int[] FALLBACK_COLOR = {220, 80, 220, 180};
@@ -139,7 +139,7 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
 
 	/**
 	 * Emits a single line segment. RenderType.lines() uses LINES topology so each
-	 * pair of vertices forms one segment — normals are required by the format.
+	 * pair of vertices forms one segment, normals are required by the format.
 	 */
 	private static void line(VertexConsumer consumer, PoseStack.Pose pose, float x0, float y0, float z0, float x1,
 			float y1, float z1, float r, float g, float b, float a) {
