@@ -1,9 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.monitor;
 
-import java.util.stream.Stream;
-
-import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.core.registries.misc.UIComponentRegistry;
@@ -16,35 +13,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 @SuppressWarnings("deprecation")
 public class CRTMonitorBlock extends AbstractMonitorBlock {
-	private final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createShape().optimize());
-
 	public CRTMonitorBlock(Properties p_49795_) {
 		super(p_49795_);
-	}
-
-	public VoxelShape createShape() {
-		return Stream.of(Block.box(0, 0, 0, 10, 16, 1), Block.box(0, 0, 1, 10, 4, 15), Block.box(0, 15, 1, 10, 16, 15),
-				Block.box(1, 4, 1, 10, 15, 15), Block.box(0, 0, 15, 10, 16, 16), Block.box(10, 0, 0, 16, 13, 16))
-				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
-	}
-
-	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter getter, @NotNull BlockPos pos,
-			@NotNull CollisionContext context) {
-		return SHAPE.GetShapeFromRotation(state.getValue(FACING).getClockWise());
 	}
 
 	@Override
@@ -63,10 +41,10 @@ public class CRTMonitorBlock extends AbstractMonitorBlock {
 		double mouseY = hitVec.y() - (double) pos.getY();
 
 		// Define shrink and offset values
-		double xzShrink = 2.0;
-		double yShrink = 5.0;
-		double xzOffset = 1.0;
-		double yOffset = -0.5;
+		double xzShrink = 4.0;
+		double yShrink = 6.5;
+		double xzOffset = 2.0;
+		double yOffset = 0.5;
 
 		// Convert pixel values to normalized block values
 		double xzShrinkNorm = xzShrink / 16.0;

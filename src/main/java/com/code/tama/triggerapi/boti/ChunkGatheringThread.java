@@ -32,9 +32,9 @@ import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
  * MC chunk/light APIs. Phases 2 and 3 (flood-fill BFS + exposed-face detection
  * with behind-portal culling) are handed off to native Rust.
  *
- * Two arrays drive the algorithm:
- *   solid      -- anything non-air; determines what gets rendered
- *   blocksFlow -- full opaque cubes only (isSolidRender); the BFS barrier
+ * Two arrays drive the algorithm: solid -- anything non-air; determines what
+ * gets rendered blocksFlow -- full opaque cubes only (isSolidRender); the BFS
+ * barrier
  *
  * Keeping these separate is critical. The BFS models exterior air, so it must
  * flow through glass, leaves, slabs, snow layers, redstone dust, piston heads,
@@ -44,34 +44,39 @@ import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 @SuppressWarnings({"unchecked", "deprecation"})
 public class ChunkGatheringThread extends Thread {
 
-	static { NativeLoader.load("tts_native"); }
+	static {
+		NativeLoader.load("tts_native");
+	}
 
 	// -- Native (Rust) ---------------------------------------------------------
 
 	/**
 	 * BFS flood-fill from all 6 faces of the bounding box.
 	 *
-	 * @param blocksFlow flat boolean array -- true ONLY for full opaque cubes
-	 * @param sizeX/Y/Z  array dimensions
+	 * @param blocksFlow
+	 *            flat boolean array -- true ONLY for full opaque cubes
+	 * @param sizeX/Y/Z
+	 *            array dimensions
 	 * @return flat boolean array of cells reachable from outside, same layout
 	 */
 	private static native boolean[] floodFill(boolean[] blocksFlow, int sizeX, int sizeY, int sizeZ);
 
 	/**
-	 * Finds every non-air block that has at least one reachable neighbour,
-	 * then culls blocks behind the portal.
+	 * Finds every non-air block that has at least one reachable neighbour, then
+	 * culls blocks behind the portal.
 	 *
-	 * @param solid     flat boolean array -- true for any non-air block
-	 * @param reachable output of floodFill
-	 * @param facing    0=+Z  1=-Z  2=+X  3=-X
-	 * @param originX/Y/Z local coords of targetPos within the array
+	 * @param solid
+	 *            flat boolean array -- true for any non-air block
+	 * @param reachable
+	 *            output of floodFill
+	 * @param facing
+	 *            0=+Z 1=-Z 2=+X 3=-X
+	 * @param originX/Y/Z
+	 *            local coords of targetPos within the array
 	 * @return flat indices of blocks to emit as BotiBlockContainers
 	 */
-	private static native int[] findExposedBlocks(
-			boolean[] solid, boolean[] reachable,
-			int sizeX, int sizeY, int sizeZ,
-			int originX, int originY, int originZ,
-			int facing);
+	private static native int[] findExposedBlocks(boolean[] solid, boolean[] reachable, int sizeX, int sizeY, int sizeZ,
+			int originX, int originY, int originZ, int facing);
 
 	// -- Fields ----------------------------------------------------------------
 
@@ -103,7 +108,7 @@ public class ChunkGatheringThread extends Thread {
 
 	/** TELEPORT mode */
 	public ChunkGatheringThread(int chunks, ServerLevel sourceLevel, ServerLevel destLevel, BlockPos targetPos,
-	                            float yaw, BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
+			float yaw, BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
 		this.setName("BOTIChunkGatheringThread");
 		this.chunks = chunks;
 		this.level = sourceLevel;
@@ -121,13 +126,17 @@ public class ChunkGatheringThread extends Thread {
 			return;
 		}
 
-		// Encode facing as int for Rust: 0=+Z  1=-Z  2=+X  3=-X
+		// Encode facing as int for Rust: 0=+Z 1=-Z 2=+X 3=-X
 		float localYaw = yaw;
 		int facing;
-		if      (localYaw >= -45  && localYaw <  45 ) facing = 0;
-		else if (localYaw >= 135  || localYaw < -135) facing = 1;
-		else if (localYaw >= 45   && localYaw < 135 ) facing = 2;
-		else                                          facing = 3;
+		if (localYaw >= -45 && localYaw < 45)
+			facing = 0;
+		else if (localYaw >= 135 || localYaw < -135)
+			facing = 1;
+		else if (localYaw >= 45 && localYaw < 135)
+			facing = 2;
+		else
+			facing = 3;
 
 		try {
 			ArrayList<BotiBlockContainer> containers = new ArrayList<>();
@@ -136,14 +145,14 @@ public class ChunkGatheringThread extends Thread {
 			int chunksToRender = Math.min(this.chunks, TTSConfig.ServerConfig.BOTI_RENDER_DISTANCE.get());
 
 			int uMin = -chunksToRender / 2;
-			int uMax =  chunksToRender / 2;
+			int uMax = chunksToRender / 2;
 			int vMin = -chunksToRender / 2;
-			int vMax =  chunksToRender / 2;
+			int vMax = chunksToRender / 2;
 
-			int baseChunkX        = (targetPos.getX() >> 4);
-			int baseChunkZ        = (targetPos.getZ() >> 4);
-			int sectionBaseY      = (targetPos.getY() - 16) & ~15;
-			int sectionBaseYAbove =  targetPos.getY()       & ~15;
+			int baseChunkX = (targetPos.getX() >> 4);
+			int baseChunkZ = (targetPos.getZ() >> 4);
+			int sectionBaseY = (targetPos.getY() - 16) & ~15;
+			int sectionBaseYAbove = targetPos.getY() & ~15;
 
 			int worldXMin = (baseChunkX + uMin + 1) * 16;
 			int worldXMax = (baseChunkX + uMax) * 16 + 15;
@@ -158,26 +167,27 @@ public class ChunkGatheringThread extends Thread {
 			int total = sizeX * sizeY * sizeZ;
 
 			// All flat arrays -- contiguous memory, index = x*sY*sZ + y*sZ + z
-			boolean[]     solid        = new boolean[total]; // non-air → render candidate
-			boolean[]     blocksFlow   = new boolean[total]; // full opaque only → BFS barrier
-			BlockState[]  blockStates  = new BlockState[total];
-			FluidState[]  fluidStates  = new FluidState[total];
-			boolean[]     teLocations  = new boolean[total];
+			boolean[] solid = new boolean[total]; // non-air → render candidate
+			boolean[] blocksFlow = new boolean[total]; // full opaque only → BFS barrier
+			BlockState[] blockStates = new BlockState[total];
+			FluidState[] fluidStates = new FluidState[total];
+			boolean[] teLocations = new boolean[total];
 			BlockEntity[] tileEntities = new BlockEntity[total];
-			int[]         packedLights = new int[total];
+			int[] packedLights = new int[total];
 
 			// -- Phase 1: gather block data ------------------------------------
 			// Must stay in Java -- accesses chunk sections, light engine, block entities.
 			for (int u = uMin + 1; u < uMax; u++) {
 				for (int v = vMin + 1; v < vMax; v++) {
 					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
-					ChunkAccess chunk = targetLevel.getChunkSource().getChunk(
-							chunkPos.x, chunkPos.z, ChunkStatus.FULL, true);
-					if (chunk == null) continue;
+					ChunkAccess chunk = targetLevel.getChunkSource().getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL,
+							true);
+					if (chunk == null)
+						continue;
 
 					targetLevel.getChunkSource().getLightEngine().lightChunk(chunk, false).join();
 
-					LevelChunkSection section      = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
+					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 
 					for (int y = 0; y < 16; y++) {
@@ -200,45 +210,48 @@ public class ChunkGatheringThread extends Thread {
 
 								BlockState state = section.getBlockState(x, y, z);
 								FluidState fluid = section.getFluidState(x, y, z);
-								BlockPos   pos   = new BlockPos(gx, gy, gz);
+								BlockPos pos = new BlockPos(gx, gy, gz);
 
-								if (portalTile != null && pos.equals(portalTile.getTargetPos())) continue;
+								if (portalTile != null && pos.equals(portalTile.getTargetPos()))
+									continue;
 
-								boolean isAir       = state.isAir();
-								solid[fi]           = !isAir;
+								boolean isAir = state.isAir();
+								solid[fi] = !isAir;
 								// BFS barrier: only full opaque cubes. Glass, leaves, slabs, snow,
 								// redstone, pistons heads etc. must NOT block the flood-fill or the
 								// blocks they sit on/next-to won't get reachable neighbours.
-								blocksFlow[fi]      = !isAir && state.isSolidRender(chunk, pos);
-								blockStates[fi]     = state;
-								fluidStates[fi]     = fluid;
-								BlockEntity te      = chunk.getBlockEntity(pos);
-								teLocations[fi]     = te != null;
-								tileEntities[fi]    = te;
-								packedLights[fi]    = targetLevel.getMaxLocalRawBrightness(pos);
+								blocksFlow[fi] = !isAir && state.isSolidRender(chunk, pos);
+								blockStates[fi] = state;
+								fluidStates[fi] = fluid;
+								BlockEntity te = chunk.getBlockEntity(pos);
+								teLocations[fi] = te != null;
+								tileEntities[fi] = te;
+								packedLights[fi] = targetLevel.getMaxLocalRawBrightness(pos);
 
 								// -- upper section ----------------------------
 								int gyA = sectionBaseYAbove + y;
 								int lyA = gyA - worldYMin;
-								if (lyA < 0 || lyA >= sizeY) continue;
+								if (lyA < 0 || lyA >= sizeY)
+									continue;
 
 								int fiA = lx * sizeY * sizeZ + lyA * sizeZ + lz;
 
 								BlockState stateA = sectionAbove.getBlockState(x, y, z);
 								FluidState fluidA = sectionAbove.getFluidState(x, y, z);
-								BlockPos   gpos   = new BlockPos(gx, gyA, gz);
+								BlockPos gpos = new BlockPos(gx, gyA, gz);
 
-								if (portalTile != null && gpos.equals(portalTile.getTargetPos())) continue;
+								if (portalTile != null && gpos.equals(portalTile.getTargetPos()))
+									continue;
 
-								boolean isAirA      = stateA.isAir();
-								solid[fiA]          = !isAirA;
-								blocksFlow[fiA]     = !isAirA && stateA.isSolidRender(chunk, gpos);
-								blockStates[fiA]    = stateA;
-								fluidStates[fiA]    = fluidA;
-								BlockEntity teA     = chunk.getBlockEntity(gpos);
-								teLocations[fiA]    = teA != null;
-								tileEntities[fiA]   = teA;
-								packedLights[fiA]   = targetLevel.getMaxLocalRawBrightness(gpos);
+								boolean isAirA = stateA.isAir();
+								solid[fiA] = !isAirA;
+								blocksFlow[fiA] = !isAirA && stateA.isSolidRender(chunk, gpos);
+								blockStates[fiA] = stateA;
+								fluidStates[fiA] = fluidA;
+								BlockEntity teA = chunk.getBlockEntity(gpos);
+								teLocations[fiA] = teA != null;
+								tileEntities[fiA] = teA;
+								packedLights[fiA] = targetLevel.getMaxLocalRawBrightness(gpos);
 							}
 						}
 					}
@@ -257,32 +270,31 @@ public class ChunkGatheringThread extends Thread {
 			int originY = targetPos.getY() - worldYMin;
 			int originZ = targetPos.getZ() - worldZMin;
 
-			int[] exposedIndices = findExposedBlocks(
-					solid, reachable, sizeX, sizeY, sizeZ,
-					originX, originY, originZ, facing);
+			int[] exposedIndices = findExposedBlocks(solid, reachable, sizeX, sizeY, sizeZ, originX, originY, originZ,
+					facing);
 
 			// -- Phase 4: emit BotiBlockContainers (Java -- needs MC objects) --
 			for (int fi : exposedIndices) {
-				int lx  = fi / (sizeY * sizeZ);
+				int lx = fi / (sizeY * sizeZ);
 				int rem = fi % (sizeY * sizeZ);
-				int ly  = rem / sizeZ;
-				int lz  = rem % sizeZ;
+				int ly = rem / sizeZ;
+				int lz = rem % sizeZ;
 
 				BlockState state = blockStates[fi];
-				if (state == null || state.isAir()) continue;
+				if (state == null || state.isAir())
+					continue;
 
 				int globalX = worldXMin + lx;
 				int globalY = worldYMin + ly;
 				int globalZ = worldZMin + lz;
 
-				BlockPos relPos = new BlockPos(
-						globalX - targetPos.getX(),
-						globalY - targetPos.getY(),
+				BlockPos relPos = new BlockPos(globalX - targetPos.getX(), globalY - targetPos.getY(),
 						globalZ - targetPos.getZ());
 
-				FluidState fluid  = fluidStates[fi];
-				int        packed = packedLights[fi];
-				if (packed == 0) packed = lastLight;
+				FluidState fluid = fluidStates[fi];
+				int packed = packedLights[fi];
+				if (packed == 0)
+					packed = lastLight;
 				lastLight = packed;
 
 				if (fluid == null || fluid.isEmpty())
@@ -300,7 +312,8 @@ public class ChunkGatheringThread extends Thread {
 				}
 			}
 
-			if (!containers.isEmpty()) batches.add(new ArrayList<>(containers));
+			if (!containers.isEmpty())
+				batches.add(new ArrayList<>(containers));
 
 			// -- Phase 5: deliver --------──────────────────────────────────────
 			if (resultCallback != null) {
@@ -311,13 +324,12 @@ public class ChunkGatheringThread extends Thread {
 			} else if (portalTile != null) {
 				TTSMod.LOGGER.debug("[ChunkGatheringThread] Sending {} portal batch packet(s).", batches.size());
 				for (int i = 0; i < batches.size(); i++) {
-					final int idx    = i;
+					final int idx = i;
 					final int total2 = batches.size();
 					Networking.INSTANCE.send(PacketDistributor.DIMENSION.with(() -> {
 						assert portalTile.getLevel() != null;
 						return portalTile.getLevel().dimension();
-					}), new PortalChunkDataPacketS2C(
-							portalTile.getBlockPos(), batches.get(idx), idx, total2));
+					}), new PortalChunkDataPacketS2C(portalTile.getBlockPos(), batches.get(idx), idx, total2));
 				}
 			}
 

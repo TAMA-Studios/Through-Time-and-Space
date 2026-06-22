@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.code.tama.triggerapi.helpers.FileHelper;
 import com.code.tama.tts.TTSMod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;

@@ -68,7 +68,7 @@ public class TTSBlocks {
 
 	public static final BlockEntry<CompressedMultiblockBlock> COMPRESSED_MULTIBLOCK = registrate()
 			.block("compressed_multiblock_block", CompressedMultiblockBlock::new).item(CompressedMultiblockItem::new)
-			.build().defaultBlockstate().register();
+			.build().properties(BlockBehaviour.Properties::noOcclusion).defaultBlockstate().register();
 
 	@MainTab
 	public static final BlockEntry<SonicConfiguratorBlock> SONIC_CONFIGURATOR_BLOCK = Builder("sonic_configurator",
@@ -81,6 +81,8 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<SkyBlock.VoidBlock> VOID_BLOCK = Builder("void_block", SkyBlock.VoidBlock::new)
 			.simpleItem().defaultBlockstate().register();
+
+	// ROUNDELS
 
 	@Roundel
 	public static final BlockEntry<Block> QUARTZ_ROUNDEL = SetupRoundel("quartz_block");
@@ -402,6 +404,8 @@ public class TTSBlocks {
 	@Roundel
 	public static final BlockEntry<Block> WARPED_PLANKS_OFFSET_ROUNDEL = SetupOffsetRoundel("warped_planks");
 
+	// NO MORE ROUNDELS!
+
 	@MainTab
 	public static final BlockEntry<Block> CHROMIUM_BLOCK = registrate()
 			.block("chromium_block", Block::new).properties((properties) -> properties
@@ -475,7 +479,7 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<HardLightBlock> HARD_LIGHT = Builder("hard_light", HardLightBlock::new)
-			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).blankBlockstate().simpleItem()
+			.properties(p -> copy(Blocks.GLASS, p).lightLevel(BlockState -> 8)).defaultBlockstate().simpleItem()
 			.register();
 
 	@MainTab
@@ -627,8 +631,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<EngineInterfaceBlock> TARDIS_ENGINE_INTERFACE = Builder("tardis_engine_interface",
-			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).sound(SoundType.STONE)).airState().simpleItem()
-			.register();
+			EngineInterfaceBlock::new).properties(p -> p.strength(1.5f).noOcclusion().sound(SoundType.STONE)).airState()
+			.simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<DynamorphicControllerBlock> DYNAMORPHIC_CONTROLLER_CORE = Builder(
@@ -646,9 +650,9 @@ public class TTSBlocks {
 			.airState().simpleItemNoData().register();
 
 	@DimensionalTab
-	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("organic/interior_rock", Block::new)
+	public static final BlockEntry<Block> INTERIOR_ROCK = Builder("interior_rock", Block::new)
 			.properties(p -> p.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.25f).sound(SoundType.METAL))
-			.blankBlockstate().simpleItem().register();
+			.defaultBlockstate().simpleItem().register();
 
 	/* Moon Block */
 	@DimensionalTab

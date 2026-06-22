@@ -91,7 +91,7 @@ public class JavaJSONRenderer {
 		if (!ReflectionBuddy.ModelPartAccess.cubes.apply(modelPart).isEmpty() || !children.isEmpty()) {
 			poseStack.pushPose();
 			// Translate to pivot (pixels to blocks)
-			float scale = 1.0F / 16.0F;
+			float scale = 1f / 16.0F;
 			poseStack.translate(this.x * scale, this.y * scale, this.z * scale);
 			// Apply rotations (X, Y, Z order, around pivot)
 			if (this.xRot != 0)

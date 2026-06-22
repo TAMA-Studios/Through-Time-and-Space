@@ -1,0 +1,8 @@
+{
+  "values" : {
+    "lightmap" : "tts:textures/exteriors/ichnea/hudolin.png",
+    "modelname" : "tts:models/exterior/ichnea/hudolin.json",
+    "name" : "ichnea.hudolin",
+    "texture" : "tts:textures/exteriors/ichnea/hudolin.png"
+  }
+}

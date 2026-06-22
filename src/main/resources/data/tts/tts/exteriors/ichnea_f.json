@@ -1,0 +1,8 @@
+{
+  "values" : {
+    "lightmap" : "tts:textures/exteriors/ichnea/f.png",
+    "modelname" : "tts:models/exterior/ichnea/f.json",
+    "name" : "ichnea.f_box",
+    "texture" : "tts:textures/exteriors/ichnea/f.png"
+  }
+}

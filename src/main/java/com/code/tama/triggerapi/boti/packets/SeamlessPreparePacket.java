@@ -16,9 +16,9 @@ import com.code.tama.triggerapi.networking.ImAPacket;
 /**
  * Two modes, distinguished by whether a UUID is present:
  *
- * PREPARE, new SeamlessPreparePacket(uuid) Sent when a gather starts. Opens
- * the staging buffer and sets expectingSeamlessRespawn so the mixin knows to
- * HOLD the next ClientboundRespawnPacket until the COMMIT arrives.
+ * PREPARE, new SeamlessPreparePacket(uuid) Sent when a gather starts. Opens the
+ * staging buffer and sets expectingSeamlessRespawn so the mixin knows to HOLD
+ * the next ClientboundRespawnPacket until the COMMIT arrives.
  *
  * COMMIT, new SeamlessPreparePacket() Sent immediately before changeDimension
  * on the server. Sets pending=true and replays the held respawn packet if it

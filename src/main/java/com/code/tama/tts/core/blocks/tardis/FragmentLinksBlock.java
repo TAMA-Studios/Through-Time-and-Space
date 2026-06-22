@@ -26,7 +26,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 @SuppressWarnings("deprecation")
@@ -165,9 +167,61 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public @NotNull VoxelShape getShape(@NotNull BlockState p_60555_, @NotNull BlockGetter p_60556_,
-			@NotNull BlockPos p_60557_, @NotNull CollisionContext p_60558_) {
-		return Block.box(5, 5, 5, 11, 11, 11);
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter p_60556_, @NotNull BlockPos pos,
+			@NotNull CollisionContext p_60558_) {
+		VoxelShape base = Block.box(5, 5, 5, 11, 11, 11);
+
+		if (state.getValue(NORTH).booleanValue()) {
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0.3125, 0.3125, 0, 0.6875, 0.6875, 0.0625), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.375, 0.375, 0.0625, 0.625, 0.625, 0.3125), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		if (state.getValue(SOUTH).booleanValue()) {
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0.3125, 0.3125, 0.9375, 0.6875, 0.6875, 1), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.375, 0.375, 0.6875, 0.625, 0.625, 0.9375), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		if (state.getValue(EAST).booleanValue()) {
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0.9375, 0.3125, 0.3125, 1, 0.6875, 0.6875), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.6875, 0.375, 0.375, 0.9375, 0.625, 0.625), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		if (state.getValue(WEST).booleanValue()) {
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0, 0.3125, 0.3125, 0.0625, 0.6875, 0.6875), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.0625, 0.375, 0.375, 0.3125, 0.625, 0.625), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		if (state.getValue(UP).booleanValue()) {
+
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0.3125, 0.9375, 0.3125, 0.6875, 1, 0.6875), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.375, 0.6875, 0.375, 0.625, 0.9375, 0.625), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		if (state.getValue(DOWN).booleanValue()) {
+
+			VoxelShape extruded = Shapes.empty();
+			extruded = Shapes.join(extruded, Shapes.box(0.3125, 0, 0.3125, 0.6875, 0.0625, 0.6875), BooleanOp.OR);
+			extruded = Shapes.join(extruded, Shapes.box(0.375, 0.0625, 0.375, 0.625, 0.3125, 0.625), BooleanOp.OR);
+
+			Shapes.join(base, extruded, BooleanOp.OR);
+		}
+
+		return base;
 	}
 
 	@Override

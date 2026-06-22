@@ -9,10 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.client.animation.AnimationChannel;
-import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.Keyframe;
-import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -43,7 +39,7 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(76, 60)
-						.addBox(-1.0F, -1.578F, -16.5456F, 2.0F, 11.0F, 8.0F, new CubeDeformation(0.0F)),
+				.addBox(-1.0F, -1.578F, -16.5456F, 2.0F, 11.0F, 8.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 14.578F, 1.5456F));
 
 		PartDefinition cube_r1 = base.addOrReplaceChild("cube_r1",
@@ -68,7 +64,7 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 
 	@Override
 	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-	                      float headPitch) {
+			float headPitch) {
 
 	}
 
@@ -80,8 +76,7 @@ public class VortexCannon<T extends VortexCannonTile> extends HierarchicalModel<
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-	                           float red, float green, float blue, float alpha) {
+			float red, float green, float blue, float alpha) {
 		this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }
-

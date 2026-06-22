@@ -144,6 +144,9 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 					(pose, botiSource) -> {
 						pose.pushPose();
 						pose.translate(0, 1.5, 0);
+
+						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
+
 						boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 								OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 						if (true) // TODO: CONFIG FOR PARTIAL BOTI
@@ -178,6 +181,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						// botiSource.endBatch();
 
 						pose.mulPose(Axis.XP.rotationDegrees(180));
+
 						BOTIUtils.RenderScene(pose, exteriorTile);
 						botiSource.endBatch();
 						pose.popPose();
@@ -185,6 +189,9 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						pose.pushPose();
 						pose.translate(0, 1.5, 0);
 						RenderSystem.disableDepthTest();
+
+						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
+
 						parsed.getPart("LeftDoor").render(stack,
 								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
 								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
@@ -205,6 +212,8 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		}
 
 		stack.translate(0, 1.5, 0);
+
+		stack.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
 		parsed.getPart("baseRoot").render(stack,
 				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
 				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);

@@ -33,7 +33,6 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			"textures/tiles/monitor/galifrayan.png");
 	public final BlockEntityRendererProvider.Context context;
 	public static final int fullBright = 0xF000F0;
-	int light = 0xf00f0;
 
 	UICategory category;
 
@@ -46,27 +45,11 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 		if (monitor.getLevel() == null)
 			return;
-		// StencilUtils.DrawStencil(poseStack, (pose) -> {
-		// pose.pushPose();
-		// this.ApplyDefaultTransforms(pose, monitor);
-		// // poseStack.translate(0.5, 0.5, 0);
-		//
-		// pose.translate(-44, -0.5, 0);
-		// pose.scale(5.5f, 5.5f, 0);
-		//
-		// renderFrame(monitor, pose, bufferSource, fullBright);
-		// pose.popPose();
-		// }, (pose) -> {
-
-		// GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 
 		boolean isInTARDIS = GetTARDISCapSupplier(monitor.getLevel()).isPresent();
 
-		pose.pushPose();
-
-		this.ApplyDefaultTransforms(pose, monitor);
-
-		if (this.category == null || (this.category != null && this.category.getID() != monitor.categoryID)) {
+		// Resolve category once per frame if needed
+		if (this.category == null || this.category.getID() != monitor.categoryID) {
 			UICategoryRegistry.UI_CATEGORIES.getEntries().forEach(reg -> {
 				if (reg.get().getID() == monitor.getCategoryID()) {
 					this.category = reg.get();
@@ -74,58 +57,53 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 			});
 		}
 
+		// 1. Background (bottom layer)
+		pose.pushPose();
+		this.ApplyDefaultTransforms(pose, monitor);
+		renderBackground(monitor, pose, bufferSource, fullBright);
+		pose.popPose();
+
+		// 2. Category content / "not in TARDIS" text
+		pose.pushPose();
+		this.ApplyDefaultTransforms(pose, monitor);
 		if (monitor.isPowered()) {
 			if (isInTARDIS)
-				this.category.Render(monitor, pose, bufferSource, combinedLight);
+				this.category.Render(monitor, pose, bufferSource, fullBright);
 			else
 				RenderText(monitor, "Not in a TARDIS!", pose, bufferSource, -40, 25);
 		}
-
 		pose.popPose();
+
+		// 3. UI Components
 		pose.pushPose();
-
 		this.ApplyDefaultTransforms(pose, monitor);
-
-		renderUIComponents(monitor, pose, bufferSource, light);
-
+		renderUIComponents(monitor, pose, bufferSource, fullBright);
 		pose.popPose();
+
+		// 4. Rotating Gallifreyan image (top layer)
 		pose.pushPose();
-
 		this.ApplyDefaultTransforms(pose, monitor);
-
-		renderRotatingImage(monitor, pose, bufferSource, light);
-
+		renderRotatingImage(monitor, pose, bufferSource, fullBright);
 		pose.popPose();
-
-		pose.pushPose();
-
-		this.ApplyDefaultTransforms(pose, monitor);
-
-		renderBackground(monitor, pose, bufferSource, light);
-
-		pose.popPose();
-
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-		// });
 	}
+
+	// ---------------------------------------------------------------------------
+	// Rotating Gallifreyan image
+	// ---------------------------------------------------------------------------
 
 	private void renderRotatingImage(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
 			int combinedLight) {
 		if (!monitor.isPowered())
 			return;
 
-		ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/tiles/monitor/galifrayan.png");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-
-		RenderSystem.setShaderTexture(0, texture);
+		// Flush any pending MultiBufferSource geometry before raw GL work
+		if (bufferSource instanceof MultiBufferSource.BufferSource bs)
+			bs.endBatch();
 
 		assert monitor.getLevel() != null;
 		float rotationAngle = (monitor.getLevel().getGameTime() % 360) + Minecraft.getInstance().getFrameTime();
 
+		poseStack.pushPose();
 		poseStack.translate(25, 70, 0);
 		poseStack.scale(20, 20, 20);
 		poseStack.mulPose(Axis.ZP.rotationDegrees(rotationAngle));
@@ -134,140 +112,168 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
+		// Set state immediately before draw — strict ordering
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.depthMask(false);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, GALLIFREYAN);
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(matrix, -0.5f, -0.5f, 0).uv(0, 0).endVertex();
 		buffer.vertex(matrix, 0.5f, -0.5f, 0).uv(1, 0).endVertex();
 		buffer.vertex(matrix, 0.5f, 0.5f, 0).uv(1, 1).endVertex();
 		buffer.vertex(matrix, -0.5f, 0.5f, 0).uv(0, 1).endVertex();
-
 		BufferUploader.drawWithShader(buffer.end());
 
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		// Reset state
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.depthMask(true);
+		RenderSystem.disableBlend();
+
+		poseStack.popPose();
 	}
+
+	// ---------------------------------------------------------------------------
+	// UI Components
+	// ---------------------------------------------------------------------------
 
 	private void renderUIComponents(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
 			int combinedLight) {
-		ResourceLocation texture = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		// Flush pending geometry before raw GL work
+		if (bufferSource instanceof MultiBufferSource.BufferSource bs)
+			bs.endBatch();
 
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-
+		poseStack.pushPose();
 		poseStack.translate(-45.41, -1.7, 0);
 		poseStack.scale(5.67f, 5.67f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.depthMask(false);
+
 		for (RegistryObject<UIComponent> object : UIComponentRegistry.UI_COMPONENTS.getEntries()) {
 			UIComponent component = object.get();
-			RenderSystem.setShaderTexture(0, component.GetIcon());
+
 			if (component.category.getID() != monitor.categoryID && component.category != UICategoryRegistry.ALL.get())
 				continue;
 
 			if ((component instanceof UIComponentPower) || monitor.isPowered()) {
-				buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+				// Strict ordering: shader → texture → color → draw
+				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+				RenderSystem.setShaderTexture(0, component.GetIcon());
+				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 				float XStart = component.XYBounds().get(Axis.XP)[0];
 				float YStart = component.XYBounds().get(Axis.YP)[0];
 				float XEnd = component.XYBounds().get(Axis.XP)[1];
 				float YEnd = component.XYBounds().get(Axis.YP)[1];
 
+				buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 				buffer.vertex(matrix, XStart, YEnd, 0).uv(0, 1).endVertex();
 				buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
 				buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
 				buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
 				BufferUploader.drawWithShader(buffer.end());
-			}
 
-			// buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			//
-			// float XStart = 0;
-			// float YStart = 0;
-			// float XEnd = 16;
-			// float YEnd = 16;
-			//
-			// buffer.vertex(matrix, XStart, YEnd, 0).uv(0, 1).endVertex();
-			// buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
-			// buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
-			// buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
-			// BufferUploader.drawWithShader(buffer.end());
+				// Reset color after every individual draw
+				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+			}
 		}
 
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		// Restore state
+		RenderSystem.depthMask(true);
+		RenderSystem.disableBlend();
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+		poseStack.popPose();
 	}
+
+	// ---------------------------------------------------------------------------
+	// Background overlay
+	// ---------------------------------------------------------------------------
 
 	private void renderBackground(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
 			int combinedLight) {
 		if (!monitor.isPowered())
 			return;
-		ResourceLocation texture;
-		if (this.category != null)
-			texture = this.category.getOverlay();
-		else
-			texture = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.disableBlend();
-		RenderSystem.enableDepthTest();
 
+		// Flush pending geometry before raw GL work
+		if (bufferSource instanceof MultiBufferSource.BufferSource bs)
+			bs.endBatch();
+
+		ResourceLocation texture = (this.category != null)
+				? this.category.getOverlay()
+				: new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
+
+		poseStack.pushPose();
 		poseStack.translate(-44, -0.5, 0);
 		poseStack.scale(5.5f, 5.5f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
+		// Strict ordering: shader → texture → color → draw
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.depthMask(false);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-		float XStart = 0;
-		float YStart = 0;
-		float XEnd = 16;
-		float YEnd = 16;
-
-		buffer.vertex(matrix, XStart, YEnd, 0).uv(0, 1).endVertex();
-		buffer.vertex(matrix, XEnd, YEnd, 0).uv(1, 1).endVertex();
-		buffer.vertex(matrix, XEnd, YStart, 0).uv(1, 0).endVertex();
-		buffer.vertex(matrix, XStart, YStart, 0).uv(0, 0).endVertex();
+		buffer.vertex(matrix, 0f, 16f, 0).uv(0, 1).endVertex();
+		buffer.vertex(matrix, 16f, 16f, 0).uv(1, 1).endVertex();
+		buffer.vertex(matrix, 16f, 0f, 0).uv(1, 0).endVertex();
+		buffer.vertex(matrix, 0f, 0f, 0).uv(0, 0).endVertex();
 		BufferUploader.drawWithShader(buffer.end());
 
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableBlend();
+		// Reset state
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		RenderSystem.depthMask(true);
+		RenderSystem.disableBlend();
 
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		poseStack.popPose();
 	}
+
+	// ---------------------------------------------------------------------------
+	// Frame (currently unused in main render, kept for reference)
+	// ---------------------------------------------------------------------------
 
 	private void renderFrame(AbstractMonitorTile monitor, PoseStack poseStack, MultiBufferSource bufferSource,
 			int combinedLight) {
-		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.disableBlend();
-		RenderSystem.enableDepthTest();
+		if (bufferSource instanceof MultiBufferSource.BufferSource bs)
+			bs.endBatch();
 
+		poseStack.pushPose();
 		poseStack.translate(-0.25, -0.25, 0);
 		poseStack.scale(1.0325f, 1.0325f, 0.001f);
 
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-
-		float XStart = 0;
-		float YStart = 0;
-		float XEnd = 16;
-		float YEnd = 16;
-
-		buffer.vertex(matrix, XStart, YEnd, 0).endVertex();
-		buffer.vertex(matrix, XEnd, YEnd, 0).endVertex();
-		buffer.vertex(matrix, XEnd, YStart, 0).endVertex();
-		buffer.vertex(matrix, XStart, YStart, 0).endVertex();
-
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		buffer.vertex(matrix, 0f, 16f, 0).endVertex();
+		buffer.vertex(matrix, 16f, 16f, 0).endVertex();
+		buffer.vertex(matrix, 16f, 0f, 0).endVertex();
+		buffer.vertex(matrix, 0f, 0f, 0).endVertex();
 		BufferUploader.drawWithShader(buffer.end());
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableBlend();
 
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+		poseStack.popPose();
 	}
+
+	// ---------------------------------------------------------------------------
+	// Transform helpers
+	// ---------------------------------------------------------------------------
 
 	public float Offset() {
 		return 44.3f;

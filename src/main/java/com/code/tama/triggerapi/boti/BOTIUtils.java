@@ -143,12 +143,12 @@ public class BOTIUtils {
 	}
 
 	/**
-	 * Computes per-vertex ambient occlusion for a quad by sampling the light of
-	 * the 3 blocks surrounding each corner (face-adjacent, edge-adjacent, corner).
+	 * Computes per-vertex ambient occlusion for a quad by sampling the light of the
+	 * 3 blocks surrounding each corner (face-adjacent, edge-adjacent, corner).
 	 * Returns 4 floats (0-1), one per vertex.
 	 */
-	private static float[] computeQuadAO(BakedQuad quad, BlockPos pos,
-	                                     int centerLight, Map<BlockPos, BotiBlockContainer> map) {
+	private static float[] computeQuadAO(BakedQuad quad, BlockPos pos, int centerLight,
+			Map<BlockPos, BotiBlockContainer> map) {
 
 		Direction face = quad.getDirection();
 		float[] result = new float[4];
@@ -161,12 +161,9 @@ public class BOTIUtils {
 			int[] c = corners[v];
 			// The three neighbours that affect this corner's AO:
 			// side1 (along u), side2 (along v), and the diagonal corner
-			BlockPos n1 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
-					.offset(c[0], c[1], 0);
-			BlockPos n2 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
-					.offset(0, c[2], c[3]);
-			BlockPos nc = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ())
-					.offset(c[0], c[1] + c[2], c[3]);
+			BlockPos n1 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ()).offset(c[0], c[1], 0);
+			BlockPos n2 = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ()).offset(0, c[2], c[3]);
+			BlockPos nc = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ()).offset(c[0], c[1] + c[2], c[3]);
 
 			float l1 = getLightAt(n1, centerLight, map);
 			float l2 = getLightAt(n2, centerLight, map);
@@ -180,20 +177,22 @@ public class BOTIUtils {
 
 	private static float getLightAt(BlockPos p, int fallback, Map<BlockPos, BotiBlockContainer> map) {
 		BotiBlockContainer c = map.get(p);
-		if (c == null) return fallback;
-		// Air neighbours (no container) contribute full light; solid ones contribute their stored light
+		if (c == null)
+			return fallback;
+		// Air neighbours (no container) contribute full light; solid ones contribute
+		// their stored light
 		return c.getState().isAir() ? fallback : c.getLight();
 	}
 
 	// Corner offsets for each face — (u1, v1, u2, v2) per vertex
 	private static int[][] getFaceCornerOffsets(Direction face) {
 		return switch (face) {
-			case UP    -> new int[][]{{-1,0,0,-1},{1,0,0,-1},{1,0,0,1},{-1,0,0,1}};
-			case DOWN  -> new int[][]{{-1,0,0,1},{1,0,0,1},{1,0,0,-1},{-1,0,0,-1}};
-			case NORTH -> new int[][]{{1,0,0,-1},{-1,0,0,-1},{-1,0,1,0},{1,0,1,0}};
-			case SOUTH -> new int[][]{{-1,0,0,-1},{1,0,0,-1},{1,0,1,0},{-1,0,1,0}};
-			case WEST  -> new int[][]{{0,-1,0,-1},{0,1,0,-1},{0,1,0,1},{0,-1,0,1}};
-			case EAST  -> new int[][]{{0,-1,0,1},{0,1,0,1},{0,1,0,-1},{0,-1,0,-1}};
+			case UP -> new int[][]{{-1, 0, 0, -1}, {1, 0, 0, -1}, {1, 0, 0, 1}, {-1, 0, 0, 1}};
+			case DOWN -> new int[][]{{-1, 0, 0, 1}, {1, 0, 0, 1}, {1, 0, 0, -1}, {-1, 0, 0, -1}};
+			case NORTH -> new int[][]{{1, 0, 0, -1}, {-1, 0, 0, -1}, {-1, 0, 1, 0}, {1, 0, 1, 0}};
+			case SOUTH -> new int[][]{{-1, 0, 0, -1}, {1, 0, 0, -1}, {1, 0, 1, 0}, {-1, 0, 1, 0}};
+			case WEST -> new int[][]{{0, -1, 0, -1}, {0, 1, 0, -1}, {0, 1, 0, 1}, {0, -1, 0, 1}};
+			case EAST -> new int[][]{{0, -1, 0, 1}, {0, 1, 0, 1}, {0, 1, 0, -1}, {0, -1, 0, -1}};
 		};
 	}
 
@@ -247,54 +246,63 @@ public class BOTIUtils {
 				}
 			}
 
-					// In buildModelVBO, replace the quad loop:
-					for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap, direction)) {
-						float qr, qg, qb;
-						if (quad.isTinted()) { qr = r; qg = g; qb = b; }
-						else                 { qr = 1f; qg = 1f; qb = 1f; }
+			// In buildModelVBO, replace the quad loop:
+			for (BakedQuad quad : getModelFromBlock(container.getState(), pos, rand, chunkMap, direction)) {
+				float qr, qg, qb;
+				if (quad.isTinted()) {
+					qr = r;
+					qg = g;
+					qb = b;
+				} else {
+					qr = 1f;
+					qg = 1f;
+					qb = 1f;
+				}
 
-						float shade = switch (quad.getDirection()) {
-							case DOWN          -> 0.5f;
-							case UP            -> 1.0f;
-							case NORTH, SOUTH  -> 0.8f;
-							case EAST, WEST    -> 0.6f;
-						};
-						qr *= shade; qg *= shade; qb *= shade;
+				float shade = switch (quad.getDirection()) {
+					case DOWN -> 0.5f;
+					case UP -> 1.0f;
+					case NORTH, SOUTH -> 0.8f;
+					case EAST, WEST -> 0.6f;
+				};
+				qr *= shade;
+				qg *= shade;
+				qb *= shade;
 
-						// Per-vertex smooth lighting instead of flat per-block
-						float[] ao = computeQuadAO(quad, pos, container.getLight(), chunkMap);
+				// Per-vertex smooth lighting instead of flat per-block
+				float[] ao = computeQuadAO(quad, pos, container.getLight(), chunkMap);
 
-						int[] vertices = quad.getVertices();
-						// BakedQuad vertex format: x,y,z,color,u,v,lightmap,normal — 8 ints per vertex
-						for (int v = 0; v < 4; v++) {
-							int base = v * 8;
-							float vx = Float.intBitsToFloat(vertices[base]);
-							float vy = Float.intBitsToFloat(vertices[base + 1]);
-							float vz = Float.intBitsToFloat(vertices[base + 2]);
-							float vu = Float.intBitsToFloat(vertices[base + 4]);
-							float vv = Float.intBitsToFloat(vertices[base + 5]);
+				int[] vertices = quad.getVertices();
+				// BakedQuad vertex format: x,y,z,color,u,v,lightmap,normal — 8 ints per vertex
+				for (int v = 0; v < 4; v++) {
+					int base = v * 8;
+					float vx = Float.intBitsToFloat(vertices[base]);
+					float vy = Float.intBitsToFloat(vertices[base + 1]);
+					float vz = Float.intBitsToFloat(vertices[base + 2]);
+					float vu = Float.intBitsToFloat(vertices[base + 4]);
+					float vv = Float.intBitsToFloat(vertices[base + 5]);
 
-							float vertLight = ao[v];
-							float fr = qr * vertLight;
-							float fg = qg * vertLight;
-							float fb = qb * vertLight;
+					float vertLight = ao[v];
+					float fr = qr * vertLight;
+					float fg = qg * vertLight;
+					float fb = qb * vertLight;
 
-							// Pack light as proper lightmap (block light in lower bits, sky in upper)
-							// Replace the whole light section in your quad loop:
+					// Pack light as proper lightmap (block light in lower bits, sky in upper)
+					// Replace the whole light section in your quad loop:
 
-							int rawLight = Math.max(container.getLight(), 4);
-							int lightmap  = (rawLight << 20) | (rawLight << 4);
+					int rawLight = Math.max(container.getLight(), 4);
+					int lightmap = (rawLight << 20) | (rawLight << 4);
 
-							buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, lightmap, OverlayTexture.NO_OVERLAY, true);
-						}
-					}
+					buffer.putBulkData(stack.last(), quad, qr, qg, qb, 1.0f, lightmap, OverlayTexture.NO_OVERLAY, true);
+				}
+			}
 
 			stack.popPose();
 		});
 
 		BufferBuilder.RenderedBuffer rendered = buffer.end();
-		TTSMod.LOGGER.debug("[BOTI VBO] Built VBO with {} containers, buffer vertex count: {}",
-				containers.size(), rendered.drawState().vertexCount());
+		TTSMod.LOGGER.debug("[BOTI VBO] Built VBO with {} containers, buffer vertex count: {}", containers.size(),
+				rendered.drawState().vertexCount());
 
 		VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		vbo.bind();

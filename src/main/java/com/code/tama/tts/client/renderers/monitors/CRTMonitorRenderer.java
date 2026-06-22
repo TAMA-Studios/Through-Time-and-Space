@@ -12,8 +12,8 @@ public class CRTMonitorRenderer extends AbstractMonitorRenderer<CRTMonitorTile> 
 	}
 
 	public void ApplyCustomTransforms(PoseStack stack) {
-		stack.scale((float) 1 - ((float) 2 / 16), 1 - ((float) 5 / 16), 1 - ((float) 2 / 16));
-		stack.translate(0, 0.5 * 16, 0);
+		stack.scale((float) 1 - ((float) 4 / 16), 1 - ((float) 6 / 16), 1 - ((float) 4 / 16));
+		stack.translate(0, 1.1 * 16, -8);
 	}
 
 	public float Offset() {

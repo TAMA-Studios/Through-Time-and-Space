@@ -43,8 +43,8 @@ public class SeamlessTeleport {
 	 * Kicks off a background geometry gather so that when the player actually walks
 	 * through the portal the geometry is already (or nearly) staged.
 	 *
-	 * This is purely a performance hint, teleportTo() does NOT wait for it. Safe
-	 * to call every tick; the ACTIVE_PREPARES guard debounces it.
+	 * This is purely a performance hint, teleportTo() does NOT wait for it. Safe to
+	 * call every tick; the ACTIVE_PREPARES guard debounces it.
 	 */
 	public static void prepare(ServerPlayer player, ServerLevel destLevel, BlockPos destPos, float yaw) {
 		if (ACTIVE_PREPARES.containsKey(player.getUUID()))
