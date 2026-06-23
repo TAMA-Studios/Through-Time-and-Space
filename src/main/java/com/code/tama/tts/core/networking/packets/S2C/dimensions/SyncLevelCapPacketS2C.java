@@ -3,7 +3,6 @@ package com.code.tama.tts.core.networking.packets.S2C.dimensions;
 
 import java.util.function.Supplier;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.events.RiftRenderer;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.LevelCapability;
@@ -26,21 +25,12 @@ public class SyncLevelCapPacketS2C implements ImAPacket {
 	}
 
 	public static void encode(SyncLevelCapPacketS2C packet, FriendlyByteBuf buffer) {
-		TTSMod.LOGGER.info("[SYNC] encode called, buffer ridx={} widx={}", buffer.readerIndex(), buffer.writerIndex());
-		TTSMod.LOGGER.info("[SYNC] Encoding {} rifts, {} TIR blocks", packet.cap.GetRiftData().size(),
-				packet.cap.GetTIRBlocks().size());
 		FriendlyByteBufOps.Helper.writeWithCodec(buffer, LevelCapability.CODEC, packet.cap);
-		// Measure only what WE wrote, not the discriminator byte Forge prepended
-		TTSMod.LOGGER.info("[SYNC] Encoded successfully, {} bytes", buffer.writerIndex() - 1);
 	}
 
 	public static SyncLevelCapPacketS2C decode(FriendlyByteBuf buffer) {
-		TTSMod.LOGGER.info("[SYNC] decode called, buffer ridx={} widx={}", buffer.readerIndex(), buffer.writerIndex());
-		TTSMod.LOGGER.info("[SYNC] Decoding packet, {} readable bytes", buffer.readableBytes());
 		ILevelCap fallback = new LevelCapability((Level) null);
 		ILevelCap result = FriendlyByteBufOps.Helper.readWithCodec(buffer, LevelCapability.CODEC);
-		TTSMod.LOGGER.info("[SYNC] Decoded {} rifts, {} TIR blocks", result.GetRiftData().size(),
-				result.GetTIRBlocks().size());
 		return new SyncLevelCapPacketS2C(result);
 	}
 

@@ -28,6 +28,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.code.tama.triggerapi.GrammarNazi;
 import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
@@ -164,7 +165,7 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 				});
 	}
 
-	private TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
+	public TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
 		try {
 			return (TTSBlockBuilder<T, P>) this.item().model(
 					(ctx, prov) -> prov.withExistingParent(this.getName(), prov.modLoc("block/" + this.getName())))
@@ -246,7 +247,61 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	@Override
 	public TTSBlockBuilder<T, P> defaultLang() {
-		return (TTSBlockBuilder<T, P>) super.defaultLang();
+		return (TTSBlockBuilder<T, P>) this.lang(Block::getDescriptionId);
+	}
+
+	public @NotNull TTSBlockBuilder<T, P> lang(
+			net.minecraftforge.common.util.@NotNull NonNullFunction<T, String> langKeyProvider) {
+		return (TTSBlockBuilder<T, P>) this.lang(langKeyProvider,
+				(NonNullBiFunction) ((p, t) -> ((RegistrateLangProvider) p)
+						.getAutomaticName(((NonNullSupplier<? extends Block>) t), this.getRegistryKey())));
+	}
+
+	public @NotNull TTSBlockBuilder<T, P> lang(
+			net.minecraftforge.common.util.@NotNull NonNullFunction<T, String> langKeyProvider, @NotNull String name) {
+		return (TTSBlockBuilder<T, P>) this.lang(langKeyProvider, (NonNullBiFunction) ((p, s) -> name));
+	}
+
+	private TTSBlockBuilder<T, P> lang(net.minecraftforge.common.util.NonNullFunction<T, String> langKeyProvider,
+			NonNullBiFunction<RegistrateLangProvider, NonNullSupplier<? extends T>, String> localizedNameProvider) {
+		return (TTSBlockBuilder<T, P>) (this.setData(ProviderType.LANG, (ctx, prov) -> {
+			String base = langKeyProvider.apply(ctx.getEntry());
+
+			if (base.contains(".ponder.") || !base.startsWith("block.") && !base.startsWith("item.")) {
+				String[] parts = base.split("\\.");
+				prov.add(base, GrammarNazi.cleanString(parts[parts.length - 1]));
+			} else {
+				String normalizedBase = base.replace("/", "_");
+				String[] tokens = normalizedBase.split("\\.");
+				int len = tokens.length;
+
+				String prefix = tokens[0]; // "block" or "item"
+				String mainName = tokens[len - 1]; // e.g., "twine_spool" or "deepslate_zeiton_ore"
+				String category = tokens[len - 2]; // e.g., "gadgets" or "zeiton"
+
+				String cleanedMain = GrammarNazi.cleanString(mainName);
+				String cleanedCategory = GrammarNazi.cleanString(category);
+
+				String finalResult;
+
+				if (cleanedMain.toLowerCase().contains(cleanedCategory.toLowerCase()) || category.equals("tts")) {
+					finalResult = cleanedMain;
+				} else if (prefix.equals("block") && category.equals("decoration")) {
+					finalResult = cleanedMain + " Decoration";
+				}
+				// 5. Fallback: Prepend the category context neatly (e.g., "Gadgets Twine
+				// Spool")
+				else {
+					finalResult = cleanedCategory + " " + cleanedMain;
+				}
+
+				prov.add(base, finalResult);
+			}
+
+			// String var10001 = langKeyProvider.apply(ctx.getEntry());
+			// Objects.requireNonNull(ctx);
+			// prov.add(var10001, localizedNameProvider.apply(prov, ctx::getEntry));
+		}));
 	}
 
 	@Override

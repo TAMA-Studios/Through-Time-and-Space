@@ -49,9 +49,9 @@ public class ManualScreen extends Screen {
 		this.manualChapters = Lists.newArrayList();
 		this.pageIndex = 0;
 		this.chapterIndex = 0;
-		this.pageX = this.width / 2 - 110;
-		this.pageY = this.height / 2 - 70;
-		this.page2X = this.pageX + 120;
+		this.pageX = this.width / 2 - 113;
+		this.pageY = this.height / 2 - 72;
+		this.page2X = this.pageX + 118;
 		this.modid = modid;
 		this.read();
 		this.insertTOC();
@@ -108,9 +108,9 @@ public class ManualScreen extends Screen {
 	}
 
 	public void updatePageWidths() {
-		this.pageX = this.width / 2 - 110;
-		this.pageY = this.height / 2 - 70;
-		this.page2X = this.pageX + 120;
+		this.pageX = this.width / 2 - 113;
+		this.pageY = this.height / 2 - 72;
+		this.page2X = this.pageX + 118;
 	}
 
 	@Override
@@ -119,6 +119,7 @@ public class ManualScreen extends Screen {
 		guiGraphics.blit(this.getTexture(), (this.width - 256) / 2, (this.height - 187) / 2, 0, 0, 256, 187);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		Pair<Page, Page> pages = this.getPages();
+
 		if (pages.getFirst() != null) {
 			pages.getFirst().render(guiGraphics, this.font, this.getGlobalPageNumber(), this.pageX, this.pageY,
 					this.width, this.height);

@@ -195,7 +195,6 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_cleanItemString
 }
 
 // ── ContainsIgnoreCase ────────────────────────────────────────────────────────
-// Bonus — useful and not in your Java but you'll want it
 // Java: native boolean containsIgnoreCase(String haystack, String needle);
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_containsIgnoreCase(

@@ -12,7 +12,7 @@
 			"children": [
 				{
 					"group_name": "InteriorDoor",
-					"pivot": [0,0,0],
+					"pivot": [0,0,16],
 					"rotation": [0,0,0],
 					"children": [
 						{
@@ -52,7 +52,7 @@
 									"rotation": [0,0,0],
 									"children": [
 										{
-											"pivot": [-0.1,63.175,0],
+											"pivot": [-0.1,63.175,-16],
 											"rotation": [0,-180,0],
 											"children": [],
 											"cubes": [
@@ -110,7 +110,7 @@
 									"rotation": [0,0,0],
 									"children": [
 										{
-											"pivot": [0,-0.25,0],
+											"pivot": [0,-0.25,-16],
 											"rotation": [0,90,0],
 											"children": [],
 											"cubes": [
@@ -124,7 +124,7 @@
 											]
 										},
 										{
-											"pivot": [0,-0.25,0],
+											"pivot": [0,-0.25,-16],
 											"rotation": [0,90,0],
 											"children": [],
 											"cubes": [

@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.events;
 
-import static com.code.tama.triggerapi.GrammarNazi.checkAllTranslations;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
@@ -309,9 +308,8 @@ public class CommonEvents {
 			// -> cap.OnLoad(player));
 		}
 
-		if (!FMLEnvironment.production && false) { // Recent datagenney BS has slightly maken this go cattywonkers so
-													// I've disabled its sorry ass
-			checkAllTranslations();
+		if (!FMLEnvironment.production) {
+			// checkAllTranslations();
 		}
 	}
 }

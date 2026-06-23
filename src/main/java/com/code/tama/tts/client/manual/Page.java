@@ -28,7 +28,7 @@ public class Page {
 	// &b = bold, &f = italic, &t = underline, &n = newline, &0-&7 = colors
 	private static final String SPECIAL_CHARS[] = {"&b", "&f", "&t", "&n", "&1", "&2", "&3", "&4", "&5", "&6", "&7"};
 
-	public static final int WIDTH = 65, LINES = 10, MAX_LINE_WIDTH = 115;
+	public static final int WIDTH = 100, LINES = 11, MAX_LINE_WIDTH = 140;
 	/**
 	 * -- GETTER -- Gets the number of new lines which all the text will be rendered
 	 * as
@@ -104,7 +104,7 @@ public class Page {
 
 				// If this new word can fit on this line and the line with the previous words
 				// can fit
-				if (currentWidth < WIDTH && prevLineWidth < WIDTH) {
+				if (currentWidth < WIDTH && prevLineWidth < WIDTH && !word.contains("\n")) {
 					prevLineWord = line.toString();
 					line.append(word).append(" ");
 				}
@@ -206,12 +206,18 @@ public class Page {
 			for (int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
 
-				if (wasStyleCode) {
+				if (wasStyleCode || c == '\n') {
 					wasStyleCode = false;
 					continue;
 				}
 				// Handle style toggles
+
+				// if (c == '\n') {
+				// y += 10;
+				// }
+
 				boolean isStyleCode = false;
+
 				if (("" + c).equals("&")) {
 					if (line.length() > i + 1) {
 						String spec = "" + c + line.charAt(i + 1);
@@ -219,46 +225,57 @@ public class Page {
 							case "&b" -> {
 								styles[0] = !styles[0];
 								isStyleCode = true;
+								break;
 							}
 							case "&f" -> {
 								styles[1] = !styles[1];
 								isStyleCode = true;
+								break;
 							}
 							case "&t" -> {
 								styles[2] = !styles[2];
 								isStyleCode = true;
+								break;
 							}
 							case "&0" -> {
 								styles[3] = !styles[3];
 								isStyleCode = true;
+								break;
 							}
 							case "&1" -> {
 								styles[4] = !styles[4];
 								isStyleCode = true;
+								break;
 							}
 							case "&2" -> {
 								styles[5] = !styles[5];
 								isStyleCode = true;
+								break;
 							}
 							case "&3" -> {
 								styles[6] = !styles[6];
 								isStyleCode = true;
+								break;
 							}
 							case "&4" -> {
 								styles[7] = !styles[7];
 								isStyleCode = true;
+								break;
 							}
 							case "&5" -> {
 								styles[8] = !styles[8];
 								isStyleCode = true;
+								break;
 							}
 							case "&6" -> {
 								styles[9] = !styles[9];
 								isStyleCode = true;
+								break;
 							}
 							case "&7" -> {
 								styles[10] = !styles[10];
 								isStyleCode = true;
+								break;
 							}
 						}
 						wasStyleCode = isStyleCode;
@@ -290,7 +307,6 @@ public class Page {
 					if (styles[9])
 						activeFormats.add(ChatFormatting.LIGHT_PURPLE);
 
-					// Calculate x position based on visible text rendered so far
 					int nx = x + font.width(remFormatting(visibleText.toString()));
 
 					MutableComponent charComponent = Component.literal(Character.toString(c));
@@ -298,8 +314,16 @@ public class Page {
 						charComponent = charComponent.withStyle(format);
 					}
 
-					guiGraphics.drawString(font, charComponent, nx, ny, 0x000000, false);
+					guiGraphics.pose().pushPose();
+					// Translate to the character position FIRST, then scale around that point
+					guiGraphics.pose().translate(nx, ny, 0);
+					guiGraphics.pose().scale(0.85f, 0.85f, 1);
+
+					// Now draw at (0, 0) since we've already translated to the right spot
+					guiGraphics.drawString(font, charComponent, 0, 0, 0x000000, false);
 					visibleText.append(c);
+
+					guiGraphics.pose().popPose();
 				}
 			}
 		}

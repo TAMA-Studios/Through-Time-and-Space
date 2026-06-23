@@ -413,6 +413,80 @@ public class TTSBlocks {
 			.simpleItem().defaultBlockstate().register();
 
 	@MainTab
+	public static final BlockEntry<Block> FLAT_METAL_DUCT_INTAKE = Builder(
+			"decoration/industrial_metal/flat_metal_duct_intake", Block::new).stateWithExistingModel().simpleItem()
+			.defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> FLAT_METAL_VENT = Builder("decoration/industrial_metal/flat_metal_vent",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> HORIZONTAL_WELDED_METAL_VENT = Builder(
+			"decoration/industrial_metal/horizontal_welded_metal_vent", Block::new).stateWithExistingModel()
+			.simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> METAL_DUCT_INTAKE = Builder("decoration/industrial_metal/metal_duct_intake",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> WELDED_METAL_DUCT_INTAKE = Builder(
+			"decoration/industrial_metal/welded_metal_duct_intake", Block::new).stateWithExistingModel().simpleItem()
+			.defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> FLAT_METAL_DUCT = Builder("decoration/industrial_metal/flat_metal_duct",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> HORIZONTAL_WELDED_METAL_DUCT_INTAKE = Builder(
+			"decoration/industrial_metal/horizontal_welded_metal_duct_intake", Block::new).stateWithExistingModel()
+			.simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> METAL_DUCT_FAN_FLAT = Builder(
+			"decoration/industrial_metal/metal_duct_fan_flat", Block::new).stateWithExistingModel().simpleItem()
+			.defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> METAL_DUCT = Builder("decoration/industrial_metal/metal_duct", Block::new)
+			.stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> WELDED_METAL_DUCT = Builder("decoration/industrial_metal/welded_metal_duct",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> FLAT_METAL_INTAKE = Builder("decoration/industrial_metal/flat_metal_intake",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> HORIZONTAL_WELDED_METAL_DUCT = Builder(
+			"decoration/industrial_metal/horizontal_welded_metal_duct", Block::new).stateWithExistingModel()
+			.simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
+	public static final BlockEntry<Block> METAL_DUCT_FAN = Builder("decoration/industrial_metal/metal_duct_fan",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> METAL_DUCT_VENT = Builder("decoration/industrial_metal/metal_duct_vent",
+			Block::new).stateWithExistingModel().simpleItem().defaultLang().defaultLoot().simpleBlockItemBlockParent()
+			.register();
+
+	@MainTab
+	public static final BlockEntry<Block> WELDED_METAL_DUCT_VENT = Builder(
+			"decoration/industrial_metal/welded_metal_duct_vent", Block::new).stateWithExistingModel().simpleItem()
+			.defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
+
+	@MainTab
 	public static final BlockEntry<StructuralSteelBlock> BRUSHED_STRUCTURAL_STEEL = Builder(
 			"decoration/structural_steel_brushed/structural_steel",
 			(prop) -> new StructuralSteelBlock(WeatheringSteel.WeatherState.UNAFFECTED, prop)).stateWithExistingModel()

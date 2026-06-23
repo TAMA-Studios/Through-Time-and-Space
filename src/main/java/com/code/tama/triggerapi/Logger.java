@@ -20,7 +20,7 @@ public class Logger {
 	public static final DateTimeFormatter DATE_FORMAT_FILE = DateTimeFormatter.ofPattern("HH-mm");
 	public static final DateTimeFormatter DATE_FORMAT_FOLDER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(TriggerAPI.getModId());
-	public static final String LOG_DIR = "TriggerAPI/" + TriggerAPI.MOD_ID + "/logs/";
+	public static final String LOG_DIR = "TriggerAPI/" + TriggerAPI.getModId() + "/logs/";
 
 	static {
 		setupFileLogging();

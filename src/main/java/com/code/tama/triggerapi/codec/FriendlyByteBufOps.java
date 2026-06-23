@@ -402,11 +402,9 @@ public class FriendlyByteBufOps implements DynamicOps<FriendlyByteBuf> {
 
 		public static <T> T readWithCodec(FriendlyByteBuf buf, Codec<T> codec, T fallback) {
 			int len = buf.readVarInt();
-			TTSMod.LOGGER.info("[Helper] readWithCodec len={} remaining={}", len, buf.readableBytes());
 			byte[] data = new byte[len];
 			buf.readBytes(data);
 			FriendlyByteBuf temp = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
-			TTSMod.LOGGER.info("[Helper] temp hex: {}", ByteBufUtil.hexDump(temp));
 			try {
 				return codec.parse(FriendlyByteBufOps.INSTANCE, temp)
 						.resultOrPartial(err -> TTSMod.LOGGER.error("Codec parse error: {}", err)).orElse(fallback);
