@@ -1,0 +1,11 @@
+{
+  "values": {
+    "name": "Sol",
+    "id": "tts:sol",
+
+    "size": 500,
+    "texture": "tts:textures/space/stars/sol.png",
+
+    "rotation_speed": 48000
+  }
+}

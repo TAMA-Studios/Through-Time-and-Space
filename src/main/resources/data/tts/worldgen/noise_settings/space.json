@@ -1,0 +1,96 @@
+{
+  "type": "minecraft:the_nether",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "tts:space",
+          "parameters": {
+            "continentalness": -1,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": -1,
+            "weirdness": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:space",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": -0.5,
+            "weirdness": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:space",
+          "parameters": {
+            "continentalness": 0.5,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": -0.2,
+            "weirdness": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:asteroid_belt",
+          "parameters": {
+            "continentalness": 0.6,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": 1,
+            "weirdness": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:asteroid_belt",
+          "parameters": {
+            "continentalness": 0.5,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": 1.2,
+            "weirdness": 0.2,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:radiation_zone",
+          "parameters": {
+            "continentalness": -0.8,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -1,
+            "temperature": 2,
+            "weirdness": 1,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "tts:radiation_zone",
+          "parameters": {
+            "continentalness": 1,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.9,
+            "temperature": -1.5,
+            "weirdness": 0,
+            "offset": 0.175
+          }
+        }
+      ]
+    },
+    "settings": "minecraft:nether"
+  }
+}

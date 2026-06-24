@@ -1,0 +1,11 @@
+{
+  "generator" : {
+    "biome_source" : {
+      "biome" : "tts:space",
+      "type" : "minecraft:fixed"
+    },
+    "settings" : "tts:space",
+    "type" : "minecraft:noise"
+  },
+  "type" : "tts:moon"
+}

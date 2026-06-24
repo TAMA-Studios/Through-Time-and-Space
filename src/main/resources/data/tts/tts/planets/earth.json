@@ -1,0 +1,35 @@
+{
+  "values": {
+    "__comment": [
+      "name: Display name shown in controls",
+      "id: Dimension ID",
+      "size: Planet radius used for rendering",
+      "texture: Texture used when rendering the planet",
+      "rotation_speed: Time in ticks for one full rotation",
+      "orbit.parent: Name of the body this planet orbits",
+      "orbit.distance: Distance from parent body",
+      "orbit.period: Time in ticks for one complete orbit",
+      "orbit.phase: Starting orbital angle in degrees",
+      "orbit.inclination: Orbit tilt in degrees",
+      "orbit.eccentricity: 0 = circle, higher = more elliptical",
+      "If orbit is omitted, the body is considered a 'root' body (star/system center)"
+    ],
+
+    "name": "Prithvi",
+    "id": "minecraft:overworld",
+
+    "size": 200,
+    "texture": "tts:textures/space/planets/prithvi.png",
+
+    "rotation_speed": 24000,
+
+    "orbit": {
+      "parent": "Sol",
+      "distance": 1000,
+      "period": 6000,
+      "phase": 45,
+      "inclination": 7,
+      "eccentricity": 0.1
+    }
+  }
+}

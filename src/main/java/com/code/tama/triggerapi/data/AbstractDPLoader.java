@@ -55,7 +55,10 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 		}
 
 		list.setList(tempList);
+		rebuildCache();
 	}
+
+	public void rebuildCache() {}
 
 	public abstract T getHolder(JsonObject json);
 
@@ -72,4 +75,5 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 			return list.stream().filter(r -> seen.add(r.toString())).collect(Collectors.toList());
 		}
 	}
+
 }

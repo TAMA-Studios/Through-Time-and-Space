@@ -8,25 +8,34 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
+import com.code.tama.triggerapi.helpers.PlanetHelper;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
+import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
+import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.data.json.loaders.*;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +50,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -57,6 +67,28 @@ import com.code.tama.triggerapi.helpers.OxygenHelper;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
+	static boolean planetThreadFinished = true;
+
+	@SubscribeEvent
+	public static void onEntityTick(LivingEvent.LivingTickEvent event) { // Teleport entities to a planet when within landing radius
+		if(planetThreadFinished) {
+			planetThreadFinished = false;
+			if (event.getEntity().level().dimension().equals(TDimensions.SPACE)) {
+				ThreadUtils.RunThread(() -> {
+					PlanetLoader.list().forEach(p -> {
+						Vec3 planetPos = PlanetHelper.getPosition(p, event.getEntity().level().getGameTime());
+
+						if (event.getEntity().position().closerThan(planetPos, p.size())) {
+							SeamlessTeleport.teleportTo(event.getEntity(),
+									event.getEntity().level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(p.id()))),
+									0, 128, 0, 0, 90);
+						}
+					});
+					planetThreadFinished = true;
+				}, "planet-checking");
+			}
+		}
+	}
 
 	@SubscribeEvent
 	public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {

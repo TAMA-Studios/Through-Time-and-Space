@@ -32,17 +32,17 @@ import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
+public class VoidDimensionChunkGenerator extends ChunkGenerator {
 
-	public static final Codec<TARDISArtificialDimensionChunkGenerator> CODEC = RecordCodecBuilder
+	public static final Codec<VoidDimensionChunkGenerator> CODEC = RecordCodecBuilder
 			.create(instance -> instance
 					.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
-					.apply(instance, TARDISArtificialDimensionChunkGenerator::new));
+					.apply(instance, VoidDimensionChunkGenerator::new));
 
 	public final HolderLookup.RegistryLookup<Biome> biomeReg;
 	public final RandomSource random;
 
-	public TARDISArtificialDimensionChunkGenerator() {
+	public VoidDimensionChunkGenerator() {
 		super(new FixedBiomeSource(ServerLifecycleHooks.getCurrentServer().registryAccess()
 				.registryOrThrow(Registries.BIOME).asLookup().getOrThrow(Biomes.TARDIS_BIOME)));
 		this.biomeReg = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME)
@@ -50,7 +50,7 @@ public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 		this.random = new SingleThreadedRandomSource(0);
 	}
 
-	public TARDISArtificialDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
+	public VoidDimensionChunkGenerator(HolderLookup.RegistryLookup<Biome> biomeReg) {
 		super(new FixedBiomeSource(biomeReg.getOrThrow(Biomes.TARDIS_BIOME)));
 		this.biomeReg = biomeReg;
 		this.random = new SingleThreadedRandomSource(0);
@@ -60,6 +60,7 @@ public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {
+		p_223175_.add("I'm not here...");
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class TARDISArtificialDimensionChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public @NotNull Codec<TARDISArtificialDimensionChunkGenerator> codec() {
+	public @NotNull Codec<VoidDimensionChunkGenerator> codec() {
 		return CODEC;
 	}
 

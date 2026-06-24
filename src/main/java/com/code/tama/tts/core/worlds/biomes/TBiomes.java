@@ -21,6 +21,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 public class TBiomes {
 	public static final ResourceKey<Biome> GALLIFREYAN_DESERT = ResourceKey.create(Registries.BIOME,
 			new ResourceLocation(MODID, "gallifreyan_desert"));
+
 	public static final ResourceKey<Biome> GALLIFREYAN_PLAINS = ResourceKey.create(Registries.BIOME,
 			new ResourceLocation(MODID, "gallifreyan_plains"));
 

@@ -210,8 +210,12 @@ public class ClientSetup {
 	@SubscribeEvent
 	public static void registerSkyRenderers(RegisterDimensionSpecialEffectsEvent event) {
 		// Register your custom sky renderer for the TARDIS dimension
-		event.register(TDimensions.DimensionEffects.TARDIS_DIM_TYPE.location(),
+		event.register(TDimensions.DimensionEffects.TARDIS_EFFECTS.location(),
 				new TardisSkyEffects(TDimensions.TARDIS_DIM_TYPE));
+
+		event.register(TDimensions.DimensionEffects.SPACE_EFFECTS.location(),
+				new TardisSkyEffects(TDimensions.SPACE_DIM));
+
 		event.register(TDimensions.DimensionEffects.GALLIFREY_EFFECTS.location(),
 				new GallifreyEffects(TDimensions.GALLIFREY_DIM_TYPE));
 	}

@@ -6,6 +6,7 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.util.List;
 import java.util.OptionalLong;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.core.worlds.biomes.TBiomes;
 import com.mojang.datafixers.util.Pair;
 
@@ -30,22 +31,31 @@ public class TDimensions {
 
 	public static final ResourceKey<DimensionType> GALLIFREY_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
 			new ResourceLocation(MODID, "gallifrey_type"));
+
 	public static final ResourceKey<Level> GALLIFREY_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
 			new ResourceLocation(MODID, "gallifrey"));
+
 	public static final ResourceKey<LevelStem> GALLIFREY_STEM = ResourceKey.create(Registries.LEVEL_STEM,
 			new ResourceLocation(MODID, "gallifrey"));
 
 	public static ResourceKey<DimensionType> TARDIS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
 			new ResourceLocation(MODID, "tardis"));
+
 	public static final ResourceKey<Level> TARDIS_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
 			new ResourceLocation(MODID, "tardis"));
+
 	public static final ResourceKey<DimensionType> VAROS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
 			new ResourceLocation(MODID, "varos_type"));
 
 	public static final ResourceKey<LevelStem> VAROS_KEY = ResourceKey.create(Registries.LEVEL_STEM,
 			new ResourceLocation(MODID, "varos"));
+
 	public static final ResourceKey<Level> VAROS_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
 			new ResourceLocation(MODID, "varos"));
+
+	public static final ResourceKey<Level> SPACE = ResourceKey.create(Registries.DIMENSION, UniversalCommon.modRL("space"));
+
+	public static final ResourceKey<DimensionType> SPACE_DIM = ResourceKey.create(Registries.DIMENSION_TYPE, UniversalCommon.modRL("space"));
 
 	public static void bootstrapStem(BootstapContext<LevelStem> context) {
 		HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
@@ -107,8 +117,13 @@ public class TDimensions {
 	public static class DimensionEffects {
 		public static final ResourceKey<DimensionType> GALLIFREY_EFFECTS = ResourceKey.create(Registries.DIMENSION_TYPE,
 				new ResourceLocation(MODID, "gallifrey"));
-		public static ResourceKey<DimensionType> TARDIS_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
+
+		public static ResourceKey<DimensionType> TARDIS_EFFECTS = ResourceKey.create(Registries.DIMENSION_TYPE,
 				new ResourceLocation(MODID, "tardis"));
+
+		public static ResourceKey<DimensionType> SPACE_EFFECTS = ResourceKey.create(Registries.DIMENSION_TYPE,
+				new ResourceLocation(MODID, "space"));
+
 		public static final ResourceLocation VAROS_EFFECTS = new ResourceLocation(MODID, "varos");
 	}
 }

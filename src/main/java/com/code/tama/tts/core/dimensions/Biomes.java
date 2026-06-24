@@ -31,5 +31,5 @@ public class Biomes {
 			.register("natural_tardis", () -> TARDISNaturalDimensionChunkGenerator.CODEC);
 
 	public static final RegistryObject<Codec<? extends ChunkGenerator>> TARDIS_ARTIFICIAL_CHUNK_GENERATOR = CHUNK_GENERATORS
-			.register("artificial_tardis", () -> TARDISArtificialDimensionChunkGenerator.CODEC);
+			.register("artificial_tardis", () -> VoidDimensionChunkGenerator.CODEC);
 }
