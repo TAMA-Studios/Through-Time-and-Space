@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tts:zeiton/end_stone_zeiton_ore"
+    }
+  }
+}

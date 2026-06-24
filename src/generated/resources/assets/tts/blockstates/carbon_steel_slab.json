@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,waterlogged=false": {
+      "model": "tts:block/carbon_steel_slab_bottom"
+    },
+    "type=bottom,waterlogged=true": {
+      "model": "tts:block/carbon_steel_slab_bottom"
+    },
+    "type=double,waterlogged=false": {
+      "model": "tts:block/carbon_steel_"
+    },
+    "type=double,waterlogged=true": {
+      "model": "tts:block/carbon_steel_"
+    },
+    "type=top,waterlogged=false": {
+      "model": "tts:block/carbon_steel_slab_top"
+    },
+    "type=top,waterlogged=true": {
+      "model": "tts:block/carbon_steel_slab_top"
+    }
+  }
+}
