@@ -142,8 +142,8 @@ _G (Global Table)
 │   └── [Dynamic variables from ScriptContext]
 
 ~~Valkyrian Skies compat!!~~ (DONE!)
-TODO: Figure out all these damn disconnected errors (Maybe fixed?)
-~~FIX FLIGHT/LAND MECHANIC~~ DONE
+TODO: Figure out all these damn disconnected errors (Maybe fixed?) (If I don't see another random disconnect between now and release, I'm calling it fixed)
+~~FIX FLIGHT/LAND MECHANIC~~ ~~DONE~~ NOT DONE, NEEDS REVAMP
 ~~Compressed Multiblocks~~ DONE
 
 TODO: On load, sync the TIR capability to the Client for tooltip tracking data
@@ -151,7 +151,7 @@ TODO: On load, sync the TIR capability to the Client for tooltip tracking data
 IMPLEMENT DYNAMOS!
 Fault Locator
 ~~Subsystem/~~Control durability
-Navigational Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome temperature, etc.
+Exterior Diagnostic Readout (Name pending): Shows exterior location diagnostics such as oxygen, mavity, radiation levels, humidity (if underwater: 100%, if raining, 100%, otherwise use the biome temp), biome temperature, etc.
 Add more subsystems
 Flight Speed
 

@@ -339,7 +339,8 @@ tasks.named('jarJar', Jar).configure {
 // ============================================================================
 
 def rustBin = findProperty('RUSTC_PATH')
-def cargoBin = findProperty('CROSS_PATH')
+def cargoBin = findProperty('CARGO_PATH')
+def crossBin = findProperty('CROSS_PATH')
 
 if (!rustBin) {
 	throw new GradleException(
@@ -347,15 +348,21 @@ if (!rustBin) {
 	)
 }
 
-if (!cargoBin) {
+if (!crossBin) {
 	throw new GradleException(
 			"CROSS_PATH is not defined in gradle.properties"
 	)
 }
 
-def rustcExecutable = "${rustBin}/rustc"
-def cargoExecutable = "${cargoBin}/cargo"
-def crossExecutable = "${cargoBin}/cross"
+if (!cargoBin) {
+	throw new GradleException(
+			"CARGO_PATH is not defined in gradle.properties"
+	)
+}
+
+def rustcExecutable = "${rustBin}"
+def cargoExecutable = "${cargoBin}"
+def crossExecutable = "${crossBin}"
 
 def rustPath = [
 		rustBin,
