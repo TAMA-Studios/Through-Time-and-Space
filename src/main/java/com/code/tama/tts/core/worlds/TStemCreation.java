@@ -1,8 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.worlds;
 
-import com.code.tama.tts.core.dimensions.VoidDimensionChunkGenerator;
 import com.code.tama.tts.core.dimensions.TARDISNaturalDimensionChunkGenerator;
+import com.code.tama.tts.core.dimensions.VoidDimensionChunkGenerator;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
 
 import net.minecraft.core.registries.Registries;

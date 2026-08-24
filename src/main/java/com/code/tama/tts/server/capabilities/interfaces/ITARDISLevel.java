@@ -116,6 +116,8 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	/** Does what it says on the tin */
 	void Tick();
 
+	void ClientTick();
+
 	void FlightTick();
 
 	void UpdateClient(int toUpdate);

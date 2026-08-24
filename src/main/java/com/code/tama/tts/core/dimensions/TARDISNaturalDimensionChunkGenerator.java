@@ -63,6 +63,7 @@ public class TARDISNaturalDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {
+		p_223175_.add("Inside an Organic TARDIS");
 	}
 
 	@Override

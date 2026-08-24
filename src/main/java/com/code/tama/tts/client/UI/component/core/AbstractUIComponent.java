@@ -3,7 +3,6 @@ package com.code.tama.tts.client.UI.component.core;
 
 import java.util.Map;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.math.Axis;
@@ -14,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.entity.player.Player;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @Setter
 @Getter
 public abstract class AbstractUIComponent {
@@ -23,7 +24,7 @@ public abstract class AbstractUIComponent {
 	UICategory Category;
 
 	public ResourceLocation GetIcon() {
-		return new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
+		return UniversalCommon.modRL("textures/gui/button.png");
 	}
 
 	public abstract ComponentTypes Type();

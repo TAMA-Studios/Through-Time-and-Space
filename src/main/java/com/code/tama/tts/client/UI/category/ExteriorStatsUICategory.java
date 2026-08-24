@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
-import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
@@ -12,15 +11,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import com.code.tama.triggerapi.helpers.GravityHelper;
 import com.code.tama.triggerapi.helpers.OxygenHelper;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class ExteriorStatsUICategory extends UICategory {
 	public ExteriorStatsUICategory() {
 		super();
-		this.overlay = new ResourceLocation(MODID, "textures/gui/overlay_large_title.png");
+		this.overlay = UniversalCommon.modRL("textures/gui/overlay_large_title.png");
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public class OxygenHelper {
 	public static List<DataDimOxygen> DIMENSIONS = new ArrayList<>();
-	public static Map<ResourceLocation, Float> MAP = new HashMap<>();
+	public static Map<ResourceLocation, Integer> MAP = new HashMap<>();
 
 	/**
 	 * Returns the oxygen strength for a given level. Default Minecraft gravity:
@@ -26,11 +26,11 @@ public class OxygenHelper {
 			return Objects.requireNonNull(GetTARDISCap(level)).GetEnvironmentalData().getOxygenLevel();
 		}
 
-		return MAP.getOrDefault(level.dimension().location(), 1.0F);
+		return MAP.getOrDefault(level.dimension().location(), 20);
 	}
 
 	public static float getO2(@NotNull ResourceKey<Level> level) {
-		return MAP.getOrDefault(level.location(), 0.08F);
+		return MAP.getOrDefault(level.location(), 20);
 	}
 
 	public static void setMap(List<DataDimOxygen> list) {

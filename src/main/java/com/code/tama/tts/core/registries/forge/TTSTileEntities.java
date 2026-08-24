@@ -14,6 +14,7 @@ import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.*;
 import com.code.tama.tts.client.renderers.tiles.decoration.CoralConsoleTopperRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
+import com.code.tama.tts.client.renderers.tiles.gadgets.FabricatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
@@ -129,10 +130,6 @@ public class TTSTileEntities {
 			.blockEntity("portal_tile_entity", PortalTileEntity::new).validBlocks(TTSBlocks.PORTAL_BLOCK)
 			.renderer(() -> PortalTileEntityRenderer::new).register();
 
-	public static final BlockEntityEntry<ChromiumBlockEntity> CHROMIUM_BLOCK_ENTITY = registrate()
-			.blockEntity("chromium_block_entity", ChromiumBlockEntity::new).validBlocks(TTSBlocks.CHROMIUM_BLOCK)
-			.register();
-
 	public static final BlockEntityEntry<BlockEntity> SKY_TILE = builder("sky_block_overworld",
 			(t, p, e) -> new SkyTile(SkyTile.SkyType.Overworld, t, p, e), TTSBlocks.SKY_BLOCK)
 			.renderer(() -> (context) -> new SkyTileRenderer(context)).register();
@@ -147,7 +144,7 @@ public class TTSTileEntities {
 
 	public static final BlockEntityEntry<WorkbenchTile> WORKBENCH_TILE = registrate()
 			.blockEntity("celestial_workbench", WorkbenchTile::new).validBlocks(TTSBlocks.TEMPORAL_FABRICATOR)
-			.register();
+			.renderer(() -> FabricatorRenderer::new).register();
 
 	@SafeVarargs
 	public static <P extends Block, T extends BlockEntity> BlockEntityEntry<T> registerTile(String name,

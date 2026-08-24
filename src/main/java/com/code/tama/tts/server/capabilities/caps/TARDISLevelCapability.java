@@ -650,23 +650,41 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		return SoundEvent.createFixedRangeEvent((getHumList().get(this.environmentalData.getHum())).hum(), 1f);
 	}
 
+	private void TickThread() {
+		if (TickThread == null || !TickThread.isAlive()) {
+			TickThread = CommonThreads.TARDISTickThread(this);
+			TickThread.start();
+		}
+	}
 	@Override
 	public void Tick() {
 		this.ticks++;
 
-		// 1. Get the current target sound event safely
-		SoundEvent targetSound = this.GetHum();
-		if (targetSound == null)
+		TickThread();
+
+		if (this.ticks % 600 == 1) { // Update client every 30 seconds
+			this.UpdateClient(DataUpdateValues.DATA);
+		}
+	}
+
+	@Override
+	public void ClientTick() {
+		this.ticks++;
+
+		TickThread();
+
+		SoundEvent hum = this.GetHum();
+		if (hum == null)
 			return;
 
 		if (this.interiorHum == null || (this.interiorHum.getSound() != null
-				&& !this.interiorHum.getSound().getLocation().equals(targetSound.getLocation()))) {
+				&& !this.interiorHum.getSound().getLocation().equals(hum.getLocation()))) {
 
 			if (this.interiorHum != null) {
 				this.interiorHum.Stop();
 			}
 
-			this.interiorHum = new LoopingSound(targetSound);
+			this.interiorHum = new LoopingSound(hum);
 			this.interiorHum.setVolume(0.2f);
 
 			Minecraft mc = Minecraft.getInstance();
@@ -675,27 +693,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				mc.getSoundManager().play(this.interiorHum);
 			});
 		}
-
-		if (TickThread == null || !TickThread.isAlive()) {
-			TickThread = CommonThreads.TARDISTickThread(this);
-			TickThread.start();
-		}
-
-		if (this.ticks % 120 == 1) { // Update client every 6 seconds
-			this.UpdateClient(DataUpdateValues.DATA);
-		}
-
-		// if (GetData().getSubSystemsData().DynamorphicController.isActivated(level)
-		// && !GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty() &&
-		// this.data.isRefueling()
-		// && !this.flightData.isInFlight()) {
-		// if (this.level.getGameTime() % 20 == 1)
-		// this.data.setFuel(this.data.getFuel() + 1);
-		// }
-		//
-		// if (this.flightData.isInFlight()) {
-		// this.FlightTick();
-		// }
 	}
 
 	@Override

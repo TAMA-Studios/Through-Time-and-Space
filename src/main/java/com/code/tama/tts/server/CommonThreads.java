@@ -19,6 +19,6 @@ public class CommonThreads {
 			if (tardis.GetFlightData().isInFlight()) {
 				tardis.FlightTick();
 			}
-		}, cap, "tardis-flight-thread-" + cap.GetLevel().dimension());
+		}, cap, "tardis-tick-thread-" + cap.GetLevel().dimension());
 	}
 }

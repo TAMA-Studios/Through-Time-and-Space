@@ -1,11 +1,13 @@
 {
-  "values": {
     "name": "Sol",
-    "id": "tts:sol",
+    "id": "none",
 
-    "size": 500,
+    "size": 300,
     "texture": "tts:textures/space/stars/sol.png",
+
+    "x": 0,
+    "y": 300,
+    "z": 0,
 
     "rotation_speed": 48000
   }
-}

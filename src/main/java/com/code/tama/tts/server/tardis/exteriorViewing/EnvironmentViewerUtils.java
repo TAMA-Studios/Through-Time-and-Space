@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.exteriorViewing;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import java.util.Set;
 
 import com.code.tama.tts.client.ClientSetup;
@@ -30,7 +32,7 @@ public class EnvironmentViewerUtils {
 		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, serverPlayer).ifPresent(playerCap -> {
 			ServerLevel tardisLevel = ServerLifecycleHooks.getCurrentServer().getLevel(
 					ResourceKey.create(Registries.DIMENSION, new ResourceLocation(playerCap.GetViewingTARDIS())));
-			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY, tardisLevel).ifPresent(tardis -> {
+			GetTARDISCapSupplier(tardisLevel).ifPresent(tardis -> {
 				if (playerCap.GetViewingTARDIS().isEmpty())
 					return; // Not viewing a TARDIS
 				PlayerPosition targetPosition = tardis.GetData().getViewingPlayerMap().get(serverPlayer.getUUID());

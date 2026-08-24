@@ -6,7 +6,6 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.util.List;
 import java.util.OptionalLong;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.core.worlds.biomes.TBiomes;
 import com.mojang.datafixers.util.Pair;
 
@@ -26,6 +25,8 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class TDimensions {
 
@@ -53,9 +54,11 @@ public class TDimensions {
 	public static final ResourceKey<Level> VAROS_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
 			new ResourceLocation(MODID, "varos"));
 
-	public static final ResourceKey<Level> SPACE = ResourceKey.create(Registries.DIMENSION, UniversalCommon.modRL("space"));
+	public static final ResourceKey<Level> SPACE = ResourceKey.create(Registries.DIMENSION,
+			UniversalCommon.modRL("space"));
 
-	public static final ResourceKey<DimensionType> SPACE_DIM = ResourceKey.create(Registries.DIMENSION_TYPE, UniversalCommon.modRL("space"));
+	public static final ResourceKey<DimensionType> SPACE_DIM = ResourceKey.create(Registries.DIMENSION_TYPE,
+			UniversalCommon.modRL("space"));
 
 	public static void bootstrapStem(BootstapContext<LevelStem> context) {
 		HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);

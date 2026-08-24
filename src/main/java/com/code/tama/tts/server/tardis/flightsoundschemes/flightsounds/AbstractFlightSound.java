@@ -2,75 +2,58 @@
 package com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds;
 
 import com.code.tama.tts.core.misc.LoopingSound;
-import com.code.tama.tts.server.threads.FlightSoundThread;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractFlightSound {
 	private boolean started = false;
 	private boolean finished = false;
-	private FlightSoundThread soundThread;
-	private long startedTime = 0;
-
 	private LoopingSound loopey;
 
 	public abstract int GetLength();
-
 	public abstract SoundEvent GetSound();
 
 	public boolean IsFinished() {
 		return this.finished;
 	}
-
 	public boolean IsStarted() {
 		return this.started;
+	}
+	public boolean IsPlaying() {
+		return this.started && !this.finished && this.loopey != null;
 	}
 
 	/**
 	 * Start playing the sound immediately. If already playing, does nothing.
 	 */
 	public void Play(Level level, BlockPos blockPos) {
-		if (this.started) {
+		if (this.started) { // removed || true
 			return;
 		}
-
 		this.started = true;
 		this.finished = false;
-		this.startedTime = level.getGameTime();
-		startPlayback(level, blockPos);
+
+		Minecraft.getInstance().tell(() -> {
+			level.playSound(null, blockPos, this.GetSound(), SoundSource.BLOCKS, 1f, 1f);
+		});
 	}
 
 	/**
-	 * Play the sound once, and automatically restart it when finished. Useful for
-	 * looping sounds like flight loops.
+	 * Play the sound looped. Safe to call every tick — only starts once.
 	 */
 	public void PlayLooped(Level level, BlockPos blockPos) {
-		if (loopey == null)
-			Minecraft.getInstance().getSoundManager().play((loopey = new LoopingSound(this.GetSound())));
-
-		if (true)
-			return;
-
-		long currentTime = level.getGameTime();
-
-		// Initialize start time on first call
-		if (this.startedTime == 0) {
-			this.startedTime = currentTime;
-			this.started = true;
-			startPlayback(level, blockPos);
-			return;
-		}
-
-		// Check if sound has finished its duration
-		if (currentTime - this.startedTime >= this.GetLength()) {
-			// Reset and restart
-			this.startedTime = currentTime;
-			this.finished = false;
-			startPlayback(level, blockPos);
-		}
+		Minecraft.getInstance().tell(() -> {
+			if (loopey == null && !started) {
+				loopey = new LoopingSound(this.GetSound());
+				Minecraft.getInstance().getSoundManager().play(loopey);
+				started = true;
+				finished = false;
+			}
+		});
 	}
 
 	/**
@@ -81,53 +64,18 @@ public abstract class AbstractFlightSound {
 			this.loopey.Stop();
 			this.loopey = null;
 		}
-
-		if (true)
-			return;
-		if (this.soundThread != null) {
-			this.soundThread.stop();
-			this.soundThread = null;
-		}
 		this.started = false;
 		this.finished = true;
-		this.startedTime = 0;
 	}
 
 	/**
-	 * Internal: Start the actual playback thread.
-	 */
-	private void startPlayback(Level level, BlockPos blockPos) {
-		// Stop any existing thread
-		if (this.soundThread != null) {
-			this.soundThread.stop();
-		}
-
-		// Create and start new thread
-		this.soundThread = new FlightSoundThread(level, blockPos, this);
-		boolean started = this.soundThread.start();
-
-		if (!started) {
-			// Another sound is already playing at this location
-			this.soundThread = null;
-			this.started = false;
-		}
-	}
-
-	/**
-	 * Called by FlightSoundThread when the sound finishes.
+	 * Called externally when the sound finishes naturally (non-looping).
 	 */
 	public void SetFinished(boolean isFinished) {
 		this.finished = isFinished;
 		if (isFinished) {
-			this.startedTime = 0;
-			this.soundThread = null;
+			this.loopey = null;
+			this.started = false;
 		}
-	}
-
-	/**
-	 * Get the current playback state.
-	 */
-	public boolean IsPlaying() {
-		return this.started && !this.finished && this.soundThread != null && this.soundThread.IsRunning();
 	}
 }

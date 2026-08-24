@@ -35,8 +35,8 @@ public class ThrottleControl extends AbstractControl {
 		this.SetNeedsUpdate(true);
 		this.SetAnimationState(0.0f);
 		// if (itardisLevel.GetFlightData().isInFlight()) {
-		itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().Play(itardisLevel.GetLevel(),
-				player.blockPosition());
+		// itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().Play(itardisLevel.GetLevel(),
+		// player.blockPosition());
 		itardisLevel.Rematerialize();
 		// }
 

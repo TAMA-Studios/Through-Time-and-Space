@@ -9,6 +9,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,13 +18,17 @@ import net.minecraft.world.level.block.state.BlockState;
 public class HartnellDoorTile extends BlockEntity {
 	private boolean formed = false;
 	public boolean IsOpen = false;
+	public AnimationState OPEN = new AnimationState();
+	public AnimationState CLOSED = new AnimationState();
 
 	public HartnellDoorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
 	public boolean IsOpen() {
-		return ((HartnellDoor) this.level.getBlockState(this.getBlockPos()).getBlock()).IsOpen();
+		if (this.getBlockState() == null || this.getBlockState().equals(Blocks.AIR))
+			return false;
+		return ((HartnellDoor) this.getBlockState().getBlock()).IsOpen();
 	}
 
 	public void SetIsOpen(boolean IsOpen) {

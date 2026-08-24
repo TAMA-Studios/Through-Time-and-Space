@@ -14,8 +14,14 @@ public abstract class TickingTile extends BlockEntity {
 
 	public static <T extends BlockEntity> void tick(Level ignoredLevel, BlockPos ignoredblockPos,
 			BlockState ignoredState, T tile) {
-		((TickingTile) tile).tick();
+		if (ignoredLevel.isClientSide)
+			((TickingTile) tile).clientTick();
+
+		else
+			((TickingTile) tile).tick();
 	}
 
 	public abstract void tick();
+
+	public abstract void clientTick();
 }

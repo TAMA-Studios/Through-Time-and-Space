@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.worlds.effects;
 
-import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
 
 import java.util.Objects;
@@ -23,11 +22,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 public class GallifreyEffects extends DimensionSpecialEffects {
 
 	private static VertexBuffer StarsVBO = null;
 	private static VertexBuffer SunsVBO = null;
 
+	public static final ResourceLocation Sun = UniversalCommon.modRL("textures/environment/sun.png");
 	private final ResourceKey<DimensionType> targetType;
 
 	public GallifreyEffects(ResourceKey<DimensionType> targetType) {
@@ -39,7 +41,7 @@ public class GallifreyEffects extends DimensionSpecialEffects {
 			Quaternionf rotation, Vec3 PivotPoint, float size) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.setShaderTexture(0, new ResourceLocation(MODID, "textures/environment/sun.png"));
+		RenderSystem.setShaderTexture(0, Sun);
 
 		poseStack.pushPose();
 

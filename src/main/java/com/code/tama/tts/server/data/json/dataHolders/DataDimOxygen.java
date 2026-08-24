@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @Builder
 public class DataDimOxygen {
-	public float oxygen;
+	public int oxygen;
 	public ResourceLocation dimension;
 
 	@Override

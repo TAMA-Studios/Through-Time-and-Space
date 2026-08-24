@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.UI.category;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.core.tileentities.monitors.AbstractMonitorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,11 +14,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @Getter
 public class UICategory {
 	public static final Component OS_VER = Component.literal("TARDISOS - 1.0");
 	protected int ID;
-	ResourceLocation overlay = new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
+	ResourceLocation overlay = UniversalCommon.modRL("textures/gui/overlay.png");
 
 	public UICategory() {
 		this.ID = UICategoryRegistry.getID();

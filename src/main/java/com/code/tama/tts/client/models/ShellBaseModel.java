@@ -3,7 +3,6 @@ package com.code.tama.tts.client.models;// Made with Blockbench 5.0.6
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.core.tileentities.EmptyArtificialShellTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,16 +13,17 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class ShellBaseModel<T extends EmptyArtificialShellTile> extends HierarchicalModel<Entity>
 		implements
 			IAnimateableModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in
 	// the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation(TTSMod.MODID, "shellbase"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(UniversalCommon.modRL("shellbase"),
+			"main");
 	private final ModelPart root;
 	private final ModelPart base;
 	private final ModelPart beam1;

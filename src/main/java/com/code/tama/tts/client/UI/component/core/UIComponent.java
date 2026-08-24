@@ -4,7 +4,6 @@ package com.code.tama.tts.client.UI.component.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.UI.category.UICategory;
 import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
 import com.mojang.math.Axis;
@@ -13,11 +12,13 @@ import lombok.RequiredArgsConstructor;
 
 import net.minecraft.resources.ResourceLocation;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UIComponent extends AbstractUIComponent {
 	public UICategory category = UICategoryRegistry.ALL.get();
-	public ResourceLocation icon = new ResourceLocation(TTSMod.MODID, "textures/gui/button.png");
+	public ResourceLocation icon = UniversalCommon.modRL("textures/gui/button.png");
 	public final ComponentTypes type;
 	public final Float x[];
 	public final Float y[];

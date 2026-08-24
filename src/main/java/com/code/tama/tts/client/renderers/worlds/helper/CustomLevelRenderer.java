@@ -84,42 +84,39 @@ public class CustomLevelRenderer {
 	}
 
 	public static BufferBuilder.RenderedBuffer drawPlanet(BufferBuilder buffer, float size) {
-		Matrix4f matrix = new Matrix4f(); // poseStack.last().pose();
-		float BaseSize = 20.0F;
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
+		Matrix4f matrix = new Matrix4f();
+		float h = size / 2.0f;
 
+		// North
+		buffer.vertex(matrix, h, h, -h).uv(1, 0).endVertex();
+		buffer.vertex(matrix, h, -h, -h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, -h, -h, -h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, -h, h, -h).uv(0, 0).endVertex();
+		// South
+		buffer.vertex(matrix, -h, h, h).uv(0, 0).endVertex();
+		buffer.vertex(matrix, -h, -h, h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, h, -h, h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, h, h, h).uv(1, 0).endVertex();
 		// Top
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(0, 0).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(1, 0).endVertex();
-
-		// East
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(0, 0).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 0).endVertex();
-
-		// West
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 0).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(1, 0).endVertex();
-
-		// SOUTH
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize + size, BaseSize - size).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize + size, BaseSize - size).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
-
+		buffer.vertex(matrix, -h, h, -h).uv(0, 0).endVertex();
+		buffer.vertex(matrix, -h, h, h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, h, h, h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, h, h, -h).uv(1, 0).endVertex();
 		// Down
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize - size).uv(1, 0).endVertex();
-		buffer.vertex(matrix, BaseSize, BaseSize, BaseSize).uv(1, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize).uv(0, 1).endVertex();
-		buffer.vertex(matrix, BaseSize - size, BaseSize, BaseSize - size).uv(0, 0).endVertex();
+		buffer.vertex(matrix, h, -h, -h).uv(1, 0).endVertex();
+		buffer.vertex(matrix, h, -h, h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, -h, -h, h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, -h, -h, -h).uv(0, 0).endVertex();
+		// East
+		buffer.vertex(matrix, h, h, h).uv(0, 0).endVertex();
+		buffer.vertex(matrix, h, -h, h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, h, -h, -h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, h, h, -h).uv(1, 0).endVertex();
+		// West
+		buffer.vertex(matrix, -h, h, -h).uv(1, 0).endVertex();
+		buffer.vertex(matrix, -h, -h, -h).uv(1, 1).endVertex();
+		buffer.vertex(matrix, -h, -h, h).uv(0, 1).endVertex();
+		buffer.vertex(matrix, -h, h, h).uv(0, 0).endVertex();
 
 		return buffer.end();
 	}

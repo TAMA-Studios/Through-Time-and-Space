@@ -16,12 +16,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class FaultLocatorRenderer implements BlockEntityRenderer<FaultLocatorTile> {
-	public static final int fullBright = 0xf000f0;
 	public final BlockEntityRendererProvider.Context context;
 
 	public FaultLocatorRenderer(BlockEntityRendererProvider.Context context) {

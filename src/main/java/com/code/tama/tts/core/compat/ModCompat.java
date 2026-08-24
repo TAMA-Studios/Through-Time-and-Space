@@ -3,8 +3,8 @@ package com.code.tama.tts.core.compat;
 
 import java.util.ArrayList;
 
+import com.code.tama.tts.core.compat.cct.CCTCompat;
 import com.code.tama.tts.core.networking.Networking;
-import com.code.tama.tts.core.worlds.biomes.MTerrablender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,8 @@ public class ModCompat {
 	}
 
 	public static void RegisterCompats() {
-		RegisterCompat("terrablender", new MTerrablender());
+		RegisterCompat("terrablender", new TTerrablenderCompat());
+		RegisterCompat("cc-tweaked", new CCTCompat());
 	}
 
 	public static void Run() {

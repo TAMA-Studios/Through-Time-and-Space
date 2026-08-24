@@ -12,17 +12,21 @@ import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 public class TemporalImprintReaderItem extends PowerableItem {
 	private boolean firstTick = true;
@@ -48,15 +52,27 @@ public class TemporalImprintReaderItem extends PowerableItem {
 		return 256;
 	}
 
+	public void Update(Player p) {
+		DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER,
+				() -> () -> p.level().getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(
+						cap -> Networking.sendToPlayer((ServerPlayer) p, new UpdateTIRPacketS2C(cap.GetTIRBlocks()))));
+
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::UpdateFromClient);
+	}
+
+	public void UpdateFromClient() {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+				() -> () -> Minecraft.getInstance().level.getCapability(Capabilities.LEVEL_CAPABILITY)
+						.ifPresent(cap -> Networking.sendToServer(new UpdateTIRPacketS2C(cap.GetTIRBlocks()))));
+	}
+
 	@Override
 	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int i,
 			boolean b) {
 		if (firstTick) {
 			firstTick = false;
 			if (entity instanceof ServerPlayer player) {
-				level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap -> {
-					Networking.sendToPlayer(player, new UpdateTIRPacketS2C(cap.GetTIRBlocks()));
-				});
+				Update(player);
 			}
 		}
 		super.inventoryTick(stack, level, entity, i, b);
@@ -90,8 +106,12 @@ public class TemporalImprintReaderItem extends PowerableItem {
 		if (pos == null) {
 			if (level != null)
 				if (stack.getOrCreateTag().contains("uuid")) {
-					level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(
-							cap -> this.pos = cap.GetTIRBlocks().get(stack.getOrCreateTag().getUUID("uuid")).getPos());
+					level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(cap -> {
+						if (cap.GetTIRBlocks().containsKey(stack.getOrCreateTag().getUUID("uuid")))
+							this.pos = cap.GetTIRBlocks().get(stack.getOrCreateTag().getUUID("uuid")).getPos();
+						else
+							UpdateFromClient();
+					});
 				}
 		}
 

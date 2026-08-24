@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
@@ -15,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.triggerapi.rendering.VortexRenderer;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Getter
 @Setter
@@ -61,7 +61,7 @@ public class TARDISClientData {
 				|| vortex.textureLayers.get(VortexRenderer.LayerType.BASE) != TARDIS.GetData().getVortex()) {
 			TARDIS.UpdateClient(DataUpdateValues.RENDERING);
 			return this.vortex = new VortexRenderer(
-					new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png"));
+					UniversalCommon.modRL("textures/rift/infiniteabyssofnothingness.png"));
 		}
 		return vortex;
 	}

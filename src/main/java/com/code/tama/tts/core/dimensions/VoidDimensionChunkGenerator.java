@@ -34,10 +34,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class VoidDimensionChunkGenerator extends ChunkGenerator {
 
-	public static final Codec<VoidDimensionChunkGenerator> CODEC = RecordCodecBuilder
-			.create(instance -> instance
-					.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
-					.apply(instance, VoidDimensionChunkGenerator::new));
+	public static final Codec<VoidDimensionChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
+			.group(RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter(gen -> gen.biomeReg))
+			.apply(instance, VoidDimensionChunkGenerator::new));
 
 	public final HolderLookup.RegistryLookup<Biome> biomeReg;
 	public final RandomSource random;
@@ -60,7 +59,7 @@ public class VoidDimensionChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {
-		p_223175_.add("I'm not here...");
+		p_223175_.add("Inside An Artificial TARDIS");
 	}
 
 	@Override

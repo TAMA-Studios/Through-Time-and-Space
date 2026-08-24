@@ -78,7 +78,7 @@ public class DataDimOxygenLoader implements ResourceManagerReloadListener {
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
-							float oxygen = valuesObject.get("gravity").getAsFloat();
+							int oxygen = valuesObject.get("oxygen").getAsInt();
 							String dimension = valuesObject.get("dimension").getAsString();
 							ResourceLocation dimLoc = new ResourceLocation(dimension);
 							DataDimOxygen Oxygen = DataDimOxygen.builder().oxygen(oxygen).dimension(dimLoc).build();

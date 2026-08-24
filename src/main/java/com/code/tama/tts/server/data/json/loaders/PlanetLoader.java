@@ -1,13 +1,16 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.server.data.json.loaders;
 
+import java.util.*;
+
+import lombok.Getter;
+
+import net.minecraft.resources.ResourceLocation;
+
 import com.code.tama.triggerapi.data.AbstractDPLoader;
 import com.code.tama.triggerapi.data.AbstractDPLoaderGSON;
 import com.code.tama.triggerapi.data.DatapackRegistry;
 import com.code.tama.triggerapi.universal.UniversalCommon;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.*;
 
 public class PlanetLoader extends AbstractDPLoaderGSON<PlanetLoader.Planet> {
 	public static List<Planet> planets = new ArrayList<>();
@@ -19,7 +22,7 @@ public class PlanetLoader extends AbstractDPLoaderGSON<PlanetLoader.Planet> {
 
 		strList.clear();
 		for (PlanetLoader.Planet p : planets) {
-			strList.put(p.name(), p);
+			strList.put(p.getName(), p);
 		}
 	}
 
@@ -35,30 +38,50 @@ public class PlanetLoader extends AbstractDPLoaderGSON<PlanetLoader.Planet> {
 
 	@Override
 	public String dataPath() {
-		return "tts/tardis/planets";
+		return "tts/planets";
 	}
 
-	public record Planet(
-			String name,
-			String id,
-			int size,
-			String texture,
-			int rotation_speed,
-			Orbit orbit
-	) {
+	@Getter
+	public static class Planet {
+		private String name;
+		private String id;
+		private int size;
+		private String texture;
+		private int rotation_speed;
+		private Orbit orbit;
+		private int x, y, z;
 	}
 
-	public record Orbit(
-			String parent,
-			double distance,
-			long period,
-			double phase,
-			double inclination,
-			double eccentricity
-	) {
+	public static class Orbit {
+		private String parent;
+		private double distance;
+		private long period;
+		private double phase;
+		private double inclination;
+		private double eccentricity;
+
+		public String parent() {
+			return parent;
+		}
+		public double distance() {
+			return distance;
+		}
+		public long period() {
+			return period;
+		}
+		public double phase() {
+			return phase;
+		}
+		public double inclination() {
+			return inclination;
+		}
+		public double eccentricity() {
+			return eccentricity;
+		}
 	}
 
 	public static List<Planet> list() {
-		return ((AbstractDPLoader.AbstractDPList<PlanetLoader.Planet>) DatapackRegistry.getLoader(PlanetLoader.ID).list).getList();
+		return ((AbstractDPLoader.AbstractDPList<PlanetLoader.Planet>) DatapackRegistry.getLoader(PlanetLoader.ID).list)
+				.getList();
 	}
 }

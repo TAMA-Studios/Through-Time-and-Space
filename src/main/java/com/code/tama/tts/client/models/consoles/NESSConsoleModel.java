@@ -4,7 +4,6 @@ package com.code.tama.tts.client.models.consoles; // Made with Blockbench 4.12.6
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,8 +15,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class NESSConsoleModel<T extends NESSConsoleTile> extends HierarchicalModel<Entity>
 		implements
@@ -27,7 +27,7 @@ public class NESSConsoleModel<T extends NESSConsoleTile> extends HierarchicalMod
 	// and passed into
 	// this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation(TTSMod.MODID, "nessconsolemodel"), "main");
+			UniversalCommon.modRL("nessconsolemodel"), "main");
 	private final ModelPart analogdial;
 	private final ModelPart analoggydial;
 	private final ModelPart axisinput;

@@ -466,7 +466,7 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.GetInterior() == null)
 			return;
 
-		if (level != null && !level.isClientSide && level.getServer().getLevel(this.GetInterior()) != null) {
+		if (level != null) {
 			level.getServer().getLevel(this.GetInterior()).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> {
 						if ((!this.getBlockPos().equals(cap.GetNavigationalData().GetExteriorLocation().GetBlockPos())

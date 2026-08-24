@@ -51,7 +51,7 @@ public class PhysicalStateManager {
 				exteriorTile.setTransparency(alpha);
 			}
 			if (server) {
-				// Wait for the takeoff to be finished
+				// Wait for the landing to be finished
 				assert itardisLevel != null;
 				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished()) {
 					itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
@@ -105,7 +105,7 @@ public class PhysicalStateManager {
 		assert itardisLevel != null;
 		itardisLevel.Land();
 		long tick = this.itardisLevel.GetLevel().getGameTime();
-		// Play takeoff sound to everyone in dimension
+		// Play landing sound to everyone in dimension
 		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
 				.getFlightSoundScheme().GetLanding().Play(player.level(), player.blockPosition()));
 

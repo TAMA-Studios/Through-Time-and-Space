@@ -26,11 +26,13 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Capabilities {
 
-	public static final ResourceLocation FRAGMENT_LINKS = new ResourceLocation(MODID, "fragment_links");
-	public static final ResourceLocation PLAYER = new ResourceLocation(MODID, "player");
+	public static final ResourceLocation FRAGMENT_LINKS = UniversalCommon.modRL("fragment_links");
+	public static final ResourceLocation PLAYER = UniversalCommon.modRL("player");
 	public static final Capability<IPlayerCap> PLAYER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
 	});
 
@@ -49,8 +51,8 @@ public class Capabilities {
 	public static final Capability<ILevelCap> LEVEL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
 	});
 
-	public static final ResourceLocation TARDIS_CAPABILITY_KEY = new ResourceLocation(MODID, "tardis");
-	public static final ResourceLocation LEVEL_CAP_KEY = new ResourceLocation(MODID, "level_cap");
+	public static final ResourceLocation TARDIS_CAPABILITY_KEY = UniversalCommon.modRL("tardis");
+	public static final ResourceLocation LEVEL_CAP_KEY = UniversalCommon.modRL("level_cap");
 
 	public static <T, O extends ICapabilityProvider> LazyOptional<T> getCap(Capability<T> cap, O object) {
 		return object == null ? LazyOptional.empty() : object.getCapability(cap);

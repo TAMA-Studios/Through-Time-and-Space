@@ -29,7 +29,7 @@ public class DynamorphicController extends AbstractSubsystem {
 			String map[] = new String[]{" Z \nZZZ\n Z ", "ZBZ\nBZB\nZBZ", "B B\n # \nB B", "ZBZ\nBZB\nZBZ"};
 
 			key.put('Z', TTSBlocks.ZEITON_BLOCK.get().defaultBlockState());
-			key.put('B', TTSBlocks.BRUSHED_STEEL.get().defaultBlockState());
+			key.put('B', TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get().defaultBlockState());
 			key.put('#', TTSBlocks.DYNAMORPHIC_CONTROLLER_CORE.get().defaultBlockState());
 
 			Map = new SubsystemMapRecipeThing(map, key).getMap();

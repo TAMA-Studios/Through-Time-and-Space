@@ -14,6 +14,7 @@ import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
+import com.code.tama.tts.client.renderers.worlds.effects.SpaceSkyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.TardisSkyEffects;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSEntities;
@@ -55,7 +56,6 @@ public class ClientSetup {
 	@SubscribeEvent
 	public static void FMLClientSetup(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.CHROMIUM_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.GALLIFREYAN_OAK_LEAVES.get(), RenderType.cutout());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
@@ -100,7 +100,7 @@ public class ClientSetup {
 			// Register the shader instance with your handler
 			event.registerShader(shader, SkyBlock::setSkyShader);
 
-			TardisSkyEffects.registerShaders(event.getResourceProvider(), event::registerShader);
+			SpaceSkyEffects.registerShaders(event.getResourceProvider(), event::registerShader);
 		} catch (IOException ex) {
 			System.err.println("Failed to load shader");
 			ex.printStackTrace();
@@ -123,6 +123,7 @@ public class ClientSetup {
 		event.registerLayerDefinition(CoralConsoleModel.LAYER_LOCATION, CoralConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(ShellBaseModel.LAYER_LOCATION, ShellBaseModel::createBodyLayer);
+		event.registerLayerDefinition(FabricatorModel.LAYER_LOCATION, FabricatorModel::createBodyLayer);
 	}
 
 	@SubscribeEvent
@@ -214,7 +215,7 @@ public class ClientSetup {
 				new TardisSkyEffects(TDimensions.TARDIS_DIM_TYPE));
 
 		event.register(TDimensions.DimensionEffects.SPACE_EFFECTS.location(),
-				new TardisSkyEffects(TDimensions.SPACE_DIM));
+				new SpaceSkyEffects(TDimensions.SPACE_DIM));
 
 		event.register(TDimensions.DimensionEffects.GALLIFREY_EFFECTS.location(),
 				new GallifreyEffects(TDimensions.GALLIFREY_DIM_TYPE));

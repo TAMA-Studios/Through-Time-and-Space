@@ -22,8 +22,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.ItemStack;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 public class ManualScreen extends Screen {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(TTSMod.MODID, "textures/gui/manual.png");
+	public static final ResourceLocation TEXTURE = UniversalCommon.modRL("textures/gui/manual.png");
 	private final List<ManualChapter> manualChapters;
 	private int pageIndex;
 	private int chapterIndex;

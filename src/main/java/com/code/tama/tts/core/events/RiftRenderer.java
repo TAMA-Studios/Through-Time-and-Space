@@ -24,15 +24,16 @@ import net.minecraftforge.fml.common.Mod;
 
 import com.code.tama.triggerapi.helpers.rendering.FBOHelper;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Mod.EventBusSubscriber(modid = TTSMod.MODID)
 public class RiftRenderer {
 	private static final Map<UUID, VertexBuffer> riftVBOs = new HashMap<>();
 	private static final ResourceLocation RIFT_FRAMES[] = new ResourceLocation[]{
-			new ResourceLocation(TTSMod.MODID, "textures/environment/rift/frame1.png"),
-			new ResourceLocation(TTSMod.MODID, "textures/environment/rift/frame2.png"),
-			new ResourceLocation(TTSMod.MODID, "textures/environment/rift/frame3.png"),
-			new ResourceLocation(TTSMod.MODID, "textures/environment/rift/frame4.png")};
+			UniversalCommon.modRL("textures/environment/rift/frame1.png"),
+			UniversalCommon.modRL("textures/environment/rift/frame2.png"),
+			UniversalCommon.modRL("textures/environment/rift/frame3.png"),
+			UniversalCommon.modRL("textures/environment/rift/frame4.png")};
 
 	// Call this whenever rift data changes (on sync packet receipt)
 	public static void markDirty() {

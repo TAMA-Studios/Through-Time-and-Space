@@ -2,11 +2,12 @@
 package com.code.tama.tts.core.blocks.gadgets;
 
 import com.code.tama.tts.core.blocks.core.HorizontalRotatedBlock;
+import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.items.core.NozzleItem;
-import com.code.tama.tts.core.items.gadgets.SonicItem;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.registries.misc.RecipeRegistry;
 import com.code.tama.tts.core.tileentities.WorkbenchTile;
+import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +16,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import com.code.tama.triggerapi.boti.teleporting.TickScheduler;
 
 @SuppressWarnings("deprecation")
 public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBlock {
 	int size = 0;
+
+	private static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(
+			Block.box(0.25, 0.25, 15, 15.75, 15.75, 16).optimize());
+
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter getter, @NotNull BlockPos pos,
+			@NotNull CollisionContext context) {
+		return SHAPE.GetShapeFromRotation(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+	}
 
 	public WorkbenchBlock(Properties properties) {
 		super(properties.strength(3.0F));
@@ -36,11 +53,16 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 		return TTSTileEntities.WORKBENCH_TILE.get().create(blockPos, blockState);
 	}
 
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state,
+			@NotNull BlockEntityType<T> type) {
+		return type == TTSTileEntities.WORKBENCH_TILE.get() ? WorkbenchTile::tick : null;
+	}
+
 	@Override
 	public void onRemove(BlockState p_196243_1_, Level p_196243_2_, BlockPos p_196243_3_, BlockState p_196243_4_,
 			boolean p_196243_5_) {
 		BlockEntity tile = p_196243_2_.getBlockEntity(p_196243_3_);
-		if ((WorkbenchTile) tile != null) {
+		if (tile != null) {
 			if (tile instanceof WorkbenchTile) {
 				((WorkbenchTile) tile).StoredItems.clear();
 				tile.setRemoved();
@@ -54,14 +76,22 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 	@NotNull @Override
 	public InteractionResult use(@NotNull BlockState p_225533_1_, @NotNull Level level, @NotNull BlockPos blockPos,
 			@NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
-		BlockEntity tile = level.getBlockEntity(blockPos);
+		final BlockEntity tile = level.getBlockEntity(blockPos);
 		if (tile != null && tile instanceof WorkbenchTile workbenchTile) {
+
+			if (player.isCrouching()) {
+				workbenchTile.Open = !workbenchTile.Open;
+				return InteractionResult.SUCCESS;
+			}
+			if (!workbenchTile.Open)
+				return InteractionResult.SUCCESS;
+
 			if (interactionHand == InteractionHand.OFF_HAND)
 				return InteractionResult.PASS;
-			// If player's holding a sonic, it should attempt to craft the result
-			if (player.getMainHandItem().getItem() instanceof SonicItem) {
+			// If player's not holding anything, it should attempt to craft the result
+			if (player.getMainHandItem().isEmpty()) {
 				// if(RecipeRegistry.RECIPES.contains())
-				Item result = RecipeRegistry.GetRecipeResult(
+				final DataRecipe recipe = RecipeRegistry.GetRecipe(
 						!workbenchTile.StoredItems.isEmpty() ? workbenchTile.StoredItems.get(0) : Items.AIR,
 						workbenchTile.StoredItems.size() > 1 ? workbenchTile.StoredItems.get(1) : Items.AIR,
 						workbenchTile.StoredItems.size() > 2 ? workbenchTile.StoredItems.get(2) : Items.AIR,
@@ -69,11 +99,13 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 						workbenchTile.StoredItems.size() > 4 ? workbenchTile.StoredItems.get(4) : Items.AIR,
 						workbenchTile.StoredItems.size() > 5 ? workbenchTile.StoredItems.get(5) : Items.AIR,
 						workbenchTile.nozzle != null ? workbenchTile.nozzle : Items.AIR);
-				if (result != Items.AIR) {
-					assert result != null;
-
-					player.getInventory().add(result.getDefaultInstance());
-					workbenchTile.StoredItems.clear();
+				if (recipe != null) {
+					workbenchTile.Fabricating = true;
+					TickScheduler.runAfter(recipe.TimeInTicks, () -> {
+						workbenchTile.Fabricating = false;
+						player.getInventory().add(RecipeRegistry.GetResult(recipe).getDefaultInstance());
+						workbenchTile.StoredItems.clear();
+					});
 					return InteractionResult.CONSUME;
 				}
 				return InteractionResult.PASS;
@@ -99,53 +131,6 @@ public class WorkbenchBlock extends HorizontalRotatedBlock implements EntityBloc
 				player.getMainHandItem().shrink(1);
 				return InteractionResult.PASS;
 			}
-
-			//
-			// if (tile instanceof WorkbenchTile) {
-			// if (!((WorkbenchTile) tile).StoredItems.isEmpty())
-			// for (int i = 0; i < ((WorkbenchTile) tile).StoredItems.size(); i++) {
-			// if (!((WorkbenchTile) tile).StoredItems.get(i).equals(Items.AIR))
-			// this.size++;
-			// }
-			// if (!player.isCrouching()
-			// && !player.getMainHandItem().isEmpty()
-			// && player.getMainHandItem().getItem() != Items.AIR) {
-			// if (this.size < 4) {
-			// ((WorkbenchTile) tile)
-			// .StoredItems.add(player.getMainHandItem().getItem());
-			// player.getMainHandItem().shrink(1);
-			// return InteractionResult.CONSUME;
-			// }
-			// }
-			// if (player.isCrouching() && !((WorkbenchTile) tile).StoredItems.isEmpty()) {
-			// ArrayList<Items> itemsArrayList = new ArrayList<>();
-			// // for (int i = 0; i < 3; i++) {
-			// // if (((WorkbenchTile) tile).StoredItems.get(i)
-			// == null) {
-			// // ((WorkbenchTile) tile).StoredItems.add(i,
-			// Items.AIR);
-			// // }
-			// // }
-			// for (int i = 0; i < 4; i++) {
-			// if (((WorkbenchTile) tile).StoredItems.size() < 4)
-			// ((WorkbenchTile) tile).StoredItems.add(Items.AIR);
-			// }
-			// if
-			// (TTSMod.WorkBenchRecipeHandler.IsValidRecipeFromArrayList(((WorkbenchTile)
-			// tile).StoredItems)) {
-			// player.inventoryMenu
-			// .getItems()
-			//
-			// .add(TTSMod.WorkBenchRecipeHandler.GetRecipeResultFromArrayList(
-			// ((WorkbenchTile) tile).StoredItems)
-			// .getDefaultInstance());
-			//
-			// ((WorkbenchTile) tile).StoredItems.clear();
-			// this.size = 0;
-			// return InteractionResult.CONSUME;
-			// }
-			// }
-			// }
 		}
 		return InteractionResult.PASS;
 	}

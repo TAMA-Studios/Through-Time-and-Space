@@ -7,7 +7,6 @@ import com.code.tama.tts.server.data.json.dataHolders.DataRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public class RecipeRegistry {
 	public static ArrayList<DataRecipe> RECIPES = new ArrayList<>();
@@ -32,7 +31,7 @@ public class RecipeRegistry {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static Item GetRecipeResult(Item item1, Item item2, Item item3, Item item4, Item item5, Item item6,
+	public static DataRecipe GetRecipe(Item item1, Item item2, Item item3, Item item4, Item item5, Item item6,
 			Item nozzle) {
 		for (DataRecipe recipe : RECIPES) {
 			if (recipe.item1.equals(BuiltInRegistries.ITEM.getKey(item1))
@@ -43,10 +42,14 @@ public class RecipeRegistry {
 					&& recipe.item6.equals(BuiltInRegistries.ITEM.getKey(item6))
 					&& recipe.nozzle.equals(BuiltInRegistries.ITEM.getKey(nozzle))) {
 				// Valid recipe found
-				return BuiltInRegistries.ITEM.get(recipe.result);
+				return recipe;
 			}
 		}
 		// No valid recipe found
-		return Items.AIR;
+		return null;
+	}
+
+	public static Item GetResult(DataRecipe recipe) {
+		return BuiltInRegistries.ITEM.get(recipe.result);
 	}
 }

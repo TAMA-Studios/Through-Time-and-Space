@@ -5,7 +5,6 @@ import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 
 import java.util.function.BiConsumer;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.mixin.client.IMinecraftAccessor;
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -43,11 +42,12 @@ import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.boti.IHelpWithFBOs;
 import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 // Big thanks to Jeryn for helping with this
 public class FBOHelper {
 
-	public static final ResourceLocation BLACK = new ResourceLocation(TTSMod.MODID, "textures/black.png");
+	public static final ResourceLocation BLACK = UniversalCommon.modRL("textures/black.png");
 
 	public StencilBufferStorage stencilBufferStorage = new StencilBufferStorage();
 	public RenderTarget renderTarget;

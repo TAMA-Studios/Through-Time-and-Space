@@ -17,10 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VortexCannonRenderer<T extends VortexCannonTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
 			BlockEntityRenderer<T> {

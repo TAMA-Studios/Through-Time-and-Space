@@ -17,6 +17,7 @@ import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExterio
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.*;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
+import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketC2S;
 import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
@@ -126,6 +127,9 @@ public class Networking {
 
 		register(UpdateTIRPacketS2C.class, UpdateTIRPacketS2C::encode, UpdateTIRPacketS2C::decode,
 				UpdateTIRPacketS2C::handle);
+
+		register(UpdateTIRPacketC2S.class, UpdateTIRPacketC2S::encode, UpdateTIRPacketC2S::decode,
+				UpdateTIRPacketC2S::handle);
 
 		register(StopViewingExteriorC2S.class, StopViewingExteriorC2S::encode, StopViewingExteriorC2S::decode,
 				StopViewingExteriorC2S::handle);

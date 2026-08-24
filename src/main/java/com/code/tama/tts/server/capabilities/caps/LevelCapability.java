@@ -52,8 +52,8 @@ public class LevelCapability implements ILevelCap {
 	public final Level level;
 
 	private LevelCapability(Map<BlockPos, RiftData> rifts, Map<UUID, TIRBlockContainer> tirBlocks) {
-		this.activeRifts = rifts;
-		this.TIRBlocks = tirBlocks;
+		this.activeRifts = new HashMap<>(rifts);
+		this.TIRBlocks = new HashMap<>(tirBlocks);
 		this.level = null;
 	}
 

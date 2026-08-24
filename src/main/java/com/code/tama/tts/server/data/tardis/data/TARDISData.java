@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
@@ -32,6 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import com.code.tama.triggerapi.codec.Codecs;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Getter
 @Setter
@@ -68,7 +68,7 @@ public class TARDISData {
 	ProtocolData ProtocolsData = new ProtocolData();
 	SubsystemsData SubSystemsData = new SubsystemsData();
 	Map<UUID, PlayerPosition> ViewingPlayerMap = new HashMap<>();
-	ResourceLocation Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness");
+	ResourceLocation Vortex = UniversalCommon.modRL("textures/rift/infiniteabyssofnothingness");
 	SpaceTimeCoordinate doorBlock = new SpaceTimeCoordinate();
 	ITARDISLevel TARDIS;
 
@@ -104,7 +104,7 @@ public class TARDISData {
 		ProtocolsData = protocolsData;
 		this.ticks = ticks;
 		if (vortex.equals(new ResourceLocation("", "")))
-			this.Vortex = new ResourceLocation(TTSMod.MODID, "textures/rift/infiniteabyssofnothingness.png");
+			this.Vortex = UniversalCommon.modRL("textures/rift/infiniteabyssofnothingness.png");
 		else
 			this.Vortex = vortex;
 	}

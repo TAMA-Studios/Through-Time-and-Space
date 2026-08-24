@@ -407,12 +407,6 @@ public class TTSBlocks {
 	// NO MORE ROUNDELS!
 
 	@MainTab
-	public static final BlockEntry<Block> CHROMIUM_BLOCK = registrate()
-			.block("chromium_block", Block::new).properties((properties) -> properties
-					.mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 6.0F).sound(SoundType.METAL))
-			.simpleItem().defaultBlockstate().register();
-
-	@MainTab
 	public static final BlockEntry<Block> FLAT_METAL_DUCT_INTAKE = Builder(
 			"decoration/industrial_metal/flat_metal_duct_intake", Block::new).stateWithExistingModel().simpleItem()
 			.defaultLang().defaultLoot().simpleBlockItemBlockParent().register();
@@ -687,7 +681,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<WorkbenchBlock> TEMPORAL_FABRICATOR = TTSBlocks
-			.Builder("temporal_fabricator", WorkbenchBlock::new).airState().simpleItem().register();
+			.Builder("temporal_fabricator", WorkbenchBlock::new).airState()
+			.properties(p -> copy(Blocks.WHITE_CONCRETE, p).noOcclusion()).simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<FragmentLinksBlock> FRAGMENT_LINKS = Builder("fragment_links",
@@ -883,7 +878,7 @@ public class TTSBlocks {
 
 	@DimensionalTab
 	public static final BlockEntry<Block> RAW_ZEITON_BLOCK = Builder("zeiton/raw_zeiton_block",
-			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).blankBlockstate().simpleItem()
+			prop -> new Block(copy(Blocks.IRON_BLOCK, prop).sound(SoundType.STONE))).defaultBlockstate().simpleItem()
 			.register();
 
 	@DimensionalTab

@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
-import com.code.tama.triggerapi.helpers.PlanetHelper;
-import com.code.tama.triggerapi.helpers.ThreadUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.core.entities.controls.ModularControl;
+import com.code.tama.tts.core.exceptions.InvalidPlanetException;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
@@ -28,14 +26,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -60,32 +56,68 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
 import com.code.tama.triggerapi.exceptions.GrammarException;
 import com.code.tama.triggerapi.gui.GuiLoader;
 import com.code.tama.triggerapi.helpers.GravityHelper;
 import com.code.tama.triggerapi.helpers.OxygenHelper;
+import com.code.tama.triggerapi.helpers.PlanetHelper;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
 	static boolean planetThreadFinished = true;
 
 	@SubscribeEvent
-	public static void onEntityTick(LivingEvent.LivingTickEvent event) { // Teleport entities to a planet when within landing radius
-		if(planetThreadFinished) {
-			planetThreadFinished = false;
-			if (event.getEntity().level().dimension().equals(TDimensions.SPACE)) {
-				ThreadUtils.RunThread(() -> {
-					PlanetLoader.list().forEach(p -> {
-						Vec3 planetPos = PlanetHelper.getPosition(p, event.getEntity().level().getGameTime());
+	public static void onEntityTick(LivingEvent.LivingTickEvent event) { // Teleport entities to a planet when within
+																			// landing radius
+		if (!planetThreadFinished)
+			return;
+		planetThreadFinished = false;
+		if (event.getEntity().level().dimension().equals(TDimensions.SPACE)) {
+			ThreadUtils.NewThread((rtp) -> {
+				PlanetLoader.list().forEach(p -> {
+					try {
+						if (event.getEntity().level().dimension().equals(TDimensions.SPACE)) {
+							Vec3 planetPos = PlanetHelper.getPosition(p, event.getEntity().level().getGameTime());
 
-						if (event.getEntity().position().closerThan(planetPos, p.size())) {
-							SeamlessTeleport.teleportTo(event.getEntity(),
-									event.getEntity().level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(p.id()))),
-									0, 128, 0, 0, 90);
+							if (!p.getId().equals("none")
+									&& event.getEntity().position().closerThan(planetPos, p.getSize())) {
+								SeamlessTeleport.teleportTo(event.getEntity(),
+										event.getEntity().level().getServer().getLevel(ResourceKey
+												.create(Registries.DIMENSION, UniversalCommon.parse(p.getId()))),
+										0, 128, 0, 0, 90);
+							}
 						}
-					});
-					planetThreadFinished = true;
-				}, "planet-checking");
+					} catch (Exception e) { // Just in case a dimension uses the id of a non-existent dimension
+						TTSMod.LOGGER.error(e.getStackTrace());
+						throw new InvalidPlanetException("Planet - " + p.getName()
+								+ " - Contains an invalid dimension id!\nPlanet tried using id: " + p.getId()
+								+ ", But this isn't a valid/registered Minecraft dimension!");
+					} finally {
+						planetThreadFinished = true;
+					}
+				});
+			}, "", "planet-checking").start();
+		} else if (event.getEntity().position().y > 400) {
+			if (PlanetLoader.strList.containsKey(event.getEntity().level().dimension().location().toString())) { // Check
+																													// if
+																													// the
+																													// dimension
+																													// the
+																													// entity
+																													// is
+																													// in
+																													// is
+																													// considered
+																													// a
+																													// "planet"
+				PlanetLoader.Planet p = PlanetLoader.strList
+						.get(event.getEntity().level().dimension().location().toString());
+				SeamlessTeleport.teleportTo(event.getEntity(),
+						event.getEntity().level().getServer().getLevel(TDimensions.SPACE), p.getX(),
+						p.getY() + PlanetHelper.getLandingRadius(p.getSize()) + 100, p.getZ(), 0, 90);
 			}
 		}
 	}
@@ -304,7 +336,10 @@ public class CommonEvents {
 		event.level.getCapability(Capabilities.LEVEL_CAPABILITY).ifPresent(ILevelCap::Tick);
 
 		GetTARDISCapSupplier(event.level).ifPresent(level -> {
-			if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff()
+			if (event.level.isClientSide())
+				level.ClientTick();
+
+			else if (level.GetFlightData().isInFlight() || level.GetFlightData().IsTakingOff() // If it's server-side
 					|| !level.GetLevel().players().isEmpty()) // Only tick if it's in flight or has players in it
 				level.Tick();
 		});
@@ -320,10 +355,11 @@ public class CommonEvents {
 
 			if (entity instanceof LivingEntity livingEntity) {
 				// TODO: REAL Oxygen implementation
-				float O2 = OxygenHelper.getO2(event.level) * 10;
+				float O2 = OxygenHelper.getO2(event.level);
 
-				if (O2 != 10 && event.level.getGameTime() % O2 == 0) {
+				if (O2 != 20 && event.level.getGameTime() % O2 == 0) {
 					entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
+
 				}
 			}
 		}));

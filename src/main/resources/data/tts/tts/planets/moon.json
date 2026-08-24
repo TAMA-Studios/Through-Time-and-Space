@@ -1,0 +1,18 @@
+{
+    "name": "Moon",
+    "id": "tts:moon",
+
+    "size": 25,
+    "texture": "tts:textures/space/moon.png",
+
+    "rotation_speed": 6000,
+
+    "orbit": {
+      "parent": "Prithvi",
+      "distance": 200,
+      "period": 500,
+      "phase": 45,
+      "inclination": 45,
+      "eccentricity": 0.3
+    }
+}

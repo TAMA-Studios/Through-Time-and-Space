@@ -58,7 +58,8 @@ public abstract class AbstractDPLoader<T> implements ResourceManagerReloadListen
 		rebuildCache();
 	}
 
-	public void rebuildCache() {}
+	public void rebuildCache() {
+	}
 
 	public abstract T getHolder(JsonObject json);
 

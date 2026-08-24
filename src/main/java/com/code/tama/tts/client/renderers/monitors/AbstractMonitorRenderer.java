@@ -28,6 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements BlockEntityRenderer<T> {
 	public static final ResourceLocation GALLIFREYAN = new ResourceLocation(TTSMod.MODID,
 			"textures/tiles/monitor/galifrayan.png");
@@ -208,7 +210,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 		ResourceLocation texture = (this.category != null)
 				? this.category.getOverlay()
-				: new ResourceLocation(TTSMod.MODID, "textures/gui/overlay.png");
+				: UniversalCommon.modRL("textures/gui/overlay.png");
 
 		poseStack.pushPose();
 		poseStack.translate(-44, -0.5, 0);

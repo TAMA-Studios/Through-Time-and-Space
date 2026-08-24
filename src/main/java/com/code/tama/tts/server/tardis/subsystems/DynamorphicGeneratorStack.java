@@ -28,8 +28,8 @@ public class DynamorphicGeneratorStack extends AbstractSubsystem {
 			HashMap<Character, BlockState> key = new HashMap<>();
 			String map[] = new String[]{" Z \nZZZ\n Z ", "ZBZ\nBZB\nZBZ", "B B\n # \nB B", "ZBZ\nBZB\nZBZ"};
 
-			key.put('Z', TTSBlocks.ZEITON_BLOCK.get().defaultBlockState());
-			key.put('B', TTSBlocks.BRUSHED_STEEL.get().defaultBlockState());
+			key.put('Z', TTSBlocks.RAW_ZEITON_BLOCK.get().defaultBlockState());
+			key.put('B', TTSBlocks.BRUSHED_STRUCTURAL_STEEL.get().defaultBlockState());
 			key.put('#', TTSBlocks.DYNAMORPHIC_GENERATOR_STACK.get().defaultBlockState());
 
 			Map = new SubsystemMapRecipeThing(map, key).getMap();

@@ -4,7 +4,6 @@ package com.code.tama.tts.client.models.consoles; // Made with Blockbench 4.12.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.animations.consoles.HudolinConsoleAnimation;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
@@ -17,8 +16,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
 public class HudolinConsoleModel<T extends HudolinConsoleTile> extends HierarchicalModel<Entity>
@@ -27,7 +27,7 @@ public class HudolinConsoleModel<T extends HudolinConsoleTile> extends Hierarchi
 	// This layer location should be baked with EntityRendererProvider.Context in
 	// the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation(TTSMod.MODID, "hudolinconsolemodel"), "main");
+			UniversalCommon.modRL("hudolinconsolemodel"), "main");
 
 	private final ModelPart ConsoleCollarOne6;
 	private final ModelPart ConsoleCollarTwo3;

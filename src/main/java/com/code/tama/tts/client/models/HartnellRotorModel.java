@@ -4,7 +4,6 @@ package com.code.tama.tts.client.models; // Made with Blockbench 4.12.5
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
 import com.code.tama.tts.core.tileentities.HartnellRotorTile;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,8 +19,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
 public class HartnellRotorModel<T extends HartnellRotorTile> extends HierarchicalModel<Entity>
@@ -32,7 +32,7 @@ public class HartnellRotorModel<T extends HartnellRotorTile> extends Hierarchica
 	// and passed into
 	// this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation(TTSMod.MODID, "hartnellrotormodel"), "main");
+			UniversalCommon.modRL("hartnellrotormodel"), "main");
 	private final ModelPart bone;
 	private final ModelPart bone10;
 	private final ModelPart bone11;

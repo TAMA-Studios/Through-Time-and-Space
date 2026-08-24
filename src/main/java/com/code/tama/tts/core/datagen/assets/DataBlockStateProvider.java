@@ -30,6 +30,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 public class DataBlockStateProvider extends BlockStateProvider {
 	private final List<Block> states = new ArrayList<>();
 
@@ -400,8 +402,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			}
 
 			return new ConfiguredModel[]{new ConfiguredModel(
-					provider.models().getExistingFile(new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())), 0,
-					y, false)};
+					provider.models().getExistingFile(UniversalCommon.modRL("block/" + ctx.getName())), 0, y, false)};
 		});
 	}
 
@@ -420,8 +421,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 				e.printStackTrace();
 			}
 			return new ConfiguredModel[]{new ConfiguredModel(
-					provider.models().getExistingFile(new ResourceLocation(TTSMod.MODID, "block/" + path)), 0, y,
-					false)};
+					provider.models().getExistingFile(UniversalCommon.modRL("block/" + path)), 0, y, false)};
 		});
 	}
 
@@ -437,21 +437,21 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			return switch (TYPE) {
 				case TOP ->
 					new ConfiguredModel[]{new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_top",
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+							UniversalCommon.modRL("block/" + ctx.getName() + "_side"),
+							UniversalCommon.modRL("block/" + ctx.getName() + "_bottom"),
+							UniversalCommon.modRL("block/" + ctx.getName() + "_top")))};
 
 				case BOTTOM -> new ConfiguredModel[]{
 						new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_bottom",
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+								UniversalCommon.modRL("block/" + ctx.getName() + "_side"),
+								UniversalCommon.modRL("block/" + ctx.getName() + "_bottom"),
+								UniversalCommon.modRL("block/" + ctx.getName() + "_top")))};
 
 				default -> new ConfiguredModel[]{
 						new ConfiguredModel(provider.models().slab("block/" + ctx.getName().replace("slab", ""),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_side"),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_bottom"),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName() + "_top")))};
+								UniversalCommon.modRL("block/" + ctx.getName() + "_side"),
+								UniversalCommon.modRL("block/" + ctx.getName() + "_bottom"),
+								UniversalCommon.modRL("block/" + ctx.getName() + "_top")))};
 			};
 		});
 	}
@@ -464,21 +464,21 @@ public class DataBlockStateProvider extends BlockStateProvider {
 			return switch (TYPE) {
 				case TOP ->
 					new ConfiguredModel[]{new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_top",
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-							new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+							UniversalCommon.modRL("block/" + ctx.getName()),
+							UniversalCommon.modRL("block/" + ctx.getName()),
+							UniversalCommon.modRL("block/" + ctx.getName())))};
 
 				case BOTTOM -> new ConfiguredModel[]{
 						new ConfiguredModel(provider.models().slab("block/" + ctx.getName() + "_bottom",
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+								UniversalCommon.modRL("block/" + ctx.getName()),
+								UniversalCommon.modRL("block/" + ctx.getName()),
+								UniversalCommon.modRL("block/" + ctx.getName())))};
 
 				default -> new ConfiguredModel[]{
 						new ConfiguredModel(provider.models().slab("block/" + ctx.getName().replace("slab", ""),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName()),
-								new ResourceLocation(TTSMod.MODID, "block/" + ctx.getName())))};
+								UniversalCommon.modRL("block/" + ctx.getName()),
+								UniversalCommon.modRL("block/" + ctx.getName()),
+								UniversalCommon.modRL("block/" + ctx.getName())))};
 			};
 		});
 	}

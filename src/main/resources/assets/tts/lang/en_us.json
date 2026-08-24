@@ -387,5 +387,6 @@
   "item.tts.gadgets.vortex_manipulator": "Gadgets/vortex Manipulator",
   "item.tts.holo_glasses": "Holo Glasses",
   "item.tts.window_configurator": "Window Configurator",
-  "tts.ponder.engine_interface.text_3": "Once the Fragment Links and the Subsystem are physically connected to each other, Sonic the Fragment Links to finalize the connection"
+  "tts.ponder.engine_interface.text_3": "Once the Fragment Links and the Subsystem are physically connected to each other, Sonic the Fragment Links to finalize the connection",
+  "gadgets.tir.blockPos": "Linked Position:"
 }

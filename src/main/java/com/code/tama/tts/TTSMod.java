@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
 import com.code.tama.tts.core.compat.ModCompat;
@@ -35,11 +34,6 @@ import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.LeadItem;
-import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.world.item.ItemStack;

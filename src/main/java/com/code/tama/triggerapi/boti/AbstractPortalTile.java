@@ -142,18 +142,25 @@ public abstract class AbstractPortalTile extends TickingTile {
 		}
 
 		if (this.targetLevel != null) {
-			// Target is known, run the proximity pre-load check on the server side.
+			// Target is known, run the proximity preload check on the server side.
 			tickProximityPrepare();
 			return;
 		}
 
 		assert this.getLevel() != null;
-		if (this.getLevel().isClientSide) {
-			if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
-				return;
-		}
 
-		if (!this.getLevel().isClientSide && !TTSConfig.ServerConfig.BOTI_ENABLED.get())
+		if (!TTSConfig.ServerConfig.BOTI_ENABLED.get())
+			return;
+
+		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+				.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
+						cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+
+	}
+
+	@Override
+	public void clientTick() {
+		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
 			return;
 
 		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)

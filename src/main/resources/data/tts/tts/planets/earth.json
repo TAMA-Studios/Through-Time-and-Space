@@ -1,5 +1,4 @@
 {
-  "values": {
     "__comment": [
       "name: Display name shown in controls",
       "id: Dimension ID",
@@ -18,18 +17,17 @@
     "name": "Prithvi",
     "id": "minecraft:overworld",
 
-    "size": 200,
-    "texture": "tts:textures/space/planets/prithvi.png",
+    "size": 100,
+    "texture": "tts:textures/space/planets/earth.png",
 
     "rotation_speed": 24000,
 
     "orbit": {
       "parent": "Sol",
-      "distance": 1000,
-      "period": 6000,
+      "distance": 5000,
+      "period": 10000,
       "phase": 45,
       "inclination": 7,
       "eccentricity": 0.1
     }
-  }
 }

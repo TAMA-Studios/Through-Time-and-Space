@@ -77,17 +77,17 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 				|| neighborState.getBlock() instanceof EngineInterfaceBlock;
 	}
 
-	private static void makeParticle(LevelAccessor levelAccessor, BlockPos blockPos) {
+	private static void makeParticle(LevelAccessor p_54659_, BlockPos p_54660_) {
 		Direction direction = Direction.NORTH;
 		Direction direction1 = Direction.NORTH;
-		double d0 = (double) blockPos.getX() + 0.5D + 0.1D * (double) direction.getStepX()
+		double d0 = (double) p_54660_.getX() + 0.5D + 0.1D * (double) direction.getStepX()
 				+ 0.2D * (double) direction1.getStepX();
-		double d1 = (double) blockPos.getY() + 0.5D + 0.1D * (double) direction.getStepY()
+		double d1 = (double) p_54660_.getY() + 0.5D + 0.1D * (double) direction.getStepY()
 				+ 0.2D * (double) direction1.getStepY();
-		double d2 = (double) blockPos.getZ() + 0.5D + 0.1D * (double) direction.getStepZ()
+		double d2 = (double) p_54660_.getZ() + 0.5D + 0.1D * (double) direction.getStepZ()
 				+ 0.2D * (double) direction1.getStepZ();
-		levelAccessor.addParticle(new DustParticleOptions(DustParticleOptions.REDSTONE_PARTICLE_COLOR, 1.0F), d0, d1,
-				d2, 0.0D, 0.0D, 0.0D);
+		p_54659_.addParticle(new DustParticleOptions(DustParticleOptions.REDSTONE_PARTICLE_COLOR, 1), d0, d1, d2, 0.0D,
+				0.0D, 0.0D);
 	}
 
 	/**

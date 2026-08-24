@@ -14,12 +14,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
-@OnlyIn(Dist.CLIENT)
 public class CoralConsoleTopperRenderer implements BlockEntityRenderer<CoralConsoleTopperTile> {
 
 	private final CoralConsoleTopper<?> model;
