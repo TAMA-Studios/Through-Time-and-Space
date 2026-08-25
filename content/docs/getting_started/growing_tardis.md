@@ -2,7 +2,7 @@
 title: Growing a TARDIS
 date: 2026-08-25
 description: Obtaining a TARDIS Coral and growing it
-draft: true
+draft: false
 weight: 0
 ---
 # Obtaining a TARDIS Coral
