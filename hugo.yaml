@@ -1,5 +1,6 @@
 title: Through Time and Space Wiki
-baseURL: 'https://tama-studios.github.io/'
+relativeURLs: true
+baseURL: 'https://tama-studios.github.io/Through-Time-And-Space'
 enableRobotsTXT: true
 enableGitInfo: true
 defaultContentLanguage: en
