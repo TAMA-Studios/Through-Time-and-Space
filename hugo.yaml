@@ -1,5 +1,5 @@
 title: Through Time and Space Wiki
-baseURL: https://tama-studios.github.io/Through-Time-And-Space/
+baseURL: 'https://tama-studios.github.io/'
 enableRobotsTXT: true
 enableGitInfo: true
 defaultContentLanguage: en
@@ -25,7 +25,7 @@ params:
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
   editURL:
-    base: "https://github.com/TAMA-Studios/Through-Time-And-Space/edit/main/content/"
+    base: "https://tama-studios.github.io/Through-Time-and-Space/edit/main/content/"
 
 menu:
   main:
@@ -34,7 +34,7 @@ menu:
       params:
         type: search
     - name: GitHub
-      url: "https://github.com/TAMA-Studios/Through-Time-and-Space"
+      url: "https://tama-studios.github.io/Through-Time-and-Space/"
       weight: 2
       params:
         icon: github
