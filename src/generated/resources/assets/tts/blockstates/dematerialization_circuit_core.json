@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "": {
-      "model": "tts:block/dematerialization_circuit_core"
-    }
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "values" : {
-    "doorMaxDegrees" : 35,
-    "lightmap" : "tts:textures/exteriors/ttcapsule.png",
-    "modelname" : "tts:models/exterior/ttcapsule.json",
-    "name" : "ttcapsule",
-    "texture" : "tts:textures/exteriors/ttcapsule.png"
-  }
-}

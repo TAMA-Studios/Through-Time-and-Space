@@ -1,6 +1,0 @@
-{
-  "parent" : "tts:item/sonic/copper/default",
-  "textures" : {
-    "layer0" : "tts:item/sonic/copper/mk4"
-  }
-}

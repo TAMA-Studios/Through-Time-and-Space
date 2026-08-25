@@ -1,6 +1,0 @@
-{
-  "parent" : "tts:item/sonic/copper/extended",
-  "textures" : {
-    "layer0" : "tts:item/sonic/copper/codiak"
-  }
-}

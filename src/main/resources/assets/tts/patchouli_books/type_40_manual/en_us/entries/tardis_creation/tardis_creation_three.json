@@ -1,9 +1,0 @@
-{
-  "category" : "tts:tardis_creation",
-  "icon" : "minecraft:crafting_table",
-  "name" : "Third Step",
-  "pages" : [ {
-    "text" : "TARDIS Creation, page two. $(br)Profit",
-    "type" : "text"
-  } ]
-}

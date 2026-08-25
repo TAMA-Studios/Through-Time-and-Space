@@ -1,4 +1,0 @@
-{
-  "display_name" : "Flight Events",
-  "pages" : [ "tts:flight_events/flight_events_intro", "tts:flight_events/throttle_slip" ]
-}

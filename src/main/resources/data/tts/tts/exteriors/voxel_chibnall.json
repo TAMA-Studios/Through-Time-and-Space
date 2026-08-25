@@ -1,8 +1,0 @@
-{
-  "values" : {
-    "lightmap" : "tts:textures/exteriors/voxel/_lightmap.png",
-    "modelname" : "tts:models/exterior/voxel_chibnall.json",
-    "name" : "voxel.chibnall",
-    "texture" : "tts:textures/exteriors/voxel/chibnall.png"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "parent" : "minecraft:block/template_orientable_trapdoor_top",
-  "textures" : {
-    "texture" : "tts:block/carbon_steel_grate"
-  }
-}

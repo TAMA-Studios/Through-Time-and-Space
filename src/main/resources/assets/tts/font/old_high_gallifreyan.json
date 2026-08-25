@@ -1,9 +1,0 @@
-{
-  "providers" : [ {
-    "file" : "tts:old_high_gallifreyan.ttf",
-    "oversample" : 2,
-    "shift" : [ 0, 0 ],
-    "size" : 11,
-    "type" : "ttf"
-  } ]
-}
