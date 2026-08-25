@@ -75,7 +75,9 @@ minecraft {
 		client {
 			property 'forge.enabledGameTestNamespaces', mod_id
 			workingDirectory project.file('run')
-			jvmArg "-XX:+AllowEnhancedClassRedefinition"
+			if (project.hasProperty('enableEnhancedClassRedefinition')) {
+				jvmArg "-XX:+AllowEnhancedClassRedefinition"
+			}
 			jvmArg "-Dmixin.hotSwap=true"
 			property 'forge.logging.markers', 'REGISTRIES'
 			property 'forge.logging.console.level', 'debug'
@@ -341,34 +343,32 @@ tasks.named('jarJar', Jar).configure {
 
 
 // ============================================================================
-// RUST CROSS COMPILATION
+// RUST NATIVE BUILD
 // ============================================================================
 //
-// Rust compiler:
-//     /home/george/.nix-profile/bin/rustc
+// Select the native build tool/target from the OS Gradle is running on.
+// This prevents Linux/macOS builds from trying to invoke `cross` for the
+// Windows target before it is needed.
 //
-// Cargo / cross:
-//     /home/george/.cargo/bin/cargo
-//     /home/george/.cargo/bin/cross
-//
-// IMPORTANT:
-// Gradle explicitly tells Cargo which rustc to use through RUSTC.
-// This avoids relying on whatever happens to be first in PATH.
+// Windows: cross -> x86_64-pc-windows-gnu
+// Linux:   cargo -> x86_64-unknown-linux-gnu
+// macOS:   cargo -> universal x86_64 + aarch64 dylib
 // ============================================================================
 
 def rustBin = findProperty('RUSTC_PATH')
 def cargoBin = findProperty('CARGO_PATH')
 def crossBin = findProperty('CROSS_PATH')
 
+def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+def isWindows = osName.contains('win')
+def isMac = osName.contains('mac') || osName.contains('darwin')
+def isLinux = osName.contains('linux')
+
+def hostOs = isWindows ? 'windows' : isMac ? 'macos' : isLinux ? 'linux' : 'unknown'
+
 if (!rustBin) {
 	throw new GradleException(
 			"RUSTC_PATH is not defined in gradle.properties"
-	)
-}
-
-if (!crossBin) {
-	throw new GradleException(
-			"CROSS_PATH is not defined in gradle.properties"
 	)
 }
 
@@ -378,13 +378,21 @@ if (!cargoBin) {
 	)
 }
 
+// CROSS_PATH is only required when actually building the Windows target.
+if (isWindows && !crossBin) {
+	throw new GradleException(
+			"CROSS_PATH is not defined in gradle.properties"
+	)
+}
+
 def rustcExecutable = "${rustBin}"
 def cargoExecutable = "${cargoBin}"
-def crossExecutable = "${crossBin}"
+def crossExecutable = crossBin ? "${crossBin}" : null
 
 def rustPath = [
 		rustBin,
 		cargoBin,
+		crossBin ?: '',
 		System.getenv('PATH') ?: ''
 ].join(File.pathSeparator)
 
@@ -394,8 +402,9 @@ def rustupHome = System.getenv('RUSTUP_HOME') ?:
 def cargoHome = System.getenv('CARGO_HOME') ?:
 		"${System.getenv('HOME')}/.cargo"
 
+println "Rust native build host OS: ${hostOs}"
 
-// Non-mac targets
+// Keep all native targets available as explicit Gradle tasks.
 def rustTargets = [
 		[
 				target: 'x86_64-pc-windows-gnu',
@@ -411,8 +420,20 @@ def rustTargets = [
 		]
 ]
 
+if (!isWindows && !isLinux && !isMac) {
+	throw new GradleException(
+			"Unsupported host OS: ${System.getProperty('os.name')}"
+	)
+}
 
-// macOS targets
+// Only these targets are selected by the normal build lifecycle.
+def activeRustTargets = isWindows ?
+		rustTargets.findAll { it.target == 'x86_64-pc-windows-gnu' } :
+		isLinux ?
+				rustTargets.findAll { it.target == 'x86_64-unknown-linux-gnu' } :
+				[]
+
+// macOS targets used to create the universal dylib.
 def macTargets = [
 		[
 				target: 'x86_64-apple-darwin',
@@ -440,7 +461,7 @@ def configureRustEnvironment = { Exec task ->
 	// Force the exact rustc we want.
 	task.environment 'RUSTC', rustcExecutable
 
-	// Make both Rust and Cargo tools available.
+	// Make Rust and Cargo tools available.
 	task.environment 'PATH', rustPath
 
 	// Keep cargo/rustup state in the normal ~/.cargo / ~/.rustup locations.
@@ -466,19 +487,11 @@ def rustBuildTasks = rustTargets.collect { cfg ->
 	) {
 
 		group = 'rust'
-
 		description =
 				"Compile Rust -> ${cfg.target}"
-
 		workingDir = rustSrcDir
 
-		def toolBin
-
-		if (cfg.tool == 'cross') {
-			toolBin = crossExecutable
-		} else {
-			toolBin = cargoExecutable
-		}
+		def toolBin = cfg.tool == 'cross' ? (crossExecutable ?: 'cross') : cargoExecutable
 
 		commandLine toolBin,
 				'build',
@@ -527,7 +540,6 @@ def rustCopyTasks = [
 	) {
 
 		group = 'rust'
-
 		description =
 				"Copy ${cfg.target} native lib into resources"
 
@@ -548,94 +560,87 @@ def rustCopyTasks = [
 // macOS Rust tasks
 // ============================================================================
 
-macTargets.each { cfg ->
+if (isMac) {
+	macTargets.each { cfg ->
 
-	def safeTarget = cfg.target.replace('-', '_')
+		def safeTarget = cfg.target.replace('-', '_')
 
-	tasks.register(
-			"buildRust_${safeTarget}",
-			Exec
-	) {
+		tasks.register(
+				"buildRust_${safeTarget}",
+				Exec
+		) {
 
-		group = 'rust'
+			group = 'rust'
+			description =
+					"Compile Rust -> ${cfg.target} (macOS only)"
+			workingDir = rustSrcDir
 
-		description =
-				"Compile Rust -> ${cfg.target} (macOS only)"
+			commandLine cargoExecutable,
+					'build',
+					'--release',
+					'--target',
+					cfg.target
 
-		workingDir = rustSrcDir
+			configureRustEnvironment(delegate)
 
-		commandLine cargoExecutable,
-				'build',
-				'--release',
-				'--target',
-				cfg.target
+			inputs.dir "${rustSrcDir}/src"
+			inputs.file "${rustSrcDir}/Cargo.toml"
 
-		configureRustEnvironment(delegate)
+			outputs.file(
+					"${rustSrcDir}/target/${cfg.target}/release/${cfg.libName}"
+			)
 
-		inputs.dir "${rustSrcDir}/src"
-		inputs.file "${rustSrcDir}/Cargo.toml"
-
-		outputs.file(
-				"${rustSrcDir}/target/${cfg.target}/release/${cfg.libName}"
-		)
-
-		doFirst {
-			println ""
-			println "============================================================"
-			println "Building Rust target: ${cfg.target}"
-			println "Tool:                 ${cargoExecutable}"
-			println "RUSTC:                ${rustcExecutable}"
-			println "============================================================"
-			println ""
+			doFirst {
+				println ""
+				println "============================================================"
+				println "Building Rust target: ${cfg.target}"
+				println "Tool:                 ${cargoExecutable}"
+				println "RUSTC:                ${rustcExecutable}"
+				println "============================================================"
+				println ""
+			}
 		}
 	}
-}
 
+	// ============================================================================
+	// macOS universal dylib
+	// ============================================================================
 
-// ============================================================================
-// macOS universal dylib
-// ============================================================================
+	tasks.register('copyNativeMac') {
 
-tasks.register('copyNativeMac') {
+		group = 'rust'
+		description =
+				'Build universal macOS dylib and copy into resources. macOS only.'
 
-	group = 'rust'
+		dependsOn(
+				'buildRust_x86_64_apple_darwin',
+				'buildRust_aarch64_apple_darwin'
+		)
 
-	description =
-			'Build universal macOS dylib and copy into resources. macOS only.'
+		doLast {
+			def x86Out =
+					"${rustSrcDir}/target/x86_64-apple-darwin/release/libtts_native.dylib"
+			def armOut =
+					"${rustSrcDir}/target/aarch64-apple-darwin/release/libtts_native.dylib"
+			def destDir =
+					"${nativesOutDir}/macos"
+			def fatOut =
+					"${destDir}/libtts_native.dylib"
 
-	dependsOn(
-			'buildRust_x86_64_apple_darwin',
-			'buildRust_aarch64_apple_darwin'
-	)
+			mkdir destDir
 
-	doLast {
+			exec {
+				commandLine(
+						'lipo',
+						x86Out,
+						armOut,
+						'-output',
+						fatOut
+				)
+			}
 
-		def x86Out =
-				"${rustSrcDir}/target/x86_64-apple-darwin/release/libtts_native.dylib"
-
-		def armOut =
-				"${rustSrcDir}/target/aarch64-apple-darwin/release/libtts_native.dylib"
-
-		def destDir =
-				"${nativesOutDir}/macos"
-
-		def fatOut =
-				"${destDir}/libtts_native.dylib"
-
-		mkdir destDir
-
-		exec {
-			commandLine(
-					'lipo',
-					'-create',
-					x86Out,
-					armOut,
-					'-output',
-					fatOut
-			)
+			println "Universal macOS dylib written to ${fatOut}"
 		}
-
-		println "Universal macOS dylib written to ${fatOut}"
 	}
 }
 
@@ -647,24 +652,38 @@ tasks.register('copyNativeMac') {
 tasks.register('buildRust') {
 
 	group = 'rust'
-
 	description =
-			'Compile Rust for Windows + Linux'
+			"Compile Rust for ${hostOs}"
 
-	dependsOn rustBuildTasks
+	dependsOn rustBuildTasks.findAll { task ->
+		activeRustTargets.any { cfg ->
+			task.name == "buildRust_${cfg.target.replace('-', '_')}"
+		}
+	}
+
+	if (isMac) {
+		dependsOn 'buildRust_x86_64_apple_darwin',
+				'buildRust_aarch64_apple_darwin'
+	}
 }
 
 
 tasks.register('copyNativeLibs') {
 
 	group = 'rust'
-
 	description =
-			'Copy Windows + Linux native libs into resources'
+			"Copy ${hostOs} native libs into resources"
 
-	dependsOn rustCopyTasks
+	dependsOn rustCopyTasks.findAll { task ->
+		activeRustTargets.any { cfg ->
+			task.name == "copyNative_${cfg.target.replace('-', '_')}"
+		}
+	}
+
+	if (isMac) {
+		dependsOn 'copyNativeMac'
+	}
 }
-
 
 processResources.dependsOn 'copyNativeLibs'
 
