@@ -52,6 +52,7 @@ import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
 public class BOTIUtils {
+	public static Map<AbstractPortalTile, Boolean> isUpdating = new HashMap<>();
 	public static final ModelPart BOTIModel = BuildBOTIModel();
 
 	private static ModelPart BuildBOTIModel() {
@@ -97,8 +98,14 @@ public class BOTIUtils {
 		}
 
 		if (portal.MODEL_VBO == null) { // It'll be null the first time it's accessed, forcing a build
-			BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
-			portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
+			if (!(isUpdating.containsKey(portal) && isUpdating.get(portal))) {
+				isUpdating.put(portal, true);
+				BOTIUtils.updateChunkModel(portal); // Get this going so it properly syncs
+				if (!portal.containers.isEmpty()) {
+					isUpdating.put(portal, false);
+					portal.MODEL_VBO = BOTIUtils.buildModelVBO(portal.containers, portal); // Build VBO so it's not null
+				}
+			}
 		} else {
 			pose.pushPose();
 
@@ -184,7 +191,7 @@ public class BOTIUtils {
 		return c.getState().isAir() ? fallback : c.getLight();
 	}
 
-	// Corner offsets for each face — (u1, v1, u2, v2) per vertex
+	// Corner offsets for each face, (u1, v1, u2, v2) per vertex
 	private static int[][] getFaceCornerOffsets(Direction face) {
 		return switch (face) {
 			case UP -> new int[][]{{-1, 0, 0, -1}, {1, 0, 0, -1}, {1, 0, 0, 1}, {-1, 0, 0, 1}};
@@ -273,7 +280,7 @@ public class BOTIUtils {
 				float[] ao = computeQuadAO(quad, pos, container.getLight(), chunkMap);
 
 				int[] vertices = quad.getVertices();
-				// BakedQuad vertex format: x,y,z,color,u,v,lightmap,normal — 8 ints per vertex
+				// BakedQuad vertex format: x,y,z,color,u,v,lightmap,normal, 8 ints per vertex
 				for (int v = 0; v < 4; v++) {
 					int base = v * 8;
 					float vx = Float.intBitsToFloat(vertices[base]);

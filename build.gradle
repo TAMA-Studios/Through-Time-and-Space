@@ -314,6 +314,24 @@ dependencies {
 
 	// Mixin
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+
+	annotationProcessor project(':mem_manager')
+	implementation project(':mem_manager')
+}
+
+tasks.register('generateSourcesOnly', JavaCompile) {
+	description = 'Runs annotation processors without compiling bytecode.'
+
+	source = sourceSets.main.java
+	classpath = sourceSets.main.compileClasspath
+
+	destinationDirectory = layout.buildDirectory.dir(
+			'generated/sources/annotationProcessor/java/main'
+	)
+
+	options.annotationProcessorPath = configurations.annotationProcessor
+	options.compilerArgs += '-proc:only'
 }
 
 tasks.named('jarJar', Jar).configure {
@@ -656,14 +674,20 @@ processResources.dependsOn 'copyNativeLibs'
 // ============================================================================
 
 shadowJar {
-
 	archiveClassifier.set('shadowed')
 
 	configurations = [
 			project.configurations.commonShadow
 	]
 
-	from(sourceSets.main.output)
+	from(sourceSets.main.output) {
+		include 'mixins-refmap.tts.json'
+	}
+
+	// Exclude accidental duplicate refmaps from bundled dependencies/jars
+	exclude 'mixins*.refmap.json'
+	// Re-include our specifically renamed one from main output
+	include 'mixins-refmap.tts.json'
 
 	manifest {
 		from(jar.manifest)
@@ -753,7 +777,7 @@ tasks.named(
 		'jar',
 		Jar
 ).configure {
-
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	manifest {
 
 		attributes([

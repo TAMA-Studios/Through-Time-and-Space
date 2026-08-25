@@ -4,7 +4,7 @@ use jni::sys::{jint, jfloat, jlong, jdouble, jboolean, jstring};
 use jni::objects::JString;
 
 // ── GetPackedLight ────────────────────────────────────────────────────────────
-// Pass the raw block/sky brightness values from Java — we do the bit math.
+// Pass the raw block/sky brightness values from Java,  we do the bit math.
 // Java: native int getPackedLight(int blockLight, int skyLight);
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getPackedLight(

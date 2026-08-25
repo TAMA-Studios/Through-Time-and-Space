@@ -78,7 +78,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_RenderUtils_frustum
 }
 
 // ── Batch AABB Vertex Generation ──────────────────────────────────────────────
-// Output per vertex: [x, y, z, nx, ny, nz] — 24 vertices per AABB = 144 floats per box.
+// Output per vertex: [x, y, z, nx, ny, nz],  24 vertices per AABB = 144 floats per box.
 // Java unpacks and feeds directly to VertexConsumer.
 // Java: native float[] buildAABBVertices(float[] aabbs);
 #[no_mangle]

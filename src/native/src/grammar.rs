@@ -64,7 +64,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_scoreToSpace(
 // ── BlockPosToString ──────────────────────────────────────────────────────────
 // Parses "BlockPos{x=1, y=2, z=3}" → "1 2 3" (same behaviour as your Java)
 // Java: native String blockPosToString(String blockPosToString);
-// (Pass blockPos.toString() from Java side — avoids needing a full JObject mapping)
+// (Pass blockPos.toString() from Java side,  avoids needing a full JObject mapping)
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_GrammarNazi_blockPosToString(
     mut env: JNIEnv,

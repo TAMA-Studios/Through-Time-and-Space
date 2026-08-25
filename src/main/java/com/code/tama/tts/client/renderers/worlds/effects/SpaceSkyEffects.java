@@ -53,7 +53,7 @@ public class SpaceSkyEffects extends DimensionSpecialEffects {
 
 	// -------------------------------------------------------------------------
 	// VBOs
-	// Sun is a single static mesh — one sun, one size, safe to cache.
+	// Sun is a single static mesh, one sun, one size, safe to cache.
 	// Planets each have their own size so we key a VBO map by planet id.
 	// -------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ public class SpaceSkyEffects extends DimensionSpecialEffects {
 	// Space sky (star-field shader)
 	//
 	// The quad is in NDC space so its z value has nothing to do with world
-	// distance — it always lands on the near plane in clip space. Writing
+	// distance, it always lands on the near plane in clip space. Writing
 	// gl_FragDepth = 1.0 in the fragment shader is the correct fix: every sky
 	// fragment is stamped at the far plane so any real geometry in front wins
 	// the depth test automatically. We keep depthMask(true) so that write
@@ -149,7 +149,7 @@ public class SpaceSkyEffects extends DimensionSpecialEffects {
 	// -------------------------------------------------------------------------
 	// Sun
 	// Rendered without depth test so it always appears over the star-field
-	// regardless of its world-space position. It does not write depth either —
+	// regardless of its world-space position. It does not write depth either,
 	// it is a skybox object that world geometry should always occlude.
 	// -------------------------------------------------------------------------
 
@@ -268,11 +268,11 @@ public class SpaceSkyEffects extends DimensionSpecialEffects {
 
 		Vec3 playerPos = mc.player.position();
 
-		// 1. Star-field — writes gl_FragDepth = 1.0 via the shader so all
+		// 1. Star-field, writes gl_FragDepth = 1.0 via the shader so all
 		// subsequent geometry trivially wins the depth test.
 		renderSpaceSky(camera, partialTick);
 
-		// 2. Planets — no depth test, always over the star-field.
+		// 2. Planets, no depth test, always over the star-field.
 		poseStack.pushPose();
 
 		PlanetLoader.list().forEach(p -> {

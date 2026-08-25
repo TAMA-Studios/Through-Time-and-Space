@@ -43,7 +43,7 @@ public abstract class AbstractFlightSound {
 	}
 
 	/**
-	 * Play the sound looped. Safe to call every tick — only starts once.
+	 * Play the sound looped. Safe to call every tick, only starts once.
 	 */
 	public void PlayLooped(Level level, BlockPos blockPos) {
 		Minecraft.getInstance().tell(() -> {

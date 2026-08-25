@@ -3,7 +3,7 @@
 	"texture": "tts:exteriors/ichnea/hudolin",
 	"texture_width": 256,
 	"texture_height": 256,
-	"scale": 0.8,
+	"scale": 0.65,
 	"groups": [
 		{
 			"group_name": "root",

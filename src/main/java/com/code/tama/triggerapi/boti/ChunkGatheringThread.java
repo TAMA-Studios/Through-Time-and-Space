@@ -121,6 +121,11 @@ public class ChunkGatheringThread extends Thread {
 
 	@Override
 	public void run() {
+		if (portalTile == null) {
+			TTSMod.LOGGER.debug("[ChunkGatheringThread] Portal tile is null!");
+			return;
+		}
+
 		if (targetLevel == null) {
 			TTSMod.LOGGER.error("[ChunkGatheringThread] targetLevel is null – aborting gather.");
 			return;
@@ -149,17 +154,23 @@ public class ChunkGatheringThread extends Thread {
 			int vMin = -chunksToRender / 2;
 			int vMax = chunksToRender / 2;
 
+			// -- Base coordinates adjustments for 3 sections --
 			int baseChunkX = (targetPos.getX() >> 4);
 			int baseChunkZ = (targetPos.getZ() >> 4);
+
+			// Section base Y starts 1 block below targetPos area or standard 16-block
+			// alignment:
 			int sectionBaseY = (targetPos.getY() - 16) & ~15;
 			int sectionBaseYAbove = targetPos.getY() & ~15;
+			int sectionBaseYHigher = (targetPos.getY() + 16) & ~15; // NEW higher section
 
 			int worldXMin = (baseChunkX + uMin + 1) * 16;
 			int worldXMax = (baseChunkX + uMax) * 16 + 15;
 			int worldZMin = (baseChunkZ + vMin + 1) * 16;
 			int worldZMax = (baseChunkZ + vMax) * 16 + 15;
+
 			int worldYMin = sectionBaseY;
-			int worldYMax = sectionBaseYAbove + 15;
+			int worldYMax = sectionBaseYHigher + 15; // Extended to cover the 3rd section
 
 			int sizeX = worldXMax - worldXMin + 1;
 			int sizeY = worldYMax - worldYMin + 1;
@@ -176,7 +187,6 @@ public class ChunkGatheringThread extends Thread {
 			int[] packedLights = new int[total];
 
 			// -- Phase 1: gather block data ------------------------------------
-			// Must stay in Java -- accesses chunk sections, light engine, block entities.
 			for (int u = uMin + 1; u < uMax; u++) {
 				for (int v = vMin + 1; v < vMax; v++) {
 					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
@@ -189,69 +199,89 @@ public class ChunkGatheringThread extends Thread {
 
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
+					LevelChunkSection sectionHigher = chunk.getSection(chunk.getSectionIndex(targetPos.getY() + 16)); // NEW
+																														// section
+																														// fetch
 
 					for (int y = 0; y < 16; y++) {
 						for (int x = 0; x < 16; x++) {
 							for (int z = 0; z < 16; z++) {
-
-								// -- lower section ----------------------------
 								int gx = chunkPos.getMinBlockX() + x;
-								int gy = sectionBaseY + y;
 								int gz = chunkPos.getMinBlockZ() + z;
-
 								int lx = gx - worldXMin;
-								int ly = gy - worldYMin;
 								int lz = gz - worldZMin;
 
-								if (lx < 0 || lx >= sizeX || ly < 0 || ly >= sizeY || lz < 0 || lz >= sizeZ)
+								if (lx < 0 || lx >= sizeX || lz < 0 || lz >= sizeZ)
 									continue;
 
-								int fi = lx * sizeY * sizeZ + ly * sizeZ + lz;
+								// -- 1. Lower section -------------------------
+								int gy1 = sectionBaseY + y;
+								int ly1 = gy1 - worldYMin;
+								if (ly1 >= 0 && ly1 < sizeY) {
+									int fi1 = lx * sizeY * sizeZ + ly1 * sizeZ + lz;
+									BlockState state = section.getBlockState(x, y, z);
+									FluidState fluid = section.getFluidState(x, y, z);
+									BlockPos pos = new BlockPos(gx, gy1, gz);
 
-								BlockState state = section.getBlockState(x, y, z);
-								FluidState fluid = section.getFluidState(x, y, z);
-								BlockPos pos = new BlockPos(gx, gy, gz);
+									if (portalTile == null || !pos.equals(portalTile.getTargetPos())) {
+										boolean isAir = state.isAir();
+										solid[fi1] = !isAir;
+										blocksFlow[fi1] = !isAir && state.isSolidRender(chunk, pos);
+										blockStates[fi1] = state;
+										fluidStates[fi1] = fluid;
+										BlockEntity te = chunk.getBlockEntity(pos);
+										teLocations[fi1] = te != null;
+										tileEntities[fi1] = te;
+										packedLights[fi1] = targetLevel.getMaxLocalRawBrightness(pos);
+									}
+								}
 
-								if (portalTile != null && pos.equals(portalTile.getTargetPos()))
-									continue;
+								// -- 2. Above section -------------------------
+								int gy2 = sectionBaseYAbove + y;
+								int ly2 = gy2 - worldYMin;
+								if (ly2 >= 0 && ly2 < sizeY) {
+									int fi2 = lx * sizeY * sizeZ + ly2 * sizeZ + lz;
+									BlockState stateA = sectionAbove.getBlockState(x, y, z);
+									FluidState fluidA = sectionAbove.getFluidState(x, y, z);
+									BlockPos gpos = new BlockPos(gx, gy2, gz);
 
-								boolean isAir = state.isAir();
-								solid[fi] = !isAir;
-								// BFS barrier: only full opaque cubes. Glass, leaves, slabs, snow,
-								// redstone, pistons heads etc. must NOT block the flood-fill or the
-								// blocks they sit on/next-to won't get reachable neighbours.
-								blocksFlow[fi] = !isAir && state.isSolidRender(chunk, pos);
-								blockStates[fi] = state;
-								fluidStates[fi] = fluid;
-								BlockEntity te = chunk.getBlockEntity(pos);
-								teLocations[fi] = te != null;
-								tileEntities[fi] = te;
-								packedLights[fi] = targetLevel.getMaxLocalRawBrightness(pos);
+									if (portalTile == null || !gpos.equals(portalTile.getTargetPos())) {
+										boolean isAirA = stateA.isAir();
+										solid[fi2] = !isAirA;
+										blocksFlow[fi2] = !isAirA && stateA.isSolidRender(chunk, gpos);
+										blockStates[fi2] = stateA;
+										fluidStates[fi2] = fluidA;
+										BlockEntity teA = chunk.getBlockEntity(gpos);
+										teLocations[fi2] = teA != null;
+										tileEntities[fi2] = teA;
+										packedLights[fi2] = targetLevel.getMaxLocalRawBrightness(gpos);
+									}
+								}
 
-								// -- upper section ----------------------------
-								int gyA = sectionBaseYAbove + y;
-								int lyA = gyA - worldYMin;
-								if (lyA < 0 || lyA >= sizeY)
-									continue;
+								// -- 3. Higher section (NEW) ------------------
+								if (sectionHigher != null) {
+									int gy3 = sectionBaseYHigher + y;
+									int ly3 = gy3 - worldYMin;
+									if (ly3 >= 0 && ly3 < sizeY) {
+										int fi3 = lx * sizeY * sizeZ + ly3 * sizeZ + lz;
+										BlockState stateH = sectionHigher.getBlockState(x, y, z);
+										FluidState fluidH = sectionHigher.getFluidState(x, y, z);
+										BlockPos hpos = new BlockPos(gx, gy3, gz);
 
-								int fiA = lx * sizeY * sizeZ + lyA * sizeZ + lz;
+										if (portalTile == null || !hpos.equals(portalTile.getTargetPos())) {
+											boolean isAirH = stateH.isAir();
+											solid[fi3] = !isAirH;
+											blocksFlow[fi3] = !isAirH && stateH.isSolidRender(chunk, hpos);
+											blockStates[fi3] = stateH;
+											fluidStates[fi3] = fluidH;
+											BlockEntity teH = chunk.getBlockEntity(hpos);
+											teLocations[fi3] = teH != null;
+											tileEntities[fi3] = teH;
+											packedLights[fi3] = targetLevel.getMaxLocalRawBrightness(hpos);
+										}
+									}
+								}
 
-								BlockState stateA = sectionAbove.getBlockState(x, y, z);
-								FluidState fluidA = sectionAbove.getFluidState(x, y, z);
-								BlockPos gpos = new BlockPos(gx, gyA, gz);
-
-								if (portalTile != null && gpos.equals(portalTile.getTargetPos()))
-									continue;
-
-								boolean isAirA = stateA.isAir();
-								solid[fiA] = !isAirA;
-								blocksFlow[fiA] = !isAirA && stateA.isSolidRender(chunk, gpos);
-								blockStates[fiA] = stateA;
-								fluidStates[fiA] = fluidA;
-								BlockEntity teA = chunk.getBlockEntity(gpos);
-								teLocations[fiA] = teA != null;
-								tileEntities[fiA] = teA;
-								packedLights[fiA] = targetLevel.getMaxLocalRawBrightness(gpos);
 							}
 						}
 					}
@@ -321,7 +351,7 @@ public class ChunkGatheringThread extends Thread {
 				for (List<BotiBlockContainer> batch : batches)
 					resultCallback.accept(batch, totalBatches);
 
-			} else if (portalTile != null) {
+			} else {
 				TTSMod.LOGGER.debug("[ChunkGatheringThread] Sending {} portal batch packet(s).", batches.size());
 				for (int i = 0; i < batches.size(); i++) {
 					final int idx = i;

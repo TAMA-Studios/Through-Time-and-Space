@@ -163,9 +163,14 @@ public abstract class AbstractPortalTile extends TickingTile {
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
 			return;
 
-		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
-				.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
-						cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+		if (this.fuckYouTimer > 1200) {
+			this.fuckYouTimer = 0;
+			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
+					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
+							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+		}
+
+		this.fuckYouTimer++;
 	}
 
 	/**

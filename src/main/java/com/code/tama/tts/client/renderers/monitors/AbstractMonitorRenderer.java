@@ -114,7 +114,7 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-		// Set state immediately before draw — strict ordering
+		// Set state immediately before draw, strict ordering
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);

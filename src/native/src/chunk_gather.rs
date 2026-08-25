@@ -4,7 +4,7 @@ use jni::sys::{jboolean, jbooleanArray, jint, jintArray};
 
 // -- Flood-fill reachability (BFS) ---------------------------------------------
 //
-// Java's ArrayDeque<int[]> allocates a new int[3] per visited cell — tens of
+// Java's ArrayDeque<int[]> allocates a new int[3] per visited cell,  tens of
 // thousands of small heap objects per gather. This replaces the entire BFS with
 // a flat u8 array and an integer queue (indices only, zero allocation).
 //
@@ -32,7 +32,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
     }
 
     let mut reachable = vec![0u8; total];
-    // Queue stores flat indices — no allocation per cell
+    // Queue stores flat indices,  no allocation per cell
     let mut queue: Vec<usize> = Vec::with_capacity(total / 4);
 
     let idx = |x: usize, y: usize, z: usize| x * sy * sz + y * sz + z;
@@ -68,7 +68,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
         }
     }
 
-    // BFS — indices only, no allocations
+    // BFS,  indices only, no allocations
     let mut head = 0usize;
     while head < queue.len() {
         let i = queue[head];
@@ -205,7 +205,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
 }
 
 // -- Flat index → xyz ----------------------------------------------------------
-// Convenience — Java can call this to unpack a flat index from findExposedBlocks
+// Convenience,  Java can call this to unpack a flat index from findExposedBlocks
 // back to lx,ly,lz. Returns int[3].
 // Java: native int[] unpackIndex(int flatIndex, int sizeY, int sizeZ);
 #[no_mangle]

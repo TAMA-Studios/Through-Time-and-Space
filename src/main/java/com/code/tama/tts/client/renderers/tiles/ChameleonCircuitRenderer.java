@@ -29,7 +29,6 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 	public AbstractJSONRenderer json;
 	public String modelName = "";
 
-	ExteriorModelContainer exteriorModelContainer;
 	JavaJSONModel model;
 
 	public ChameleonCircuitRenderer(BlockEntityRendererProvider.Context context) {
@@ -43,6 +42,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 		if (chameleonCircuit.getLevel() == null)
 			return;
 		GetTARDISCapSupplier(chameleonCircuit.getLevel()).ifPresent(cap -> {
+			ExteriorModelContainer exteriorModelContainer = cap.GetData().getExteriorModel();
 			poseStack.pushPose();
 			poseStack.translate(0.5, 0.52, 0.5);
 			poseStack.mulPose(Axis.YP.rotationDegrees(180));

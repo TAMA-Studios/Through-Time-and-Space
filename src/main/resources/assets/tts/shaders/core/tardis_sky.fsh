@@ -189,7 +189,7 @@ vec3 starClusters(vec3 dir) {
 //  and faint arm structure. Placed upper-back where no nebulae sit.
 
 vec3 galaxy(vec3 dir) {
-    // Galaxy center direction — upper back-right, away from nebulae
+    // Galaxy center direction,  upper back-right, away from nebulae
     vec3 center = normalize(vec3(0.40, 0.55, -0.73));
     float d = acos(clamp(dot(dir, center), -1.0, 1.0));
     if (d > 0.30) return vec3(0.0);
@@ -207,7 +207,7 @@ vec3 galaxy(vec3 dir) {
 
     // Tilt: squash one axis to make it look like an inclined disc
     float tiltX = lx * 1.0;
-    float tiltY = ly * 3.5; // elongated — more edge-on
+    float tiltY = ly * 3.5; // elongated,  more edge-on
     float ellipDist = sqrt(tiltX * tiltX + tiltY * tiltY);
 
     if (ellipDist > 0.18) return vec3(0.0);
@@ -216,7 +216,7 @@ vec3 galaxy(vec3 dir) {
     float angle = atan(tiltY, tiltX);
     float r = ellipDist;
 
-    // Logarithmic spiral arms — two arms offset by PI
+    // Logarithmic spiral arms,  two arms offset by PI
     float armPitch = 3.5;
     float arm1 = cos(angle - armPitch * log(r + 0.01) * 2.0);
     float arm2 = cos(angle + 3.14159 - armPitch * log(r + 0.01) * 2.0);
@@ -244,7 +244,7 @@ vec3 galaxy(vec3 dir) {
 //  Returns a scalar 0-1 where 1 = fully dark.
 
 float darkNebula(vec3 dir) {
-    // Two dark patches — placed where background stars are dense
+    // Two dark patches,  placed where background stars are dense
     vec3 c0 = normalize(vec3(-0.60, -0.40,  0.55));
     vec3 c1 = normalize(vec3( 0.30,  0.10,  0.80));
 
@@ -278,7 +278,7 @@ float darkNebula(vec3 dir) {
 vec3 pulsars(vec3 dir) {
     vec3 col = vec3(0.0);
 
-    // Pulsar 1 — blue-white, fast sharp flash, upper left
+    // Pulsar 1,  blue-white, fast sharp flash, upper left
     {
         vec3 pos    = normalize(vec3(-0.72, 0.50, -0.20));
         vec3 jetDir = normalize(vec3(0.10, 0.80, 0.30));
@@ -297,7 +297,7 @@ vec3 pulsars(vec3 dir) {
         col += (glow + core + jet) * (0.08 + pulse * 0.92) * vec3(0.70, 0.85, 1.00);
     }
 
-    // Pulsar 2 — amber, slower distinct flash, lower right
+    // Pulsar 2,  amber, slower distinct flash, lower right
     {
         vec3 pos    = normalize(vec3( 0.65, -0.55,  0.30));
         vec3 jetDir = normalize(vec3(-0.20, 0.60, 0.50));
@@ -347,7 +347,7 @@ vec3 shootingStars(vec3 dir) {
         float headT = clamp(t / 0.5, 0.0, 1.0);
         vec3 head = normalize(mix(start, end, headT));
 
-        // Only draw head dot + very short tail — no great circle projection
+        // Only draw head dot + very short tail,  no great circle projection
         float headDist = acos(clamp(dot(dir, head), -1.0, 1.0));
 
         // Core dot
@@ -382,20 +382,20 @@ vec3 aurora(vec3 dir) {
     float dist = acos(clamp(dot(normalize(vec3(dir.x, 0.0, dir.z)), forward), -1.0, 1.0));
     if (dist > 1.1) return vec3(0.0);
 
-    // Horizontal region fade — soft on left/right sides
+    // Horizontal region fade,  soft on left/right sides
     float regionFade = smoothstep(1.1, 0.0, dist);
 
-    // Vertical fades — soft top and bottom, no hard lines
+    // Vertical fades,  soft top and bottom, no hard lines
     float elevFade = smoothstep(0.55, 0.08, dir.y)
     * smoothstep(-0.55, -0.05, dir.y);
 
-    // u = position along the horizontal axis — drives column variation
+    // u = position along the horizontal axis,  drives column variation
     float u = dot(dir, right);
-    // v = actual world-space vertical — drives curtain height and color
+    // v = actual world-space vertical,  drives curtain height and color
     float v = dir.y;
 
     //  CURTAIN COLUMNS 
-    // vnoise sampled only on u — smooth horizontal variation, no snapping
+    // vnoise sampled only on u,  smooth horizontal variation, no snapping
     vec3 colP = vec3(u * 3.0 + uTime * 0.025, 0.5, 0.5);
     float columns = vnoise(colP) * 0.55
     + vnoise(colP * vec3(2.3, 1.0, 1.0) + 3.7) * 0.30
@@ -408,7 +408,7 @@ vec3 aurora(vec3 dir) {
     + 0.02 * sin(u * 4.8 + uTime * 0.08 + 1.3);
     // Soft top fade
     float topFade = smoothstep(topEdge + 0.10, topEdge - 0.02, v);
-    // Bottom fades out softly — no hard floor
+    // Bottom fades out softly,  no hard floor
     float botFade = smoothstep(-0.40, 0.05, v);
 
     float vShape = topFade * botFade;
@@ -421,7 +421,7 @@ vec3 aurora(vec3 dir) {
     float intensity = columns * vShape * ripple * regionFade * elevFade;
     if (intensity < 0.005) return vec3(0.0);
 
-    //  COLOR — green bottom, blue-violet mid, magenta top 
+    //  COLOR,  green bottom, blue-violet mid, magenta top
     float vT = clamp((v + 0.40) / 0.65, 0.0, 1.0); // 0 at bottom, 1 at top
     vec3 botCol = vec3(0.04, 0.88, 0.22);
     vec3 midCol = vec3(0.22, 0.42, 0.95);

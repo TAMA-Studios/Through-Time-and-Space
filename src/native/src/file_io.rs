@@ -98,7 +98,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_ensureDi
 
 // ── ReadLines ─────────────────────────────────────────────────────────────────
 // Returns all lines joined by '\n', null on failure.
-// Same result as readFile but uses a line-buffered reader — better for huge files
+// Same result as readFile but uses a line-buffered reader,  better for huge files
 // since it doesn't need to hold the whole content + trimmed copy in memory.
 // Java: native String readLines(String absolutePath);
 #[no_mangle]
@@ -116,7 +116,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_FileHelper_readLine
 }
 
 // ── AppendLines ───────────────────────────────────────────────────────────────
-// Appends multiple lines at once in a single buffered write — much faster than
+// Appends multiple lines at once in a single buffered write,  much faster than
 // calling appendFile() in a loop from Java.
 // Lines are joined with '\n'; pass them newline-separated from Java.
 // Java: native boolean appendLines(String absolutePath, String lines);

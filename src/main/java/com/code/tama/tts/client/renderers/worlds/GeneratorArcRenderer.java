@@ -53,6 +53,9 @@ public class GeneratorArcRenderer {
 			});
 		}
 
+		if (generators == null)
+			return;
+
 		if (generators.size() < 2)
 			return;
 

@@ -167,7 +167,7 @@ Difficulty Modes
     Normal Mode:
         Full controls, but with UI prompts.
     Expert/Manual Mode:
-        No help — figure out proper lever combos and diagnostics solo.
+        No help,  figure out proper lever combos and diagnostics solo.
 
 Flight Events
 
