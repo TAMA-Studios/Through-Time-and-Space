@@ -3,7 +3,7 @@ title: First steps
 date: 2026-04-08
 description: This page shows how to take your first steps through time and space!
 draft: false
-weight: 0
+weight: 90
 ---
 # GET A SONIC SCREWDRIVER
 
