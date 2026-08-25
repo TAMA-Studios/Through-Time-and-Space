@@ -3,7 +3,7 @@ name: Build macOS Native + Release
 on:
   push:
     tags:
-      - 'v*' # Run on version tags
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -52,6 +52,7 @@ jobs:
           path: src/native/libtts_native.dylib
           if-no-files-found: error
 
+
   build-mod-jar:
     runs-on: ubuntu-latest
 
@@ -94,7 +95,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Linux + Windows natives + mod jar
-        # macOS gets added later during release assembly
         run: ./gradlew copyNative_x86_64_unknown_linux_gnu copyNative_x86_64_pc_windows_gnu jarJar --no-daemon
         env:
           CARGO_HOME: /home/runner/.cargo
@@ -107,9 +107,12 @@ jobs:
           path: build/reobfJarJar/output.jar
           if-no-files-found: error
 
+
   release:
     runs-on: ubuntu-latest
-    needs: [ build-macos-native, build-mod-jar ]
+    needs:
+      - build-macos-native
+      - build-mod-jar
 
     permissions:
       contents: write
@@ -117,6 +120,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download mod jar
         uses: actions/download-artifact@v4
@@ -133,39 +138,61 @@ jobs:
       - name: Inject macOS dylib into jar
         run: |
           mkdir -p inject/natives/macos
-          cp release/macos-native/libtts_native.dylib inject/natives/macos/
 
-          JAR=release/output.jar
+          cp \
+            release/macos-native/libtts_native.dylib \
+            inject/natives/macos/libtts_native.dylib
+
+          JAR="release/output.jar"
+
           echo "Patching: $JAR"
 
-          # Update the existing jar with the macOS native
           cd inject
           jar uf "../$JAR" natives/macos/libtts_native.dylib
           cd ..
 
-          echo "JAR_PATH=$JAR" >> $GITHUB_ENV
+          echo "JAR_PATH=$JAR" >> "$GITHUB_ENV"
 
-      - name: Get tag name
+      - name: Determine release tag
         id: tag
-        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            TAG="${GITHUB_REF_NAME}"
+            echo "Using existing tag: $TAG"
+          else
+            TAG="v0.0.0-dev.$(date -u +'%Y%m%d.%H%M%S')"
+            echo "Generated development tag: $TAG"
+          fi
+
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Get previous tag
         id: prev_tag
         run: |
-          # Fetch all tags, sort by version, grab the one before the current tag
-          git fetch --tags
-          PREV=$(git tag --sort=-version:refname | grep -v "^${{ steps.tag.outputs.TAG }}$" | head -n 1)
-          echo "PREV_TAG=$PREV" >> $GITHUB_OUTPUT
+          CURRENT="${{ steps.tag.outputs.TAG }}"
+
+          git fetch --tags --force
+
+          PREV=$(
+            git tag --sort=-version:refname \
+              | grep -v "^${CURRENT}$" \
+              | head -n 1
+          )
+
+          echo "Previous tag: $PREV"
+          echo "PREV_TAG=$PREV" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.TAG }}
-          name: "TTS ${{ steps.tag.outputs.TAG }}"
+          target_commitish: ${{ github.sha }}
+          name: "TTS ${{ steps.tag.outputs.TAG }}
+
           body: |
             ## Through Time and Space ${{ steps.tag.outputs.TAG }}
 
-            Built automatically from tag `${{ steps.tag.outputs.TAG }}`.
+            Built automatically from commit `${{ github.sha }}`.
 
             ### Platforms
             - Windows (x86_64)
@@ -174,9 +201,9 @@ jobs:
 
             ### Installation
             Drop the jar into your `mods/` folder.
-            
+
             ### NOTICE
-            This mod was designed and built against Forge 47.1.3 for Minecraft 1.20.1. Other versions of Minecraft/Forge MAY work but are not guaranteed to do so. If you're encountering an issue with the mod, first make sure you're on a supported version of Forge and Minecraft. If you are on, say, Minecraft 1.20.4, or Forge 47.4.20, Support may be limited.
+            This mod was designed and built against Forge 47.1.3 for Minecraft 1.20.1. Other versions of Minecraft/Forge MAY work but are not guaranteed to do so. If you're encountering an issue with the mod, first make sure you're on a supported version of Forge and Minecraft. If you are on, say, Minecraft 1.20.4, or Forge 47.4.20, support may be limited.
 
             **Full Changelog**: https://github.com/TAMA-Studios/Through-Time-and-Space/compare/${{ steps.prev_tag.outputs.PREV_TAG }}...${{ steps.tag.outputs.TAG }}
 
