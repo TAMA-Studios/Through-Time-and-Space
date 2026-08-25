@@ -15,6 +15,8 @@ import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.exceptions.InvalidPlanetException;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
+import com.code.tama.tts.core.registries.TTSBlockBuilder;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -51,6 +53,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -379,5 +382,9 @@ public class CommonEvents {
 		if (!FMLEnvironment.production) {
 			// checkAllTranslations();
 		}
+	}
+
+	public static void isItInstaIdfkAnymore(BlockEvent.BreakEvent event) {
+		if (event.getState().getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) event.setCanceled(true);
 	}
 }

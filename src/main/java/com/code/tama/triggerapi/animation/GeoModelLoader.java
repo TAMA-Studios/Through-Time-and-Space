@@ -55,7 +55,7 @@ public class GeoModelLoader {
 	}
 
 	public static GeoModel parse(JsonObject root) {
-		JsonArray geoArray = root.getAsJsonArray("Minecraft:geometry");
+		JsonArray geoArray = root.getAsJsonArray("minecraft:geometry");
 		JsonObject geo = geoArray.get(0).getAsJsonObject();
 
 		JsonObject description = geo.getAsJsonObject("description");

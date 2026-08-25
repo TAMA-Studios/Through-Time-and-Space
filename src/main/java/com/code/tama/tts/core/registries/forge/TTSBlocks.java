@@ -553,7 +553,7 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
 			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
-			.properties(BlockBehaviour.Properties::noOcclusion).airState().item(ExteriorItem::new).build().register();
+			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
@@ -601,6 +601,10 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<DoorBlock> DOOR_BLOCK = Builder("door_block", DoorBlock::new)
 			.properties(p -> p.noOcclusion().noCollission()).airState().simpleItemNoData().register();
+
+	@MainTab
+	public static final BlockEntry<MatrixBlock> MATRIX_BLOCK = Builder("matrix_block", MatrixBlock::new)
+			.properties(p -> p.noOcclusion()).airState().simpleItemNoData().register();
 
 	@MainTab
 	public static final BlockEntry<BotiWindowBlock> BOTI_WINDOW = Builder("boti_window", BotiWindowBlock::new)

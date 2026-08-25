@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -27,21 +26,20 @@ import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 
 /**
  * Off-thread chunk geometry gatherer.
- *
+ * <br />
  * Phase 1 (block data collection) runs in Java -- it has to, since it touches
  * MC chunk/light APIs. Phases 2 and 3 (flood-fill BFS + exposed-face detection
  * with behind-portal culling) are handed off to native Rust.
- *
+ * <br />
  * Two arrays drive the algorithm: solid -- anything non-air; determines what
  * gets rendered blocksFlow -- full opaque cubes only (isSolidRender); the BFS
  * barrier
- *
+ * <br />
  * Keeping these separate is critical. The BFS models exterior air, so it must
  * flow through glass, leaves, slabs, snow layers, redstone dust, piston heads,
  * etc. If any of those blocked the BFS, the solid blocks behind/under them
  * would never receive a reachable neighbour and would be incorrectly skipped.
  */
-@SuppressWarnings({"unchecked", "deprecation"})
 public class ChunkGatheringThread extends Thread {
 
 	static {
@@ -92,9 +90,7 @@ public class ChunkGatheringThread extends Thread {
 	@Nullable private final AbstractPortalTile portalTile;
 	@Nullable private final BiConsumer<List<BotiBlockContainer>, Integer> resultCallback;
 
-	/** PORTAL mode -- legacy */
-	@ApiStatus.ScheduledForRemoval
-	@Deprecated
+	/** PORTAL mode */
 	public ChunkGatheringThread(int chunks, ServerLevel level, AbstractPortalTile portalTile, BlockPos targetPos) {
 		this.setName("BOTIChunkGatheringThread");
 		this.chunks = chunks;
@@ -108,7 +104,7 @@ public class ChunkGatheringThread extends Thread {
 
 	/** TELEPORT mode */
 	public ChunkGatheringThread(int chunks, ServerLevel sourceLevel, ServerLevel destLevel, BlockPos targetPos,
-			float yaw, BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
+                                float yaw, @org.jetbrains.annotations.Nullable BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
 		this.setName("BOTIChunkGatheringThread");
 		this.chunks = chunks;
 		this.level = sourceLevel;
@@ -215,71 +211,14 @@ public class ChunkGatheringThread extends Thread {
 									continue;
 
 								// -- 1. Lower section -------------------------
-								int gy1 = sectionBaseY + y;
-								int ly1 = gy1 - worldYMin;
-								if (ly1 >= 0 && ly1 < sizeY) {
-									int fi1 = lx * sizeY * sizeZ + ly1 * sizeZ + lz;
-									BlockState state = section.getBlockState(x, y, z);
-									FluidState fluid = section.getFluidState(x, y, z);
-									BlockPos pos = new BlockPos(gx, gy1, gz);
-
-									if (portalTile == null || !pos.equals(portalTile.getTargetPos())) {
-										boolean isAir = state.isAir();
-										solid[fi1] = !isAir;
-										blocksFlow[fi1] = !isAir && state.isSolidRender(chunk, pos);
-										blockStates[fi1] = state;
-										fluidStates[fi1] = fluid;
-										BlockEntity te = chunk.getBlockEntity(pos);
-										teLocations[fi1] = te != null;
-										tileEntities[fi1] = te;
-										packedLights[fi1] = targetLevel.getMaxLocalRawBrightness(pos);
-									}
-								}
+								gatherSection(sectionBaseY, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, section, y, x, z, gx, gz, lx, lz);
 
 								// -- 2. Above section -------------------------
-								int gy2 = sectionBaseYAbove + y;
-								int ly2 = gy2 - worldYMin;
-								if (ly2 >= 0 && ly2 < sizeY) {
-									int fi2 = lx * sizeY * sizeZ + ly2 * sizeZ + lz;
-									BlockState stateA = sectionAbove.getBlockState(x, y, z);
-									FluidState fluidA = sectionAbove.getFluidState(x, y, z);
-									BlockPos gpos = new BlockPos(gx, gy2, gz);
+								gatherSection(sectionBaseYAbove, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, sectionAbove, y, x, z, gx, gz, lx, lz);
 
-									if (portalTile == null || !gpos.equals(portalTile.getTargetPos())) {
-										boolean isAirA = stateA.isAir();
-										solid[fi2] = !isAirA;
-										blocksFlow[fi2] = !isAirA && stateA.isSolidRender(chunk, gpos);
-										blockStates[fi2] = stateA;
-										fluidStates[fi2] = fluidA;
-										BlockEntity teA = chunk.getBlockEntity(gpos);
-										teLocations[fi2] = teA != null;
-										tileEntities[fi2] = teA;
-										packedLights[fi2] = targetLevel.getMaxLocalRawBrightness(gpos);
-									}
-								}
-
-								// -- 3. Higher section (NEW) ------------------
+								// -- 3. Higher section ------------------
 								if (sectionHigher != null) {
-									int gy3 = sectionBaseYHigher + y;
-									int ly3 = gy3 - worldYMin;
-									if (ly3 >= 0 && ly3 < sizeY) {
-										int fi3 = lx * sizeY * sizeZ + ly3 * sizeZ + lz;
-										BlockState stateH = sectionHigher.getBlockState(x, y, z);
-										FluidState fluidH = sectionHigher.getFluidState(x, y, z);
-										BlockPos hpos = new BlockPos(gx, gy3, gz);
-
-										if (portalTile == null || !hpos.equals(portalTile.getTargetPos())) {
-											boolean isAirH = stateH.isAir();
-											solid[fi3] = !isAirH;
-											blocksFlow[fi3] = !isAirH && stateH.isSolidRender(chunk, hpos);
-											blockStates[fi3] = stateH;
-											fluidStates[fi3] = fluidH;
-											BlockEntity teH = chunk.getBlockEntity(hpos);
-											teLocations[fi3] = teH != null;
-											tileEntities[fi3] = teH;
-											packedLights[fi3] = targetLevel.getMaxLocalRawBrightness(hpos);
-										}
-									}
+									gatherSection(sectionBaseYHigher, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, sectionHigher, y, x, z, gx, gz, lx, lz);
 								}
 
 							}
@@ -294,7 +233,7 @@ public class ChunkGatheringThread extends Thread {
 			boolean[] reachable = floodFill(blocksFlow, sizeX, sizeY, sizeZ);
 
 			// -- Phase 3: exposed face detection + culling (Rust) -------------
-			// Pass solid -- emit every non-air block with a reachable neighbour,
+			// Pass solid -- emit every non-air block with a reachable neighbor,
 			// minus anything behind the portal.
 			int originX = targetPos.getX() - worldXMin;
 			int originY = targetPos.getY() - worldYMin;
@@ -345,7 +284,7 @@ public class ChunkGatheringThread extends Thread {
 			if (!containers.isEmpty())
 				batches.add(new ArrayList<>(containers));
 
-			// -- Phase 5: deliver --------──────────────────────────────────────
+			// -- Phase 5: deliver ----------------------------------------
 			if (resultCallback != null) {
 				int totalBatches = batches.size();
 				for (List<BotiBlockContainer> batch : batches)
@@ -368,5 +307,29 @@ public class ChunkGatheringThread extends Thread {
 		}
 
 		super.run();
+	}
+
+	private void gatherSection(int base, int worldYMin, int sizeY, int sizeZ, boolean[] solid, boolean[] blocksFlow, BlockState[] blockStates, FluidState[] fluidStates, boolean[] teLocations, BlockEntity[] tileEntities, int[] packedLights, ChunkAccess chunk, LevelChunkSection sectionAbove, int y, int x, int z, int gx, int gz, int lx, int lz) {
+		int gy2 = base + y;
+		int ly2 = gy2 - worldYMin;
+		if (ly2 >= 0 && ly2 < sizeY) {
+			int fi2 = lx * sizeY * sizeZ + ly2 * sizeZ + lz;
+			BlockState stateA = sectionAbove.getBlockState(x, y, z);
+			FluidState fluidA = sectionAbove.getFluidState(x, y, z);
+			BlockPos gpos = new BlockPos(gx, gy2, gz);
+
+            assert portalTile != null;
+            if (!gpos.equals(portalTile.getTargetPos())) {
+				boolean isAirA = stateA.isAir();
+				solid[fi2] = !isAirA;
+				blocksFlow[fi2] = !isAirA && stateA.isSolidRender(chunk, gpos);
+				blockStates[fi2] = stateA;
+				fluidStates[fi2] = fluidA;
+				BlockEntity teA = chunk.getBlockEntity(gpos);
+				teLocations[fi2] = teA != null;
+				tileEntities[fi2] = teA;
+				packedLights[fi2] = targetLevel.getMaxLocalRawBrightness(gpos);
+			}
+		}
 	}
 }
