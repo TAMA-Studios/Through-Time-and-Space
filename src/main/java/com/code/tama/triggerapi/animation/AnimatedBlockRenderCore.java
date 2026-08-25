@@ -61,6 +61,7 @@ public class AnimatedBlockRenderCore {
 
 				poseStack.pushPose();
 				poseStack.translate(pos.getX() - camPos.x + 0.5, pos.getY() - camPos.y, pos.getZ() - camPos.z + 0.5);
+				entry.block.transformRender(level.getBlockState(pos), poseStack, buffer, partialTick);
 				GeoRenderer.render(model, poseStack, consumer, packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 				poseStack.popPose();
 			}

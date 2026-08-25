@@ -46,6 +46,11 @@ public class AnimatedBlockRegistry {
 		return chunkMap.computeIfAbsent(pos.immutable(), p -> new Entry(block));
 	}
 
+	public static boolean contains(BlockPos pos) {
+		Map<BlockPos, Entry> chunkMap = BY_CHUNK.computeIfAbsent(chunkKey(pos), k -> new ConcurrentHashMap<>());
+		return chunkMap.containsKey(pos);
+	}
+
 	public static void remove(BlockPos pos) {
 		Map<BlockPos, Entry> chunkMap = BY_CHUNK.get(chunkKey(pos));
 		if (chunkMap != null) {

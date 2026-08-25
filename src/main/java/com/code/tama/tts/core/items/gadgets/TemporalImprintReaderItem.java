@@ -3,12 +3,17 @@ package com.code.tama.tts.core.items.gadgets;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoItemRenderer;
 import com.code.tama.tts.core.items.core.PowerableItem;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,9 +76,10 @@ public class TemporalImprintReaderItem extends PowerableItem {
 			boolean b) {
 		if (firstTick) {
 			firstTick = false;
-			if (entity instanceof ServerPlayer player) {
+			GeoHelper.playAnimation(stack, "animation.idle", level.getGameTime());
+
+			if (entity instanceof ServerPlayer player)
 				Update(player);
-			}
 		}
 		super.inventoryTick(stack, level, entity, i, b);
 	}
@@ -116,5 +122,19 @@ public class TemporalImprintReaderItem extends PowerableItem {
 		}
 
 		return this.pos != null ? this.pos : BlockPos.ZERO;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return getRenderer();
+			}
+		});
+	}
+
+	public GeoItemRenderer getRenderer() {
+		return GeoHelper.getRenderer("tir", "item/gadgets/tir.png");
 	}
 }

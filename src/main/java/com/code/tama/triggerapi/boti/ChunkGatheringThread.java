@@ -2,6 +2,7 @@
 package com.code.tama.triggerapi.boti;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -22,6 +23,7 @@ import net.minecraftforge.network.PacketDistributor;
 
 import com.code.tama.triggerapi.NativeLoader;
 import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.client.OccupancyGrid;
 import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 
 /**
@@ -39,6 +41,12 @@ import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
  * flow through glass, leaves, slabs, snow layers, redstone dust, piston heads,
  * etc. If any of those blocked the BFS, the solid blocks behind/under them
  * would never receive a reachable neighbour and would be incorrectly skipped.
+ * <br /><br />
+ * NOTE: {@code solid[]} also gets packed into a {@link BitSet} and handed off
+ * as {@link #lastSolidBits} (+ dimensions/origin) after gathering completes,
+ * even though most of it never becomes a rendered {@code BotiBlockContainer}.
+ * That full, pre-culling volume is what the client-side AO pass needs for
+ * real occlusion contrast -- see {@code OccupancyGrid} / {@code BOTIUtils}.
  */
 public class ChunkGatheringThread extends Thread {
 
@@ -74,7 +82,7 @@ public class ChunkGatheringThread extends Thread {
 	 * @return flat indices of blocks to emit as BotiBlockContainers
 	 */
 	private static native int[] findExposedBlocks(boolean[] solid, boolean[] reachable, int sizeX, int sizeY, int sizeZ,
-			int originX, int originY, int originZ, int facing);
+	                                              int originX, int originY, int originZ, int facing);
 
 	// -- Fields ----------------------------------------------------------------
 
@@ -90,6 +98,13 @@ public class ChunkGatheringThread extends Thread {
 	@Nullable private final AbstractPortalTile portalTile;
 	@Nullable private final BiConsumer<List<BotiBlockContainer>, Integer> resultCallback;
 
+	/**
+	 * Full pre-culling occupancy for the volume gathered in the most recent
+	 * {@link #run()}, exposed so callers (packet senders) can ship it to the
+	 * client alongside the container batches. Null until a gather completes.
+	 */
+	@Nullable private volatile OccupancyGrid lastOccupancyGrid;
+
 	/** PORTAL mode */
 	public ChunkGatheringThread(int chunks, ServerLevel level, AbstractPortalTile portalTile, BlockPos targetPos) {
 		this.setName("BOTIChunkGatheringThread");
@@ -104,7 +119,7 @@ public class ChunkGatheringThread extends Thread {
 
 	/** TELEPORT mode */
 	public ChunkGatheringThread(int chunks, ServerLevel sourceLevel, ServerLevel destLevel, BlockPos targetPos,
-                                float yaw, @org.jetbrains.annotations.Nullable BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
+	                            float yaw, @org.jetbrains.annotations.Nullable BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
 		this.setName("BOTIChunkGatheringThread");
 		this.chunks = chunks;
 		this.level = sourceLevel;
@@ -113,6 +128,17 @@ public class ChunkGatheringThread extends Thread {
 		this.targetPos = targetPos;
 		this.yaw = yaw;
 		this.resultCallback = resultCallback;
+	}
+
+	/**
+	 * @return the occupancy grid from the most recently completed gather, or
+	 *         null if none has completed yet. Read this AFTER run() finishes
+	 *         (e.g. from the same point batches get sent) to attach it to the
+	 *         outgoing packet(s).
+	 */
+	@Nullable
+	public OccupancyGrid getLastOccupancyGrid() {
+		return lastOccupancyGrid;
 	}
 
 	@Override
@@ -196,8 +222,8 @@ public class ChunkGatheringThread extends Thread {
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 					LevelChunkSection sectionHigher = chunk.getSection(chunk.getSectionIndex(targetPos.getY() + 16)); // NEW
-																														// section
-																														// fetch
+					// section
+					// fetch
 
 					for (int y = 0; y < 16; y++) {
 						for (int x = 0; x < 16; x++) {
@@ -241,6 +267,12 @@ public class ChunkGatheringThread extends Thread {
 
 			int[] exposedIndices = findExposedBlocks(solid, reachable, sizeX, sizeY, sizeZ, originX, originY, originZ,
 					facing);
+
+			// Stash the FULL pre-culling occupancy (not just what got exposed) --
+			// the client-side AO pass needs this for real occlusion contrast
+			// against interior blocks that never get sent as containers.
+			BitSet solidBits = OccupancyGrid.pack(solid);
+			this.lastOccupancyGrid = new OccupancyGrid(solidBits, sizeX, sizeY, sizeZ, originX, originY, originZ);
 
 			// -- Phase 4: emit BotiBlockContainers (Java -- needs MC objects) --
 			for (int fi : exposedIndices) {
@@ -292,13 +324,21 @@ public class ChunkGatheringThread extends Thread {
 
 			} else {
 				TTSMod.LOGGER.debug("[ChunkGatheringThread] Sending {} portal batch packet(s).", batches.size());
+				// Attach the occupancy grid to ONLY the first packet -- it covers the
+				// whole gathered volume regardless of which batch a given block
+				// landed in, so there's no reason to resend it once per batch.
+				// If batches ends up empty (nothing exposed this gather), the
+				// occupancy data simply won't be sent this round; that's fine since
+				// there'd be no containers to shade with it anyway.
 				for (int i = 0; i < batches.size(); i++) {
 					final int idx = i;
 					final int total2 = batches.size();
+					OccupancyGrid occupancyForThisPacket = (idx == 0) ? this.lastOccupancyGrid : null;
 					Networking.INSTANCE.send(PacketDistributor.DIMENSION.with(() -> {
 						assert portalTile.getLevel() != null;
 						return portalTile.getLevel().dimension();
-					}), new PortalChunkDataPacketS2C(portalTile.getBlockPos(), batches.get(idx), idx, total2));
+					}), new PortalChunkDataPacketS2C(portalTile.getBlockPos(), batches.get(idx), idx, total2,
+							occupancyForThisPacket));
 				}
 			}
 
@@ -318,8 +358,8 @@ public class ChunkGatheringThread extends Thread {
 			FluidState fluidA = sectionAbove.getFluidState(x, y, z);
 			BlockPos gpos = new BlockPos(gx, gy2, gz);
 
-            assert portalTile != null;
-            if (!gpos.equals(portalTile.getTargetPos())) {
+			assert portalTile != null;
+			if (!gpos.equals(portalTile.getTargetPos())) {
 				boolean isAirA = stateA.isAir();
 				solid[fi2] = !isAirA;
 				blocksFlow[fi2] = !isAirA && stateA.isSolidRender(chunk, gpos);

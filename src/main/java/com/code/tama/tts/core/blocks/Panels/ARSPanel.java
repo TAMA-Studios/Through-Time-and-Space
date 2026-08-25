@@ -9,10 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.code.tama.triggerapi.animation.*;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.MinecartItem;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -47,7 +55,7 @@ import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.triggerapi.helpers.world.WorldHelper;
 
 @SuppressWarnings("deprecation")
-public class ARSPanel extends HorizontalDirectionalBlock {
+public class ARSPanel extends HorizontalDirectionalBlock implements IGeoAnimatedBlock {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
 	public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
@@ -59,6 +67,7 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 		this.registerDefaultState(
 				this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
 	}
+
 
 	public static VoxelShape createVoxelShape() {
 		return Stream.of(Block.box(3, 1, 5, 7, 2, 9), Block.box(9, 1, 5, 13, 2, 9), Block.box(0, 0, 0, 16, 1, 16),
@@ -175,22 +184,28 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 						WorldHelper.PlaceStructure((ServerLevel) world,
 								posToPlace.relative(state.getValue(FACING).getOpposite(), 48),
 								ARSRegistry.GetByName("tts.ars.starter").path());
-						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-						world.scheduleTick(pos, this, 10);
+						if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
+							AnimatedBlockRegistry.add(pos, this).player.stop();
+							AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.rclick"), world.getGameTime());
+						}
 						world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
 					} else {
 						this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
 						player.sendSystemMessage(
 								Component.literal("ARS Structure set to: ").append(this.StoredStruct.Name()));
-						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-						world.scheduleTick(pos, this, 10);
+						if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
+							AnimatedBlockRegistry.add(pos, this).player.stop();
+							AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.rclick"), world.getGameTime());
+						}
 						world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
 					}
 					break;
 				case SET :
 					WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.path());
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-					world.scheduleTick(pos, this, 10);
+					if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
+						AnimatedBlockRegistry.add(pos, this).player.stop();
+						AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.lclick"), world.getGameTime());
+					}
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				default :
@@ -198,6 +213,30 @@ public class ARSPanel extends HorizontalDirectionalBlock {
 			}
 		});
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public GeoModel getGeoModel() {
+		return GeoHelper.getModel("blockgeo/ars_panel");
+	}
+
+	@Override
+	public ResourceLocation getGeoTexture() {
+		return UniversalCommon.modRL("textures/block/ars_panel.png");
+	}
+
+	@Override
+	public void transformRender(BlockState state, PoseStack poseStack, MultiBufferSource.BufferSource buffer, float partialTick) {
+		poseStack.mulPose(state.getValue(ARSPanel.FACING).getOpposite().getRotation());
+		poseStack.mulPose(Axis.XN.rotationDegrees(90f));
+	}
+
+	@Override
+	public void onPlace(BlockState p_60566_, Level world, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
+		if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
+			AnimatedBlockRegistry.add(pos, this);
+		}
+		super.onPlace(p_60566_, world, pos, p_60569_, p_60570_);
 	}
 
 	public enum Buttons {
