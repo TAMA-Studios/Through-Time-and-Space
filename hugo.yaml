@@ -24,8 +24,7 @@ params:
     email: "codiak540@4d2.org"
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
-  editURL:
-    base: "https://tama-studios.github.io/Through-Time-and-Space/edit/main/content/"
+  editURL: "https://tama-studios.github.io/Through-Time-and-Space/edit/main/content/"
 
 menu:
   main:
