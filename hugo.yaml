@@ -8,14 +8,8 @@ enableRobotsTXT: true
 enableGitInfo: true
 
 module:
-  proxy: direct
-
-  hugoVersion:
-    extended: true
-    min: "0.160.1"
-
   imports:
-    - path: github.com/google/docsy/theme
+    - path: github.com/alex-shpak/hugo-book
 
 markup:
   goldmark:
@@ -23,32 +17,14 @@ markup:
       unsafe: true
 
 params:
-  github_repo: "https://github.com/TAMA-Studios/Through-Time-and-Space"
-  github_branch: "Wiki"
+  BookTheme: auto
+  BookToC: true
+  BookSection: docs
+  BookSearch: true
+  BookComments: false
+  BookPortableLinks: false
+  BookServiceWorker: false
 
-  copyright:
-    authors: "TAMA Studios"
-
-  ui:
-    breadcrumb_disable: false
-    sidebar_menu_compact: false
-    sidebar_menu_foldable: true
-    navbar_logo: false
-    footer_about_disable: false
-
-  links:
-    user:
-      - name: "GitHub"
-        url: "https://github.com/TAMA-Studios/Through-Time-and-Space"
-        icon: "fab fa-github"
-        desc: "Through Time and Space on GitHub"
-
-menu:
-  main:
-    - name: "Documentation"
-      url: "/Through-Time-and-Space/docs/"
-      weight: 10
-
-    - name: "GitHub"
-      url: "https://github.com/TAMA-Studios/Through-Time-and-Space"
-      weight: 20
+  BookRepo: "https://github.com/TAMA-Studios/Through-Time-and-Space"
+  BookCommitPath: "commit"
+  BookEditPath: "edit/Wiki"
