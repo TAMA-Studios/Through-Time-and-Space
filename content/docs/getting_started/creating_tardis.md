@@ -3,7 +3,7 @@ title: Creating a TARDIS
 date: 2026-08-25
 description: Creating a TARDIS from scratch
 draft: false
-weight: 86
+weight: 4
 ---
 Creating a TARDIS is a multi-stage process. First, the exterior shell must be assembled, then powered to create its interior dimension. Once the dimension exists, the player must establish a safe starting platform and activate the TARDIS's life-support and ARS systems.
 

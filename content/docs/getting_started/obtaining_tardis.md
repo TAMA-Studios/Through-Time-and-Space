@@ -3,7 +3,7 @@ title: Obtaining your TARDIS
 date: 2026-08-25
 description: How to obtain a TARDIS
 draft: false
-weight: 88
+weight: 2
 ---
 There are currently 3 ways to obtain the TARDIS
 You may either:
