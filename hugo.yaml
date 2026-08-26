@@ -1,39 +1,54 @@
-title: Through Time and Space Wiki
-baseURL: https://tama-studios.github.io/Through-Time-and-Space
+title: "Through Time and Space Wiki"
+
+baseURL: "https://tama-studios.github.io/Through-Time-and-Space/"
+languageCode: "en-us"
+defaultContentLanguage: "en"
+
 enableRobotsTXT: true
 enableGitInfo: true
-defaultContentLanguage: en
 
 module:
+  proxy: direct
+
+  hugoVersion:
+    extended: true
+    min: "0.160.1"
+
   imports:
-    - path: github.com/McShelby/hugo-theme-relearn
-  mounts:
-    - source: content
-      target: content
+    - path: github.com/google/docsy/theme
 
 markup:
   goldmark:
     renderer:
       unsafe: true
-  highlight:
-    noClasses: false
 
 params:
-  author:
-    name: "TAMA Studios"
-    email: "codiak540@4d2.org"
-  displayUpdatedDate: true
-  dateFormat: "January 2, 2006"
-  editURL: "https://tama-studios.github.io/Through-Time-and-Space/edit/main/content/"
+  github_repo: "https://github.com/TAMA-Studios/Through-Time-and-Space"
+  github_branch: "Wiki"
+
+  copyright:
+    authors: "TAMA Studios"
+
+  ui:
+    breadcrumb_disable: false
+    sidebar_menu_compact: false
+    sidebar_menu_foldable: true
+    navbar_logo: false
+    footer_about_disable: false
+
+  links:
+    user:
+      - name: "GitHub"
+        url: "https://github.com/TAMA-Studios/Through-Time-and-Space"
+        icon: "fab fa-github"
+        desc: "Through Time and Space on GitHub"
 
 menu:
   main:
-    - name: Search
-      weight: 1
-      params:
-        type: search
-    - name: GitHub
-      url: "https://tama-studios.github.io/Through-Time-and-Space"
-      weight: 2
-      params:
-        icon: github
+    - name: "Documentation"
+      url: "/Through-Time-and-Space/docs/"
+      weight: 10
+
+    - name: "GitHub"
+      url: "https://github.com/TAMA-Studios/Through-Time-and-Space"
+      weight: 20
