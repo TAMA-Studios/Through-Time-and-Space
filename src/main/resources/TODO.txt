@@ -23,6 +23,7 @@ Sulking
 
 Behavior:
 idk, should have a bunch of entries stating what should happen in response to smth else happening
+atp maybe just cut out behavior
 
 (Needs revamp \/)
 Lua:
@@ -144,7 +145,7 @@ _G (Global Table)
 ~~Valkyrian Skies compat!!~~ (DONE!)
 TODO: Figure out all these damn disconnected errors (Maybe fixed?) (If I don't see another random disconnect between now and release, I'm calling it fixed)
 ~~FIX FLIGHT/LAND MECHANIC~~ ~~DONE~~ NOT DONE, NEEDS REVAMP
-~~Compressed Multiblocks~~ DONE
+~~Compressed Multiblocks~~ DONE... -ISH
 
 TODO: On load, sync the TIR capability to the Client for tooltip tracking data
 
