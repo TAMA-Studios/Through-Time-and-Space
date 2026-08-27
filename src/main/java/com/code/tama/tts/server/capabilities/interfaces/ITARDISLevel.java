@@ -22,6 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+	/** Whether the current TARDIS is marked as Operator */
+	boolean isOperator();
+	void setOperator(boolean b);
 
 	/** Returns whether the TARDIS is capable of taking off in its current state */
 	boolean CanTakeoff();
@@ -113,6 +116,9 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	@ApiStatus.Internal
 	void Land();
 
+	/** For when the TARDIS won't land. */
+	void FuckingLandAlreadyDammit();
+
 	/** Initiates the TARDIS Landing sequence * */
 	void Rematerialize();
 
@@ -167,5 +173,4 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	@Nullable
     ARSGrid getGridAt(ARSPos pos);
-
 }

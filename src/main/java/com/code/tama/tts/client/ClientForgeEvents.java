@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import com.code.tama.tts.client.gui.ARSMapScreen;
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -41,7 +42,7 @@ public class ClientForgeEvents {
 	public static void Render(RenderLivingEvent<Player, PlayerModel<Player>> event) {
 		if (event.getEntity() instanceof Player player) {
 			player.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent(cap -> {
-				if (cap.GetViewingTARDIS().isEmpty())
+				if (cap.GetViewingTARDIS().isEmpty() && !(player.getVehicle() instanceof TardisFlightEntity))
 					return;
 				else {
 					event.getRenderer().getModel().body.visible = false;

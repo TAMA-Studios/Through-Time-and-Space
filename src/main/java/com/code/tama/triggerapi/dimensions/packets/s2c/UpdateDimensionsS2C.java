@@ -33,15 +33,15 @@ public record UpdateDimensionsS2C(Set<ResourceKey<Level>> keys, boolean add) imp
 		return new UpdateDimensionsS2C(keys, add);
 	}
 
-	public void encode(FriendlyByteBuf buffer) {
-		buffer.writeCollection(this.keys(), (buf, key) -> buf.writeResourceLocation(key.location()));
-		buffer.writeBoolean(this.add());
+	public static void encode(UpdateDimensionsS2C packet, FriendlyByteBuf buffer) {
+		buffer.writeCollection(packet.keys(), (buf, key) -> buf.writeResourceLocation(key.location()));
+		buffer.writeBoolean(packet.add());
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> contextGetter) {
+	public static void handle(UpdateDimensionsS2C packet, Supplier<NetworkEvent.Context> contextGetter) {
 		NetworkEvent.Context context = contextGetter.get();
 		if (FMLEnvironment.dist == Dist.CLIENT) {
-			context.enqueueWork(() -> ClientHandler.handle(this));
+			context.enqueueWork(() -> ClientHandler.handle(packet));
 		}
 		context.setPacketHandled(true);
 	}

@@ -70,6 +70,7 @@ import com.code.tama.triggerapi.data.DatapackRegistry;
 import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
+	private boolean isOperator = false;
 	private final PowerHandler powerHandler = new PowerHandler(this);
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
@@ -235,8 +236,18 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
+	public boolean isOperator() {
+		return this.isOperator;
+	}
+
+	@Override
+	public void setOperator(boolean b) {
+		this.isOperator = b;
+	}
+
+	@Override
 	public boolean CanTakeoff() {
-		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
+		return this.isOperator || this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
 				&& !this.data.getControlData().isVortexAnchor() && this.powerHandler.getPower() > 0
 				&& !this.data.getControlData().isEngineBrake();
@@ -244,7 +255,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public boolean CanFly() {
-		return this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
+		return this.isOperator || this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
 				&& this.data.isPowered() && this.powerHandler.getPower() > 0
 				&& !this.data.getControlData().isEngineBrake();
 	}
@@ -560,6 +571,55 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 			if (CurrentLevel.isOutsideBuildHeight(pos))
 				pos = pos.atY(64);
+
+			SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos, CurrentLevel.dimension());
+
+			this.GetNavigationalData().SetExteriorLocation(coords);
+			this.GetNavigationalData().setDestination(coords);
+			this.GetNavigationalData().setFacing(this.GetNavigationalData().getDestinationFacing());
+
+			BlockState exteriorBlockState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
+
+			CurrentLevel.setBlock(this.GetNavigationalData().getDestination().GetBlockPos(),
+					exteriorBlockState.setValue(FACING, this.GetNavigationalData().getFacing()), 3);
+
+			this.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), exteriorBlockState);
+			if (CurrentLevel.getBlockEntity(pos) != null) {
+				this.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(pos)));
+			} else {
+				ExteriorTile tile = ((ExteriorTile) ((ExteriorBlock) exteriorBlockState.getBlock())
+						.newBlockEntity(coords.GetBlockPos(), exteriorBlockState));
+				assert tile != null;
+				CurrentLevel.setBlockEntity(tile);
+				tile.setLevel(CurrentLevel);
+				this.SetExteriorTile(tile);
+			}
+			this.ForceLoadExteriorChunk(false);
+			this.GetFlightData().setPlayRotorAnimation(false);
+			this.UpdateClient(DataUpdateValues.ALL);
+		}
+
+		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));
+		this.GetNavigationalData().SetExteriorLocation(this.GetNavigationalData().getDestination());
+		this.NullExteriorChecksAndFixes();
+	}
+
+	@Override
+	public void FuckingLandAlreadyDammit() {
+		this.flightData.setInFlight(false);
+		this.flightData.setTicksInFlight(0);
+		if (!this.GetLevel().isClientSide) {
+
+			ServerLevel CurrentLevel = Objects.requireNonNull(this.GetLevel().getServer())
+					.getLevel(this.GetNavigationalData().getDestination().getLevelKey());
+			assert CurrentLevel != null;
+
+			this.ForceLoadExteriorChunk(true);
+
+			BlockPos pos = this.GetNavigationalData().getDestination().GetBlockPos();
+
+			if (CurrentLevel.isOutsideBuildHeight(pos))
+				pos = pos.atY(80);
 
 			SpaceTimeCoordinate coords = new SpaceTimeCoordinate(pos, CurrentLevel.dimension());
 
