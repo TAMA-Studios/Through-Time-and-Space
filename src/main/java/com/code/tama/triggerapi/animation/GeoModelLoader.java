@@ -132,22 +132,37 @@ public class GeoModelLoader {
 						? vec3(co, "pivot", 0, 0, 0)
 						: new float[]{origin[0] + size[0] / 2f, origin[1] + size[1] / 2f, origin[2] + size[2] / 2f};
 
-				float relOriginX = origin[0] - pivotAbs[0];
-				float relOriginY = origin[1] - pivotAbs[1];
-				float relOriginZ = origin[2] - pivotAbs[2];
-				float relPivotX = cubePivot[0] - pivotAbs[0];
-				float relPivotY = cubePivot[1] - pivotAbs[1];
-				float relPivotZ = cubePivot[2] - pivotAbs[2];
-
 				// Cube geometry needs to be relative to THIS bone's own absolute pivot
 				// (independent of the parent-delta fix above, that fix only affects
 				// where poseStack.translate moves the bone itself, not cube-local shape).
+				float relOriginX = origin[0] - pivotAbs[0], relOriginY = origin[1] - pivotAbs[1],
+						relOriginZ = origin[2] - pivotAbs[2];
+				float relPivotX = cubePivot[0] - pivotAbs[0], relPivotY = cubePivot[1] - pivotAbs[1],
+						relPivotZ = cubePivot[2] - pivotAbs[2];
+
 				GeoCube cube;
-				Map<GeoCube.Face, GeoCube.FaceUV> perFaceUv = parsePerFaceUv(co, size);
-				if (perFaceUv != null) {
-					cube = new GeoCube(relOriginX, relOriginY, relOriginZ, size[0], size[1], size[2], perFaceUv,
-							inflate, mirror, relPivotX, relPivotY, relPivotZ, cubeRot[0], cubeRot[1], cubeRot[2]);
+				JsonElement uvEl = co.get("uv");
+				if (uvEl != null && uvEl.isJsonObject()) {
+					// Per-Face UV mode: "uv": { "north": {"uv":[u,v],"uv_size":[w,h]}, ... }
+					Map<String, float[]> faceRects = new HashMap<>();
+					JsonObject uvObj = uvEl.getAsJsonObject();
+					for (String face : new String[]{"north", "south", "east", "west", "up", "down"}) {
+						if (!uvObj.has(face))
+							continue;
+						JsonObject faceObj = uvObj.getAsJsonObject(face);
+						float[] faceUv = vec2(faceObj, "uv", 0, 0);
+						float[] faceSize = vec2(faceObj, "uv_size", 0, 0);
+						// Deliberately NOT normalizing negative sizes — a negative height/width
+						// here is Bedrock's own encoding for that face's axis being flipped
+						// (every "down" face needs this), so u1/v1 can legitimately be less
+						// than u0/v0 and that's preserved as-is.
+						faceRects.put(face,
+								new float[]{faceUv[0], faceUv[1], faceUv[0] + faceSize[0], faceUv[1] + faceSize[1]});
+					}
+					cube = new GeoCube(relOriginX, relOriginY, relOriginZ, size[0], size[1], size[2], 0, 0, inflate,
+							mirror, relPivotX, relPivotY, relPivotZ, cubeRot[0], cubeRot[1], cubeRot[2], faceRects);
 				} else {
+					// Box-UV mode: "uv": [u, v]
 					float[] uv = uv(co);
 					cube = new GeoCube(relOriginX, relOriginY, relOriginZ, size[0], size[1], size[2], uv[0], uv[1],
 							inflate, mirror, relPivotX, relPivotY, relPivotZ, cubeRot[0], cubeRot[1], cubeRot[2]);
@@ -168,57 +183,6 @@ public class GeoModelLoader {
 			return new float[]{dx, dy, dz};
 		JsonArray a = o.getAsJsonArray(key);
 		return new float[]{a.get(0).getAsFloat(), a.get(1).getAsFloat(), a.get(2).getAsFloat()};
-	}
-
-	/**
-	 * Detects and parses the bedrock "per-face uv" cube format: "uv": { "north":
-	 * {"uv":[u,v], "uv_size":[w,h], "uv_rotation":90}, ... } Returns null if this
-	 * cube uses the simple box-uv form instead (a bare [u,v] array, or {"u":..,
-	 * "v":..}) so the caller falls back to that. A face key that's absent from the
-	 * object is left out of the returned map entirely, per spec, that face simply
-	 * isn't drawn.
-	 */
-	private static Map<GeoCube.Face, GeoCube.FaceUV> parsePerFaceUv(JsonObject co, float[] size) {
-		if (!co.has("uv") || !co.get("uv").isJsonObject())
-			return null;
-		JsonObject uvObj = co.getAsJsonObject("uv");
-		boolean isPerFace = uvObj.has("north") || uvObj.has("south") || uvObj.has("east") || uvObj.has("west")
-				|| uvObj.has("up") || uvObj.has("down");
-		if (!isPerFace)
-			return null; // e.g. {"u":.., "v":..} simple form
-
-		Map<GeoCube.Face, GeoCube.FaceUV> result = new EnumMap<>(GeoCube.Face.class);
-		if (uvObj.has("north"))
-			result.put(GeoCube.Face.NORTH, parseFaceUv(uvObj.getAsJsonObject("north"), size[0], size[1]));
-		if (uvObj.has("south"))
-			result.put(GeoCube.Face.SOUTH, parseFaceUv(uvObj.getAsJsonObject("south"), size[0], size[1]));
-		if (uvObj.has("east"))
-			result.put(GeoCube.Face.EAST, parseFaceUv(uvObj.getAsJsonObject("east"), size[2], size[1]));
-		if (uvObj.has("west"))
-			result.put(GeoCube.Face.WEST, parseFaceUv(uvObj.getAsJsonObject("west"), size[2], size[1]));
-		if (uvObj.has("up"))
-			result.put(GeoCube.Face.UP, parseFaceUv(uvObj.getAsJsonObject("up"), size[0], size[2]));
-		if (uvObj.has("down"))
-			result.put(GeoCube.Face.DOWN, parseFaceUv(uvObj.getAsJsonObject("down"), size[0], size[2]));
-		return result;
-	}
-
-	/**
-	 * defaultW/defaultH are the face's own box dimensions, used when "uv_size" is
-	 * omitted (per spec).
-	 */
-	private static GeoCube.FaceUV parseFaceUv(JsonObject faceObj, float defaultW, float defaultH) {
-		JsonArray uvArr = faceObj.getAsJsonArray("uv");
-		float u0 = uvArr.get(0).getAsFloat();
-		float v0 = uvArr.get(1).getAsFloat();
-		float w = defaultW, h = defaultH;
-		if (faceObj.has("uv_size")) {
-			JsonArray sizeArr = faceObj.getAsJsonArray("uv_size");
-			w = sizeArr.get(0).getAsFloat();
-			h = sizeArr.get(1).getAsFloat();
-		}
-		int rotation = faceObj.has("uv_rotation") ? faceObj.get("uv_rotation").getAsInt() : 0;
-		return new GeoCube.FaceUV(u0, v0, u0 + w, v0 + h, rotation);
 	}
 
 	private static float[] uv(JsonObject co) {
@@ -244,5 +208,12 @@ public class GeoModelLoader {
 		}
 
 		return new float[]{0, 0};
+	}
+
+	private static float[] vec2(JsonObject o, String key, float dx, float dy) {
+		if (!o.has(key))
+			return new float[]{dx, dy};
+		JsonArray a = o.getAsJsonArray(key);
+		return new float[]{a.get(0).getAsFloat(), a.get(1).getAsFloat()};
 	}
 }
