@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.core.networking.packets.C2S.dimensions.ChooseARSRoomC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
@@ -75,6 +76,7 @@ public class Networking {
 		UniversalCommon.Networking.registerMsg(OpenGuiPacket.class);
 		UniversalCommon.Networking.registerMsg(ButtonClickPacket.class);
 		UniversalCommon.Networking.registerMsg(SyncContextPacket.class);
+		UniversalCommon.Networking.registerMsg(ChooseARSRoomC2S.class);
 
 		// Entity Packets
 		register(ControlClickedPacketC2S.class, ControlClickedPacketC2S::encode, ControlClickedPacketC2S::decode,

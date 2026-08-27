@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:citadel",
-    "name" : "tts.ars.citadel"
+    "name" : "tts.ars.citadel",
+    "map_color" : "0x6a6a99"
   }
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Tracks which world positions currently hold an animated block, without any
@@ -36,6 +37,10 @@ public class AnimatedBlockRegistry {
 	}
 
 	private static final Map<Long, Entry> ENTRIES = new HashMap<>();
+
+	public static boolean contains(BlockPos pos) {
+		return ENTRIES.containsKey(pos.asLong());
+	}
 
 	private static long pack(BlockPos pos) {
 		// Same bit-packing vanilla itself uses for BlockPos.asLong (X:26 bits, Z:26

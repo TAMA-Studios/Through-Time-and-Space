@@ -233,8 +233,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 			if (level.getGameTime() - exteriorTile.timeCreated < 1200) {
 				player.displayClientMessage(Component.translatable("tts.tooEarly",
-						(-(level.getGameTime() - exteriorTile.timeCreated) - 1200) / 20), true);
-				return InteractionResult.FAIL;
+						(1200 - (level.getGameTime() - exteriorTile.timeCreated)) / 20), true);return InteractionResult.FAIL;
 			} else
 				exteriorTile.CycleDoors();
 		}

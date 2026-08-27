@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:tavern",
-    "name" : "tts.ars.tavern"
+    "name" : "tts.ars.tavern",
+    "map_color" : "0x572f18"
   }
 }

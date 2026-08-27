@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:clean",
-    "name" : "tts.ars.clean"
+    "name" : "tts.ars.clean",
+    "map_color" : "0xe4f5e6"
   }
 }

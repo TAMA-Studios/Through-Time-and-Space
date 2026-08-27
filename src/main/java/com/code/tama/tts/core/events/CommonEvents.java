@@ -231,7 +231,7 @@ public class CommonEvents {
 		// Networking.sendPacketToDimension(event.getPlayer().level().dimension(), new
 		// SyncCapLightLevelPacket((float) Integer.parseInt(event.getRawText()) / 10));
 		// }
-	}
+		}
 
 	private static final float VANILLA_GRAVITY = 0.08F;
 

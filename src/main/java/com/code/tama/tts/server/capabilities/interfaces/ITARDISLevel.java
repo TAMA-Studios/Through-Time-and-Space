@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
+import com.code.tama.tts.client.gui.ARSGrid;
+import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.tardis.PowerHandler;
@@ -15,6 +17,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
@@ -138,7 +143,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	PowerHandler getEnergy();
 
 	/**
-	 * Returns a list of TARDIS dimension strings
+	 * // TODO: THIS! INTERCOM MESSAGING!
 	 */
 	void receiveInterCommMessage(String message);
 
@@ -151,4 +156,16 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	 *            The recipients TARDISes dimension RL
 	 */
 	void sendInterCommMessage(String message, ResourceLocation recipient);
+
+	// ARS
+
+	List<ARSGrid> getARSGrids();
+
+	void addARSGrid(ARSGrid grid);
+
+	void removeARSGrid(ARSPos pos);
+
+	@Nullable
+    ARSGrid getGridAt(ARSPos pos);
+
 }

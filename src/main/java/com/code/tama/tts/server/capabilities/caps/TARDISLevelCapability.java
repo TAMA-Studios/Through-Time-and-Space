@@ -3,13 +3,13 @@ package com.code.tama.tts.server.capabilities.caps;
 
 import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.client.gui.ARSGrid;
+import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.events.TardisEvent;
@@ -40,6 +40,7 @@ import com.code.tama.tts.server.misc.BlockHelper;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -77,6 +78,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@OnlyIn(Dist.CLIENT)
 	private final TARDISClientData clientData = new TARDISClientData(this);
 	private LoopingSound interiorHum;
+	@Getter @Setter
+	private Map<ARSPos, ARSGrid> ARS_GRIDS = new HashMap<>();
 
 	@Getter
 	private final List<String> InterCommsMessages = new ArrayList<>();
@@ -105,7 +108,19 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			tag.putString("mes_" + i, InterCommsMessages.get(i));
 		}
 
+		List<ARSGrid> grids = new ArrayList<>();
+		List<ARSPos> gridPoss = new ArrayList<>();
+		this.ARS_GRIDS.forEach((g, x) -> {
+			grids.add(x);
+			gridPoss.add(g);
+		});
+		for (int i = 0; i < ARS_GRIDS.size(); i++) {
+			tag.put("ars_" + i, grids.get(i).serialize());
+			tag.put("ars_pos_" + i, gridPoss.get(i).serialize());
+		}
+
 		tag.putInt("messages", InterCommsMessages.size());
+		tag.putInt("rooms", ARS_GRIDS.size());
 
 		return tag;
 	}
@@ -127,6 +142,12 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 		for (int i = 0; i < nbt.getInt("messages"); i++) {
 			InterCommsMessages.add(nbt.getString("mes_" + i));
+		}
+
+		for (int i = 0; i < nbt.getInt("rooms"); i++) {
+//			grids.add(ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
+//			gridPoss.add(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)));
+			ARS_GRIDS.put(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)), ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
 		}
 	}
 
@@ -754,6 +775,28 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				.getLevel(ResourceKey.create(Registries.DIMENSION, recipient)))).ifPresent(cap -> {
 					cap.receiveInterCommMessage(message);
 				});
+	}
+
+	@Override
+	public List<ARSGrid> getARSGrids() {
+		List<ARSGrid> grids = new ArrayList<>();
+		this.ARS_GRIDS.forEach((g, x) -> grids.add(x));
+		return grids;
+	}
+
+	@Override
+	public void addARSGrid(ARSGrid grid) {
+		this.ARS_GRIDS.put(grid.getPos(), grid);
+	}
+
+	@Override
+	public void removeARSGrid(ARSPos pos) {
+		this.ARS_GRIDS.remove(pos);
+	}
+
+	@Override
+	public @Nullable ARSGrid getGridAt(ARSPos pos) {
+		return this.ARS_GRIDS.get(pos);
 	}
 
 	/**

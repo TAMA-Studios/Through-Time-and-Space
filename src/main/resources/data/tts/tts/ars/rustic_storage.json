@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:rustic_storage",
-    "name" : "tts.ars.rustic_storage"
+    "name" : "tts.ars.rustic_storage",
+    "map_color" : "0x8c3800"
   }
 }

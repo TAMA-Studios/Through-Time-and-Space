@@ -129,6 +129,7 @@
   "entity.tts.falling_exterior" : "Falling Exterior",
   "entity.tts.modular_control" : "Modular Control",
   "item.tts.advanced_control_circuit" : "Advanced Control Circuit",
+  "item.tts.ars_tablet" : "Architectural Reconfiguration System Interface",
   "item.tts.basic_control_circuit" : "Basic Control Circuit",
   "item.tts.basic_nozzle" : "Fabricator Nozzle [Basic]",
   "item.tts.console_block" : "Console Block",

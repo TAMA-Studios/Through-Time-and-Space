@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:starter",
-    "name" : "tts.ars.starter"
+    "name" : "tts.ars.starter",
+    "map_color" : "0x2eab2e"
   }
 }

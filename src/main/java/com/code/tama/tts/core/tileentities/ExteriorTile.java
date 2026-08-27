@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
+import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.events.TardisEvent;
 import com.code.tama.tts.core.networking.Networking;
@@ -199,8 +200,9 @@ public class ExteriorTile extends AbstractPortalTile {
 		assert this.getLevel() != null;
 		if (this.getLevel().isClientSide)
 			return;
+		ARSPos pos = new ARSPos(0, 128, 0);
 		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
-				new BlockPos(MathUtils.RoundTo48(0), MathUtils.RoundTo48(128), MathUtils.RoundTo48(0)),
+				pos.getOrigin(),
 				structure.GetRL());
 
 		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {

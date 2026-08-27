@@ -8,10 +8,7 @@ import java.util.List;
 import com.code.tama.tts.client.manual.ManualItem;
 import com.code.tama.tts.core.items.TwineItem;
 import com.code.tama.tts.core.items.core.NozzleItem;
-import com.code.tama.tts.core.items.gadgets.HoloGlasses;
-import com.code.tama.tts.core.items.gadgets.SonicItem;
-import com.code.tama.tts.core.items.gadgets.TemporalImprintReaderItem;
-import com.code.tama.tts.core.items.gadgets.VortexManipulatorItem;
+import com.code.tama.tts.core.items.gadgets.*;
 import com.code.tama.tts.core.items.tabs.MainTab;
 import com.code.tama.tts.core.registries.TTSRegistrate;
 import com.code.tama.tts.core.tileentities.boti.BotiWindowConfigurator;
@@ -37,6 +34,9 @@ public class TTSItems {
 
 	@MainTab
 	public static final ItemEntry<Item> RAW_ZEITON;
+
+	@MainTab
+	public static final ItemEntry<ARSTabletItem> ARS_TABLET;
 
 	@MainTab
 	public static final ItemEntry<Item> BASIC_CONTROL_CIRCUIT;
@@ -104,6 +104,8 @@ public class TTSItems {
 		// TTSBlocks.NESS_CONSOLE_BLOCK.get(), new Item.Properties()));
 
 		CORAL_SONIC = registrate().item("sonic/coral", prop -> new SonicItem(prop, 5)).register();
+
+		ARS_TABLET = registrate().item("gadgets/ars_tablet", prop -> new ARSTabletItem(prop)).register();
 
 		COPPER_SONIC = registrate().item("sonic/copper", prop -> new SonicItem(prop, 5)).register();
 

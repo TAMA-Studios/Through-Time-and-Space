@@ -92,6 +92,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 							String name = valuesObject.get("name").getAsString();
+							int color = Integer.decode(valuesObject.get("map_color").getAsString());
 							String location = valuesObject.get("location").getAsString();
 							ResourceLocation structureLocation = new ResourceLocation(location);
 							int heightOffs;
@@ -101,7 +102,7 @@ public class ARSDataLoader implements ResourceManagerReloadListener {
 								heightOffs = valuesObject.get("yOffs").getAsInt();
 							// Create Data ars rooms and add it to the list
 							ARSStructureContainer Structure = new ARSStructureContainer(structureLocation,
-									Component.translatable(name), heightOffs);
+									Component.translatable(name), heightOffs, color);
 							if (!dataRoom.contains(Structure))
 								dataRoom.add(Structure);
 						} else {

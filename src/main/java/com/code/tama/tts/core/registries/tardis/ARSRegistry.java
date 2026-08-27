@@ -2,7 +2,9 @@
 package com.code.tama.tts.core.registries.tardis;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.code.tama.tts.client.gui.ARSRoomRegistry;
 import com.code.tama.tts.server.enums.Structures;
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 
@@ -11,8 +13,10 @@ import net.minecraft.network.chat.Component;
 public class ARSRegistry {
 	public static ArrayList<ARSStructureContainer> STRUCTURES = new ArrayList<>();
 
+	public static List<ARSRoomRegistry.ARSRoomInfo> STRUCTURES_INFO = new ArrayList<>();
+
 	public static ARSStructureContainer CLEAN_INTERIOR = AddStructure(
-			new ARSStructureContainer(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean"), 0));
+			new ARSStructureContainer(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean"), 0, 0xFFFFFF));
 
 	public static ARSStructureContainer GetStructure(int ID) {
 		return STRUCTURES.get(ID);
@@ -34,6 +38,14 @@ public class ARSRegistry {
 	public static ARSStructureContainer GetByName(String name) {
 		for (ARSStructureContainer structure : STRUCTURES) {
 			if (structure.Name().equals(Component.translatable(name)))
+				return structure;
+		}
+		return STRUCTURES.get(0);
+	}
+
+	public static ARSStructureContainer GetByPath(String path) {
+		for (ARSStructureContainer structure : STRUCTURES) {
+			if (structure.path().equals(Component.translatable(path)))
 				return structure;
 		}
 		return STRUCTURES.get(0);

@@ -6,15 +6,18 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import java.util.Objects;
 
+import com.code.tama.tts.client.gui.ARSMapScreen;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.MinecartItem;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -24,6 +27,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.royawesome.jlibnoise.module.combiner.Min;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
@@ -84,6 +88,9 @@ public class ClientForgeEvents {
 				while (ClientSetup.EXTERIOR_VIEW.consumeClick()) {
 					cap.SetViewingTARDIS("");
 					Networking.sendToServer(new StopViewingExteriorC2S(event.player.getUUID()));
+
+					TARDISLevelCapability.GetClientTARDISCapSupplier().ifPresent(t ->
+					Minecraft.getInstance().setScreen(new ARSMapScreen(event.player.level(), t.getARSGrids())));
 				}
 			});
 		}

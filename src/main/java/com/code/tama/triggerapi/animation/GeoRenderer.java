@@ -46,14 +46,14 @@ public class GeoRenderer {
 
 		for (GeoCube cube : bone.cubes) {
 			for (GeoCube.LocalQuad quad : cube.getBakedQuads(texW, texH)) {
-				Vector3f n = new Vector3f(quad.nx(), quad.ny(), quad.nz());
+				Vector3f n = new Vector3f(quad.nx, quad.ny, quad.nz);
 				n.mul(normalMat);
 				n.normalize();
 
-				for (GeoCube.LocalVertex v : quad.vertices()) {
-					Vector4f pos = new Vector4f(v.x() / 16.0f, v.y() / 16.0f, v.z() / 16.0f, 1.0f);
+				for (GeoCube.LocalVertex v : quad.vertices) {
+					Vector4f pos = new Vector4f(v.x / 16.0f, v.y / 16.0f, v.z / 16.0f, 1.0f);
 					pos.mul(pose);
-					buffer.vertex(pos.x(), pos.y(), pos.z()).color(r, g, b, a).uv(v.u(), v.v()).overlayCoords(overlay)
+					buffer.vertex(pos.x(), pos.y(), pos.z()).color(r, g, b, a).uv(v.u, v.v).overlayCoords(overlay)
 							.uv2(packedLight).normal(n.x(), n.y(), n.z()).endVertex();
 				}
 			}

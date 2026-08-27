@@ -190,6 +190,7 @@ public class ARSPanel extends HorizontalDirectionalBlock implements ImAnInteract
 					WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.path());
 					lClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+					System.out.println(this.StoredStruct.path());
 					break;
 				default :
 					break;
@@ -200,7 +201,7 @@ public class ARSPanel extends HorizontalDirectionalBlock implements ImAnInteract
 
 	@Override
 	public GeoModel getGeoModel() {
-		return GeoHelper.getModel("blockgeo/ars");
+		return GeoHelper.getModel("blockgeo/panel/ars");
 	}
 
 	@Override

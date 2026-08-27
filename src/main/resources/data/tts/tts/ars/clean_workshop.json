@@ -1,6 +1,7 @@
 {
   "values" : {
     "location" : "tts:clean_workshop",
-    "name" : "Clean Workshop"
+    "name" : "Clean Workshop",
+    "map_color" : "0xd4fad9"
   }
 }
