@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -32,8 +33,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
@@ -43,11 +42,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.code.tama.triggerapi.GrammarNazi;
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings("deprecation")
-public class DestinationInfoBlock extends HorizontalDirectionalBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-
+public class DestinationInfoBlock extends HorizontalDirectionalBlock implements ImAnInteractableAnimatedPanel {
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
 	public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
 	public static List<DestinationInfoButtons> buttons = new ArrayList<>();
@@ -169,10 +169,10 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 						player.displayClientMessage(Component.literal(
 								"Coordinate Increment = " + tardisLevelCapability.GetNavigationalData().getIncrement()),
 								true);
-						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-						world.scheduleTick(pos, this, 10);
-						TTSMod.LOGGER.info("INCREMENT!");
+						// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+						// world.scheduleTick(pos, this, 10);
 						world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+						rClickAnim(world, pos);
 						break;
 					case FACING :
 						tardisLevelCapability.GetNavigationalData().setDestinationFacing(
@@ -181,10 +181,10 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 								Component.literal("Exterior Facing = " + GrammarNazi.cleanString(
 										tardisLevelCapability.GetNavigationalData().getDestinationFacing().getName())),
 								true);
-						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-						world.scheduleTick(pos, this, 10);
-						TTSMod.LOGGER.info("FACING!");
+						// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
+						// world.scheduleTick(pos, this, 10);
 						world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+						mClickAnim(world, pos);
 						break;
 					case INFO :
 						player.sendSystemMessage(Component.literal("Location: "
@@ -193,17 +193,33 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock {
 								Component.literal("Dimension: " + tardisLevelCapability.GetCurrentLevel().location()));
 						player.sendSystemMessage(Component.literal("Destination: "
 								+ tardisLevelCapability.GetNavigationalData().getDestination().ReadableString()));
-						world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
-						world.scheduleTick(pos, this, 10);
-						TTSMod.LOGGER.info("INFO!");
+						// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
+						// world.scheduleTick(pos, this, 10);
 						world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+						lClickAnim(world, pos);
 						break;
 					default :
-						TTSMod.LOGGER.info("NOPE!");
+						break;
 				}
 			});
 		}
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public GeoModel getGeoModel() {
+		return GeoHelper.getModel("blockgeo/panel/dest_info");
+	}
+
+	@Override
+	public ResourceLocation getGeoTexture() {
+		return UniversalCommon.modRL("textures/block/controls/button.png");
+	}
+
+	@Override
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState sF, boolean idfk) {
+		this.onPlace(pos);
+		super.onPlace(state, level, pos, sF, idfk);
 	}
 
 	public enum DestinationInfoButtons {

@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -39,8 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
@@ -49,9 +49,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @SuppressWarnings("deprecation")
-public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements EntityBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
+		implements
+			EntityBlock,
+			ImAnInteractableAnimatedPanel {
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
 	public static final VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
 	public static List<ChameleonCircuitButtons> buttons = new ArrayList<>();
@@ -225,6 +231,22 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock implements
 
 		// }
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public GeoModel getGeoModel() {
+		return GeoHelper.getModel("blockgeo/panel/chameleon");
+	}
+
+	@Override
+	public ResourceLocation getGeoTexture() {
+		return UniversalCommon.modRL("textures/block/controls/button.png");
+	}
+
+	@Override
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState sF, boolean idfk) {
+		this.onPlace(pos);
+		super.onPlace(state, level, pos, sF, idfk);
 	}
 
 	public enum ChameleonCircuitButtons {

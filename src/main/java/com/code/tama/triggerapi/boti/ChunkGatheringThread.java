@@ -27,26 +27,24 @@ import com.code.tama.triggerapi.boti.client.OccupancyGrid;
 import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 
 /**
- * Off-thread chunk geometry gatherer.
- * <br />
+ * Off-thread chunk geometry gatherer. <br />
  * Phase 1 (block data collection) runs in Java -- it has to, since it touches
  * MC chunk/light APIs. Phases 2 and 3 (flood-fill BFS + exposed-face detection
- * with behind-portal culling) are handed off to native Rust.
- * <br />
+ * with behind-portal culling) are handed off to native Rust. <br />
  * Two arrays drive the algorithm: solid -- anything non-air; determines what
  * gets rendered blocksFlow -- full opaque cubes only (isSolidRender); the BFS
- * barrier
- * <br />
+ * barrier <br />
  * Keeping these separate is critical. The BFS models exterior air, so it must
  * flow through glass, leaves, slabs, snow layers, redstone dust, piston heads,
  * etc. If any of those blocked the BFS, the solid blocks behind/under them
  * would never receive a reachable neighbour and would be incorrectly skipped.
- * <br /><br />
+ * <br />
+ * <br />
  * NOTE: {@code solid[]} also gets packed into a {@link BitSet} and handed off
  * as {@link #lastSolidBits} (+ dimensions/origin) after gathering completes,
  * even though most of it never becomes a rendered {@code BotiBlockContainer}.
- * That full, pre-culling volume is what the client-side AO pass needs for
- * real occlusion contrast -- see {@code OccupancyGrid} / {@code BOTIUtils}.
+ * That full, pre-culling volume is what the client-side AO pass needs for real
+ * occlusion contrast -- see {@code OccupancyGrid} / {@code BOTIUtils}.
  */
 public class ChunkGatheringThread extends Thread {
 
@@ -82,7 +80,7 @@ public class ChunkGatheringThread extends Thread {
 	 * @return flat indices of blocks to emit as BotiBlockContainers
 	 */
 	private static native int[] findExposedBlocks(boolean[] solid, boolean[] reachable, int sizeX, int sizeY, int sizeZ,
-	                                              int originX, int originY, int originZ, int facing);
+			int originX, int originY, int originZ, int facing);
 
 	// -- Fields ----------------------------------------------------------------
 
@@ -100,8 +98,8 @@ public class ChunkGatheringThread extends Thread {
 
 	/**
 	 * Full pre-culling occupancy for the volume gathered in the most recent
-	 * {@link #run()}, exposed so callers (packet senders) can ship it to the
-	 * client alongside the container batches. Null until a gather completes.
+	 * {@link #run()}, exposed so callers (packet senders) can ship it to the client
+	 * alongside the container batches. Null until a gather completes.
 	 */
 	@Nullable private volatile OccupancyGrid lastOccupancyGrid;
 
@@ -119,7 +117,8 @@ public class ChunkGatheringThread extends Thread {
 
 	/** TELEPORT mode */
 	public ChunkGatheringThread(int chunks, ServerLevel sourceLevel, ServerLevel destLevel, BlockPos targetPos,
-	                            float yaw, @org.jetbrains.annotations.Nullable BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
+			float yaw,
+			@org.jetbrains.annotations.Nullable BiConsumer<List<BotiBlockContainer>, Integer> resultCallback) {
 		this.setName("BOTIChunkGatheringThread");
 		this.chunks = chunks;
 		this.level = sourceLevel;
@@ -131,13 +130,12 @@ public class ChunkGatheringThread extends Thread {
 	}
 
 	/**
-	 * @return the occupancy grid from the most recently completed gather, or
-	 *         null if none has completed yet. Read this AFTER run() finishes
-	 *         (e.g. from the same point batches get sent) to attach it to the
-	 *         outgoing packet(s).
+	 * @return the occupancy grid from the most recently completed gather, or null
+	 *         if none has completed yet. Read this AFTER run() finishes (e.g. from
+	 *         the same point batches get sent) to attach it to the outgoing
+	 *         packet(s).
 	 */
-	@Nullable
-	public OccupancyGrid getLastOccupancyGrid() {
+	@Nullable public OccupancyGrid getLastOccupancyGrid() {
 		return lastOccupancyGrid;
 	}
 
@@ -237,14 +235,20 @@ public class ChunkGatheringThread extends Thread {
 									continue;
 
 								// -- 1. Lower section -------------------------
-								gatherSection(sectionBaseY, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, section, y, x, z, gx, gz, lx, lz);
+								gatherSection(sectionBaseY, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates,
+										fluidStates, teLocations, tileEntities, packedLights, chunk, section, y, x, z,
+										gx, gz, lx, lz);
 
 								// -- 2. Above section -------------------------
-								gatherSection(sectionBaseYAbove, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, sectionAbove, y, x, z, gx, gz, lx, lz);
+								gatherSection(sectionBaseYAbove, worldYMin, sizeY, sizeZ, solid, blocksFlow,
+										blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk,
+										sectionAbove, y, x, z, gx, gz, lx, lz);
 
 								// -- 3. Higher section ------------------
 								if (sectionHigher != null) {
-									gatherSection(sectionBaseYHigher, worldYMin, sizeY, sizeZ, solid, blocksFlow, blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk, sectionHigher, y, x, z, gx, gz, lx, lz);
+									gatherSection(sectionBaseYHigher, worldYMin, sizeY, sizeZ, solid, blocksFlow,
+											blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk,
+											sectionHigher, y, x, z, gx, gz, lx, lz);
 								}
 
 							}
@@ -349,7 +353,10 @@ public class ChunkGatheringThread extends Thread {
 		super.run();
 	}
 
-	private void gatherSection(int base, int worldYMin, int sizeY, int sizeZ, boolean[] solid, boolean[] blocksFlow, BlockState[] blockStates, FluidState[] fluidStates, boolean[] teLocations, BlockEntity[] tileEntities, int[] packedLights, ChunkAccess chunk, LevelChunkSection sectionAbove, int y, int x, int z, int gx, int gz, int lx, int lz) {
+	private void gatherSection(int base, int worldYMin, int sizeY, int sizeZ, boolean[] solid, boolean[] blocksFlow,
+			BlockState[] blockStates, FluidState[] fluidStates, boolean[] teLocations, BlockEntity[] tileEntities,
+			int[] packedLights, ChunkAccess chunk, LevelChunkSection sectionAbove, int y, int x, int z, int gx, int gz,
+			int lx, int lz) {
 		int gy2 = base + y;
 		int ly2 = gy2 - worldYMin;
 		if (ly2 >= 0 && ly2 < sizeY) {

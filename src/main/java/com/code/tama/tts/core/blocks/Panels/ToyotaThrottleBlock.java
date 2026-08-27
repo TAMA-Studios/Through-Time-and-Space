@@ -1,15 +1,20 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.Panels;
 
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-import com.code.tama.triggerapi.animation.*;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import com.code.tama.tts.client.EmmisiveRenderType;
 import com.code.tama.tts.client.TTSSounds;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -20,21 +25,23 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED;
+import com.code.tama.triggerapi.animation.*;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class ToyotaThrottleBlock extends ThrottleBlock implements IGeoAnimatedBlock {
 	public ToyotaThrottleBlock(Properties p_54120_) {
 		super(p_54120_);
+	}
+
+	public RenderType renderType() {
+		return EmmisiveRenderType.getEmissiveEntity(getGeoTexture());
 	}
 
 	@Override
@@ -45,14 +52,15 @@ public class ToyotaThrottleBlock extends ThrottleBlock implements IGeoAnimatedBl
 	}
 
 	@Override
-	public void transformRender(BlockState state, PoseStack poseStack, MultiBufferSource.BufferSource buffer, float partialTick) {
+	public void transformRender(BlockState state, PoseStack poseStack, MultiBufferSource.BufferSource buffer,
+			float partialTick) {
 		poseStack.mulPose(state.getValue(ARSPanel.FACING).getOpposite().getRotation());
 		poseStack.mulPose(Axis.XN.rotationDegrees(90f));
 	}
 
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-	                                      @NotNull Player player, InteractionHand hand, @NotNull BlockHitResult blockRayTraceResult) {
+			@NotNull Player player, InteractionHand hand, @NotNull BlockHitResult blockRayTraceResult) {
 		if (hand.equals(InteractionHand.OFF_HAND))
 			return InteractionResult.PASS;
 		if (level.isClientSide)
@@ -77,8 +85,10 @@ public class ToyotaThrottleBlock extends ThrottleBlock implements IGeoAnimatedBl
 			}
 
 			level.setBlockAndUpdate(pos, state.setValue(POWERED, Power));
-			if (Power) animateOn(pos, level);
-			else animateOff(pos, level);
+			if (Power)
+				animateOn(pos, level);
+			else
+				animateOff(pos, level);
 			interactionResultAtomicReference.set(InteractionResult.SUCCESS);
 		});
 
@@ -96,14 +106,16 @@ public class ToyotaThrottleBlock extends ThrottleBlock implements IGeoAnimatedBl
 	public void animateOn(BlockPos pos, Level level) {
 		if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
 			AnimatedBlockRegistry.add(pos, this).player.stop();
-			AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("toyota_throttle").get("animation.on"), level.getGameTime());
+			AnimatedBlockRegistry.add(pos, this).player
+					.play(GeoHelper.getAnimations("toyota_throttle").get("animation.on"), level.getGameTime());
 		}
 	}
 
 	public void animateOff(BlockPos pos, Level level) {
 		if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
 			AnimatedBlockRegistry.add(pos, this).player.stop();
-			AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("toyota_throttle").get("animation.off"), level.getGameTime());
+			AnimatedBlockRegistry.add(pos, this).player
+					.play(GeoHelper.getAnimations("toyota_throttle").get("animation.off"), level.getGameTime());
 		}
 	}
 

@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -56,77 +55,76 @@ public class SonicBlockMode extends SonicMode {
 			return;
 		}
 
-		if (state.getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) {
-			if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
-				if (exteriorTile.GetInterior() != null)
-					ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
-							.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-								cap.GetNavigationalData().forceSetDestination(new SpaceTimeCoordinate(
-										ServerLifecycleHooks.getCurrentServer().overworld().getSharedSpawnPos()));
-								cap.GetData().getControlData().setCoordinateLock(true);
-								cap.GetData().getControlData().setAPCState(false);
-								cap.GetData().getControlData().setSimpleMode(true);
-								cap.Dematerialize();
-							});
+		if (level.getBlockEntity(usedPos) instanceof ExteriorTile exteriorTile) {
+			if (exteriorTile.GetInterior() != null)
+				ServerLifecycleHooks.getCurrentServer().getLevel(exteriorTile.GetInterior())
+						.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
+							cap.GetNavigationalData().forceSetDestination(new SpaceTimeCoordinate(
+									ServerLifecycleHooks.getCurrentServer().overworld().getSharedSpawnPos()));
+							cap.GetData().getControlData().setCoordinateLock(true);
+							cap.GetData().getControlData().setAPCState(false);
+							cap.GetData().getControlData().setSimpleMode(true);
+							cap.Dematerialize();
+						});
+		}
+
+		if (!level.isClientSide) {
+			if (state.getBlock() instanceof SandBlock) {
+				level.setBlockAndUpdate(usedPos, Blocks.GLASS.defaultBlockState());
+				return;
 			}
-		}
 
-		if (state.getBlock() instanceof SandBlock) {
-			level.setBlockAndUpdate(usedPos, Blocks.GLASS.defaultBlockState());
-			return;
-		}
+			if (state.getBlock() instanceof GlassBlock) {
+				level.removeBlock(usedPos, false);
+				level.playSound(null, usedPos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F,
+						level.getRandom().nextFloat() * 0.1F + 0.9F);
+				return;
+			}
+			//
+			if (state.getBlock().equals(Blocks.BRICKS)) {
+				level.removeBlock(usedPos, false);
+				ItemEntity item = EntityType.ITEM.create(level);
+				assert item != null;
+				item.setItem(Items.BRICK.getDefaultInstance());
+				level.addFreshEntity(item);
+				item.setPos(usedPos.getCenter());
+				return;
+			}
 
-		if (state.getBlock() instanceof GlassBlock) {
-			level.removeBlock(usedPos, false);
-			level.playSound(null, usedPos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F,
-					level.getRandom().nextFloat() * 0.1F + 0.9F);
-			return;
-		}
-		//
-		if (state.getBlock().equals(Blocks.BRICKS)) {
-			level.removeBlock(usedPos, false);
-			ItemEntity item = EntityType.ITEM.create(level);
-			assert item != null;
-			item.setItem(Items.BRICK.getDefaultInstance());
-			level.addFreshEntity(item);
-			item.setPos(usedPos.getCenter());
-			return;
-		}
+			if (state.getBlock().equals(Blocks.BRICK_SLAB)) {
+				ItemEntity item = EntityType.ITEM.create(level);
+				assert item != null;
+				item.setItem(Items.BRICK.getDefaultInstance());
+				level.addFreshEntity(item);
+				item.setPos(usedPos.getCenter());
+				return;
+			}
 
-		if (state.getBlock().equals(Blocks.BRICK_SLAB)) {
-			ItemEntity item = EntityType.ITEM.create(level);
-			assert item != null;
-			item.setItem(Items.BRICK.getDefaultInstance());
-			level.addFreshEntity(item);
-			item.setPos(usedPos.getCenter());
-			return;
+			if (state.getBlock().equals(Blocks.BRICK_WALL)) {
+				ItemEntity item = EntityType.ITEM.create(level);
+				assert item != null;
+				item.setItem(Items.BRICK.getDefaultInstance());
+				level.addFreshEntity(item);
+				item.setPos(usedPos.getCenter());
+				return;
+			}
+
+			if (state.getBlock().equals(Blocks.BRICK_STAIRS)) {
+				ItemEntity item = EntityType.ITEM.create(level);
+				assert item != null;
+				item.setItem(Items.BRICK.getDefaultInstance());
+				level.addFreshEntity(item);
+				item.setPos(usedPos.getCenter());
+				return;
+			}
+
+			//
+			// if (State.getBlock() instanceof PistonBaseBlock pistonBaseBlock) {
+			// pistonBaseBlock.triggerEvent(State, Level, usedPos, 1, 2);
+			// }
+			//
+			// return InteractionResult.PASS;
 		}
-
-		if (state.getBlock().equals(Blocks.BRICK_WALL)) {
-			ItemEntity item = EntityType.ITEM.create(level);
-			assert item != null;
-			item.setItem(Items.BRICK.getDefaultInstance());
-			level.addFreshEntity(item);
-			item.setPos(usedPos.getCenter());
-			return;
-		}
-
-		if (state.getBlock().equals(Blocks.BRICK_STAIRS)) {
-			ItemEntity item = EntityType.ITEM.create(level);
-			assert item != null;
-			item.setItem(Items.BRICK.getDefaultInstance());
-			level.addFreshEntity(item);
-			item.setPos(usedPos.getCenter());
-			return;
-		}
-
-		//
-		// if (State.getBlock() instanceof PistonBaseBlock pistonBaseBlock) {
-		// pistonBaseBlock.triggerEvent(State, Level, usedPos, 1, 2);
-		// }
-		//
-		// return InteractionResult.PASS;
-
 		assert context.getPlayer() != null;
 		state.use(context.getLevel(), context.getPlayer(), context.getHand(), (BlockHitResult) hitResult);
 	}

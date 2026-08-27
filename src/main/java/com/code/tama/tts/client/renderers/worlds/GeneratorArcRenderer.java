@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.client.ArcRenderTypes;
+import com.code.tama.tts.client.TRenderTypes;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -63,7 +63,7 @@ public class GeneratorArcRenderer {
 		PoseStack poseStack = event.getPoseStack();
 
 		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer vc = buffer.getBuffer(ArcRenderTypes.ARC);
+		VertexConsumer vc = buffer.getBuffer(TRenderTypes.ARC);
 
 		poseStack.pushPose();
 		poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
@@ -87,7 +87,7 @@ public class GeneratorArcRenderer {
 		}
 
 		poseStack.popPose();
-		buffer.endBatch(ArcRenderTypes.ARC);
+		buffer.endBatch(TRenderTypes.ARC);
 	}
 
 	private static void drawArc(VertexConsumer vc, PoseStack.Pose pose, BlockPos a, BlockPos b, long time,

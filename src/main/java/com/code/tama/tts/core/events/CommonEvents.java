@@ -15,7 +15,6 @@ import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.exceptions.InvalidPlanetException;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
-import com.code.tama.tts.core.registries.TTSBlockBuilder;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
@@ -385,6 +384,7 @@ public class CommonEvents {
 	}
 
 	public static void isItInstaIdfkAnymore(BlockEvent.BreakEvent event) {
-		if (event.getState().getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get())) event.setCanceled(true);
+		if (event.getState().getBlock().equals(TTSBlocks.EXTERIOR_BLOCK.get()))
+			event.setCanceled(true);
 	}
 }

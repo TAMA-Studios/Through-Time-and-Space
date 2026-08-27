@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
-public class ArcRenderTypes {
+public class TRenderTypes {
 
 	public static final ResourceLocation ARC_TEXTURE = UniversalCommon.modRL("textures/particle/arc.png");
 
@@ -27,6 +27,6 @@ public class ArcRenderTypes {
 					.setLightmapState(RenderStateShardAccessor.getLightmap())
 					.setDepthTestState(RenderStateShardAccessor.getLequalDepthTest()).createCompositeState(false));
 
-	private ArcRenderTypes() {
+	private TRenderTypes() {
 	}
 }

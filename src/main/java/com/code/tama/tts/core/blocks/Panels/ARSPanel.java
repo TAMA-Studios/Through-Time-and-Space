@@ -9,23 +9,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.code.tama.triggerapi.animation.*;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import com.code.tama.tts.client.EmmisiveRenderType;
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.MinecartItem;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -41,8 +37,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
@@ -51,12 +45,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.code.tama.triggerapi.animation.*;
 import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.triggerapi.helpers.world.WorldHelper;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings("deprecation")
-public class ARSPanel extends HorizontalDirectionalBlock implements IGeoAnimatedBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+public class ARSPanel extends HorizontalDirectionalBlock implements ImAnInteractableAnimatedPanel {
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
 	public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
 	public static List<Buttons> buttons = new ArrayList<>();
@@ -67,7 +62,6 @@ public class ARSPanel extends HorizontalDirectionalBlock implements IGeoAnimated
 		this.registerDefaultState(
 				this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PRESSED_BUTTON, 0));
 	}
-
 
 	public static VoxelShape createVoxelShape() {
 		return Stream.of(Block.box(3, 1, 5, 7, 2, 9), Block.box(9, 1, 5, 13, 2, 9), Block.box(0, 0, 0, 16, 1, 16),
@@ -184,28 +178,17 @@ public class ARSPanel extends HorizontalDirectionalBlock implements IGeoAnimated
 						WorldHelper.PlaceStructure((ServerLevel) world,
 								posToPlace.relative(state.getValue(FACING).getOpposite(), 48),
 								ARSRegistry.GetByName("tts.ars.starter").path());
-						if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
-							AnimatedBlockRegistry.add(pos, this).player.stop();
-							AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.rclick"), world.getGameTime());
-						}
-						world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
+						rClickAnim(world, pos);
 					} else {
 						this.StoredStruct = ARSRegistry.CycleStruct(this.StoredStruct);
 						player.sendSystemMessage(
 								Component.literal("ARS Structure set to: ").append(this.StoredStruct.Name()));
-						if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
-							AnimatedBlockRegistry.add(pos, this).player.stop();
-							AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.rclick"), world.getGameTime());
-						}
-						world.playSound(null, pos, TTSSounds.KEYBOARD_PRESS_01.get(), SoundSource.BLOCKS);
+						rClickAnim(world, pos);
 					}
 					break;
 				case SET :
 					WorldHelper.PlaceStructure((ServerLevel) world, posToPlace, this.StoredStruct.path());
-					if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
-						AnimatedBlockRegistry.add(pos, this).player.stop();
-						AnimatedBlockRegistry.add(pos, this).player.play(GeoHelper.getAnimations("ars_panel").get("animation.lclick"), world.getGameTime());
-					}
+					lClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				default :
@@ -217,26 +200,22 @@ public class ARSPanel extends HorizontalDirectionalBlock implements IGeoAnimated
 
 	@Override
 	public GeoModel getGeoModel() {
-		return GeoHelper.getModel("blockgeo/ars_panel");
+		return GeoHelper.getModel("blockgeo/ars");
 	}
 
 	@Override
 	public ResourceLocation getGeoTexture() {
-		return UniversalCommon.modRL("textures/block/ars_panel.png");
+		return UniversalCommon.modRL("textures/block/panel/ars.png");
+	}
+
+	public RenderType renderType() {
+		return EmmisiveRenderType.getEmissiveEntity(getGeoTexture());
 	}
 
 	@Override
-	public void transformRender(BlockState state, PoseStack poseStack, MultiBufferSource.BufferSource buffer, float partialTick) {
-		poseStack.mulPose(state.getValue(ARSPanel.FACING).getOpposite().getRotation());
-		poseStack.mulPose(Axis.XN.rotationDegrees(90f));
-	}
-
-	@Override
-	public void onPlace(BlockState p_60566_, Level world, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
-		if (AnimatedBlockConfig.MODE != AnimatedBlockConfig.Mode.BLOCK_ENTITY) {
-			AnimatedBlockRegistry.add(pos, this);
-		}
-		super.onPlace(p_60566_, world, pos, p_60569_, p_60570_);
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState sF, boolean idfk) {
+		this.onPlace(pos);
+		super.onPlace(state, level, pos, sF, idfk);
 	}
 
 	public enum Buttons {

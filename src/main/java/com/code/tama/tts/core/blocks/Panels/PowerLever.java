@@ -38,7 +38,7 @@ public class PowerLever extends FaceAttachedHorizontalDirectionalBlock {
 	}
 
 	private static void makeParticle(BlockState p_54658_, LevelAccessor p_54659_, BlockPos p_54660_, float p_54661_) {
-		Direction direction = ((Direction) p_54658_.getValue(FACING)).getOpposite();
+		Direction direction = p_54658_.getValue(FACING).getOpposite();
 		Direction direction1 = getConnectedDirection(p_54658_).getOpposite();
 		double d0 = (double) p_54660_.getX() + 0.5 + 0.1 * (double) direction.getStepX()
 				+ 0.2 * (double) direction1.getStepX();

@@ -31,21 +31,20 @@ public class PortalChunkDataPacketS2C {
 	public List<BotiBlockContainer> containersL = new ArrayList<>();
 
 	/**
-	 * Full pre-culling occupancy for AO purposes. Only non-null on ONE packet
-	 * per gather (index 0) to avoid re-sending the same volume data once per
-	 * batch -- see ChunkGatheringThread, which only attaches it to the first
-	 * packet it sends.
+	 * Full pre-culling occupancy for AO purposes. Only non-null on ONE packet per
+	 * gather (index 0) to avoid re-sending the same volume data once per batch --
+	 * see ChunkGatheringThread, which only attaches it to the first packet it
+	 * sends.
 	 */
-	@Nullable
-	private final OccupancyGrid occupancyGrid;
+	@Nullable private final OccupancyGrid occupancyGrid;
 
 	public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiBlockContainer> containers, int index,
-	                                int totalPackets) {
+			int totalPackets) {
 		this(portalPos, containers, index, totalPackets, null);
 	}
 
 	public PortalChunkDataPacketS2C(BlockPos portalPos, List<BotiBlockContainer> containers, int index,
-	                                int totalPackets, @Nullable OccupancyGrid occupancyGrid) {
+			int totalPackets, @Nullable OccupancyGrid occupancyGrid) {
 		this.portalPos = portalPos;
 		this.containersL = containers;
 		this.totalPackets = totalPackets;

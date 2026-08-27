@@ -2,7 +2,9 @@
 package com.code.tama.triggerapi.animation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -11,8 +13,12 @@ import net.minecraft.world.level.block.state.BlockState;
  * animation system. Only used client-side.
  */
 public interface IGeoAnimatedBlock {
+
 	GeoModel getGeoModel();
 	ResourceLocation getGeoTexture();
+	default RenderType renderType() {
+		return RenderType.entityCutout(getGeoTexture());
+	}
 	void transformRender(BlockState state, PoseStack poseStack, MultiBufferSource.BufferSource buffer,
-	                     float partialTick);
+			float partialTick);
 }

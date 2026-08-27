@@ -19,6 +19,9 @@ import net.minecraft.world.phys.HitResult;
 
 import com.code.tama.triggerapi.helpers.world.RayTraceUtils;
 
+/**
+ * Handles opening rifts
+ */
 public class SonicRiftMode extends SonicMode {
 	public Item getIcon() {
 		return TTSItems.CORAL_SONIC.asItem();

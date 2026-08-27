@@ -57,10 +57,10 @@ public class BOTIUtils {
 	public static final ModelPart BOTIModel = BuildBOTIModel();
 
 	/**
-	 * Per-tile occupancy data covering the FULL gathered volume (including
-	 * culled interior blocks), used for AO occlusion sampling. Populate this
-	 * from whatever packet handler receives the occupancy payload from
-	 * ChunkGatheringThread -- see the TODO near computeQuadAO's call site.
+	 * Per-tile occupancy data covering the FULL gathered volume (including culled
+	 * interior blocks), used for AO occlusion sampling. Populate this from whatever
+	 * packet handler receives the occupancy payload from ChunkGatheringThread --
+	 * see the TODO near computeQuadAO's call site.
 	 */
 	public static Map<AbstractPortalTile, OccupancyGrid> occupancyGrids = new HashMap<>();
 
@@ -163,12 +163,13 @@ public class BOTIUtils {
 	 * 3 blocks surrounding each corner (face-adjacent, edge-adjacent, corner).
 	 * Returns 4 floats (0-1), one per vertex.
 	 *
-	 * @param occupancy full-volume occlusion lookup (may be null if not yet wired
-	 *                  up / not received for this tile -- falls back to sparse
-	 *                  container-map-only sampling, which will look flatter).
+	 * @param occupancy
+	 *            full-volume occlusion lookup (may be null if not yet wired up /
+	 *            not received for this tile -- falls back to sparse
+	 *            container-map-only sampling, which will look flatter).
 	 */
 	private static float[] computeQuadAO(BakedQuad quad, BlockPos pos, int centerLight,
-	                                     Map<BlockPos, BotiBlockContainer> map, OccupancyGrid occupancy) {
+			Map<BlockPos, BotiBlockContainer> map, OccupancyGrid occupancy) {
 
 		Direction face = quad.getDirection();
 		float[] result = new float[4];
@@ -197,22 +198,19 @@ public class BOTIUtils {
 
 	/**
 	 * Resolves an effective light value (0-15) for AO purposes at the given
-	 * (relative) position.
-	 * <br /><br />
-	 * Priority:
-	 * 1. We have a rendered container here -> use its actual light (or full
-	 *    bright if it's air).
-	 * 2. No container, but the occupancy grid says this cell was solid in the
-	 *    original gathered volume -> it's an occluded interior block that got
-	 *    culled from rendering; treat it as dark so it still casts contact
-	 *    shadow onto the exposed face next to it.
-	 * 3. No container, occupancy says not solid (or unknown / out of bounds,
-	 *    e.g. outside the gathered volume entirely) -> treat as open air /
-	 *    fully lit rather than inheriting the center block's own value, which
-	 *    is what was flattening every face before.
+	 * (relative) position. <br />
+	 * <br />
+	 * Priority: 1. We have a rendered container here -> use its actual light (or
+	 * full bright if it's air). 2. No container, but the occupancy grid says this
+	 * cell was solid in the original gathered volume -> it's an occluded interior
+	 * block that got culled from rendering; treat it as dark so it still casts
+	 * contact shadow onto the exposed face next to it. 3. No container, occupancy
+	 * says not solid (or unknown / out of bounds, e.g. outside the gathered volume
+	 * entirely) -> treat as open air / fully lit rather than inheriting the center
+	 * block's own value, which is what was flattening every face before.
 	 */
 	private static float getLightAt(BlockPos p, int fallback, Map<BlockPos, BotiBlockContainer> map,
-	                                OccupancyGrid occupancy) {
+			OccupancyGrid occupancy) {
 		BotiBlockContainer c = map.get(p);
 		if (c != null) {
 			return c.getState().isAir() ? 15f : c.getLight();
@@ -282,8 +280,8 @@ public class BOTIUtils {
 					// places them -- do NOT also add pos.getX()/Y()/Z() manually here, or
 					// every block ends up offset by its own position twice ("exploded" VBO).
 					for (FluidQuadCollector.FluidVertex v : fluidCollector.getVertices()) {
-						buffer.vertex(stack.last().pose(), v.x, v.y, v.z).color(v.r, v.g, v.b, v.a)
-								.uv(v.u, v.v).uv2(v.light).endVertex();
+						buffer.vertex(stack.last().pose(), v.x, v.y, v.z).color(v.r, v.g, v.b, v.a).uv(v.u, v.v)
+								.uv2(v.light).endVertex();
 					}
 				}
 			}
@@ -343,12 +341,8 @@ public class BOTIUtils {
 					// Local (block-relative) coords only -- the pose stack already carries
 					// this block's translation, so adding pos.getX()/Y()/Z() again here
 					// would double the offset (that was the "exploded" VBO bug).
-					buffer.vertex(stack.last().pose(), vx, vy, vz)
-							.color(fr, fg, fb, 1.0f)
-							.uv(vu, vv)
-							.overlayCoords(OverlayTexture.NO_OVERLAY)
-							.uv2(lightmap)
-							.endVertex();
+					buffer.vertex(stack.last().pose(), vx, vy, vz).color(fr, fg, fb, 1.0f).uv(vu, vv)
+							.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(lightmap).endVertex();
 				}
 			}
 
@@ -376,7 +370,7 @@ public class BOTIUtils {
 	}
 
 	public static List<BakedQuad> getModelFromBlock(BlockState state, BlockPos pos, RandomSource rand,
-	                                                Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
+			Map<BlockPos, BotiBlockContainer> map, Direction viewingFrom) {
 		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BakedModel model = blockRenderer.getBlockModel(state);
 		List<BakedQuad> quads = new java.util.ArrayList<>();
@@ -418,7 +412,7 @@ public class BOTIUtils {
 	}
 
 	public static boolean shouldRenderFace(BlockState state, BlockState neighbor, BlockGetter level, BlockPos pos,
-	                                       Direction dir, BlockPos secondPos) {
+			Direction dir, BlockPos secondPos) {
 		if (state.skipRendering(neighbor, dir)) {
 			return false;
 		} else if (state.supportsExternalFaceHiding()

@@ -9,17 +9,17 @@ import net.minecraft.core.BlockPos;
  * Compact 1-bit-per-block occupancy lookup covering the FULL volume that
  * {@code ChunkGatheringThread} gathers on the server -- including interior
  * blocks that never get emitted as {@code BotiBlockContainer}s because they
- * failed the exposed-face / behind-portal culling.
- * <br /><br />
- * Ambient occlusion needs to know "is there solid geometry here at all",
- * not just "do we have a rendered container here". Without this, AO
- * sampling falls back to treating every culled interior neighbour as
- * open air (or as a copy of the center block's own light), which kills
- * all contrast and makes faces look flat / fullbright.
- * <br /><br />
- * Coordinates in and out of this class are in the same "relative to
- * targetPos" space that {@code BotiBlockContainer#getPos()} uses, matching
- * the keys already used in {@code BOTIUtils.getMapFromContainerList}.
+ * failed the exposed-face / behind-portal culling. <br />
+ * <br />
+ * Ambient occlusion needs to know "is there solid geometry here at all", not
+ * just "do we have a rendered container here". Without this, AO sampling falls
+ * back to treating every culled interior neighbour as open air (or as a copy of
+ * the center block's own light), which kills all contrast and makes faces look
+ * flat / fullbright. <br />
+ * <br />
+ * Coordinates in and out of this class are in the same "relative to targetPos"
+ * space that {@code BotiBlockContainer#getPos()} uses, matching the keys
+ * already used in {@code BOTIUtils.getMapFromContainerList}.
  */
 public class OccupancyGrid {
 
@@ -60,8 +60,9 @@ public class OccupancyGrid {
 	}
 
 	/**
-	 * @param relPos position relative to the portal's targetPos (same space as
-	 *               BotiBlockContainer#getPos())
+	 * @param relPos
+	 *            position relative to the portal's targetPos (same space as
+	 *            BotiBlockContainer#getPos())
 	 * @return true if this cell was solid (non-air) in the originally gathered
 	 *         volume, regardless of whether it survived exposed-face culling.
 	 */
@@ -75,7 +76,10 @@ public class OccupancyGrid {
 		return solid.get(index);
 	}
 
-	/** Rebuild from the flat boolean[] the gathering thread already builds server-side, before serializing. */
+	/**
+	 * Rebuild from the flat boolean[] the gathering thread already builds
+	 * server-side, before serializing.
+	 */
 	public static BitSet pack(boolean[] flatSolid) {
 		BitSet bits = new BitSet(flatSolid.length);
 		for (int i = 0; i < flatSolid.length; i++) {

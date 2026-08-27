@@ -6,9 +6,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.code.tama.triggerapi.animation.AnimatedBlockConfig;
-import com.code.tama.triggerapi.animation.AnimatedBlockRegistry;
-import com.code.tama.triggerapi.animation.GeoHelper;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import org.jetbrains.annotations.NotNull;
@@ -175,5 +172,5 @@ public class ThrottleBlock extends HorizontalDirectionalBlock {
 
 	public enum SoundState {
 		FAIL, OFF, ON
-    }
+	}
 }

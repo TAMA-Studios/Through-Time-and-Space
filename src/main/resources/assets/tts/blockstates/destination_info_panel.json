@@ -5,43 +5,43 @@
       "y" : 90
     },
     "facing=east,pressed_button=1" : {
-      "model" : "tts:block/control/destination_info_panel_0",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 90
     },
     "facing=east,pressed_button=2" : {
-      "model" : "tts:block/control/destination_info_panel_1",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 90
     },
     "facing=east,pressed_button=3" : {
-      "model" : "tts:block/control/destination_info_panel_2",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 90
     },
     "facing=north,pressed_button=0" : {
       "model" : "tts:block/control/destination_info_panel"
     },
     "facing=north,pressed_button=1" : {
-      "model" : "tts:block/control/destination_info_panel_0"
+      "model" : "tts:block/control/destination_info_panel"
     },
     "facing=north,pressed_button=2" : {
-      "model" : "tts:block/control/destination_info_panel_1"
+      "model" : "tts:block/control/destination_info_panel"
     },
     "facing=north,pressed_button=3" : {
-      "model" : "tts:block/control/destination_info_panel_2"
+      "model" : "tts:block/control/destination_info_panel"
     },
     "facing=south,pressed_button=0" : {
       "model" : "tts:block/control/destination_info_panel",
       "y" : 180
     },
     "facing=south,pressed_button=1" : {
-      "model" : "tts:block/control/destination_info_panel_0",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 180
     },
     "facing=south,pressed_button=2" : {
-      "model" : "tts:block/control/destination_info_panel_1",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 180
     },
     "facing=south,pressed_button=3" : {
-      "model" : "tts:block/control/destination_info_panel_2",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 180
     },
     "facing=west,pressed_button=0" : {
@@ -49,15 +49,15 @@
       "y" : 270
     },
     "facing=west,pressed_button=1" : {
-      "model" : "tts:block/control/destination_info_panel_0",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 270
     },
     "facing=west,pressed_button=2" : {
-      "model" : "tts:block/control/destination_info_panel_1",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 270
     },
     "facing=west,pressed_button=3" : {
-      "model" : "tts:block/control/destination_info_panel_2",
+      "model" : "tts:block/control/destination_info_panel",
       "y" : 270
     }
   }

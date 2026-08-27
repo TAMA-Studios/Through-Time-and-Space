@@ -7,15 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -31,8 +32,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
@@ -41,9 +40,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @SuppressWarnings("deprecation")
-public class LightPanel extends HorizontalDirectionalBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+public class LightPanel extends HorizontalDirectionalBlock implements ImAnInteractableAnimatedPanel {
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 2);
 	public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
 	public static List<Buttons> buttons = new ArrayList<>();
@@ -55,9 +57,14 @@ public class LightPanel extends HorizontalDirectionalBlock {
 	}
 
 	public static VoxelShape createVoxelShape() {
-		return Stream
-				.of(Block.box(9, 0.5, 5, 13, 1.5, 9), Block.box(3, 0.5, 5, 7, 1.5, 9), Block.box(0, 0, 0, 16, 1, 16))
-				.reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+		VoxelShape shape = Shapes.empty();
+		shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.0625, 1), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.1875, 0.0625, 0.4375, 0.4375, 0.125, 0.6875), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.5625, 0.0625, 0.4375, 0.8125, 0.125, 0.6875), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.546875, 0.0625, 0.421875, 0.828125, 0.09375, 0.703125), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.171875, 0.0625, 0.421875, 0.453125, 0.09375, 0.703125), BooleanOp.OR);
+
+		return shape;
 	}
 
 	@Override
@@ -68,7 +75,6 @@ public class LightPanel extends HorizontalDirectionalBlock {
 	}
 
 	public Buttons getButton(double mouseX, double mouseZ, Direction facing) {
-
 		for (Buttons button : buttons) {
 			if (button.values.containsKey(facing)) {
 				Vec2 vec = button.values.get(facing);
@@ -163,15 +169,16 @@ public class LightPanel extends HorizontalDirectionalBlock {
 				case MINUS :
 					tardisLevelCapability.GetEnvironmentalData()
 							.SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-					world.scheduleTick(pos, this, 10);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+					rClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case PLUS :
 					tardisLevelCapability.GetEnvironmentalData()
 							.SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-					world.scheduleTick(pos, this, 10);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
+					// world.scheduleTick(pos, this, 10);
+					lClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				default :
@@ -183,9 +190,24 @@ public class LightPanel extends HorizontalDirectionalBlock {
 		return InteractionResult.SUCCESS;
 	}
 
+	@Override
+	public GeoModel getGeoModel() {
+		return GeoHelper.getModel("blockgeo/panel/light");
+	}
+
+	@Override
+	public ResourceLocation getGeoTexture() {
+		return UniversalCommon.modRL("textures/block/panel/light.png");
+	}
+
+	@Override
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState sF, boolean idfk) {
+		this.onPlace(pos);
+		super.onPlace(state, level, pos, sF, idfk);
+	}
+
 	public enum Buttons {
-		EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F), MINUS("ONE", 4.00f, 4.00f, 9.00f, 5.00f), PLUS("TWO", 4.00f, 4.00f, 3.00f,
-				5.00f);
+		EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F), MINUS("ONE", 4.00f, 4.00f, 9.00f, 7), PLUS("TWO", 4.00f, 4.00f, 3.00f, 7);
 
 		Component displayName;
 		final float height;

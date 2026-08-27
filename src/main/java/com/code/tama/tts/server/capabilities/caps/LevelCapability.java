@@ -186,7 +186,7 @@ public class LevelCapability implements ILevelCap {
 		if (level.getGameTime() % 20 != 0)
 			return; // run every second
 
-		if (level.random.nextFloat() > 0.05f)
+		if (ThreadLocalRandom.current().nextFloat() > 0.05f)
 			return; // 5% chance
 
 		ThreadLocalRandom random = ThreadLocalRandom.current();

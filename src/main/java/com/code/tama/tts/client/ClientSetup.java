@@ -22,6 +22,7 @@ import com.code.tama.tts.core.registries.forge.TTSParticles;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -90,12 +91,19 @@ public class ClientSetup {
 		event.register("reflective", RenderType.cutout(), Sheets.cutoutBlockSheet());
 	}
 
+	@Getter
+	private static ShaderInstance emissiveEntityShader;
+
 	@SubscribeEvent
 	public static void onRegisterShaders(RegisterShadersEvent event) {
 		try {
 			// Load and register the shader
 			ShaderInstance shader = new ShaderInstance(event.getResourceProvider(), new ResourceLocation("sky"),
 					DefaultVertexFormat.POSITION);
+
+			event.registerShader(new ShaderInstance(event.getResourceProvider(),
+					new ResourceLocation("tts", "rendertype_emmisive"), DefaultVertexFormat.NEW_ENTITY),
+					shaderInstance -> emissiveEntityShader = shaderInstance);
 
 			// Register the shader instance with your handler
 			event.registerShader(shader, SkyBlock::setSkyShader);

@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -33,8 +34,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
@@ -43,9 +42,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
+
 @SuppressWarnings("deprecation")
-public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+public class CoordinatePanelBlock extends HorizontalDirectionalBlock implements ImAnInteractableAnimatedPanel {
 
 	public static final IntegerProperty PRESSED_BUTTON = IntegerProperty.create("pressed_button", 0, 3);
 	public static VoxelRotatedShape SHAPE = new VoxelRotatedShape(createVoxelShape().optimize());
@@ -59,10 +61,15 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 
 	public static VoxelShape createVoxelShape() {
 		VoxelShape shape = Shapes.empty();
-		shape = Shapes.join(shape, Block.box(12.25, 1, 6.25, 13.5, 2, 9.75), BooleanOp.OR);
-		shape = Shapes.join(shape, Block.box(0, 0, 5, 16, 1, 11), BooleanOp.OR);
-		shape = Shapes.join(shape, Block.box(7.5, 1, 6.25, 8.75, 2, 9.75), BooleanOp.OR);
-		return Shapes.join(shape, Block.box(2.5, 1, 6.25, 3.75, 2, 9.75), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.0625, 1), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.171875, 0.0625, 0.484375, 0.390625, 0.09375, 0.703125), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.390625, 0.0625, 0.203125, 0.609375, 0.09375, 0.421875), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.609375, 0.0625, 0.484375, 0.828125, 0.09375, 0.703125), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.625, 0.0625, 0.5, 0.8125, 0.125, 0.6875), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.40625, 0.0625, 0.21875, 0.59375, 0.125, 0.40625), BooleanOp.OR);
+		shape = Shapes.join(shape, Shapes.box(0.1875, 0.0625, 0.5, 0.375, 0.125, 0.6875), BooleanOp.OR);
+
+		return shape;
 	}
 
 	@Override
@@ -123,7 +130,8 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(PRESSED_BUTTON, 0);
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite())
+				.setValue(PRESSED_BUTTON, 0);
 	}
 
 	@Override
@@ -147,11 +155,11 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 	public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos,
 			@NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
 		if (!world.isClientSide) {
-			System.out.println("Block was hit on face: " + hit.getDirection());
 
 			CoordinatePanelButtons button = this.getButton(
 					(100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
-					(100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F, state.getValue(FACING));
+					(100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
+					state.getValue(FACING).getOpposite());
 
 			boolean Crouching = player.isCrouching();
 			if (button == null)
@@ -167,8 +175,9 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 							tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 							player.displayClientMessage(
 									Component.literal("Current Destination = " + destination.ReadableString()), true);
-							world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-							world.scheduleTick(pos, this, 10);
+							// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+							// world.scheduleTick(pos, this, 10);
+							rClickAnim(world, pos);
 							world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 							break;
 						case Y :
@@ -177,9 +186,10 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 							tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 							player.displayClientMessage(
 									Component.literal("Current Destination = " + destination.ReadableString()), true);
-							world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-							world.scheduleTick(pos, this, 10);
-							TTSMod.LOGGER.info("Y!");
+							// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
+							// world.scheduleTick(pos, this, 10);
+							// TTSMod.LOGGER.info("Y!");
+							mClickAnim(world, pos);
 							world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 							break;
 						case Z :
@@ -188,22 +198,38 @@ public class CoordinatePanelBlock extends HorizontalDirectionalBlock {
 							tardisLevelCapability.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 							player.displayClientMessage(
 									Component.literal("Current Destination = " + destination.ReadableString()), true);
-							world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
-							world.scheduleTick(pos, this, 10);
-							TTSMod.LOGGER.info("Z!");
+							// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
+							// world.scheduleTick(pos, this, 10);
+							// TTSMod.LOGGER.info("Z!");
+							lClickAnim(world, pos);
 							world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 							break;
 						default :
-							TTSMod.LOGGER.info("NOPE!");
+							break;
 					}
 				});
 		}
 		return InteractionResult.SUCCESS;
 	}
 
+	@Override
+	public GeoModel getGeoModel() {
+		return GeoHelper.getModel("blockgeo/panel/coord");
+	}
+
+	@Override
+	public ResourceLocation getGeoTexture() {
+		return UniversalCommon.modRL("textures/block/panel/coord.png");
+	}
+
+	@Override
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState sF, boolean idfk) {
+		this.onPlace(pos);
+		super.onPlace(state, level, pos, sF, idfk);
+	}
+
 	public enum CoordinatePanelButtons {
-		EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F), X("X", 1.25f, 3.50f, 12.25f, 6.25f), Y("Y", 1.25f, 3.50f, 7.50f,
-				6.25f), Z("Z", 1.25f, 3.50f, 2.50f, 6.25f);
+		EMPTY(null, 0.0F, 0.0F, 0.0F, 0.0F), X("X", 3, 3, 10, 8), Y("Y", 3, 3, 6.5f, 3.25f), Z("Z", 3, 3, 2.75f, 8);
 
 		Component displayName;
 		final float height;

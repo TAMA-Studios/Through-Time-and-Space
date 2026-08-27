@@ -5,19 +5,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import com.code.tama.triggerapi.animation.GeoHelper;
-import com.code.tama.triggerapi.animation.GeoItemRenderer;
 import com.code.tama.tts.core.items.core.PowerableItem;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +28,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.fml.DistExecutor;
+
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoItemRenderer;
 
 public class TemporalImprintReaderItem extends PowerableItem {
 	private boolean firstTick = true;
