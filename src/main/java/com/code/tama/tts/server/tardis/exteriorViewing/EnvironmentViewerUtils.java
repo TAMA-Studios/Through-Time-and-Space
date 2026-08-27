@@ -86,7 +86,7 @@ public class EnvironmentViewerUtils {
 					new SyncViewedTARDISS2C(tardis.GetLevel().dimension().location().toString()));
 			player.setInvisible(true);
 			player.sendSystemMessage(Component.translatable("tts.notification.key_to_exit",
-					ClientSetup.EXTERIOR_VIEW.getKey().getDisplayName()));
+					ClientSetup.EXIT_VIEW.getKey().getDisplayName()));
 			updatePlayerAbilities(player, player.getAbilities(), true);
 			player.onUpdateAbilities();
 		}

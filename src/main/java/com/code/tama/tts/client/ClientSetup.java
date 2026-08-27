@@ -12,6 +12,7 @@ import com.code.tama.tts.client.models.consoles.NESSConsoleModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
+import com.code.tama.tts.client.renderers.exteriors.TardisFlightRenderer;
 import com.code.tama.tts.client.renderers.worlds.SkyBlock;
 import com.code.tama.tts.client.renderers.worlds.effects.GallifreyEffects;
 import com.code.tama.tts.client.renderers.worlds.effects.SpaceSkyEffects;
@@ -43,9 +44,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
-	public static final KeyMapping EXTERIOR_VIEW = new KeyMapping("tts.keybinds.exterior_view_cancel",
+	public static final KeyMapping EXIT_VIEW = new KeyMapping("tts.keybinds.exterior_view_cancel",
 			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-			GLFW.GLFW_KEY_LEFT_CONTROL, // Default key is LSHIFT
+			GLFW.GLFW_KEY_G,
 			"key.categories.tts.main" // Mapping will be in the main tts category
 	);
 
@@ -140,6 +141,8 @@ public class ClientSetup {
 		// SkyTileRenderer::new);
 		event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
 		event.registerEntityRenderer(TTSEntities.FALLING_EXTERIOR.get(), FallingExteriorRenderer::new);
+		event.registerEntityRenderer(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
+//		EntityRenderers.register(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
 		// ChromiumBlockEntityRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),
@@ -231,7 +234,7 @@ public class ClientSetup {
 
 	@SubscribeEvent
 	public static void registerBindings(RegisterKeyMappingsEvent event) {
-		event.register(EXTERIOR_VIEW);
+		event.register(EXIT_VIEW);
 		event.register(SONIC_GLASSES);
 	}
 }

@@ -148,6 +148,7 @@ TODO: Figure out all these damn disconnected errors (Maybe fixed?) (If I don't s
 ~~Compressed Multiblocks~~ DONE... -ISH
 
 TODO: On load, sync the TIR capability to the Client for tooltip tracking data
+SFX! Especially for ARS
 
 IMPLEMENT DYNAMOS!
 Fault Locator

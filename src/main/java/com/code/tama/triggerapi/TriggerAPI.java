@@ -1,8 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
+import com.code.tama.triggerapi.events.TardisFlightEventHandler;
 import com.code.tama.tts.TTSMod;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 
@@ -16,6 +18,7 @@ public class TriggerAPI {
 		bus.register(JavaJSON.class);
 		Logger.info("Trigger engine started for %s", MOD_ID);
 		TickScheduler.register();
+		MinecraftForge.EVENT_BUS.register(TardisFlightEventHandler.class);
 	}
 
 	public TriggerAPI(String modID) { // String modId) {

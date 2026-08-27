@@ -36,8 +36,12 @@ public class ControlsRegistry {
 
 	public static final RegistryObject<IncrementControl> INCREMENT_CONTROL = CONTROLS.register("increment_control",
 			IncrementControl::new);
+
 	public static final RegistryObject<PowerControl> POWER_CONTROL = CONTROLS.register("power_control",
 			PowerControl::new);
+
+	public static final RegistryObject<SpatialFlightControl> SPATIAL_FLIGHT = CONTROLS.register("spatial_flight",
+			SpatialFlightControl::new);
 
 	public static final RegistryObject<ThrottleControl> THROTTLE = CONTROLS.register("throttle", ThrottleControl::new);
 

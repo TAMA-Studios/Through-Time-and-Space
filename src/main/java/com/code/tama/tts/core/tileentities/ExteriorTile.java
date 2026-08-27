@@ -9,11 +9,13 @@ import java.util.UUID;
 
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.gui.ARSPos;
+import com.code.tama.tts.client.gui.ARSRoomRegistry;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.events.TardisEvent;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.worlds.TStemCreation;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -201,9 +203,11 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.getLevel().isClientSide)
 			return;
 		ARSPos pos = new ARSPos(0, 128, 0);
-		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
-				pos.getOrigin(),
-				structure.GetRL());
+//		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
+//				pos.getOrigin(),
+//				structure.GetRL());
+
+		ARSRoomRegistry.placeRoom(pos, ARSRegistry.STRUCTURES_INFO.get(0));
 
 		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {
 			this.setTargetLevel(INTERIOR_DIMENSION, cap.GetData().getDoorData().getLocation().GetBlockPos(),

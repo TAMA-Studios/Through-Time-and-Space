@@ -4,6 +4,7 @@ package com.code.tama.tts.core.networking.packets.C2S.entities;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +32,12 @@ public class StopViewingExteriorC2S {
 		context.get().enqueueWork(() -> {
 			ServerPlayer player1 = (ServerPlayer) context.get().getSender().level().getServer()
 					.getLevel(context.get().getSender().level().dimension()).getEntity(mes.player);
+
+			if (player1.getVehicle() instanceof TardisFlightEntity tardisFlightEntity) {
+				if(tardisFlightEntity.isTouchingGround()) {
+					tardisFlightEntity.Land(player1);
+				}
+			}
 			EnvironmentViewerUtils.endShellView(player1);
 		});
 		context.get().setPacketHandled(true);

@@ -4,6 +4,7 @@ package com.code.tama.tts.core.registries.forge;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
+import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.entities.controls.ModularControl;
 
 import net.minecraft.world.entity.EntityType;
@@ -26,4 +27,10 @@ public class TTSEntities {
 			"falling_exterior",
 			() -> EntityType.Builder.<FallingExteriorEntity>of(FallingExteriorEntity::new, MobCategory.MISC)
 					.sized(1f, 2f).build("falling_exterior"));
+
+	public static final RegistryObject<EntityType<TardisFlightEntity>> TARDIS_FLIGHT = ENTITY_TYPES.register("tardis_flight",
+			() -> EntityType.Builder.of(TardisFlightEntity::new, MobCategory.MISC)
+					.sized(1.1F, 2.05F)
+					.clientTrackingRange(10)
+					.build("tardis_flight"));
 }
