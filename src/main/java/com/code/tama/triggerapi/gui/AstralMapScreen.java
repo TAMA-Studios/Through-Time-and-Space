@@ -1,18 +1,19 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.gui;
 
+import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+
 import java.util.*;
 
 import javax.annotation.Nullable;
 
-import com.code.tama.triggerapi.helpers.PlanetHelper;
-import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.server.data.json.loaders.PlanetLoader;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
@@ -23,10 +24,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
-import static com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer.drawPlanet;
+import com.code.tama.triggerapi.helpers.PlanetHelper;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class AstralMapScreen extends Screen {
 
@@ -45,12 +45,9 @@ public class AstralMapScreen extends Screen {
 	private static final int COLOR_TEXT_DIM = 0xFFA0A0A0;
 	private static final int COLOR_PANEL = 0xC0101018;
 
-	@Nullable
-	private final ResourceKey<Level> currentDimension;
-	@Nullable
-	private final SpaceTimeCoordinate currentSpacePosition;
+	@Nullable private final ResourceKey<Level> currentDimension;
+	@Nullable private final SpaceTimeCoordinate currentSpacePosition;
 	private final SpaceTimeCoordinate destination;
-
 
 	private static final Map<String, VertexBuffer> planetVBOs = new HashMap<>();
 	private double scale = 0.05;
@@ -66,15 +63,14 @@ public class AstralMapScreen extends Screen {
 	private final List<StarDot> stars = new ArrayList<>();
 
 	private final List<PlanetScreenPoint> lastPlanetPoints = new ArrayList<>();
-	@Nullable
-	private PlanetLoader.Planet hoveredPlanet;
+	@Nullable private PlanetLoader.Planet hoveredPlanet;
 
 	private static final int MAP_MARGIN_TOP = 28;
 	private static final int MAP_MARGIN_BOTTOM = 54;
 	private static final int MAP_MARGIN_SIDE = 8;
 
 	public AstralMapScreen(@Nullable ResourceKey<Level> currentDimension,
-	                       @Nullable SpaceTimeCoordinate currentSpacePosition, SpaceTimeCoordinate destination) {
+			@Nullable SpaceTimeCoordinate currentSpacePosition, SpaceTimeCoordinate destination) {
 		super(Component.literal("Astral Map"));
 		this.currentDimension = currentDimension;
 		this.currentSpacePosition = currentSpacePosition;
@@ -131,7 +127,7 @@ public class AstralMapScreen extends Screen {
 
 		Vec3 tardisPos = resolveTardisPosition(time);
 		Vec3 destPos = new Vec3(destination.GetX(), destination.GetY(), destination.GetZ());
-		for (Vec3 v : new Vec3[] { tardisPos, destPos }) {
+		for (Vec3 v : new Vec3[]{tardisPos, destPos}) {
 			minX = Math.min(minX, v.x);
 			maxX = Math.max(maxX, v.x);
 			minZ = Math.min(minZ, v.z);
@@ -314,9 +310,11 @@ public class AstralMapScreen extends Screen {
 
 		double distance = Math.sqrt(tardisWorld.distanceToSqr(destWorld));
 		String distStr = String.format(Locale.ROOT, "Distance to destination: %,d blocks", Math.round(distance));
-		String timeStr = "Game time: " + time + (timeOffsetTicks != 0
-				? String.format(Locale.ROOT, " (%s%.1f days)", timeOffsetTicks >= 0 ? "+" : "", timeOffsetTicks / 24000.0)
-				: "");
+		String timeStr = "Game time: " + time
+				+ (timeOffsetTicks != 0
+						? String.format(Locale.ROOT, " (%s%.1f days)", timeOffsetTicks >= 0 ? "+" : "",
+								timeOffsetTicks / 24000.0)
+						: "");
 
 		int panelW = Math.max(this.font.width(distStr), this.font.width(timeStr)) + 12;
 		int panelX = this.width - panelW - 6;
@@ -349,7 +347,7 @@ public class AstralMapScreen extends Screen {
 		int sx = (int) Math.round(this.width / 2.0 + (worldX - panX) * scale);
 		int sy = (int) Math.round(
 				MAP_MARGIN_TOP + (this.height - MAP_MARGIN_TOP - MAP_MARGIN_BOTTOM) / 2.0 + (worldZ - panZ) * scale);
-		return new int[] { sx, sy };
+		return new int[]{sx, sy};
 	}
 
 	private int planetPixelRadius(int worldSize) {
@@ -404,7 +402,7 @@ public class AstralMapScreen extends Screen {
 	}
 
 	private void drawDashedLine(GuiGraphics gg, double x1, double y1, double x2, double y2, int color, int dash,
-	                            int gap) {
+			int gap) {
 		double dx = x2 - x1, dy = y2 - y1;
 		double dist = Math.sqrt(dx * dx + dy * dy);
 		if (dist < 0.001)
@@ -501,8 +499,8 @@ public class AstralMapScreen extends Screen {
 		protected void updateMessage() {
 			long offset = offsetFromValue();
 			double days = offset / 24000.0;
-			setMessage(Component.literal(String.format(Locale.ROOT, "Time offset: %s%.1f days",
-					offset >= 0 ? "+" : "", days)));
+			setMessage(Component
+					.literal(String.format(Locale.ROOT, "Time offset: %s%.1f days", offset >= 0 ? "+" : "", days)));
 		}
 
 		@Override
@@ -522,7 +520,7 @@ public class AstralMapScreen extends Screen {
 	}
 
 	public static void renderPlanet(@NotNull PoseStack poseStack, Matrix4f projectionMatrix,
-	                                @NotNull Vec3 screenPosition, float size, @NotNull String planetId, @NotNull ResourceLocation texture) {
+			@NotNull Vec3 screenPosition, float size, @NotNull String planetId, @NotNull ResourceLocation texture) {
 
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

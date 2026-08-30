@@ -28,9 +28,7 @@ public class TTSEntities {
 			() -> EntityType.Builder.<FallingExteriorEntity>of(FallingExteriorEntity::new, MobCategory.MISC)
 					.sized(1f, 2f).build("falling_exterior"));
 
-	public static final RegistryObject<EntityType<TardisFlightEntity>> TARDIS_FLIGHT = ENTITY_TYPES.register("tardis_flight",
-			() -> EntityType.Builder.of(TardisFlightEntity::new, MobCategory.MISC)
-					.sized(1.1F, 2.05F)
-					.clientTrackingRange(10)
-					.build("tardis_flight"));
+	public static final RegistryObject<EntityType<TardisFlightEntity>> TARDIS_FLIGHT = ENTITY_TYPES
+			.register("tardis_flight", () -> EntityType.Builder.of(TardisFlightEntity::new, MobCategory.MISC)
+					.sized(1.1F, 2.05F).clientTrackingRange(10).build("tardis_flight"));
 }

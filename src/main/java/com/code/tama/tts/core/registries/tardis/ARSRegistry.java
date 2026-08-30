@@ -15,8 +15,8 @@ public class ARSRegistry {
 
 	public static List<ARSRoomRegistry.ARSRoomInfo> STRUCTURES_INFO = new ArrayList<>();
 
-	public static ARSStructureContainer CLEAN_INTERIOR = AddStructure(
-			new ARSStructureContainer(Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean"), 0, 0xFFFFFF));
+	public static ARSStructureContainer CLEAN_INTERIOR = AddStructure(new ARSStructureContainer(
+			Structures.CleanInterior.GetRL(), Component.translatable("tts.ars.clean"), 0, 0xFFFFFF));
 
 	public static ARSStructureContainer GetStructure(int ID) {
 		return STRUCTURES.get(ID);

@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
-import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.data.tardis.PowerHandler;
 import com.code.tama.tts.server.data.tardis.data.TARDISData;
@@ -71,12 +70,12 @@ public class SyncTARDISCapPacketS2C {
 			}
 			case DataUpdateValues.NAVIGATIONAL : {
 				return new SyncTARDISCapPacketS2C(Energy, null,
-						FriendlyByteBufOps.Helper.readWithCodec(buffer, TARDISNavigationalData.CODEC), null, null, toUpdate);
+						FriendlyByteBufOps.Helper.readWithCodec(buffer, TARDISNavigationalData.CODEC), null, null,
+						toUpdate);
 			}
 
 			case DataUpdateValues.ARS : {
-				return new SyncTARDISCapPacketS2C(Energy, null,
-						null, null, getARS(buffer.readNbt()), toUpdate);
+				return new SyncTARDISCapPacketS2C(Energy, null, null, null, getARS(buffer.readNbt()), toUpdate);
 			}
 
 			default : {
@@ -93,15 +92,17 @@ public class SyncTARDISCapPacketS2C {
 	public static Map<ARSPos, ARSGrid> getARS(CompoundTag nbt) {
 		Map<ARSPos, ARSGrid> ARS_GRIDS = new HashMap<>();
 		for (int i = 0; i < nbt.getInt("rooms"); i++) {
-//			grids.add(ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
-//			gridPoss.add(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)));
-			ARS_GRIDS.put(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)), ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
+			// grids.add(ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
+			// gridPoss.add(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)));
+			ARS_GRIDS.put(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)),
+					ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
 		}
 		return ARS_GRIDS;
 	}
 
 	public static CompoundTag ARSTag(Map<ARSPos, ARSGrid> ars) {
-		if (ars == null) return null;
+		if (ars == null)
+			return null;
 		CompoundTag tag = new CompoundTag();
 		List<ARSGrid> grids = new ArrayList<>();
 		List<ARSPos> gridPoss = new ArrayList<>();
@@ -175,7 +176,7 @@ public class SyncTARDISCapPacketS2C {
 							cap.setNavigationalData(packet.navigationalData);
 							break;
 						}
-						case DataUpdateValues.ARS: {
+						case DataUpdateValues.ARS : {
 							((TARDISLevelCapability) cap).setARS_GRIDS(packet.ARS);
 							break;
 						}

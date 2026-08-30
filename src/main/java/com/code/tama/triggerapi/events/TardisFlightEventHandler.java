@@ -8,12 +8,13 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
- * Prevents a player piloting a {@link TardisFlightEntity} from being ejected
- * by an incidental sneak/dismount trigger mid-flight. The only legitimate way
- * off this entity is {@link TardisFlightEntity#Land(net.minecraft.server.level.ServerPlayer)},
+ * Prevents a player piloting a {@link TardisFlightEntity} from being ejected by
+ * an incidental sneak/dismount trigger mid-flight. The only legitimate way off
+ * this entity is
+ * {@link TardisFlightEntity#Land(net.minecraft.server.level.ServerPlayer)},
  * which briefly flips {@link TardisFlightEntity#allowDismount} to true around
- * its own {@code stopRiding()} call - any dismount attempt seen while that
- * flag is false gets cancelled outright.
+ * its own {@code stopRiding()} call - any dismount attempt seen while that flag
+ * is false gets cancelled outright.
  */
 public class TardisFlightEventHandler {
 

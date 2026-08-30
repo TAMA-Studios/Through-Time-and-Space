@@ -46,8 +46,7 @@ public class ClientSetup {
 
 	public static final KeyMapping EXIT_VIEW = new KeyMapping("tts.keybinds.exterior_view_cancel",
 			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-			GLFW.GLFW_KEY_G,
-			"key.categories.tts.main" // Mapping will be in the main tts category
+			GLFW.GLFW_KEY_G, "key.categories.tts.main" // Mapping will be in the main tts category
 	);
 
 	public static final KeyMapping SONIC_GLASSES = new KeyMapping("tts.keybinds.holo_glasses_gui",
@@ -142,7 +141,8 @@ public class ClientSetup {
 		event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
 		event.registerEntityRenderer(TTSEntities.FALLING_EXTERIOR.get(), FallingExteriorRenderer::new);
 		event.registerEntityRenderer(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
-//		EntityRenderers.register(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
+		// EntityRenderers.register(TTSEntities.TARDIS_FLIGHT.get(),
+		// TardisFlightRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
 		// ChromiumBlockEntityRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),

@@ -58,8 +58,6 @@ import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class ExteriorTile extends AbstractPortalTile {
@@ -203,9 +201,9 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (this.getLevel().isClientSide)
 			return;
 		ARSPos pos = new ARSPos(0, 128, 0);
-//		WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
-//				pos.getOrigin(),
-//				structure.GetRL());
+		// WorldHelper.PlaceStructure(this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION),
+		// pos.getOrigin(),
+		// structure.GetRL());
 
 		ARSRoomRegistry.placeRoom(pos, ARSRegistry.STRUCTURES_INFO.get(0));
 

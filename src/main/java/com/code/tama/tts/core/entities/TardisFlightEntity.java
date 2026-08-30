@@ -3,7 +3,6 @@ package com.code.tama.tts.core.entities;
 
 import javax.annotation.Nullable;
 
-import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
@@ -39,25 +38,27 @@ import net.minecraft.world.phys.Vec3;
 /**
  * A real, physical, rideable form of a TARDIS' {@link ExteriorTile}, used for
  * "Spatial Flight" / "Real World Flight". A landed exterior is snapshotted,
- * turned into one of these, ridden and flown freely by a player, then
- * converted back into a block + {@link ExteriorTile} (with the original data
- * restored) when the pilot lands it.
+ * turned into one of these, ridden and flown freely by a player, then converted
+ * back into a block + {@link ExteriorTile} (with the original data restored)
+ * when the pilot lands it.
  *
- * <p>This intentionally does <b>not</b> extend {@link FallingExteriorEntity}
- * - that class does its own hand-rolled sand-physics style gravity/collision
- * and was never fully wired up to restore block entity data on landing. This
- * entity is built on {@link Mob} instead so we get the vanilla
- * rider-control plumbing (the controlling player's WASD + look rotation
- * sync to the server automatically via the normal player input packet -
- * no custom networking needed for basic flight).</p>
+ * <p>
+ * This intentionally does <b>not</b> extend {@link FallingExteriorEntity} -
+ * that class does its own hand-rolled sand-physics style gravity/collision and
+ * was never fully wired up to restore block entity data on landing. This entity
+ * is built on {@link Mob} instead so we get the vanilla rider-control plumbing
+ * (the controlling player's WASD + look rotation sync to the server
+ * automatically via the normal player input packet - no custom networking
+ * needed for basic flight).
+ * </p>
  */
 public class TardisFlightEntity extends Mob {
 
 	// ---- Synced, render-relevant snapshot of the ExteriorTile we came from ----
 	private static final EntityDataAccessor<String> MODEL_NAMESPACE = SynchedEntityData
 			.defineId(TardisFlightEntity.class, EntityDataSerializers.STRING);
-	private static final EntityDataAccessor<String> MODEL_PATH = SynchedEntityData
-			.defineId(TardisFlightEntity.class, EntityDataSerializers.STRING);
+	private static final EntityDataAccessor<String> MODEL_PATH = SynchedEntityData.defineId(TardisFlightEntity.class,
+			EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<Integer> FACING = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DOORS_OPEN = SynchedEntityData.defineId(TardisFlightEntity.class,
@@ -67,21 +68,29 @@ public class TardisFlightEntity extends Mob {
 
 	/** Blocks/tick at full forward input. Tune to taste. */
 	private static final double FLIGHT_SPEED = 0.6D;
-	/** Extra downward bias applied while the rider holds shift, on top of pitch-based descent. */
+	/**
+	 * Extra downward bias applied while the rider holds shift, on top of
+	 * pitch-based descent.
+	 */
 	private static final double DESCEND_BIAS = 0.15D;
 
-	/** Full NBT snapshot of the {@link ExteriorTile} this was converted from, restored verbatim on landing. */
+	/**
+	 * Full NBT snapshot of the {@link ExteriorTile} this was converted from,
+	 * restored verbatim on landing.
+	 */
 	@Nullable public CompoundTag exteriorData;
 
 	/**
 	 * Set to true for the brief window around our own {@link #Land(ServerPlayer)}
-	 * call to {@code player.stopRiding()}, so the {@code EntityMountEvent}
-	 * handler can tell "we intentionally landed" apart from "the player got
-	 * bumped off by an incidental sneak press" and only cancel the latter.
+	 * call to {@code player.stopRiding()}, so the {@code EntityMountEvent} handler
+	 * can tell "we intentionally landed" apart from "the player got bumped off by
+	 * an incidental sneak press" and only cancel the latter.
 	 */
 	public volatile boolean allowDismount = false;
 
-	/** The exact block state (including FACING) to place back down when this lands. */
+	/**
+	 * The exact block state (including FACING) to place back down when this lands.
+	 */
 	private BlockState blockState = TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState();
 
 	public TardisFlightEntity(EntityType<? extends TardisFlightEntity> type, Level level) {
@@ -91,7 +100,10 @@ public class TardisFlightEntity extends Mob {
 		this.noCulling = true;
 	}
 
-	/** Registration helper - hand this to your EntityType.Builder / attribute registry event. */
+	/**
+	 * Registration helper - hand this to your EntityType.Builder / attribute
+	 * registry event.
+	 */
 	public static AttributeSupplier.Builder createAttributes() {
 		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 200.0D).add(Attributes.MOVEMENT_SPEED, 0.0D)
 				.add(Attributes.FLYING_SPEED, (float) FLIGHT_SPEED);
@@ -119,8 +131,8 @@ public class TardisFlightEntity extends Mob {
 	/**
 	 * Snapshots the given {@link ExteriorTile}, removes its block + block entity
 	 * from the world, and spawns a rideable {@link TardisFlightEntity} in its
-	 * place. Does NOT mount anyone on it or touch player state - that's the
-	 * calling control's job (see {@code SpatialFlightControl}).
+	 * place. Does NOT mount anyone on it or touch player state - that's the calling
+	 * control's job (see {@code SpatialFlightControl}).
 	 */
 	public static TardisFlightEntity fromTile(ExteriorTile tile) {
 		return fromTile(tile, tile.getLevel());
@@ -128,13 +140,13 @@ public class TardisFlightEntity extends Mob {
 
 	/**
 	 * Same as {@link #fromTile(ExteriorTile)}, but lets the caller supply the
-	 * exterior's {@link Level} explicitly rather than trusting {@code tile.getLevel()}.
-	 * Prefer this overload from control code - fetch the level straight from the
-	 * TARDIS' {@code SpaceTimeCoordinate} (same source
+	 * exterior's {@link Level} explicitly rather than trusting
+	 * {@code tile.getLevel()}. Prefer this overload from control code - fetch the
+	 * level straight from the TARDIS' {@code SpaceTimeCoordinate} (same source
 	 * {@code EnvironmentViewerUtils.startSpectateExt} uses for its own
 	 * cross-dimension teleport) so we're never relying on a possibly-stale
-	 * {@code ExteriorTile} reference for something as important as "which
-	 * dimension is this."
+	 * {@code ExteriorTile} reference for something as important as "which dimension
+	 * is this."
 	 */
 	public static TardisFlightEntity fromTile(ExteriorTile tile, Level level) {
 		assert level != null;
@@ -173,8 +185,7 @@ public class TardisFlightEntity extends Mob {
 		return this.getControllingPassenger() instanceof Player;
 	}
 
-	@Nullable
-	@Override
+	@Nullable @Override
 	public LivingEntity getControllingPassenger() {
 		return this.getFirstPassenger() instanceof Player player ? player : null;
 	}
@@ -259,7 +270,7 @@ public class TardisFlightEntity extends Mob {
 	 * trigger instead of the vanilla flag - see the comment at the call site for
 	 * why.
 	 */
-    public boolean isTouchingGround() {
+	public boolean isTouchingGround() {
 		AABB box = this.getBoundingBox();
 		AABB probe = new AABB(box.minX, box.minY - 0.1D, box.minZ, box.maxX, box.minY + 0.05D, box.maxZ);
 		return this.level().getBlockCollisions(this, probe).iterator().hasNext();

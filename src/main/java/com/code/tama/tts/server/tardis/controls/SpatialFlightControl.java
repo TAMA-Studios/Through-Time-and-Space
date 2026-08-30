@@ -13,7 +13,6 @@ import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,14 +24,17 @@ import com.code.tama.triggerapi.universal.UniversalCommon;
 
 /**
  * Console control for "Spatial Flight" / "Real World Flight" - converts the
- * TARDIS' landed {@link ExteriorTile} into a rideable {@link TardisFlightEntity},
- * teleports the pressing player to it, and mounts them up.
+ * TARDIS' landed {@link ExteriorTile} into a rideable
+ * {@link TardisFlightEntity}, teleports the pressing player to it, and mounts
+ * them up.
  *
- * <p>Deliberately doesn't add any new methods to {@code TARDISLevelCapability}
- * - everything needed is already exposed on {@link ITARDISLevel}
+ * <p>
+ * Deliberately doesn't add any new methods to {@code TARDISLevelCapability} -
+ * everything needed is already exposed on {@link ITARDISLevel}
  * ({@code CanFly()}, {@code GetFlightData()}, {@code GetExteriorTile()}), and
  * the block&lt;-&gt;entity conversion lives entirely on
- * {@link TardisFlightEntity} itself.</p>
+ * {@link TardisFlightEntity} itself.
+ * </p>
  */
 public class SpatialFlightControl extends AbstractControl {
 
@@ -97,8 +99,8 @@ public class SpatialFlightControl extends AbstractControl {
 		LOGGER.info("[SpatialFlight] player BEFORE teleport: level={} pos={}",
 				serverPlayer.level().dimension().location(), serverPlayer.position());
 
-		serverPlayer.teleportTo(exteriorLocation.getLevel(), flightEntity.getX(), flightEntity.getY() + 0.1D, flightEntity.getZ(),
-				Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
+		serverPlayer.teleportTo(exteriorLocation.getLevel(), flightEntity.getX(), flightEntity.getY() + 0.1D,
+				flightEntity.getZ(), Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
 
 		LOGGER.info("[SpatialFlight] player AFTER teleport: level={} pos={}",
 				serverPlayer.level().dimension().location(), serverPlayer.position());

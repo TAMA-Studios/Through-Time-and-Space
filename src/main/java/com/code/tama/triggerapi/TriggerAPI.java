@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi;
 
-import com.code.tama.triggerapi.events.TardisFlightEventHandler;
 import com.code.tama.tts.TTSMod;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -10,6 +9,7 @@ import net.minecraftforge.fml.ModList;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.boti.teleporting.TickScheduler;
+import com.code.tama.triggerapi.events.TardisFlightEventHandler;
 
 public class TriggerAPI {
 	public static final String MOD_ID = TTSMod.MODID; // THIS MUST BE SET TO YOUR MODS MODID!

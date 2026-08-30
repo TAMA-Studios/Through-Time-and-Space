@@ -6,13 +6,11 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import java.util.Objects;
 
-import com.code.tama.tts.client.gui.ARSMapScreen;
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 
 import net.minecraft.client.Minecraft;

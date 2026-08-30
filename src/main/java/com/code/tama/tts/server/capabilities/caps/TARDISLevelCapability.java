@@ -79,7 +79,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@OnlyIn(Dist.CLIENT)
 	private final TARDISClientData clientData = new TARDISClientData(this);
 	private LoopingSound interiorHum;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private Map<ARSPos, ARSGrid> ARS_GRIDS = new HashMap<>();
 
 	@Getter
@@ -146,9 +147,10 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		}
 
 		for (int i = 0; i < nbt.getInt("rooms"); i++) {
-//			grids.add(ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
-//			gridPoss.add(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)));
-			ARS_GRIDS.put(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)), ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
+			// grids.add(ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
+			// gridPoss.add(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)));
+			ARS_GRIDS.put(ARSPos.deserialize(nbt.getCompound("ars_pos_" + i)),
+					ARSGrid.deserialize(nbt.getCompound("ars_" + i)));
 		}
 	}
 
