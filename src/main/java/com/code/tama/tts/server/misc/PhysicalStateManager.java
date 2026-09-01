@@ -148,6 +148,8 @@ public class PhysicalStateManager {
 
 		// Physically place the exterior at the destination
 		itardisLevel.Land();
+		itardisLevel.GetFlightData().setPlayRotorAnimation(true);
+
 		this.exteriorTile = itardisLevel.GetExteriorTile();
 
 		itardisLevel.UpdateExteriorState(ExteriorState.LANDING);
@@ -156,6 +158,8 @@ public class PhysicalStateManager {
 		AbstractFlightSound landingSound = itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding();
 		landingSound.SetFinished(false);
 		new FlightSoundThread(interior, AMBIENT_SOUND_POS, landingSound).start();
+
+		itardisLevel.GetFlightData().setPlayRotorAnimation(false);
 
 		if (!waitUntilFinished(landingSound)) {
 			System.err.println(

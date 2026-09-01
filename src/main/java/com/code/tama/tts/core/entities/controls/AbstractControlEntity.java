@@ -169,10 +169,10 @@ public abstract class AbstractControlEntity extends Entity {
 	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
 		// See the note in hurt() - interact() also fires on both sides by default,
 		// and only the server copy of the capability should ever drive real state.
-//		if (player.level().isClientSide() && hand.equals(InteractionHand.MAIN_HAND)) {
-//			Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
-//			return InteractionResult.SUCCESS;
-//		}
+		if (player.level().isClientSide() && hand.equals(InteractionHand.MAIN_HAND)) {
+			Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
+			return InteractionResult.SUCCESS;
+		}
 
 		GetTARDISCapSupplier(player.level()).ifPresent(cap -> this.OnControlClicked(cap, player));
 		return InteractionResult.SUCCESS;
