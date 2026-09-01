@@ -13,6 +13,7 @@ import com.code.tama.tts.core.networking.packets.C2S.entities.ControlClickedPack
 import com.code.tama.tts.core.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
+import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacket;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.*;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
@@ -64,6 +65,8 @@ public class Networking {
 	public static void registerPackets() {
 		DimensionPacketsRegistration.registerPackets();
 		BOTIPackets.registerPackets();
+
+		UniversalCommon.Networking.registerMsg(FlightLoopSoundPacket.class);
 
 		INSTANCE.registerMessage(id(), TerminalCommandPacketC2S.class, TerminalCommandPacketC2S::encode,
 				TerminalCommandPacketC2S::new, TerminalCommandPacketC2S::handle);

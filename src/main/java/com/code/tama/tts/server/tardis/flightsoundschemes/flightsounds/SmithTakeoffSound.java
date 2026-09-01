@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 
 public class SmithTakeoffSound extends AbstractFlightSound {
 	public int GetLength() {
-		return 587;
+		return 427;
 	}
 
 	public SoundEvent GetSound() {

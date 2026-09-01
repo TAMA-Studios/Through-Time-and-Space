@@ -320,7 +320,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public void SetExteriorTile(ExteriorTile exteriorTile) {
 		this.exteriorTile = exteriorTile;
-//		 this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
+		// this.exteriorTile.SetInteriorAndSyncWithBlock(this.level.dimension());
 		assert exteriorTile.getLevel() != null;
 		this.navigationalData
 				.setLocation(new SpaceTimeCoordinate(exteriorTile.getBlockPos(), exteriorTile.getLevel().dimension()));
@@ -559,6 +559,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		this.flightData.setInFlight(false);
 		this.flightData.setTicksInFlight(0);
 		if (!this.GetLevel().isClientSide) {
+
 			ServerLevel CurrentLevel = Objects.requireNonNull(this.GetLevel().getServer())
 					.getLevel(this.GetNavigationalData().getDestination().getLevelKey());
 			assert CurrentLevel != null;
@@ -646,7 +647,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 						.newBlockEntity(coords.GetBlockPos(), exteriorBlockState));
 				assert tile != null;
 				CurrentLevel.setBlockEntity(tile);
-				tile.SetInterior(this.GetLevel().dimension());
 				tile.setLevel(CurrentLevel);
 				this.SetExteriorTile(tile);
 			}

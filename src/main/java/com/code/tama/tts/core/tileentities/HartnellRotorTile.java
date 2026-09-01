@@ -27,10 +27,10 @@ public class HartnellRotorTile extends TickingTile {
 	public void tick() {
 		assert level != null;
 		level.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-			if (cap.GetFlightData().isPlayRotorAnimation()) {
-				cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, this.worldPosition);
-			} else
-				cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
+//			if (cap.GetFlightData().isPlayRotorAnimation()) {
+//				cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, this.worldPosition);
+//			} else
+//				cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
 		});
 	}
 

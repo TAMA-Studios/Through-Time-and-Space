@@ -13,6 +13,8 @@ import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractF
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
@@ -41,17 +43,19 @@ public class FlightSoundThread {
 	private static final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(4);
 
 	private volatile boolean shouldStop = false;
+	private volatile boolean pending = false;
 	private long lastGameTime = -1;
 	private int ticks = 0;
+	private boolean played = false;
 	private ScheduledFuture<?> future;
 
-	private final Level level;
+	private final ServerLevel level;
 	private final BlockPos blockPos;
 	private final AbstractFlightSound sound;
 	private final boolean loop;
 	private final SoundKey key;
 
-	public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound) {
+	public FlightSoundThread(ServerLevel level, BlockPos blockPos, AbstractFlightSound sound) {
 		this(level, blockPos, sound, false);
 	}
 
@@ -63,7 +67,7 @@ public class FlightSoundThread {
 	 *            once explicitly stopped via {@link #stop()} or
 	 *            {@link #stop(Level, BlockPos)}.
 	 */
-	public FlightSoundThread(Level level, BlockPos blockPos, AbstractFlightSound sound, boolean loop) {
+	public FlightSoundThread(ServerLevel level, BlockPos blockPos, AbstractFlightSound sound, boolean loop) {
 		this.level = level;
 		this.blockPos = blockPos;
 		this.sound = sound;
@@ -107,9 +111,20 @@ public class FlightSoundThread {
 		// level.playSound / level.getGameTime must run on the main server thread -
 		// calling into Level from this executor's own thread pool isn't safe and
 		// was a likely contributor to glitchy/overlapping playback.
-		if (level.getServer() != null) {
-			level.getServer().execute(this::tickOnServerThread);
-		}
+		if (level.getServer() == null)
+			return;
+
+		if (pending)
+			return;
+
+		pending = true;
+		level.getServer().execute(() -> {
+			try {
+				tickOnServerThread();
+			} finally {
+				pending = false;
+			}
+		});
 	}
 
 	private void tickOnServerThread() {
@@ -129,17 +144,18 @@ public class FlightSoundThread {
 				// the actual GetLength() implementation gets fixed. The stage this
 				// belongs to will fall through via PhysicalStateManager's own
 				// timeout rather than hang the game indefinitely.
-				if (ticks == 0) {
+				if (!played) {
 					System.err.println("[TTS] " + sound.getClass().getSimpleName()
 							+ ".GetLength() returned " + length + " - this must be a positive tick count.");
-					level.playSound(null, blockPos, sound.GetSound(), SoundSource.BLOCKS);
-					ticks = 1;
+					playNearAllPlayers();
+					played = true;
 				}
 				return;
 			}
 
-			if (ticks == 0) {
-				level.playSound(null, blockPos, sound.GetSound(), SoundSource.BLOCKS);
+			if (!played) {
+				playNearAllPlayers();
+				played = true;
 			}
 
 			long currentGameTime = level.getGameTime();
@@ -157,6 +173,7 @@ public class FlightSoundThread {
 					if (loop) {
 						// Loop back around and replay rather than finishing
 						ticks = 0;
+						played = false;
 					} else {
 						sound.SetFinished(true);
 						cleanup();
@@ -167,6 +184,15 @@ public class FlightSoundThread {
 			sound.SetFinished(true);
 			cleanup();
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Broadcasts the sound at every player currently present in the level
+	 */
+	private void playNearAllPlayers() {
+		for (ServerPlayer player : level.players()) {
+			level.playSound(null, player.blockPosition(), sound.GetSound(), SoundSource.BLOCKS, 1.0f, 1.0f);
 		}
 	}
 
