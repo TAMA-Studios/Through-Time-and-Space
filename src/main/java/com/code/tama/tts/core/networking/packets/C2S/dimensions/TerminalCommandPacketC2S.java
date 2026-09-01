@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.networking.packets.C2S.dimensions;
 
+import java.util.function.Supplier;
+
 import com.code.tama.tts.client.gui.terminal.ManPages;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.TerminalResponsePacketS2C;
@@ -10,7 +12,6 @@ import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -18,8 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Runs a single typed console command against the sending player's TARDIS
@@ -55,7 +54,8 @@ public class TerminalCommandPacketC2S {
 			}
 
 			if (!hasPermission(tardis, player)) {
-				reply(player, "ERR: username " + player.getName() + " is not in the flyers file. this incident will be reported");
+				reply(player, "ERR: username " + player.getName()
+						+ " is not in the flyers file. this incident will be reported");
 				return;
 			}
 
@@ -236,17 +236,16 @@ public class TerminalCommandPacketC2S {
 	}
 
 	private static String status(ITARDISLevel t) {
-        return "--- TARDIS STATUS ---\n" +
-                "Flight: " + (t.GetFlightData().isInFlight() ? "IN FLIGHT"
-                : t.GetFlightData().IsTakingOff() ? "TAKING OFF" : "LANDED") +
-                '\n' +
-                "Can takeoff: " + t.CanTakeoff() + "  Can fly: " + t.CanFly() + '\n' +
-                "Power: " + t.getEnergy().getPower() + "  Powered: " + t.GetData().isPowered() +
-                '\n' +
-                "Location:    " + coordString(t.GetNavigationalData().getLocation()) + '\n' +
-                "Destination: " + coordString(t.GetNavigationalData().getDestination()) + '\n' +
-                "Increment: " + t.GetNavigationalData().getIncrement() + '\n' +
-                "Door state: " + t.GetData().getDoorData().getDoorsOpen();
+		return "--- TARDIS STATUS ---\n" + "Flight: "
+				+ (t.GetFlightData().isInFlight()
+						? "IN FLIGHT"
+						: t.GetFlightData().IsTakingOff() ? "TAKING OFF" : "LANDED")
+				+ '\n' + "Can takeoff: " + t.CanTakeoff() + "  Can fly: " + t.CanFly() + '\n' + "Power: "
+				+ t.getEnergy().getPower() + "  Powered: " + t.GetData().isPowered() + '\n' + "Location:    "
+				+ coordString(t.GetNavigationalData().getLocation()) + '\n' + "Destination: "
+				+ coordString(t.GetNavigationalData().getDestination()) + '\n' + "Increment: "
+				+ t.GetNavigationalData().getIncrement() + '\n' + "Door state: "
+				+ t.GetData().getDoorData().getDoorsOpen();
 	}
 
 	private static String destination(ITARDISLevel t, String[] args) {
@@ -431,24 +430,24 @@ public class TerminalCommandPacketC2S {
 
 	private static final String HELP_TEXT = """
 			Available commands:
-			  status                              full status readout
-			  takeoff / land / forceland
-			  power|refuel|disco|alarms|operator [on|off]
-			  coordlock|vortexanchor|enginebrake|apc|stabilizers|simplemode [on|off]
-			  artron [value|+|-]
-			  termprotocol cycle
-			  dest <x> <y> <z> [dimension]
-			  nudge <x|y|z> [amount]
-			  facing cycle
-			  increment [up|down|<value>]
-			  recall
-			  light|gravity|oxygen [value|+|-]
-			  hum [cycle|<id>]
-			  door <open|close|both|cycle>
-			  exterior cycle
-			  comms send <dimension> <message>
-			  comms log
-			  clear                               clear this screen
-			  man <command>                       full manual page for a command
-			  help""";
+			status                              full status readout
+			takeoff / land / forceland
+			power|refuel|disco|alarms|operator [on|off]
+			coordlock|vortexanchor|enginebrake|apc|stabilizers|simplemode [on|off]
+			artron [value|+|-]
+			termprotocol cycle
+			dest <x> <y> <z> [dimension]
+			nudge <x|y|z> [amount]
+			facing cycle
+			increment [up|down|<value>]
+			recall
+			light|gravity|oxygen [value|+|-]
+			hum [cycle|<id>]
+			door <open|close|both|cycle>
+			exterior cycle
+			comms send <dimension> <message>
+			comms log
+			clear                               clear this screen
+			man <command>                       full manual page for a command
+			help""";
 }

@@ -11,10 +11,17 @@ import javax.annotation.Nullable;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ArmorItem;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -285,6 +292,12 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		if(level.getBlockEntity(pos) != null) {
+			ItemEntity entity = EntityType.ITEM.create(level);
+			entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
+			entity.setPos(pos.getCenter());
+			level.addFreshEntity(entity);
+		}
 		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
@@ -305,4 +318,13 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		}
 	}
 
+	public static ItemStack createExteriorItem(BlockEntity blockEntity) {
+		ItemStack stack = new ItemStack(TTSBlocks.EXTERIOR_BLOCK.get().asItem());
+
+		CompoundTag tag = blockEntity.serializeNBT();
+
+		stack.getOrCreateTag().put("BlockEntityTag", tag);
+
+		return stack;
+	}
 }

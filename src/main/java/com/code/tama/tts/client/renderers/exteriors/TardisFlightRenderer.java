@@ -1,13 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.exteriors;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
+import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
@@ -41,7 +45,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class TardisFlightRenderer extends EntityRenderer<TardisFlightEntity> {
 	private final BlockEntityRenderDispatcher dispatcher;
-
+	float spin = 0;
 	private ExteriorTile scratchTile;
 	private Direction scratchTileFacing;
 
@@ -54,7 +58,6 @@ public class TardisFlightRenderer extends EntityRenderer<TardisFlightEntity> {
 	public void render(TardisFlightEntity entity, float yaw, float partialTicks, @NotNull PoseStack stack,
 			@NotNull MultiBufferSource buffer, int light) {
 		Direction facing = entity.getSyncedFacing();
-
 		// Rebuild the scratch tile if it doesn't exist yet, or if the exterior's
 		// facing changed (rare mid-flight, but cheap enough to just check).
 		if (this.scratchTile == null || this.scratchTileFacing != facing) {
@@ -67,11 +70,23 @@ public class TardisFlightRenderer extends EntityRenderer<TardisFlightEntity> {
 		this.scratchTile.setModelIndex(entity.getSyncedModel());
 		this.scratchTile.setClientTransparency(entity.getSyncedTransparency());
 		this.scratchTile.SetDoorsOpen(entity.getSyncedDoorsOpen());
+		this.scratchTile.Model = ExteriorsRegistry.Get(entity.getSyncedModelID());
 
-		((TardisExteriorRenderer<ExteriorTile>) Minecraft.getInstance().getBlockEntityRenderDispatcher()
-				.getRenderer(this.scratchTile))
+		stack.pushPose();
+//		stack.mulPose(Axis.ZP.rotationDegrees(180));
+//        spin = (float) (spin + ((Math.abs(entity.getDeltaMovement().x) + Math.abs(entity.getDeltaMovement().z))));
+//		if (spin > 360) spin = 0;
+//		stack.mulPose(Axis.ZN.rotationDegrees((float) (5 * entity.getDeltaMovement().x)));
+//		stack.mulPose(Axis.XN.rotationDegrees((float) (5 * entity.getDeltaMovement().z)));
+//		stack.mulPose(Axis.YP.rotationDegrees(spin));
+//		stack.translate(-0.5, -3, -0.5);
+
+		Minecraft.getInstance().getBlockEntityRenderDispatcher()
+				.getRenderer(this.scratchTile)
 				.render(this.scratchTile, partialTicks, stack, buffer, light, OverlayTexture.NO_OVERLAY);
-		// dispatcher.render(this.scratchTile, partialTicks, stack, buffer);
+
+		stack.popPose();
+//		 dispatcher.render(this.scratchTile, partialTicks, stack, buffer);
 	}
 
 	@Override

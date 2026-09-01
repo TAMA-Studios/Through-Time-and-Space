@@ -136,7 +136,7 @@ public class DoorBlock extends Block implements EntityBlock {
 
 			try {
 				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos()
-						.relative(cap.GetNavigationalData().getFacing());
+						.relative(cap.GetNavigationalData().getFacing(), 2);
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
 						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
 					exteriorTile.SetInterior(Interior.dimension());

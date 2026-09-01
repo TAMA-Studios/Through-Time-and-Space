@@ -99,6 +99,8 @@ public class SpatialFlightControl extends AbstractControl {
 		LOGGER.info("[SpatialFlight] player BEFORE teleport: level={} pos={}",
 				serverPlayer.level().dimension().location(), serverPlayer.position());
 
+		EnvironmentViewerUtils.startRWF((ServerPlayer) player, itardisLevel);
+
 		serverPlayer.teleportTo(exteriorLocation.getLevel(), flightEntity.getX(), flightEntity.getY() + 0.1D,
 				flightEntity.getZ(), Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
 
@@ -111,13 +113,6 @@ public class SpatialFlightControl extends AbstractControl {
 				"[SpatialFlight] startRiding returned {} - player AFTER mount: level={} pos={} | flightEntity level={} pos={}",
 				mounted, serverPlayer.level().dimension().location(), serverPlayer.position(),
 				flightEntity.level().dimension().location(), flightEntity.position());
-
-		// Reuse the exact invisible/no-collision/no-gravity treatment the
-		// Environment Scanner already gives spectating players - it's the right
-		// fit here too: third-person view, can't be grabbed by mobs or blocks.
-		EnvironmentViewerUtils.updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), true);
-		serverPlayer.setInvisible(true);
-		serverPlayer.onUpdateAbilities();
 
 		return InteractionResult.SUCCESS;
 	}

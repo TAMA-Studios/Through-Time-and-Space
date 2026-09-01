@@ -65,11 +65,11 @@ public class Networking {
 		DimensionPacketsRegistration.registerPackets();
 		BOTIPackets.registerPackets();
 
-		INSTANCE.registerMessage(id(), TerminalCommandPacketC2S.class,
-				TerminalCommandPacketC2S::encode, TerminalCommandPacketC2S::new, TerminalCommandPacketC2S::handle);
+		INSTANCE.registerMessage(id(), TerminalCommandPacketC2S.class, TerminalCommandPacketC2S::encode,
+				TerminalCommandPacketC2S::new, TerminalCommandPacketC2S::handle);
 
-		INSTANCE.registerMessage(id(), TerminalResponsePacketS2C.class,
-				TerminalResponsePacketS2C::encode, TerminalResponsePacketS2C::new, TerminalResponsePacketS2C::handle,
+		INSTANCE.registerMessage(id(), TerminalResponsePacketS2C.class, TerminalResponsePacketS2C::encode,
+				TerminalResponsePacketS2C::new, TerminalResponsePacketS2C::handle,
 				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
 		INSTANCE.registerMessage(id(), TerminalActionPacketC2S.class, TerminalActionPacketC2S::encode,

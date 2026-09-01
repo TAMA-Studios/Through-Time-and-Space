@@ -1,12 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.gui.terminal;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalCommandPacketC2S;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-
 import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,26 +20,19 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
- * A Linux-terminal-style console for the TARDIS: a scrollback log and a
- * single command-line prompt at the bottom. Typed commands are sent to the
- * server as {@link TerminalCommandPacketC2S}; the server parses and executes
- * them and replies with a {@code TerminalResponsePacketS2C}, which
+ * A Linux-terminal-style console for the TARDIS: a scrollback log and a single
+ * command-line prompt at the bottom. Typed commands are sent to the server as
+ * {@link TerminalCommandPacketC2S}; the server parses and executes them and
+ * replies with a {@code TerminalResponsePacketS2C}, which
  * {@link #appendOutput(String)} prints back into the log.
  *
  * <p>
  * Log lines are word-wrapped to the console's content width at the moment
- * they're added (not re-wrapped every frame), and the log supports
- * scrollback via mouse wheel or Page Up/Down. Scrolling stays "stuck" to the
- * bottom while new output arrives, unless you've scrolled up to read
- * something, in which case new output arrives below without yanking your
- * view back down.
+ * they're added (not re-wrapped every frame), and the log supports scrollback
+ * via mouse wheel or Page Up/Down. Scrolling stays "stuck" to the bottom while
+ * new output arrives, unless you've scrolled up to read something, in which
+ * case new output arrives below without yanking your view back down.
  * </p>
  */
 public class TARDISConsoleScreen extends Screen {
@@ -139,7 +138,10 @@ public class TARDISConsoleScreen extends Screen {
 		addWrapped(COL_TEXT_ECHO, message);
 	}
 
-	/** Word-wraps text to the content width and appends it, preserving scroll position. */
+	/**
+	 * Word-wraps text to the content width and appends it, preserving scroll
+	 * position.
+	 */
 	private void addWrapped(int color, String text) {
 		boolean stickToBottom = scrollOffset == 0;
 
@@ -226,13 +228,15 @@ public class TARDISConsoleScreen extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == InputConstants.KEY_SPACE)
-			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(TTSSounds.KEYBOARD_SPACE.get(), 1.0F));
+			Minecraft.getInstance().getSoundManager()
+					.play(SimpleSoundInstance.forUI(TTSSounds.KEYBOARD_SPACE.get(), 1.0F));
 		else
-			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(switch (ThreadLocalRandom.current().nextInt(3)) {
-                case 0 -> TTSSounds.KEYBOARD_01.get();
-                case 1 -> TTSSounds.KEYBOARD_02.get();
-                default -> TTSSounds.KEYBOARD_PRESS_01.get();
-            }, 1.0F));
+			Minecraft.getInstance().getSoundManager()
+					.play(SimpleSoundInstance.forUI(switch (ThreadLocalRandom.current().nextInt(3)) {
+						case 0 -> TTSSounds.KEYBOARD_01.get();
+						case 1 -> TTSSounds.KEYBOARD_02.get();
+						default -> TTSSounds.KEYBOARD_PRESS_01.get();
+					}, 1.0F));
 
 		if (keyCode == InputConstants.KEY_PAGEUP) { // Page Up
 			scrollOffset += visibleLogLines() - 1;

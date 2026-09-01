@@ -89,9 +89,9 @@ public class TerminalActionPacketC2S {
 								.CycleProt(tardis.GetFlightData().getFlightTerminationProtocol()));
 
 				case ARTRON_PACKET_UP -> tardis.GetData().getControlData()
-                        .setArtronPacketOutput(tardis.GetData().getControlData().GetArtronPacketOutput() + 1);
+						.setArtronPacketOutput(tardis.GetData().getControlData().GetArtronPacketOutput() + 1);
 				case ARTRON_PACKET_DOWN -> tardis.GetData().getControlData().setArtronPacketOutput(
-                    Math.max(0, tardis.GetData().getControlData().GetArtronPacketOutput() - 1));
+						Math.max(0, tardis.GetData().getControlData().GetArtronPacketOutput() - 1));
 
 				// ---- Navigation ----
 				case INCREMENT_UP ->

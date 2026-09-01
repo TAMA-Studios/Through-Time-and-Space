@@ -3,10 +3,13 @@ package com.code.tama.tts.core.entities;
 
 import javax.annotation.Nullable;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSEntities;
+import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
+import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
@@ -14,6 +17,7 @@ import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -59,11 +63,17 @@ public class TardisFlightEntity extends Mob {
 			.defineId(TardisFlightEntity.class, EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<String> MODEL_PATH = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.STRING);
+
+	private static final EntityDataAccessor<Integer> MODEL_ID = SynchedEntityData.defineId(TardisFlightEntity.class,
+			EntityDataSerializers.INT);
+
 	private static final EntityDataAccessor<Integer> FACING = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DOORS_OPEN = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> TRANSPARENCY = SynchedEntityData.defineId(TardisFlightEntity.class,
+			EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.FLOAT);
 
 	/** Blocks/tick at full forward input. Tune to taste. */
@@ -114,9 +124,11 @@ public class TardisFlightEntity extends Mob {
 		super.defineSynchedData();
 		this.entityData.define(MODEL_NAMESPACE, "tts");
 		this.entityData.define(MODEL_PATH, "police_box");
+		this.entityData.define(MODEL_ID, 1);
 		this.entityData.define(FACING, Direction.NORTH.get3DDataValue());
 		this.entityData.define(DOORS_OPEN, 0);
 		this.entityData.define(TRANSPARENCY, 1.0F);
+		this.entityData.define(SPEED, 0.0F);
 	}
 
 	@Override
@@ -165,10 +177,17 @@ public class TardisFlightEntity extends Mob {
 
 		String modelNamespace = data.contains("modelNamespace") ? data.getString("modelNamespace") : "tts";
 		String modelPath = data.contains("modelPath") ? data.getString("modelPath") : "police_box";
+
+		if (data.contains("model")) {
+			ExteriorModelContainer Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, data.get("model")).get().orThrow();
+			entity.entityData.set(MODEL_ID, ExteriorsRegistry.GetOrdinal(Model));
+		}
+
 		Direction facing = data.contains("facing") ? Direction.byName(data.getString("facing")) : null;
 
 		entity.entityData.set(MODEL_NAMESPACE, modelNamespace);
 		entity.entityData.set(MODEL_PATH, modelPath);
+
 		entity.entityData.set(FACING, (facing == null ? Direction.NORTH : facing).get3DDataValue());
 		entity.entityData.set(DOORS_OPEN, data.getInt("doorsOpen"));
 		entity.entityData.set(TRANSPARENCY, data.contains("Transparency") ? data.getFloat("Transparency") : 1.0F);
@@ -193,7 +212,7 @@ public class TardisFlightEntity extends Mob {
 	@Override
 	protected void positionRider(Entity passenger, MoveFunction moveFunction) {
 		if (this.hasPassenger(passenger)) {
-			moveFunction.accept(passenger, this.getX(), this.getY() + this.getPassengersRidingOffset(), this.getZ());
+			moveFunction.accept(passenger, this.getX(), this.getY(), this.getZ());
 		}
 	}
 
@@ -208,58 +227,50 @@ public class TardisFlightEntity extends Mob {
 	@Override
 	public void travel(Vec3 travelVector) {
 		if (this.canBeControlledByRider() && this.getControllingPassenger() instanceof Player player) {
-			// Face wherever the pilot is looking
+
 			this.setYRot(player.getYRot());
-			this.yRotO = this.getYRot();
-			this.setXRot(player.getXRot() * 0.5F);
+			this.setXRot(player.getXRot());
 			this.yBodyRot = this.getYRot();
 			this.yHeadRot = this.getYRot();
 
-			float forward = player.zza;
-			float strafe = player.xxa * 0.5F;
+			float forward = player.zza; // Forward / Backward (W/S)
+			float strafe = player.xxa;  // Left / Right (A/D)
 
-			// Matches vanilla Entity#getInputVector's relative-movement formula:
-			// resultX = strafe*cos(yaw) - forward*sin(yaw)
-			// resultZ = forward*cos(yaw) + strafe*sin(yaw)
-			// (previous version had the strafe term's sign flipped on both axes,
-			// which is what made A/D feel inverted)
-			float yawRad = this.getYRot() * Mth.DEG_TO_RAD;
-			double moveX = (-Mth.sin(yawRad) * forward + Mth.cos(yawRad) * strafe) * FLIGHT_SPEED;
-			double moveZ = (Mth.cos(yawRad) * forward + Mth.sin(yawRad) * strafe) * FLIGHT_SPEED;
+			Vec3 lookVec = this.getLookAngle();
+			Vec3 currentVelocity = this.getDeltaMovement();
 
-			// Pitch controls climb/descend, like flying a plane - scaled so you still
-			// get some vertical movement even when hovering (not pushing forward).
-			double moveY = -Mth.sin(player.getXRot() * Mth.DEG_TO_RAD) * FLIGHT_SPEED
-					* Math.max(Math.abs(forward), 0.3F);
+			double maxSpeed = 7.0D;
+			Vec3 targetVelocity = Vec3.ZERO;
 
-			boolean shifting = player.isShiftKeyDown();
-			if (shifting)
-				moveY -= DESCEND_BIAS;
-
-			this.setDeltaMovement(moveX, moveY, moveZ);
-			this.move(MoverType.SELF, this.getDeltaMovement());
-			this.setDeltaMovement(this.getDeltaMovement().scale(0.9D)); // gentle air drag so it doesn't drift forever
-
-			// Landing: only while the pilot is actively holding shift AND we're
-			// actually touching the ground - bumping terrain mid-flight without
-			// shift held does nothing.
-			//
-			// Deliberately NOT using this.onGround() here - that flag is set by
-			// vanilla's own collision resolution based on *falling* into
-			// something, which this entity never really does (permanently
-			// no-gravity, hand-rolled movement). In practice it reads stale/true
-			// far more than it should for a custom-physics vehicle like this, so
-			// instead we look directly at whether there's actually a solid block
-			// immediately under the hitbox right now.
-			if (!this.level().isClientSide && shifting && this.isTouchingGround()
-					&& player instanceof ServerPlayer serverPlayer) {
-				this.Land(serverPlayer);
+			if (forward != 0) {
+				targetVelocity = lookVec.scale(forward > 0 ? maxSpeed : -maxSpeed * 0.5D);
 			}
+
+			if (strafe != 0) {
+				Vec3 sideVec = new Vec3(Math.cos(this.getYRot() * Mth.DEG_TO_RAD), 0, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD));
+				targetVelocity = targetVelocity.add(sideVec.scale(strafe * 0.5D * (maxSpeed * 0.5D)));
+			}
+
+			// Lower decimal = heavier/driftier ship; higher decimal = more responsive
+			double accelerationRate = 0.005D;
+			Vec3 newVelocity = currentVelocity.lerp(targetVelocity, accelerationRate);
+
+			// 6. Handle shifting / descending / landing
+			boolean shifting = player.isShiftKeyDown(); // TODO: Keybind, shifting doesn't work in this use case cause ofc it doesn't.
+			if (shifting) {
+				newVelocity = newVelocity.add(0, -0.05D, 0); // Descend bias
+
+				if (!this.level().isClientSide && this.isTouchingGround() && player instanceof ServerPlayer serverPlayer) {
+					this.Land(serverPlayer);
+				}
+			}
+
+			// 7. Apply movement
+			this.setDeltaMovement(newVelocity);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+
 		} else {
-			// No rider (e.g. abandoned mid-air somehow) - just hold position rather
-			// than falling, since we're permanently no-gravity. TODO: consider an
-			// auto-landing routine here instead if you want abandoned flights to
-			// resolve themselves.
+			// Hold position if abandoned mid-air
 			this.setDeltaMovement(Vec3.ZERO);
 		}
 	}
@@ -323,11 +334,13 @@ public class TardisFlightEntity extends Mob {
 		level.setBlockAndUpdate(landingPos, this.blockState);
 
 		if (level.getBlockEntity(landingPos) instanceof ExteriorTile tile) {
-			if (this.exteriorData != null)
+			if (this.exteriorData != null) {
 				tile.load(this.exteriorData);
+			}
 
 			tile.state = ExteriorState.LANDED;
 			tile.setChanged();
+			tile.UpdateAll();
 			level.sendBlockUpdated(landingPos, level.getBlockState(landingPos), level.getBlockState(landingPos), 3);
 
 			if (tile.GetInterior() != null && level.getServer() != null) {
@@ -345,6 +358,7 @@ public class TardisFlightEntity extends Mob {
 			}
 		}
 		player.stopRiding();
+		EnvironmentViewerUtils.stopRWF(player);
 
 		this.discard();
 	}
@@ -354,7 +368,11 @@ public class TardisFlightEntity extends Mob {
 	// =====================================================================
 
 	public ResourceLocation getSyncedModel() {
-		return new ResourceLocation(this.entityData.get(MODEL_NAMESPACE), this.entityData.get(MODEL_PATH));
+		return UniversalCommon.newRL(this.entityData.get(MODEL_NAMESPACE), this.entityData.get(MODEL_PATH));
+	}
+
+	public int getSyncedModelID() {
+		return this.entityData.get(MODEL_ID);
 	}
 
 	public Direction getSyncedFacing() {

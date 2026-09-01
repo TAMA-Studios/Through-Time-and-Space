@@ -305,8 +305,9 @@ public class CommonEvents {
 				CameraShakeHandler.endShake();
 				if (event.level.GetData().getControlData().isBrakes()) {
 					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
-					event.level.GetExteriorTile().getLevel().playLocalSound(event.level.GetExteriorTile().getBlockPos(),
-							TTSSounds.THUD.get(), SoundSource.BLOCKS, 1, 1, true); // Play at exterior
+					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1);
 					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
 							SoundSource.BLOCKS, 1, 1); // Play at interior
 				}

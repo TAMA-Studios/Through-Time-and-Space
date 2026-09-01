@@ -259,6 +259,14 @@ dependencies {
 			"cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cctVersion}"
 	)
 
+	runtimeOnly(fg.deobf(
+			"cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cctVersion}"
+	))
+
+	runtimeOnly(fg.deobf(
+			"cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cctVersion}"
+	))
+
 	// Patchouli
 	compileOnly(
 			fg.deobf(

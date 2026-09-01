@@ -193,6 +193,9 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 							ExteriorsRegistry.CycleDown(tardisLevelCapability.GetData().getExteriorModel()));
 
 					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
+
+					tardisLevelCapability.GetExteriorTile().UpdateAll();
+
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
@@ -208,7 +211,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 						Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
 								ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
 
-						tardisLevelCapability.GetExteriorTile().setChanged();
+						tardisLevelCapability.GetExteriorTile().UpdateAll();
 					}
 					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
@@ -220,6 +223,8 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 							ExteriorsRegistry.Cycle(tardisLevelCapability.GetData().getExteriorModel()));
 
 					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
+
+					tardisLevelCapability.GetExteriorTile().UpdateAll();
 					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
 					world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

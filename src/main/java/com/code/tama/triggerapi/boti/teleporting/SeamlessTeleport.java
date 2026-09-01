@@ -63,7 +63,7 @@ public class SeamlessTeleport {
 		startGatherThread(player, destLevel, destPos, yaw, teleportId,
 				"SeamlessTeleport-Prepare-" + player.getName().getString(), () -> {
 					SeamlessTeleportState.markPrepared(player);
-					LOGGER.debug("[ST] prepare() finished for {}.", player.getName().getString());
+//					LOGGER.debug("[ST] prepare() finished for {}.", player.getName().getString());
 				}, () -> {
 					ACTIVE_PREPARES.remove(player.getUUID());
 					TickScheduler.runAfter(200, () -> removeChunkTickets(destLevel, destPos, preloadRadius));

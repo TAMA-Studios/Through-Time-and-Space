@@ -65,7 +65,8 @@ public class TTSBlocks {
 			.simpleItem().register();
 
 	public static final BlockEntry<ConsoleTerminalBlock> TARDIS_TERMINAL = registrate()
-			.block("tardis_terminal", (p) -> new ConsoleTerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
+			.block("tardis_terminal",
+					(p) -> new ConsoleTerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
 			.simpleItem().register();
 
 	public static final BlockEntry<WireBlock> WIRES = registrate().block("wires", WireBlock::new)

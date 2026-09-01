@@ -68,7 +68,7 @@ public class ClientForgeEvents {
 	@SubscribeEvent
 	public static void onInputUpdate(MovementInputUpdateEvent event) {
 		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, event.getEntity()).ifPresent(cap -> {
-			if (!cap.GetViewingTARDIS().isEmpty()) {
+			if (!cap.GetViewingTARDIS().isEmpty() && !event.getEntity().isPassenger()) {
 				event.getInput().forwardImpulse = 0;
 				event.getInput().leftImpulse = 0;
 				event.getInput().up = false;

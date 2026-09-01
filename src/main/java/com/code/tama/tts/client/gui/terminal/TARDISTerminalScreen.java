@@ -25,12 +25,11 @@ import net.minecraft.resources.ResourceLocation;
  *
  * <p>
  * This screen holds a live reference to the client-side {@link ITARDISLevel}
- * capability. Because we already keep that in sync with the
- * server, all this screen has to do is read the
- * capability's current fields every frame, and fire C2S packets
- * when a button is pressed. The next capability sync packet from the server
- * then updates the same object in place, so the screen "just werks" without any
- * extra client-side state.
+ * capability. Because we already keep that in sync with the server, all this
+ * screen has to do is read the capability's current fields every frame, and
+ * fire C2S packets when a button is pressed. The next capability sync packet
+ * from the server then updates the same object in place, so the screen "just
+ * werks" without any extra client-side state.
  * </p>
  */
 public class TARDISTerminalScreen extends Screen {

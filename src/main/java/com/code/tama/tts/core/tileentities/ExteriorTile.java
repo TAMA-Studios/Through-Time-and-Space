@@ -14,6 +14,7 @@ import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.events.TardisEvent;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
+import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
@@ -115,6 +116,7 @@ public class ExteriorTile extends AbstractPortalTile {
 						if (cap.GetExteriorTile() == this) {
 							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 							this.Model = cap.GetData().getExteriorModel();
+							tag.put("model", ExteriorModelContainer.CODEC.encodeStart(NbtOps.INSTANCE, this.Model).get().orThrow());
 						}
 					});
 		}
@@ -328,6 +330,10 @@ public class ExteriorTile extends AbstractPortalTile {
 			this.facing = Direction.byName(tag.getString("facing"));
 		}
 
+		if (tag.contains("model")) {
+			this.Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, tag.get("model")).get().orThrow();
+		}
+
 		if (tag.hasUUID("placerUUID")) {
 			this.PlacerUUID = tag.getUUID("placerUUID");
 		}
@@ -389,9 +395,10 @@ public class ExteriorTile extends AbstractPortalTile {
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if (this.level != null && this.level.isClientSide)
+		if (this.level != null && this.level.isClientSide) {
 			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(), this.getBlockPos().getX(),
 					this.getBlockPos().getY(), this.getBlockPos().getZ()));
+		}
 	}
 
 	public void setClientTransparency(float alpha) {
@@ -429,10 +436,9 @@ public class ExteriorTile extends AbstractPortalTile {
 					this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 					this.Model = cap.GetData().getExteriorModel();
 					cap.UpdateClient(DataUpdateValues.RENDERING);
-					// Networking.sendPacketToDimension(this.level.dimension(), new
-					// SyncExteriorVariantPacketS2C(this.ModelIndex,
-					// ExteriorVariants.GetOrdinal(this.Variant), worldPosition.getX(),
-					// worldPosition.getY(), worldPosition.getZ()));
+					 Networking.sendPacketToDimension(this.level.dimension(), new SyncExteriorPacketS2C(getModelIndex(), state,
+							 DoorsOpen(), ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()),
+							 targetLevel, targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
 					this.setChanged();
 				});
 			}

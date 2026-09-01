@@ -29,7 +29,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class CCTRegistry {
-	TTSRegistrate REGISTRATE = TTSMod.registrate();
 
 	public static final BlockEntry<TardisCCInterfaceBlock> TARDIS_INTERFACE_BLOCK = registrate()
 			.block("tardis_interface_block", TardisCCInterfaceBlock::new).simpleItem().defaultBlockstate().register();

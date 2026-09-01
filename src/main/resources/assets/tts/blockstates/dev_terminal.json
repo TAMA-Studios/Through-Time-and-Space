@@ -1,0 +1,23 @@
+{
+  "variants" : {
+    "facing=east" : {
+      "model" : "tts:block/terminal",
+      "y" : 90,
+      "z": 180
+    },
+    "facing=north" : {
+      "model" : "tts:block/terminal",
+      "z": 180
+    },
+    "facing=south" : {
+      "model" : "tts:block/terminal",
+      "y" : 180,
+      "z": 180
+    },
+    "facing=west" : {
+      "model" : "tts:block/terminal",
+      "y" : 270,
+      "z": 180
+    }
+  }
+}

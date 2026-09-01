@@ -5,6 +5,8 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 
 import java.util.List;
 
+import com.code.tama.tts.core.networking.Networking;
+import com.code.tama.tts.core.networking.packets.C2S.entities.ControlClickedPacketC2S;
 import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -46,6 +48,9 @@ public abstract class AbstractControlEntity extends Entity {
 	}
 
 	public void onTwineInteract(Player player) {
+		if (this.level().isClientSide())
+			return;
+
 		TARDISLevelCapability.GetTARDISCapSupplier(this.level()).ifPresent(cap -> {
 			boolean flag = player.getMainHandItem().getItem().equals(TTSItems.TWINE_SPOOL.get())
 					&& player.getOffhandItem().getItem().equals(TTSItems.TWINE_SPOOL.get());
@@ -71,7 +76,7 @@ public abstract class AbstractControlEntity extends Entity {
 		if (base == null)
 			return List.of();
 		return RotatedHitboxUtil.makeSlices(base.getXsize() / 2.0, base.minY, base.maxY, // pass Y bounds directly so
-																							// slices honour 0-based Y
+				// slices honour 0-based Y
 				base.getZsize() / 2.0, this.getYRot(), hitboxSlices());
 	}
 
@@ -147,15 +152,28 @@ public abstract class AbstractControlEntity extends Entity {
 	public boolean hurt(DamageSource source, float amount) {
 		if (source.getEntity() == null) {
 			return false;
-		} else {
-			source.getEntity().level();
 		}
+
+		// hurt() fires on both logical sides. Controls should only ever mutate real
+		// TARDIS state from the server - letting the client copy run this too was
+		// causing every control's click logic (sounds, event posts, stage
+		// transitions) to run twice against two different capability instances.
+		if (source.getEntity().level().isClientSide())
+			return false;
+
 		GetTARDISCapSupplier(source.getEntity().level()).ifPresent(c -> this.OnControlHit(c, source.getEntity()));
 		return false;
 	}
 
 	@Override
 	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+		// See the note in hurt() - interact() also fires on both sides by default,
+		// and only the server copy of the capability should ever drive real state.
+//		if (player.level().isClientSide() && hand.equals(InteractionHand.MAIN_HAND)) {
+//			Networking.sendToServer(new ControlClickedPacketC2S(this.uuid));
+//			return InteractionResult.SUCCESS;
+//		}
+
 		GetTARDISCapSupplier(player.level()).ifPresent(cap -> this.OnControlClicked(cap, player));
 		return InteractionResult.SUCCESS;
 	}

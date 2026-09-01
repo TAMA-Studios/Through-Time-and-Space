@@ -38,15 +38,13 @@ public class ExteriorsRegistry {
 	}
 
 	public static int GetOrdinal(ExteriorModelContainer Variant) {
-		AtomicReference<Integer> VariantNumber = new AtomicReference<>();
-		VariantNumber.set(0);
+		for (int ord = 0; ord < ExteriorsRegistry.EXTERIORS.size(); ord++) {
+			ExteriorModelContainer v = ExteriorsRegistry.EXTERIORS.get(ord);
+			if (v.getName().equals(Variant.getName()) && v.getTexture().equals(Variant.getTexture()) && v.getModel().equals(Variant.getModel())) {
+				return ord;
+			}
 
-		OUTSIDE : for (ExteriorModelContainer variant : ExteriorsRegistry.EXTERIORS) {
-			if (variant.equals(Variant))
-				break OUTSIDE;
-			VariantNumber.set(VariantNumber.get() + 1);
 		}
-
-		return VariantNumber.get();
+		return 0;
 	}
 }

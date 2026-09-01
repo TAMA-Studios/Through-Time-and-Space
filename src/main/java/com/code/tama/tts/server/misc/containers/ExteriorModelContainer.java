@@ -3,10 +3,14 @@ package com.code.tama.tts.server.misc.containers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.sun.jna.Memory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.ByteBuffer;
 
 @NoArgsConstructor
 @Getter

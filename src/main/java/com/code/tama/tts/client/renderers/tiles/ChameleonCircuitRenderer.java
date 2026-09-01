@@ -62,13 +62,13 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			float g = 1.0f - (blueTintFactor / 2);
 			float b = 1.0f;
 
-			// if (this.json == null || this.MODEL == null
-			// || !this.modelName.equals(cap.GetData().getExteriorModel().getName())) {
-			// this.json = new
-			// AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
-			// this.MODEL = json.getModel();
-			// this.modelName = cap.GetData().getExteriorModel().getName();
-			// }
+//			 if (this.json == null || this.MODEL == null
+//			 || !this.modelName.equals(cap.GetData().getExteriorModel().getName())) {
+//			 this.json = new
+//			 AbstractJSONRenderer(cap.GetData().getExteriorModel().getModel());
+//			 this.MODEL = json.getModel();
+//			 this.modelName = cap.GetData().getExteriorModel().getName();
+//			 }
 
 			poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
 
@@ -79,6 +79,8 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 
 			if (exteriorModelContainer == null) {
 				exteriorModelContainer = ExteriorsRegistry.Get(0);
+			}
+			else if (model == null) {
 				model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))
 						.getModelInfo().getModel();
 			}

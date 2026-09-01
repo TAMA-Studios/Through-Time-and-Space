@@ -68,9 +68,6 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 	public ModularControl(Level level, AbstractConsoleTile consoleTile, ControlEntityRecord record) {
 
 		super(TTSEntities.MODULAR_CONTROL.get(), level);
-
-		System.out.println("Record " + record.ID() + " cx=" + record.cx() + " cy=" + record.cy() + " cz=" + record.cz()
-				+ " hw=" + record.hw() + " hh=" + record.hh() + " hd=" + record.hd() + " yaw=" + record.yawDeg());
 		assert consoleTile.getLevel() != null;
 		this.consolePos = consoleTile.getBlockPos();
 
