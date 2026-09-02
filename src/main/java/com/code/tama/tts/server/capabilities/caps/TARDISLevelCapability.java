@@ -295,12 +295,18 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (this.level.isClientSide || this.level.getServer() == null)
 			return null;
 
-		// Use GetCurrentLevel() here (not this.navigationalData.getExteriorDimensionKey()
-		// directly) - the two used to disagree: this guard checked exteriorDimensionKey,
-		// which is often still null at this point, while the actual lookup below already
-		// used GetCurrentLevel() (which has a real fallback via navigationalData.getLocation()).
-		// That mismatch meant this method returned null far more often than it should have,
-		// even when a real exterior tile existed and GetCurrentLevel() could find it fine.
+		// Use GetCurrentLevel() here (not
+		// this.navigationalData.getExteriorDimensionKey()
+		// directly) - the two used to disagree: this guard checked
+		// exteriorDimensionKey,
+		// which is often still null at this point, while the actual lookup below
+		// already
+		// used GetCurrentLevel() (which has a real fallback via
+		// navigationalData.getLocation()).
+		// That mismatch meant this method returned null far more often than it should
+		// have,
+		// even when a real exterior tile existed and GetCurrentLevel() could find it
+		// fine.
 		ServerLevel tardisLevel = this.level.getServer().getLevel(GetCurrentLevel());
 		if (tardisLevel == null)
 			return null;
@@ -404,25 +410,25 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (ticks % (80 + ThreadLocalRandom.current().nextInt(120)) == 1) {
 			this.data.getControlData().setHelmicRegulator(
 					this.data.getControlData().getHelmicRegulator() + ThreadLocalRandom.current().nextInt(2) - 1 // Set
-					// it
-					// to
-					// a
-					// value
-					// of
-					// -1
-					// to
-					// 1
+			// it
+			// to
+			// a
+			// value
+			// of
+			// -1
+			// to
+			// 1
 			);
 			this.UpdateClient(DataUpdateValues.DATA);
 		}
 		// and temporal drift
 		if (ticks % (40 + ThreadLocalRandom.current().nextInt(60)) == 1) {
 			this.flightData.setDrift(this.flightData.getDrift() + ThreadLocalRandom.current().nextInt(10) - 5 // set it
-					// to a
-					// value
-					// from
-					// -5 to
-					// 5
+			// to a
+			// value
+			// from
+			// -5 to
+			// 5
 			);
 			this.UpdateClient(DataUpdateValues.FLIGHT);
 		}
@@ -572,8 +578,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			// Perform landing protocol calculations and stuffs
 			this.GetData().getControlData().getFlightTerminationProtocol().OnLand(this, pos, CurrentLevel);
 			pos = this.GetData().getControlData().getFlightTerminationProtocol().GetLandPos();
-			if (pos == null) pos = BlockHelper.snapToGround(this.GetLevel(),
-					this.GetNavigationalData().getDestination().GetBlockPos());
+			if (pos == null)
+				pos = BlockHelper.snapToGround(this.GetLevel(),
+						this.GetNavigationalData().getDestination().GetBlockPos());
 			pos = LandingTypeRegistry.UP.GetLandingPos(pos, CurrentLevel);
 
 			if (CurrentLevel.isOutsideBuildHeight(pos))
@@ -840,8 +847,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			return;
 		GetTARDISCapSupplier(Objects.requireNonNull(Objects.requireNonNull(level.getServer())
 				.getLevel(ResourceKey.create(Registries.DIMENSION, recipient)))).ifPresent(cap -> {
-			cap.receiveInterCommMessage(message);
-		});
+					cap.receiveInterCommMessage(message);
+				});
 	}
 
 	@Override

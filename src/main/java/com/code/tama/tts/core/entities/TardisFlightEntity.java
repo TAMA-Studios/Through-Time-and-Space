@@ -3,7 +3,6 @@ package com.code.tama.tts.core.entities;
 
 import javax.annotation.Nullable;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSEntities;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
@@ -38,6 +37,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 /**
  * A real, physical, rideable form of a TARDIS' {@link ExteriorTile}, used for
@@ -179,7 +180,8 @@ public class TardisFlightEntity extends Mob {
 		String modelPath = data.contains("modelPath") ? data.getString("modelPath") : "police_box";
 
 		if (data.contains("model")) {
-			ExteriorModelContainer Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, data.get("model")).get().orThrow();
+			ExteriorModelContainer Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, data.get("model")).get()
+					.orThrow();
 			entity.entityData.set(MODEL_ID, ExteriorsRegistry.GetOrdinal(Model));
 		}
 
@@ -234,7 +236,7 @@ public class TardisFlightEntity extends Mob {
 			this.yHeadRot = this.getYRot();
 
 			float forward = player.zza; // Forward / Backward (W/S)
-			float strafe = player.xxa;  // Left / Right (A/D)
+			float strafe = player.xxa; // Left / Right (A/D)
 
 			Vec3 lookVec = this.getLookAngle();
 			Vec3 currentVelocity = this.getDeltaMovement();
@@ -247,7 +249,8 @@ public class TardisFlightEntity extends Mob {
 			}
 
 			if (strafe != 0) {
-				Vec3 sideVec = new Vec3(Math.cos(this.getYRot() * Mth.DEG_TO_RAD), 0, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD));
+				Vec3 sideVec = new Vec3(Math.cos(this.getYRot() * Mth.DEG_TO_RAD), 0,
+						Mth.sin(this.getYRot() * Mth.DEG_TO_RAD));
 				targetVelocity = targetVelocity.add(sideVec.scale(strafe * 0.5D * (maxSpeed * 0.5D)));
 			}
 
@@ -256,11 +259,13 @@ public class TardisFlightEntity extends Mob {
 			Vec3 newVelocity = currentVelocity.lerp(targetVelocity, accelerationRate);
 
 			// 6. Handle shifting / descending / landing
-			boolean shifting = player.isShiftKeyDown(); // TODO: Keybind, shifting doesn't work in this use case cause ofc it doesn't.
+			boolean shifting = player.isShiftKeyDown(); // TODO: Keybind, shifting doesn't work in this use case cause
+														// ofc it doesn't.
 			if (shifting) {
 				newVelocity = newVelocity.add(0, -0.05D, 0); // Descend bias
 
-				if (!this.level().isClientSide && this.isTouchingGround() && player instanceof ServerPlayer serverPlayer) {
+				if (!this.level().isClientSide && this.isTouchingGround()
+						&& player instanceof ServerPlayer serverPlayer) {
 					this.Land(serverPlayer);
 				}
 			}

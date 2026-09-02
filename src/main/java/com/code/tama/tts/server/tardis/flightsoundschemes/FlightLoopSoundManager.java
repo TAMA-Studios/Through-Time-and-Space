@@ -9,8 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Owns the client's currently-playing flight loop {@link LoopingSound}, if
- * any.
+ * Owns the client's currently-playing flight loop {@link LoopingSound}, if any.
  */
 @OnlyIn(Dist.CLIENT)
 public class FlightLoopSoundManager {

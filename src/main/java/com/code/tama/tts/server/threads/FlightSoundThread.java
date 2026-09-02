@@ -2,7 +2,6 @@
 package com.code.tama.tts.server.threads;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -20,21 +19,20 @@ import net.minecraft.world.level.Level;
 
 /**
  * Drives a single {@link AbstractFlightSound} to completion (or, if
- * {@code loop} is set, indefinitely until stopped), broadcasting it as a
- * real server-authoritative sound via {@link Level#playSound}. This is the
- * ONLY place flight-stage sound should be triggered from on the server -
- * never call {@link AbstractFlightSound#Play} / {@code PlayLooped} directly
- * from server-executed code, since those go through the client-only
- * {@code Minecraft.getInstance()} singleton and will NPE on a dedicated
- * server.
+ * {@code loop} is set, indefinitely until stopped), broadcasting it as a real
+ * server-authoritative sound via {@link Level#playSound}. This is the ONLY
+ * place flight-stage sound should be triggered from on the server - never call
+ * {@link AbstractFlightSound#Play} / {@code PlayLooped} directly from
+ * server-executed code, since those go through the client-only
+ * {@code Minecraft.getInstance()} singleton and will NPE on a dedicated server.
  */
 public class FlightSoundThread {
 
 	/**
 	 * Identifies a sound "slot" uniquely across every TARDIS interior dimension.
 	 * The previous version keyed purely off BlockPos, which meant two different
-	 * TARDISes using the same reference position (e.g. both at BlockPos.ZERO)
-	 * would incorrectly block each other's flight sounds.
+	 * TARDISes using the same reference position (e.g. both at BlockPos.ZERO) would
+	 * incorrectly block each other's flight sounds.
 	 */
 	private record SoundKey(ResourceKey<Level> dimension, BlockPos pos) {
 	}
@@ -92,10 +90,10 @@ public class FlightSoundThread {
 	/**
 	 * Immediately stops and frees whatever flight sound currently occupies the
 	 * given dimension/position slot, if any. Safe to call even if nothing is
-	 * playing there. This is synchronous (unlike the instance {@link #stop()}),
-	 * so the slot is guaranteed free by the time this returns - important when a
-	 * new sound needs to claim the same slot right away (e.g. the flight loop
-	 * needs to be gone before the landing sound starts).
+	 * playing there. This is synchronous (unlike the instance {@link #stop()}), so
+	 * the slot is guaranteed free by the time this returns - important when a new
+	 * sound needs to claim the same slot right away (e.g. the flight loop needs to
+	 * be gone before the landing sound starts).
 	 */
 	public static void stop(Level level, BlockPos pos) {
 		FlightSoundThread existing = activeSounds.remove(new SoundKey(level.dimension(), pos));
@@ -145,8 +143,8 @@ public class FlightSoundThread {
 				// belongs to will fall through via PhysicalStateManager's own
 				// timeout rather than hang the game indefinitely.
 				if (!played) {
-					System.err.println("[TTS] " + sound.getClass().getSimpleName()
-							+ ".GetLength() returned " + length + " - this must be a positive tick count.");
+					System.err.println("[TTS] " + sound.getClass().getSimpleName() + ".GetLength() returned " + length
+							+ " - this must be a positive tick count.");
 					playNearAllPlayers();
 					played = true;
 				}

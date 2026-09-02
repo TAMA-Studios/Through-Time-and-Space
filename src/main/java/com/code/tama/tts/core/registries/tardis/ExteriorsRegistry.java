@@ -2,7 +2,6 @@
 package com.code.tama.tts.core.registries.tardis;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 
@@ -40,7 +39,8 @@ public class ExteriorsRegistry {
 	public static int GetOrdinal(ExteriorModelContainer Variant) {
 		for (int ord = 0; ord < ExteriorsRegistry.EXTERIORS.size(); ord++) {
 			ExteriorModelContainer v = ExteriorsRegistry.EXTERIORS.get(ord);
-			if (v.getName().equals(Variant.getName()) && v.getTexture().equals(Variant.getTexture()) && v.getModel().equals(Variant.getModel())) {
+			if (v.getName().equals(Variant.getName()) && v.getTexture().equals(Variant.getTexture())
+					&& v.getModel().equals(Variant.getModel())) {
 				return ord;
 			}
 

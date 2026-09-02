@@ -5,11 +5,9 @@ import static com.code.tama.tts.TTSMod.registrate;
 
 import java.util.function.Function;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.compat.cct.CCTARDISInterface;
 import com.code.tama.tts.core.compat.cct.blocks.TardisCCInterfaceBlock;
 import com.code.tama.tts.core.compat.cct.tiles.TardisCCInterfaceTile;
-import com.code.tama.tts.core.registries.TTSRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dan200.computercraft.api.peripheral.IPeripheral;

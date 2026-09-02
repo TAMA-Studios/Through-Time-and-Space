@@ -7,8 +7,8 @@ import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
-
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,15 +53,18 @@ public class TriggerSyncExteriorPacketC2S {
 			BlockEntity be = serverLevel.getBlockEntity(new BlockPos(packet.blockX, packet.blockY, packet.blockZ));
 
 			if (be instanceof ExteriorTile exteriorTile) {
-				if(exteriorTile.GetInterior() != null) {
-					TARDISLevelCapability.GetTARDISCapSupplier(serverLevel.getServer().getLevel(exteriorTile.GetInterior())).ifPresent(cap -> {
-						Networking.sendPacketToDimension(packet.level,
-								new SyncExteriorPacketS2C(exteriorTile.getModelIndex(), exteriorTile.state,
-										exteriorTile.DoorsOpen(), ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()),
-										exteriorTile.targetLevel, exteriorTile.targetY, exteriorTile.targetPos, packet.blockX,
-										packet.blockY, packet.blockZ));
+				if (exteriorTile.GetInterior() != null) {
+					TARDISLevelCapability
+							.GetTARDISCapSupplier(serverLevel.getServer().getLevel(exteriorTile.GetInterior()))
+							.ifPresent(cap -> {
+								Networking.sendPacketToDimension(packet.level,
+										new SyncExteriorPacketS2C(exteriorTile.getModelIndex(), exteriorTile.state,
+												exteriorTile.DoorsOpen(),
+												ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()),
+												exteriorTile.targetLevel, exteriorTile.targetY, exteriorTile.targetPos,
+												packet.blockX, packet.blockY, packet.blockZ));
 
-					});
+							});
 				}
 			}
 		});

@@ -60,6 +60,9 @@ public class TTSBlocks {
 	public static final BlockEntry<ExampleTileBlock> EXAMPLE_TILE_BLOCK = registrate()
 			.block("example_tile_block", ExampleTileBlock::new).simpleItem().defaultBlockstate().register();
 
+	public static final BlockEntry<Block> MATRIX_CASING = registrate().block("matrix_casing", Block::new).simpleItem()
+			.stateWithExistingModel().register();
+
 	public static final BlockEntry<TerminalBlock> DEV_TERMINAL = registrate()
 			.block("dev_terminal", (p) -> new TerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
 			.simpleItem().register();

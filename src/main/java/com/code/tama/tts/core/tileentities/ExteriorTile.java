@@ -116,7 +116,8 @@ public class ExteriorTile extends AbstractPortalTile {
 						if (cap.GetExteriorTile() == this) {
 							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 							this.Model = cap.GetData().getExteriorModel();
-							tag.put("model", ExteriorModelContainer.CODEC.encodeStart(NbtOps.INSTANCE, this.Model).get().orThrow());
+							tag.put("model", ExteriorModelContainer.CODEC.encodeStart(NbtOps.INSTANCE, this.Model).get()
+									.orThrow());
 						}
 					});
 		}
@@ -436,9 +437,11 @@ public class ExteriorTile extends AbstractPortalTile {
 					this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 					this.Model = cap.GetData().getExteriorModel();
 					cap.UpdateClient(DataUpdateValues.RENDERING);
-					 Networking.sendPacketToDimension(this.level.dimension(), new SyncExteriorPacketS2C(getModelIndex(), state,
-							 DoorsOpen(), ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()),
-							 targetLevel, targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
+					Networking.sendPacketToDimension(this.level.dimension(),
+							new SyncExteriorPacketS2C(getModelIndex(), state, DoorsOpen(),
+									ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()), targetLevel,
+									targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(),
+									this.getBlockPos().getZ()));
 					this.setChanged();
 				});
 			}

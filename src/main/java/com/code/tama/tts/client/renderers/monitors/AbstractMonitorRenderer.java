@@ -124,9 +124,9 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
 		// Set state immediately before draw, strict ordering
-//		RenderSystem.enableBlend();
-//		RenderSystem.defaultBlendFunc();
-//		RenderSystem.depthMask(false);
+		// RenderSystem.enableBlend();
+		// RenderSystem.defaultBlendFunc();
+		// RenderSystem.depthMask(false);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, GALLIFREYAN);
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -140,8 +140,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 		// Reset state
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-//		RenderSystem.depthMask(true);
-//		RenderSystem.disableBlend();
+		// RenderSystem.depthMask(true);
+		// RenderSystem.disableBlend();
 
 		poseStack.popPose();
 	}
@@ -163,9 +163,9 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		Matrix4f matrix = poseStack.last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
-//		RenderSystem.enableBlend();
-//		RenderSystem.defaultBlendFunc();
-//		RenderSystem.depthMask(false);
+		// RenderSystem.enableBlend();
+		// RenderSystem.defaultBlendFunc();
+		// RenderSystem.depthMask(false);
 
 		for (RegistryObject<UIComponent> object : UIComponentRegistry.UI_COMPONENTS.getEntries()) {
 			UIComponent component = object.get();
@@ -197,8 +197,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		}
 
 		// Restore state
-//		RenderSystem.depthMask(true);
-//		RenderSystem.disableBlend();
+		// RenderSystem.depthMask(true);
+		// RenderSystem.disableBlend();
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 		poseStack.popPose();
@@ -229,9 +229,9 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 
 		// Strict ordering: shader → texture → color → draw
-//		RenderSystem.enableBlend();
-//		RenderSystem.defaultBlendFunc();
-//		RenderSystem.depthMask(false);
+		// RenderSystem.enableBlend();
+		// RenderSystem.defaultBlendFunc();
+		// RenderSystem.depthMask(false);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -245,8 +245,8 @@ public class AbstractMonitorRenderer<T extends AbstractMonitorTile> implements B
 
 		// Reset state
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-//		RenderSystem.depthMask(true);
-//		RenderSystem.disableBlend();
+		// RenderSystem.depthMask(true);
+		// RenderSystem.disableBlend();
 
 		poseStack.popPose();
 	}

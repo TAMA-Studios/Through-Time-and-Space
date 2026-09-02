@@ -22,10 +22,12 @@ import com.code.tama.triggerapi.universal.UniversalServerOnly;
 @Getter
 public class ProtocolData {
 	public static Codec<ProtocolData> CODEC = RecordCodecBuilder.create(instance -> instance
-			.group(SpaceTimeCoordinate.CODEC.fieldOf("ep1_destination").forGetter(ProtocolData::getEP1Destination))
+			.group(SpaceTimeCoordinate.CODEC.fieldOf("ep1_destination").forGetter(ProtocolData::getEP1Destination),
+					Codec.BOOL.fieldOf("ep1_enabled").forGetter(ProtocolData::isEP1Enabled))
 			.apply(instance, ProtocolData::new));
 
 	SpaceTimeCoordinate EP1Destination = new SpaceTimeCoordinate();
+	boolean EP1Enabled = false;
 
 	public void EP1(Player player, ITARDISLevel tardis) {
 		if (tardis.GetData().getOwnerUUID().equals(player.getUUID())) {

@@ -48,10 +48,12 @@ public class AbstractConsoleTile extends BlockEntity {
 				if (level.isClientSide)
 					tile.GetRotorAnimation().animateWhen(cap.GetFlightData().isPlayRotorAnimation(),
 							(int) level.getGameTime());
-//				else if (cap.GetFlightData().isInFlight() && !cap.GetFlightData().IsTakingOff()) {
-//					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, pos);
-//				} else
-//					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
+				// else if (cap.GetFlightData().isInFlight() &&
+				// !cap.GetFlightData().IsTakingOff()) {
+				// cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level,
+				// pos);
+				// } else
+				// cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
 			});
 		}
 	}

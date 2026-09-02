@@ -33,6 +33,9 @@ public class TTSItems {
 	public static final ItemEntry<Item> HUON_BOTTLE;
 
 	@MainTab
+	public static final ItemEntry<Item> MATRIX_CORE;
+
+	@MainTab
 	public static final ItemEntry<Item> RAW_ZEITON;
 
 	@MainTab
@@ -87,6 +90,8 @@ public class TTSItems {
 	static {
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		MATRIX_CORE = register("matrix_core", (NonNullFunction<Item.Properties, Item>) Item::new);
 
 		HOLO_GLASSES = registrate().item("holo_glasses", HoloGlasses::new).register();
 

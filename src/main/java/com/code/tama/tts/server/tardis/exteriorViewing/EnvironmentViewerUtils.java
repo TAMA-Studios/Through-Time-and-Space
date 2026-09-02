@@ -78,7 +78,7 @@ public class EnvironmentViewerUtils {
 			if (target.GetBlockPos().distManhattan(
 					new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3
 					|| !player.level().dimension().location().toString()
-					.equals(target.getLevel().dimension().location().toString())) {
+							.equals(target.getLevel().dimension().location().toString())) {
 				player.teleportTo(target.getLevel(), spectatePos.getX() + 0.5, spectatePos.getY() + 0.5,
 						spectatePos.getZ() + 0.5, Set.of(), 45, 22.5f);
 			}
@@ -93,23 +93,20 @@ public class EnvironmentViewerUtils {
 	}
 
 	public static void startRWF(ServerPlayer player, ITARDISLevel tardis) {
-			if (!tardis.GetData().IsViewingTARDIS(player.getUUID())) {
-				tardis.GetData().SetViewing(player.getUUID(),
-						PlayerPosition.builder().pos(player.position()).YRot(player.getYHeadRot())
-								.Xrot(player.getXRot()).levelKey(tardis.GetLevel().dimension()).build());
-			}
+		if (!tardis.GetData().IsViewingTARDIS(player.getUUID())) {
+			tardis.GetData().SetViewing(player.getUUID(), PlayerPosition.builder().pos(player.position())
+					.YRot(player.getYHeadRot()).Xrot(player.getXRot()).levelKey(tardis.GetLevel().dimension()).build());
+		}
 
-			Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, player)
-					.ifPresent(cap -> cap.SetViewingTARDIS(tardis.GetLevel().dimension().location().toString()));
+		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, player)
+				.ifPresent(cap -> cap.SetViewingTARDIS(tardis.GetLevel().dimension().location().toString()));
 
-
-			Networking.sendToPlayer(player,
-					new SyncViewedTARDISS2C(tardis.GetLevel().dimension().location().toString()));
-			player.setInvisible(true);
-			player.sendSystemMessage(Component.translatable("tts.notification.key_to_exit",
-					ClientSetup.EXIT_VIEW.getKey().getDisplayName()));
-			updatePlayerAbilities(player, player.getAbilities(), true);
-			player.onUpdateAbilities();
+		Networking.sendToPlayer(player, new SyncViewedTARDISS2C(tardis.GetLevel().dimension().location().toString()));
+		player.setInvisible(true);
+		player.sendSystemMessage(Component.translatable("tts.notification.key_to_exit",
+				ClientSetup.EXIT_VIEW.getKey().getDisplayName()));
+		updatePlayerAbilities(player, player.getAbilities(), true);
+		player.onUpdateAbilities();
 	}
 
 	public static void stopRWF(ServerPlayer serverPlayer) {

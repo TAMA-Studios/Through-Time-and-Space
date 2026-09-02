@@ -1,17 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.exteriors;
 
-import com.code.tama.triggerapi.universal.UniversalCommon;
-import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
@@ -73,20 +69,22 @@ public class TardisFlightRenderer extends EntityRenderer<TardisFlightEntity> {
 		this.scratchTile.Model = ExteriorsRegistry.Get(entity.getSyncedModelID());
 
 		stack.pushPose();
-//		stack.mulPose(Axis.ZP.rotationDegrees(180));
-//        spin = (float) (spin + ((Math.abs(entity.getDeltaMovement().x) + Math.abs(entity.getDeltaMovement().z))));
-//		if (spin > 360) spin = 0;
-//		stack.mulPose(Axis.ZN.rotationDegrees((float) (5 * entity.getDeltaMovement().x)));
-//		stack.mulPose(Axis.XN.rotationDegrees((float) (5 * entity.getDeltaMovement().z)));
-//		stack.mulPose(Axis.YP.rotationDegrees(spin));
-//		stack.translate(-0.5, -3, -0.5);
+		// stack.mulPose(Axis.ZP.rotationDegrees(180));
+		// spin = (float) (spin + ((Math.abs(entity.getDeltaMovement().x) +
+		// Math.abs(entity.getDeltaMovement().z))));
+		// if (spin > 360) spin = 0;
+		// stack.mulPose(Axis.ZN.rotationDegrees((float) (5 *
+		// entity.getDeltaMovement().x)));
+		// stack.mulPose(Axis.XN.rotationDegrees((float) (5 *
+		// entity.getDeltaMovement().z)));
+		// stack.mulPose(Axis.YP.rotationDegrees(spin));
+		// stack.translate(-0.5, -3, -0.5);
 
-		Minecraft.getInstance().getBlockEntityRenderDispatcher()
-				.getRenderer(this.scratchTile)
-				.render(this.scratchTile, partialTicks, stack, buffer, light, OverlayTexture.NO_OVERLAY);
+		Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(this.scratchTile).render(this.scratchTile,
+				partialTicks, stack, buffer, light, OverlayTexture.NO_OVERLAY);
 
 		stack.popPose();
-//		 dispatcher.render(this.scratchTile, partialTicks, stack, buffer);
+		// dispatcher.render(this.scratchTile, partialTicks, stack, buffer);
 	}
 
 	@Override

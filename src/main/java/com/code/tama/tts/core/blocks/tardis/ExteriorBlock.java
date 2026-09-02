@@ -12,20 +12,15 @@ import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
-import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ArmorItem;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -33,8 +28,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -292,7 +289,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if(level.getBlockEntity(pos) != null) {
+		if (level.getBlockEntity(pos) != null) {
 			ItemEntity entity = EntityType.ITEM.create(level);
 			entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
 			entity.setPos(pos.getCenter());

@@ -167,9 +167,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	public TTSBlockBuilder<T, P> simpleBlockItemBlockParent() {
 		try {
-			return (TTSBlockBuilder<T, P>) this.item().model(
-					(ctx, prov) -> prov.withExistingParent(this.getName(), prov.modLoc("block/" + this.getName())))
-					.build();
+			return (TTSBlockBuilder<T, P>) this.item().model((ctx, prov) -> prov
+					.withExistingParent("item/" + this.getName(), prov.modLoc("block/" + this.getName()))).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

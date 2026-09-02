@@ -2,7 +2,7 @@
 package com.code.tama.tts.server.misc;
 
 import com.code.tama.tts.core.networking.Networking;
-import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacket;
+import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacketS2C;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
@@ -19,12 +19,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class PhysicalStateManager {
 
 	/**
-	 * Fixed reference point inside the TARDIS interior, used purely as the
-	 * lookup key for the flight sound system (see {@link FlightSoundThread}).
+	 * Fixed reference point inside the TARDIS interior, used purely as the lookup
+	 * key for the flight sound system (see {@link FlightSoundThread}).
 	 */
 	private static final BlockPos AMBIENT_SOUND_POS = BlockPos.ZERO;
 
-	/** How long to sleep between polls while waiting on a stage's sound to finish. */
+	/**
+	 * How long to sleep between polls while waiting on a stage's sound to finish.
+	 */
 	private static final long POLL_INTERVAL_MS = 50L;
 
 	/**
@@ -56,7 +58,10 @@ public class PhysicalStateManager {
 		this.exteriorTile = exteriorTile;
 	}
 
-	/* ==================== CLIENT ANIMATION (purely visual - unchanged) ==================== */
+	/*
+	 * ==================== CLIENT ANIMATION (purely visual - unchanged)
+	 * ====================
+	 */
 
 	public void clientLand(long startTick) {
 		landFadeAnimation(startTick);
@@ -100,9 +105,9 @@ public class PhysicalStateManager {
 
 	/**
 	 * Drives the full Taking Off stage: plays the takeoff sound, waits for it to
-	 * actually finish (instead of spinning forever - see below), then destroys
-	 * the exterior and calls {@link ITARDISLevel#Fly()} to enter In Flight,
-	 * immediately followed by starting the looping flight-loop sound.
+	 * actually finish (instead of spinning forever - see below), then destroys the
+	 * exterior and calls {@link ITARDISLevel#Fly()} to enter In Flight, immediately
+	 * followed by starting the looping flight-loop sound.
 	 */
 	public void serverTakeOff() {
 		assert itardisLevel != null;
@@ -120,22 +125,23 @@ public class PhysicalStateManager {
 		new FlightSoundThread(interior, AMBIENT_SOUND_POS, takeoffSound).start();
 
 		if (!waitUntilFinished(takeoffSound)) {
-			System.err.println(
-					"[TTS] Takeoff sound for TARDIS at " + AMBIENT_SOUND_POS + " never reported finished - forcing takeoff to continue anyway.");
+			System.err.println("[TTS] Takeoff sound for TARDIS at " + AMBIENT_SOUND_POS
+					+ " never reported finished - forcing takeoff to continue anyway.");
 		}
 
 		// Takeoff sound is done - remove the exterior and actually go flying
 		itardisLevel.UpdateExteriorState(ExteriorState.SHOULDNTEXIST);
 		itardisLevel.Fly();
 
-		// Flight Loop plays from here through In Flight and Vortex Limbo, until serverLand() stops it
-		Networking.sendPacketToDimension(new FlightLoopSoundPacket(true), interior);
+		// Flight Loop plays from here through In Flight and Vortex Limbo, until
+		// serverLand() stops it
+		Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(true), interior);
 	}
 
 	/**
-	 * Drives the full Landing stage: stops the flight loop, places the exterior
-	 * at the destination, plays the landing sound, waits for it to actually
-	 * finish, then marks the TARDIS fully Landed.
+	 * Drives the full Landing stage: stops the flight loop, places the exterior at
+	 * the destination, plays the landing sound, waits for it to actually finish,
+	 * then marks the TARDIS fully Landed.
 	 */
 	public void serverLand() {
 		assert itardisLevel != null;
@@ -143,7 +149,7 @@ public class PhysicalStateManager {
 		ServerLevel interior = (ServerLevel) itardisLevel.GetLevel();
 
 		// Flight loop stops the instant landing begins.
-		Networking.sendPacketToDimension(new FlightLoopSoundPacket(false), interior);
+		Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(false), interior);
 		FlightSoundThread.stop(interior, AMBIENT_SOUND_POS);
 
 		// Physically place the exterior at the destination
@@ -162,8 +168,8 @@ public class PhysicalStateManager {
 		itardisLevel.GetFlightData().setPlayRotorAnimation(false);
 
 		if (!waitUntilFinished(landingSound)) {
-			System.err.println(
-					"[TTS] Landing sound for TARDIS at " + AMBIENT_SOUND_POS + " never reported finished - forcing landing to finish anyway.");
+			System.err.println("[TTS] Landing sound for TARDIS at " + AMBIENT_SOUND_POS
+					+ " never reported finished - forcing landing to finish anyway.");
 		}
 
 		itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
