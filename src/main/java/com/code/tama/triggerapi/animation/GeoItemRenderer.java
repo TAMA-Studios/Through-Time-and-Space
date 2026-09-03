@@ -52,7 +52,7 @@ public class GeoItemRenderer extends BlockEntityWithoutLevelRenderer {
 	public void renderByItem(ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack poseStack,
 			@NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
 		var mc = Minecraft.getInstance();
-		float nowTicks = mc.level != null ? mc.level.getGameTime() : 0;
+		float nowTicks = mc.level != null ? GeoAnimTicker.getTicks() : 0;
 		float partialTick = mc.getDeltaFrameTime();
 
 		model.resetPose();

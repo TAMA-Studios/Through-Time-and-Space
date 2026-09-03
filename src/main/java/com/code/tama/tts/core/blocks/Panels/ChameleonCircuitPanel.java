@@ -174,7 +174,6 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 			return InteractionResult.FAIL;
 		if (hand.equals(InteractionHand.OFF_HAND))
 			return InteractionResult.PASS;
-		System.out.println("Block was hit on face: " + hit.getDirection());
 
 		ChameleonCircuitButtons button = this.getButton(
 				(100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
@@ -196,8 +195,9 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 
 					tardisLevelCapability.GetExteriorTile().UpdateAll();
 
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-					world.scheduleTick(pos, this, 10);
+					lClickAnim(world, pos);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case VARIANT :
@@ -214,8 +214,9 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 						tardisLevelCapability.GetExteriorTile().UpdateAll();
 					}
 					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-					world.scheduleTick(pos, this, 10);
+					mClickAnim(world, pos);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
+					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case POSITIVE :
@@ -225,8 +226,9 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
 
 					tardisLevelCapability.GetExteriorTile().UpdateAll();
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
-					world.scheduleTick(pos, this, 10);
+					rClickAnim(world, pos);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
+					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				default :

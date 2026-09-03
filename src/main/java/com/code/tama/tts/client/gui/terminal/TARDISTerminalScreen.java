@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.gui.terminal;
 
+import java.util.List;
+
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalActionPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalActionPacketC2S.Action;
@@ -8,6 +10,8 @@ import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalSendMess
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalSetDestinationPacketC2S;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -15,9 +19,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * A retro CRT-style computer terminal for controlling every aspect of the

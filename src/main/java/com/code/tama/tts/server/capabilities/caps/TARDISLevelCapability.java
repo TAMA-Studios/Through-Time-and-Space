@@ -1,8 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
@@ -37,6 +41,8 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,13 +65,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
-import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
+import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private boolean isOperator = false;
@@ -798,14 +800,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	@Override
-	public void ForceLoadExteriorChunk(boolean ForceLoad) {
-
+	public void ForceLoadExteriorChunk(boolean forceLoad) {
 		MinecraftServer server = this.level.getServer();
+
 		if (server != null) {
 			server.execute(() -> {
-				ChunkPos pos = new ChunkPos(this.GetNavigationalData().GetExteriorLocation().GetBlockPos());
-				if (getExteriorLevel().hasChunk(pos.x, pos.z))
-					getExteriorLevel().setChunkForced(pos.x, pos.z, ForceLoad);
+				ServerLevel exteriorLevel = getExteriorLevel();
+
+				ChunkPos pos = new ChunkPos(GetNavigationalData().GetExteriorLocation().GetBlockPos());
+
+				exteriorLevel.setChunkForced(pos.x, pos.z, forceLoad);
 			});
 		}
 	}

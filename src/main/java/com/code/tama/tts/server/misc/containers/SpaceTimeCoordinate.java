@@ -118,12 +118,13 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 	}
 
 	public String ReadableString() {
-		return "X | " + Double.toString(this.X) + " Y | " + Double.toString(this.Y) + " Z | " + Double.toString(this.Z);
+		return "X | " + this.X + " Y | " + this.Y + " Z | " + this.Z + " | "
+				+ MiscUtils.getDimName(this.level.location());
 	}
 
 	public String ReadableStringShort() {
 		return Integer.toString((int) this.X) + " | " + Integer.toString((int) this.Y) + " | "
-				+ Integer.toString((int) this.Z) + " | " + MiscUtils.getDimName(this.level.location());
+				+ Integer.toString((int) this.Z);
 	}
 
 	public SpaceTimeCoordinate copy() {

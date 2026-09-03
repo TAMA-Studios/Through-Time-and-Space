@@ -1,10 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.tileentities.DoorTile;
@@ -12,15 +10,19 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
@@ -58,9 +60,9 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 			if (doorTile.getBlockState().getBlock() instanceof ExteriorBlock)
 				poseStack.mulPose(doorTile.getBlockState().getValue(ExteriorBlock.FACING).getOpposite().getRotation());
 
-//			stack.mulPose(Axis.YP.rotationDegrees(180));
-//			// stack.mulPose(Axis.XN.rotationDegrees(90));
-//			stack.mulPose(Axis.ZN.rotationDegrees(180));
+			// stack.mulPose(Axis.YP.rotationDegrees(180));
+			// // stack.mulPose(Axis.XN.rotationDegrees(90));
+			// stack.mulPose(Axis.ZN.rotationDegrees(180));
 		}
 		GetTARDISCapSupplier(doorTile.getLevel()).ifPresent(cap -> {
 			AbstractJSONRenderer renderer = cap.GetClientData().getExteriorRenderer();

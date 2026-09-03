@@ -31,7 +31,7 @@ public class AnimatedGeoBlockEntityRenderer implements BlockEntityRenderer<Anima
 	@Override
 	public void render(AnimatedGeoBlockEntity be, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
 			int packedLight, int packedOverlay) {
-		float nowTicks = be.getLevel() != null ? be.getLevel().getGameTime() : 0;
+		float nowTicks = be.getLevel() != null ? GeoAnimTicker.getTicks() : 0;
 		be.player.apply(model, nowTicks, partialTick);
 
 		poseStack.pushPose();

@@ -1,13 +1,17 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import com.code.tama.triggerapi.NativeLoader;
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.client.OccupancyGrid;
-import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.BiConsumer;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -19,11 +23,10 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.function.BiConsumer;
+import com.code.tama.triggerapi.NativeLoader;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.client.OccupancyGrid;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 
 /**
  * Off-thread chunk geometry gatherer. <br />

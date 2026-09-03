@@ -1,8 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.tardis;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
@@ -11,6 +16,8 @@ import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -44,13 +51,9 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends FallingBlock implements EntityBlock {
@@ -221,7 +224,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
 			exteriorTile.CycleDoors();
 
-			if(!level.isClientSide) {
+			if (!level.isClientSide) {
 				if (level.getGameTime() - exteriorTile.timeCreated < 1200) {
 					player.displayClientMessage(Component.translatable("tts.tooEarly",
 							(1200 - (level.getGameTime() - exteriorTile.timeCreated)) / 20), true);
@@ -235,8 +238,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 						if (doorsOpen == 0) {
 							level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_CLOSE.get(),
 									SoundSource.BLOCKS, 0.5f, 1f);
-						}
-						else {
+						} else {
 							level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_OPEN.get(),
 									SoundSource.BLOCKS, 0.5f, 1f);
 						}
@@ -293,7 +295,8 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
 		if (level.getBlockEntity(pos) != null) {
 			ItemEntity entity = EntityType.ITEM.create(level);
-			entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
+			if (newState == null || newState.equals(Blocks.AIR.defaultBlockState()))
+				entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
 			entity.setPos(pos.getCenter());
 			level.addFreshEntity(entity);
 		}

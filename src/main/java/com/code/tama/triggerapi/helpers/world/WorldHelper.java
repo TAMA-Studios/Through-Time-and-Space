@@ -1,9 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers.world;
 
-import com.code.tama.triggerapi.Logger;
-import com.code.tama.triggerapi.ReflectionBuddy;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+import org.joml.Vector3d;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -21,12 +25,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.joml.Vector3d;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import com.code.tama.triggerapi.Logger;
+import com.code.tama.triggerapi.ReflectionBuddy;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class WorldHelper {

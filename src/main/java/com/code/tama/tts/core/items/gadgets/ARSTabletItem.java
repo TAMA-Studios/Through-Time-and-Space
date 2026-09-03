@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.core.items.gadgets;
 
-import com.code.tama.triggerapi.animation.GeoHelper;
-import com.code.tama.triggerapi.animation.GeoItemRenderer;
+import java.util.function.Consumer;
+
 import com.code.tama.tts.client.gui.ARSMapScreen;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.fml.DistExecutor;
 
-import java.util.function.Consumer;
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoItemRenderer;
 
 public class ARSTabletItem extends Item {
 

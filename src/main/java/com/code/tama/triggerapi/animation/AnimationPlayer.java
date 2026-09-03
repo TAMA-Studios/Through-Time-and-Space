@@ -13,7 +13,7 @@ public class AnimationPlayer {
 	public void play(GeoAnimation animation, float nowTicks) {
 		if (this.current != animation) {
 			this.current = animation;
-			this.startTimeTicks = nowTicks;
+			this.startTimeTicks = GeoAnimTicker.getTicks();
 		}
 	}
 
@@ -33,7 +33,7 @@ public class AnimationPlayer {
 		model.resetPose();
 		if (current == null)
 			return;
-		float elapsedSeconds = ((nowTicks + partialTick) - startTimeTicks) / 20.0f;
+		float elapsedSeconds = ((GeoAnimTicker.getTicks() + partialTick) - startTimeTicks) / 20.0f;
 		current.apply(model, elapsedSeconds);
 	}
 }
