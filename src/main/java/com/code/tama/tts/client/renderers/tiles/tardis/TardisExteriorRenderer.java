@@ -107,10 +107,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 			if (exteriorTile.getBlockState().getBlock() instanceof ExteriorBlock)
 				stack.mulPose(exteriorTile.getBlockState().getValue(ExteriorBlock.FACING).getOpposite().getRotation());
 
-			stack.mulPose(exteriorTile.getFacing().getRotation());
+			// stack.mulPose(exteriorTile.getFacing().getRotation());
 			stack.mulPose(Axis.YP.rotationDegrees(180));
-			// stack.mulPose(Axis.XN.rotationDegrees(90));
-			stack.mulPose(Axis.ZN.rotationDegrees(180));
+			stack.mulPose(Axis.XN.rotationDegrees(90));
+			// stack.mulPose(Axis.ZN.rotationDegrees(180));
 		}
 
 		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());

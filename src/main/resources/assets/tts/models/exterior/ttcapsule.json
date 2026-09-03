@@ -1,153 +1,193 @@
 {
-  "groups" : [ {
-    "children" : [ {
-      "children" : [ {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -5, -35, -8 ],
-          "size" : [ 6, 31, 1 ],
-          "uv" : [ 92, 39 ]
-        } ],
-        "group_name" : "IntRightDoor",
-        "pivot" : [ -2, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -1, -35, -8 ],
-          "size" : [ 6, 31, 1 ],
-          "uv" : [ 92, 71 ]
-        } ],
-        "group_name" : "IntLeftDoor",
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      } ],
-      "cubes" : [ {
-        "inflate" : 0,
-        "mirror" : true,
-        "origin" : [ -10.5, -36, -9 ],
-        "size" : [ 4, 33, 2 ],
-        "uv" : [ 17, 69 ]
-      }, {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ 4.5, -36, -9 ],
-        "size" : [ 4, 34, 2 ],
-        "uv" : [ 17, 69 ]
-      }, {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ -11, -4, -9.5 ],
-        "size" : [ 20, 4, 3 ],
-        "uv" : [ 17, 45 ]
-      }, {
-        "inflate" : 0,
-        "mirror" : false,
-        "origin" : [ -11, -43, -9.5 ],
-        "size" : [ 20, 8, 3 ],
-        "uv" : [ 17, 17 ]
-      } ],
-      "group_name" : "InteriorDoor",
-      "pivot" : [ 0, 0, 15.5 ],
-      "rotation" : [ 0, 0, 0 ]
-    }, {
-      "children" : [ {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -6.45, -35, -6 ],
-          "size" : [ 11, 31, 0 ],
-          "uv" : [ 106, 97 ]
-        } ],
-        "group_name" : "InteriorBoti",
-        "pivot" : [ 0, 0, 14.4 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -6.45, -35, -6 ],
-          "size" : [ 11, 31, 0 ],
-          "uv" : [ 106, 97 ]
-        } ],
-        "group_name" : "BOTI",
-        "pivot" : [ 0, 0, 0 ],
-        "rotation" : [ 0, 0, 0 ]
-      } ],
-      "group_name" : "BOTIRoot",
-      "pivot" : [ 0, 0, 0 ],
-      "rotation" : [ 0, 0, 0 ]
-    }, {
-      "children" : [ {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -10.5, -42, -9.5 ],
-          "size" : [ 20, 8, 20 ],
-          "uv" : [ 0, 0 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -10.5, -3, -9.5 ],
-          "size" : [ 20, 4, 20 ],
-          "uv" : [ 0, 28 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : true,
-          "origin" : [ -10, -35, -9 ],
-          "size" : [ 4, 33, 19 ],
-          "uv" : [ 0, 52 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -10, -35, 6 ],
-          "size" : [ 19, 35, 4 ],
-          "uv" : [ 80, 0 ]
-        }, {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ 5, -35, -9 ],
-          "size" : [ 4, 34, 19 ],
-          "uv" : [ 0, 52 ]
-        } ],
-        "group_name" : "Base",
-        "pivot" : [ 1, 0, -1 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -1, -35, -8 ],
-          "size" : [ 6, 31, 1 ],
-          "uv" : [ 92, 71 ]
-        } ],
-        "group_name" : "RightDoor",
-        "pivot" : [ 1.5, 1, -1 ],
-        "rotation" : [ 0, 0, 0 ]
-      }, {
-        "cubes" : [ {
-          "inflate" : 0,
-          "mirror" : false,
-          "origin" : [ -5, -35, -8 ],
-          "size" : [ 6, 31, 1 ],
-          "uv" : [ 92, 39 ]
-        } ],
-        "group_name" : "LeftDoor",
-        "pivot" : [ -0.5, 1, -1 ],
-        "rotation" : [ 0, 0, 0 ]
-      } ],
-      "group_name" : "baseRoot",
-      "pivot" : [ -1.5, -1, 1 ],
-      "rotation" : [ 0, 0, 0 ]
-    } ],
-    "group_name" : "root",
-    "pivot" : [ 1, 24, -0.5 ],
-    "rotation" : [ 0, 0, 0 ]
-  } ],
-  "scale" : 1,
-  "texture" : "tts:tiles/exterior/ttcapsule/ttcapsule",
-  "texture_height" : 128,
-  "texture_width" : 128
+	"credit": "Made with Blockbench",
+	"texture": "tts:tiles/exterior/ttcapsule/ttcapsule",
+	"texture_width": 128,
+	"texture_height": 128,
+	"scale": 1,
+	"groups": [
+		{
+			"group_name": "root",
+			"pivot": [1,24,-0.5],
+			"rotation": [0,0,0],
+			"children": [
+				{
+					"group_name": "baseRoot",
+					"pivot": [-1.5,-1,1],
+					"rotation": [0,0,0],
+					"children": [
+						{
+							"group_name": "LeftDoor",
+							"pivot": [-0.5,1,-1],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [92,39],
+									"size": [6,31,1],
+									"origin": [-5,-35,-8],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "RightDoor",
+							"pivot": [1.5,1,-1],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [92,71],
+									"size": [6,31,1],
+									"origin": [-1,-35,-8],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "Base",
+							"pivot": [1,0,-1],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [0,0],
+									"size": [20,8,20],
+									"origin": [-10.5,-42,-9.5],
+									"inflate": 0,
+									"mirror": false
+								},
+								{
+									"uv": [0,28],
+									"size": [20,4,20],
+									"origin": [-10.5,-3,-9.5],
+									"inflate": 0,
+									"mirror": false
+								},
+								{
+									"uv": [0,52],
+									"size": [4,33,19],
+									"origin": [-10,-35,-9],
+									"inflate": 0,
+									"mirror": true
+								},
+								{
+									"uv": [80,0],
+									"size": [19,35,4],
+									"origin": [-10,-35,6],
+									"inflate": 0,
+									"mirror": false
+								},
+								{
+									"uv": [0,52],
+									"size": [4,34,19],
+									"origin": [5,-35,-9],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						}
+					]
+				},
+				{
+					"group_name": "BOTIRoot",
+					"pivot": [0,0,0],
+					"rotation": [0,0,0],
+					"children": [
+						{
+							"group_name": "BOTI",
+							"pivot": [0,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [106,97],
+									"size": [11,31,0],
+									"origin": [-6.45,-35,-6],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "InteriorBoti",
+							"pivot": [0,0,14.4],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [106,97],
+									"size": [11,31,0],
+									"origin": [-6.45,-35,-6.5],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						}
+					]
+				},
+				{
+					"group_name": "InteriorDoor",
+					"pivot": [0,0,15.5],
+					"rotation": [0,0,0],
+					"children": [
+						{
+							"group_name": "IntLeftDoor",
+							"pivot": [0,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [92,71],
+									"size": [6,31,1],
+									"origin": [-1,-35,-8],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "IntRightDoor",
+							"pivot": [-2,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [92,39],
+									"size": [6,31,1],
+									"origin": [-5,-35,-8],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						}
+					],
+					"cubes": [
+						{
+							"uv": [17,69],
+							"size": [4,33,2],
+							"origin": [-10.5,-36,-9],
+							"inflate": 0,
+							"mirror": true
+						},
+						{
+							"uv": [17,69],
+							"size": [4,34,2],
+							"origin": [4.5,-36,-9],
+							"inflate": 0,
+							"mirror": false
+						},
+						{
+							"uv": [17,45],
+							"size": [20,4,3],
+							"origin": [-11,-4,-9.5],
+							"inflate": 0,
+							"mirror": false
+						},
+						{
+							"uv": [17,17],
+							"size": [20,8,3],
+							"origin": [-11,-43,-9.5],
+							"inflate": 0,
+							"mirror": false
+						}
+					]
+				}
+			]
+		}
+	]
 }

@@ -129,7 +129,7 @@ public class ExteriorTile extends AbstractPortalTile {
 		tag.putFloat("Transparency", this.transparency);
 		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
 		assert this.level != null;
-		if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
+		if (!this.level.isClientSide && this.level.getServer().getLevel(this.INTERIOR_DIMENSION) != null)
 			if (this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
 					.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).isPresent())
 				this.level.getServer().getLevel(this.INTERIOR_DIMENSION)
@@ -190,9 +190,8 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void UpdateAll() {
-		if (this.level == null)
-			return;
-		if (this.level.isClientSide)
+		if (this.level == null || this.level.isClientSide
+				|| this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION) == null)
 			return;
 
 		this.updateModel();
@@ -262,7 +261,6 @@ public class ExteriorTile extends AbstractPortalTile {
 		assert this.getLevel() != null;
 		ServerLevel Interior = this.getLevel().getServer().getLevel(this.INTERIOR_DIMENSION);
 
-		assert Interior != null;
 		TARDISLevelCapability.GetTARDISCapSupplier(Interior)
 				.ifPresent(cap -> this.setTargetLevel(cap.GetLevel().dimension(),
 						cap.GetData().getDoorData().getLocation().GetBlockPos(), cap.GetData().getDoorData().getYRot(),
@@ -423,9 +421,12 @@ public class ExteriorTile extends AbstractPortalTile {
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if (this.level != null && this.level.isClientSide) {
-			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(), this.getBlockPos().getX(),
-					this.getBlockPos().getY(), this.getBlockPos().getZ()));
+		if (this.level != null) {
+			if (this.level.isClientSide)
+				Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(),
+						this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
+			else
+				this.UpdateAll();
 		}
 	}
 
