@@ -53,6 +53,6 @@ public class MemSerializer {
 				object.setLong(offset, f.getLong(clazz));
 		}
 
-		return object.address;
+		return object.getAddress();
 	}
 }

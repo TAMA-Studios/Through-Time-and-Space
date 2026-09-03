@@ -1,19 +1,21 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.animation;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import com.google.gson.*;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-
 /**
  * Parses the same .geo.json format Blockbench exports for "Generic Model" /
- * used by geckolib, so you can keep using Blockbench for modelling. Only the
+ * used by geckolib — so you can keep using Blockbench for modelling. Only the
  * fields we need are read; unknown fields are ignored.
  *
  * Expected shape: { "minecraft:geometry": [ { "description": { "texture_width":
@@ -27,8 +29,8 @@ public class GeoModelLoader {
 	private static final Map<ResourceLocation, GeoModel> CACHE = new HashMap<>();
 
 	/**
-	 * Cached, safe to call this every frame if you need to, it only parses once per
-	 * ResourceLocation.
+	 * Cached — safe to call this every frame if you need to, it only parses once
+	 * per ResourceLocation.
 	 */
 	public static GeoModel load(ResourceManager resourceManager, ResourceLocation location) {
 		return CACHE.computeIfAbsent(location, loc -> loadUncached(resourceManager, loc));
@@ -100,7 +102,7 @@ public class GeoModelLoader {
 			parent = buildBone(parentName, raw, built, builtNames, roots, absolutePivots, texW, texH);
 		}
 
-		// Bedrock/Blockbench "pivot" is ABSOLUTE model-space, not parent-relative, but
+		// Bedrock/Blockbench "pivot" is ABSOLUTE model-space, not parent-relative — but
 		// poseStack.translate() during rendering is relative to whatever the parent
 		// already
 		// pushed. Feeding the raw absolute value in compounds outward every level of
@@ -112,8 +114,27 @@ public class GeoModelLoader {
 		float[] parentPivotAbs = parentName != null
 				? absolutePivots.getOrDefault(parentName, new float[]{0, 0, 0})
 				: new float[]{0, 0, 0};
-		float[] pivotRel = new float[]{pivotAbs[0] - parentPivotAbs[0], pivotAbs[1] - parentPivotAbs[1],
+		float[] rawDelta = new float[]{pivotAbs[0] - parentPivotAbs[0], pivotAbs[1] - parentPivotAbs[1],
 				pivotAbs[2] - parentPivotAbs[2]};
+		// That delta is a plain world-space vector, but at render time it gets
+		// translated
+		// INSIDE a poseStack frame that already has the parent's rest rotation applied
+		// to it.
+		// Blockbench's absolute pivot values already reflect the parent's rotation
+		// having been
+		// visually "baked in" — so if the parent has a non-zero base rotation,
+		// translating by
+		// the raw delta inside its already-rotated frame double-applies that rotation
+		// to the
+		// offset. Un-rotate the delta by the parent's own base rotation first to cancel
+		// that
+		// out (only the DIRECT parent's rotation matters here — by induction, every
+		// ancestor
+		// above it was already corrected the same way when IT was built).
+		float[] pivotRel = (parent != null)
+				? inverseRotate(rawDelta[0], rawDelta[1], rawDelta[2], parent.baseRotX, parent.baseRotY,
+						parent.baseRotZ)
+				: rawDelta;
 		absolutePivots.put(name, pivotAbs);
 
 		float[] rot = vec3(bo, "rotation", 0, 0, 0);
@@ -133,7 +154,7 @@ public class GeoModelLoader {
 						: new float[]{origin[0] + size[0] / 2f, origin[1] + size[1] / 2f, origin[2] + size[2] / 2f};
 
 				// Cube geometry needs to be relative to THIS bone's own absolute pivot
-				// (independent of the parent-delta fix above, that fix only affects
+				// (independent of the parent-delta fix above — that fix only affects
 				// where poseStack.translate moves the bone itself, not cube-local shape).
 				float relOriginX = origin[0] - pivotAbs[0], relOriginY = origin[1] - pivotAbs[1],
 						relOriginZ = origin[2] - pivotAbs[2];
@@ -186,28 +207,10 @@ public class GeoModelLoader {
 	}
 
 	private static float[] uv(JsonObject co) {
-		if (!co.has("uv") || co.get("uv").isJsonNull()) {
+		if (!co.has("uv"))
 			return new float[]{0, 0};
-		}
-
-		JsonElement uvElement = co.get("uv");
-
-		// Format: "uv": [0.0, 0.0]
-		if (uvElement.isJsonArray()) {
-			JsonArray a = uvElement.getAsJsonArray();
-			if (a.size() >= 2) {
-				return new float[]{a.get(0).getAsFloat(), a.get(1).getAsFloat()};
-			}
-		}
-		// Format: "uv": { "u": 0.0, "v": 0.0 }
-		else if (uvElement.isJsonObject()) {
-			JsonObject obj = uvElement.getAsJsonObject();
-			float u = obj.has("u") ? obj.get("u").getAsFloat() : 0f;
-			float v = obj.has("v") ? obj.get("v").getAsFloat() : 0f;
-			return new float[]{u, v};
-		}
-
-		return new float[]{0, 0};
+		JsonArray a = co.getAsJsonArray("uv");
+		return new float[]{a.get(0).getAsFloat(), a.get(1).getAsFloat()};
 	}
 
 	private static float[] vec2(JsonObject o, String key, float dx, float dy) {
@@ -215,5 +218,30 @@ public class GeoModelLoader {
 			return new float[]{dx, dy};
 		JsonArray a = o.getAsJsonArray(key);
 		return new float[]{a.get(0).getAsFloat(), a.get(1).getAsFloat()};
+	}
+
+	/**
+	 * Inverse of GeoCube.rotate()'s "apply X, then Y, then Z" chain — i.e. this
+	 * applies Z^-1, then Y^-1, then X^-1 (reverse order, negated angles), which is
+	 * the correct algebraic inverse of a composed rotation. Used to un-rotate a
+	 * child bone's pivot delta by its parent's base rotation (see buildBone). Angle
+	 * sign here mirrors the sign fix in GeoCube.rotate() — this must stay its true
+	 * inverse or the two fixes fight each other.
+	 */
+	private static float[] inverseRotate(float x, float y, float z, float rxDeg, float ryDeg, float rzDeg) {
+		double rx = Math.toRadians(-rxDeg), ry = Math.toRadians(-ryDeg), rz = Math.toRadians(-rzDeg);
+		// Z^-1
+		double x1 = x * Math.cos(rz) + y * Math.sin(rz);
+		double y1 = -x * Math.sin(rz) + y * Math.cos(rz);
+		double z1 = z;
+		// Y^-1
+		double x2 = x1 * Math.cos(ry) - z1 * Math.sin(ry);
+		double z2 = x1 * Math.sin(ry) + z1 * Math.cos(ry);
+		double y2 = y1;
+		// X^-1
+		double y3 = y2 * Math.cos(rx) + z2 * Math.sin(rx);
+		double z3 = -y2 * Math.sin(rx) + z2 * Math.cos(rx);
+		double x3 = x2;
+		return new float[]{(float) x3, (float) y3, (float) z3};
 	}
 }

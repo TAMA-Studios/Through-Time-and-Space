@@ -1,12 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
+import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
@@ -41,8 +37,6 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -65,9 +59,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	private boolean isOperator = false;
@@ -528,7 +526,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		// raw cached field, which is legitimately null until something populates it -
 		// checking the raw field here was skipping the whole Taking Off stage.
 		if (this.GetExteriorTile() == null) {
-			// No exterior exists at all (e.g. a freshly-created TARDIS) - nothing to
+			// No exterior exists at all (e.g. a glitched TARDIS who lost its exterior) -
+			// nothing to
 			// animate or destroy, so just go straight to flight.
 			Fly();
 			return;
@@ -544,10 +543,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		if (this.level.isClientSide())
 			return;
 
-		// Only a TARDIS that's actually In Flight or parked in Vortex Limbo
-		// (isInFlight covers both) can be landed. This guard was previously
-		// commented out, which let Rematerialize() jump straight to a full landing
-		// from any stage, including Landed or mid-Taking-Off.
 		if (!this.flightData.isInFlight())
 			return;
 
@@ -609,8 +604,6 @@ public class TARDISLevelCapability implements ITARDISLevel {
 				this.SetExteriorTile(tile);
 			}
 			this.ForceLoadExteriorChunk(false);
-			this.GetFlightData().setPlayRotorAnimation(false);
-			this.UpdateClient(DataUpdateValues.ALL);
 		}
 
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Land(this, TardisEvent.State.END));

@@ -1,11 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.client.BotiPortalModel;
+import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
+import com.code.tama.triggerapi.boti.client.OccupancyGrid;
+import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
@@ -15,7 +16,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,12 +44,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.client.BotiPortalModel;
-import com.code.tama.triggerapi.boti.client.FluidQuadCollector;
-import com.code.tama.triggerapi.boti.client.OccupancyGrid;
-import com.code.tama.triggerapi.boti.packets.C2S.PortalChunkRequestPacketC2S;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("deprecation")
@@ -93,6 +92,7 @@ public class BOTIUtils {
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
 			return;
 		RenderSystem.enableDepthTest();
+		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 		Minecraft minecraft = Minecraft.getInstance();
 
 		assert minecraft.level != null;

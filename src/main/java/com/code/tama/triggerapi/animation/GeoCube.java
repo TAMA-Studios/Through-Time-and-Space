@@ -52,7 +52,7 @@ public class GeoCube {
 	}
 
 	/**
-	 * Per-face UV constructor, pass the resolved face-rect map, u/v are ignored
+	 * Per-face UV constructor — pass the resolved face-rect map, u/v are ignored
 	 * when this is non-null.
 	 */
 	public GeoCube(float originX, float originY, float originZ, float sizeX, float sizeY, float sizeZ, float u, float v,
@@ -130,12 +130,16 @@ public class GeoCube {
 		if (explicitFaceUV != null) {
 			// Per-Face UV mode: each face's rect comes straight from the JSON, signs and
 			// all.
-			quads.add(face(c[7], c[6], c[2], c[3], 0, 1, 0, rect("up")));
-			quads.add(face(c[0], c[1], c[5], c[4], 0, -1, 0, rect("down")));
-			quads.add(face(c[1], c[5], c[6], c[2], 1, 0, 0, rect("east")));
-			quads.add(face(c[0], c[1], c[2], c[3], 0, 0, -1, rect("north")));
-			quads.add(face(c[4], c[0], c[3], c[7], -1, 0, 0, rect("west")));
-			quads.add(face(c[5], c[4], c[7], c[6], 0, 0, 1, rect("south")));
+			// Winding verified by hand (cross-product of edge vectors against the stated
+			// normal): UP/DOWN were already correct in the original vertex order; only the
+			// 4 side faces needed reversing. Uniformly reversing all six (previous attempt)
+			// fixed the sides but broke UP/DOWN, which were never wrong to begin with.
+			quads.add(face(c[7], c[6], c[2], c[3], 0, 1, 0, rect("up"), false));
+			quads.add(face(c[0], c[1], c[5], c[4], 0, -1, 0, rect("down"), false));
+			quads.add(face(c[1], c[5], c[6], c[2], 1, 0, 0, rect("east"), true));
+			quads.add(face(c[0], c[1], c[2], c[3], 0, 0, -1, rect("north"), true));
+			quads.add(face(c[4], c[0], c[3], c[7], -1, 0, 0, rect("west"), true));
+			quads.add(face(c[5], c[4], c[7], c[6], 0, 0, 1, rect("south"), true));
 		} else {
 			// Box-UV mode: slot layout verified against a real Blockbench box-UV export.
 			// Top row is [UP][DOWN], bottom row is [EAST][NORTH][WEST][SOUTH]. Side-face V
@@ -143,13 +147,15 @@ public class GeoCube {
 			// -> larger V (bottom of texture) — texture images are stored top-down, so this
 			// is what makes a texture painted "right side up" actually appear right side
 			// up.
-			quads.add(face(c[7], c[6], c[2], c[3], 0, 1, 0, u + dz, v, u + dz + dx, v + dz));
-			quads.add(face(c[0], c[1], c[5], c[4], 0, -1, 0, u + dz + dx, v, u + dz + dx + dx, v + dz));
-			quads.add(face(c[1], c[5], c[6], c[2], 1, 0, 0, u, v + dz + dy, u + dz, v + dz));
-			quads.add(face(c[0], c[1], c[2], c[3], 0, 0, -1, u + dz, v + dz + dy, u + dz + dx, v + dz));
-			quads.add(face(c[4], c[0], c[3], c[7], -1, 0, 0, u + dz + dx, v + dz + dy, u + dz + dx + dz, v + dz));
+			// Same winding correction as the per-face branch above: UP/DOWN unreversed,
+			// the 4 sides reversed.
+			quads.add(face(c[7], c[6], c[2], c[3], 0, 1, 0, u + dz, v, u + dz + dx, v + dz, false));
+			quads.add(face(c[0], c[1], c[5], c[4], 0, -1, 0, u + dz + dx, v, u + dz + dx + dx, v + dz, false));
+			quads.add(face(c[1], c[5], c[6], c[2], 1, 0, 0, u, v + dz + dy, u + dz, v + dz, true));
+			quads.add(face(c[0], c[1], c[2], c[3], 0, 0, -1, u + dz, v + dz + dy, u + dz + dx, v + dz, true));
+			quads.add(face(c[4], c[0], c[3], c[7], -1, 0, 0, u + dz + dx, v + dz + dy, u + dz + dx + dz, v + dz, true));
 			quads.add(face(c[5], c[4], c[7], c[6], 0, 0, 1, u + dz + dx + dz, v + dz + dy, u + dz + dx + dz + dx,
-					v + dz));
+					v + dz, true));
 		}
 
 		List<LocalQuad> result = new ArrayList<>(6);
@@ -168,17 +174,26 @@ public class GeoCube {
 		return r != null ? r : new float[]{0, 0, 0, 0};
 	}
 
-	private LocalQuad face(float[] p0, float[] p1, float[] p2, float[] p3, float nx, float ny, float nz, float[] rect) {
-		return face(p0, p1, p2, p3, nx, ny, nz, rect[0], rect[1], rect[2], rect[3]);
+	private LocalQuad face(float[] p0, float[] p1, float[] p2, float[] p3, float nx, float ny, float nz, float[] rect,
+			boolean reverseWinding) {
+		return face(p0, p1, p2, p3, nx, ny, nz, rect[0], rect[1], rect[2], rect[3], reverseWinding);
 	}
 
 	private LocalQuad face(float[] p0, float[] p1, float[] p2, float[] p3, float nx, float ny, float nz, float u0,
-			float v0, float u1, float v1) {
+			float v0, float u1, float v1, boolean reverseWinding) {
 		boolean m = mirror;
-		LocalVertex[] verts = new LocalVertex[]{new LocalVertex(p0[0], p0[1], p0[2], m ? u1 : u0, v0),
-				new LocalVertex(p1[0], p1[1], p1[2], m ? u0 : u1, v0),
-				new LocalVertex(p2[0], p2[1], p2[2], m ? u0 : u1, v1),
-				new LocalVertex(p3[0], p3[1], p3[2], m ? u1 : u0, v1)};
+		// UV is always assigned by original corner identity (p0->u0,v0 etc.),
+		// independent of
+		// emission order — reverseWinding only changes which order the 4 already-UV'd
+		// vertices are pushed into the buffer, so winding and texturing can't
+		// interfere.
+		LocalVertex v0v = new LocalVertex(p0[0], p0[1], p0[2], m ? u1 : u0, v0);
+		LocalVertex v1v = new LocalVertex(p1[0], p1[1], p1[2], m ? u0 : u1, v0);
+		LocalVertex v2v = new LocalVertex(p2[0], p2[1], p2[2], m ? u0 : u1, v1);
+		LocalVertex v3v = new LocalVertex(p3[0], p3[1], p3[2], m ? u1 : u0, v1);
+		LocalVertex[] verts = reverseWinding
+				? new LocalVertex[]{v0v, v3v, v2v, v1v}
+				: new LocalVertex[]{v0v, v1v, v2v, v3v};
 		return new LocalQuad(verts, mirror ? -nx : nx, ny, mirror ? -nz : nz);
 	}
 
@@ -208,11 +223,16 @@ public class GeoCube {
 	}
 
 	/**
-	 * Degrees, applied X-then-Y-then-Z to the point (matches Bedrock's documented
-	 * bone/cube rotation order).
+	 * Degrees, applied X-then-Y-then-Z to the point (order matches Bedrock's
+	 * documented rotation order). Angle sign is negated from the naive
+	 * right-hand-rule convention — verified against real hinge geometry from an
+	 * actual model: a joint piece rotated by its stated angle landed ~10 units away
+	 * from the rest of the model, but landed exactly at the adjacent piece's
+	 * connection point with the sign flipped. Bedrock's rotation direction is the
+	 * opposite of the standard math convention this was originally written against.
 	 */
 	private static float[] rotate(float x, float y, float z, float rxDeg, float ryDeg, float rzDeg) {
-		double rx = Math.toRadians(rxDeg), ry = Math.toRadians(ryDeg), rz = Math.toRadians(rzDeg);
+		double rx = Math.toRadians(-rxDeg), ry = Math.toRadians(-ryDeg), rz = Math.toRadians(-rzDeg);
 		// X
 		double y1 = y * Math.cos(rx) - z * Math.sin(rx);
 		double z1 = y * Math.sin(rx) + z * Math.cos(rx);

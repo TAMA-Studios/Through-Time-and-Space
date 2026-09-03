@@ -9,12 +9,11 @@ import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
 import com.code.tama.tts.server.threads.FlightSoundThread;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 public class PhysicalStateManager {
 
@@ -32,9 +31,9 @@ public class PhysicalStateManager {
 	/**
 	 * Safety net: if a stage's sound never reports finished (e.g. a broken/absent
 	 * sound scheme), give up waiting after this many polls instead of hanging the
-	 * Takeoff/Landing thread forever. ~2 minutes at 50ms/poll.
+	 * Takeoff/Landing thread forever. ~1 minutes at 50ms/poll.
 	 */
-	private static final int MAX_POLLS = 20 * 60 * 2;
+	private static final int MAX_POLLS = 20 * 60 * 1;
 
 	private ExteriorTile exteriorTile;
 	private final ITARDISLevel itardisLevel;
@@ -58,10 +57,7 @@ public class PhysicalStateManager {
 		this.exteriorTile = exteriorTile;
 	}
 
-	/*
-	 * ==================== CLIENT ANIMATION (purely visual - unchanged)
-	 * ====================
-	 */
+	/* CLIENT */
 
 	public void clientLand(long startTick) {
 		landFadeAnimation(startTick);
@@ -101,7 +97,7 @@ public class PhysicalStateManager {
 		}
 	}
 
-	/* ==================== SERVER STATE MACHINE ==================== */
+	/* SERVER */
 
 	/**
 	 * Drives the full Taking Off stage: plays the takeoff sound, waits for it to
@@ -154,7 +150,6 @@ public class PhysicalStateManager {
 
 		// Physically place the exterior at the destination
 		itardisLevel.Land();
-		itardisLevel.GetFlightData().setPlayRotorAnimation(true);
 
 		this.exteriorTile = itardisLevel.GetExteriorTile();
 
@@ -175,16 +170,6 @@ public class PhysicalStateManager {
 		itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
 	}
 
-	/**
-	 * Polls (with a real sleep - not a busy-spin) until the given sound reports
-	 * finished. This is what the old version was missing: previously nothing ever
-	 * called {@code SetFinished(true)} on the takeoff/landing sound, so the
-	 * equivalent wait loop spun at 100% CPU forever and the TARDIS could never
-	 * leave Taking Off / finish Landing.
-	 *
-	 * @return false if it gave up due to the safety timeout instead of the sound
-	 *         actually finishing.
-	 */
 	private boolean waitUntilFinished(AbstractFlightSound sound) {
 		int polls = 0;
 		while (!sound.IsFinished()) {

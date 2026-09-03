@@ -1,12 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Objects;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.client.gui.ARSRoomRegistry;
@@ -16,6 +15,7 @@ import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.worlds.TStemCreation;
@@ -30,10 +30,6 @@ import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -50,16 +46,20 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.Objects;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -208,9 +208,24 @@ public class ExteriorTile extends AbstractPortalTile {
 		// pos.getOrigin(),
 		// structure.GetRL());
 
+		BlockPos door = BlockPos.ZERO.atY(129).south();
+
+		// Create the starting platform
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).north(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).north().east(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).north().west(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).east(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).west(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).south(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).south().east(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(BlockPos.ZERO.atY(128).south().west(), Blocks.STONE.defaultBlockState(), 3);
+		this.getLevel().setBlock(door, TTSBlocks.DOOR_BLOCK.getDefaultState().setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH), 3);
 		ARSRoomRegistry.placeRoom(pos, ARSRegistry.STRUCTURES_INFO.get(0));
 
 		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {
+			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(door));
+
 			this.setTargetLevel(INTERIOR_DIMENSION, cap.GetData().getDoorData().getLocation().GetBlockPos(),
 					cap.GetData().getDoorData().getYRot(), true);
 		});

@@ -1,30 +1,29 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.boti;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.function.BiConsumer;
-
-import javax.annotation.Nullable;
-
+import com.code.tama.triggerapi.NativeLoader;
+import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
+import com.code.tama.triggerapi.boti.client.OccupancyGrid;
+import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.*;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
-import com.code.tama.triggerapi.NativeLoader;
-import com.code.tama.triggerapi.boti.client.BotiBlockContainer;
-import com.code.tama.triggerapi.boti.client.OccupancyGrid;
-import com.code.tama.triggerapi.boti.packets.S2C.PortalChunkDataPacketS2C;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * Off-thread chunk geometry gatherer. <br />
@@ -216,7 +215,6 @@ public class ChunkGatheringThread extends Thread {
 						continue;
 
 					targetLevel.getChunkSource().getLightEngine().lightChunk(chunk, false).join();
-
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 					LevelChunkSection sectionHigher = chunk.getSection(chunk.getSectionIndex(targetPos.getY() + 16)); // NEW

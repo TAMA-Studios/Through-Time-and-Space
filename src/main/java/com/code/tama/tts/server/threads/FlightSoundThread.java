@@ -1,21 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.threads;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * Drives a single {@link AbstractFlightSound} to completion (or, if
@@ -106,9 +101,6 @@ public class FlightSoundThread {
 	}
 
 	private void tick() {
-		// level.playSound / level.getGameTime must run on the main server thread -
-		// calling into Level from this executor's own thread pool isn't safe and
-		// was a likely contributor to glitchy/overlapping playback.
 		if (level.getServer() == null)
 			return;
 
@@ -135,13 +127,6 @@ public class FlightSoundThread {
 
 			int length = sound.GetLength();
 			if (length <= 0) {
-				// A sound reporting a zero/negative length can never be measured
-				// against - rather than instantly "finishing" (which is what caused
-				// takeoff/landing to be inaudible and the loop to restart every
-				// poll), play it once, don't mark it finished, and warn loudly so
-				// the actual GetLength() implementation gets fixed. The stage this
-				// belongs to will fall through via PhysicalStateManager's own
-				// timeout rather than hang the game indefinitely.
 				if (!played) {
 					System.err.println("[TTS] " + sound.getClass().getSimpleName() + ".GetLength() returned " + length
 							+ " - this must be a positive tick count.");
