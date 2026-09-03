@@ -13,7 +13,7 @@ Creating the TARDIS from scratch requires a few things
 - 4x Structural Beams
 - 4x Plasmic Shell Plating
 - 1k Forge Energy
-- 1x Dimensional Jacks
+- 1x Dimensional Dams Circuit
 - 1x TARDIS Interior Door
 - 1x Oxygenator
 - 1x Self Contained ARS Unit
@@ -35,7 +35,7 @@ In order to power the exterior, hook it up to a source of FE, this can be a Meka
 <br />
 Once you have the exterior supplied with FE, you must wait for it to charge its internal buffer up to 1KFE
 <br />
-Once the exterior has reached the target 1KFE in its buffer, you may initiate the creation of the interior dimension by powering the exterior with redstone and clicking on it with the "Dimensional Jacks" item.
+Once the exterior has reached the target 1KFE in its buffer, you may initiate the creation of the interior dimension by powering the exterior with redstone and clicking on it with the "Dimensional Dams Circuit" item.
 <br />
 Wait.
 <br />
