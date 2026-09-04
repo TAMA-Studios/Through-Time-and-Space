@@ -194,7 +194,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 					Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
 							ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
 					tardisLevelCapability.UpdateClient(DataUpdateValues.DATA);
-					lClickAnim(world, pos);
+					rClickAnim(world, pos);
 					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
@@ -216,7 +216,7 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 					Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
 							ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
 					tardisLevelCapability.UpdateClient(DataUpdateValues.DATA);
-					rClickAnim(world, pos);
+					lClickAnim(world, pos);
 					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

@@ -55,8 +55,12 @@ public class TARDISClientData {
 		return getExteriorRenderer().getJavaJSON().getPart("baseRoot");
 	}
 
-	public JavaJSONRenderer getInteriorDoor() {
-		return getExteriorRenderer().getJavaJSON().getPart("InteriorDoor");
+	public JavaJSONRenderer getInteriorDoors() {
+		return getExteriorRenderer().getJavaJSON().getPart("InteriorDoors");
+	}
+
+	public JavaJSONRenderer getInteriorDoorFrame() {
+		return getExteriorRenderer().getJavaJSON().getPart("InteriorDoorFrame");
 	}
 
 	public VortexRenderer getVortex() {

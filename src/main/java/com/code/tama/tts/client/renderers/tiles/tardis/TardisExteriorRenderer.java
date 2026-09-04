@@ -189,11 +189,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
 
-						parsed.getPart("LeftDoor").render(stack,
+						parsed.getPart("Doors").render(stack,
 								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
 								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-						parsed.getPart("RightDoor").render(stack,
-								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
+
+						parsed.getPart("Doors").render(stack,
+								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())),
 								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
 
 						((MultiBufferSource.BufferSource) bufferSource).endBatch();

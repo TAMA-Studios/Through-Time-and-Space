@@ -76,9 +76,12 @@ public class PhysicalStateManager {
 
 		while (this.exteriorTile.state.equals(ExteriorState.LANDING)) {
 			assert this.exteriorTile.getLevel() != null;
-			long tick = this.exteriorTile.getLevel().getGameTime() - startTick;
+
+			float tick = (this.exteriorTile.getLevel().getGameTime() - startTick) / 5;
+
 			float amp = (float) (initialAmp * Math.exp(-decay * tick));
-			float alpha = base - (amp * (float) Math.abs(Math.sin(freq * tick)));
+			float alpha = base - amp * (float) Math.abs(Math.sin(freq * tick));
+
 			exteriorTile.setTransparency(alpha);
 		}
 	}

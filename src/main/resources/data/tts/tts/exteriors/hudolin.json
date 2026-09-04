@@ -1,6 +1,6 @@
 {
   "values" : {
-    "doorMaxDegrees" : -35,
+    "doorMaxDegrees" : -75,
     "lightmap" : "tts:textures/exteriors/ichnea/hudolin_emissive.png",
     "modelname" : "tts:models/exterior/hudolin.json",
     "name" : "hudolin",

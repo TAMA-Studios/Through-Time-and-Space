@@ -46,8 +46,7 @@ public class JavaJSONModel extends Model {
 	}
 
 	public JavaJSONRenderer getPart(String groupName) {
-		JavaJSONRenderer part = partsList.getOrDefault(groupName, JavaJSONParser.NULL_PART);
-		return part;
+		return partsList.getOrDefault(groupName, JavaJSONParser.NULL_PART);
 	}
 
 	public void renderFont(PoseStack poseStack, String _parent, JavaJSONFile.FontData fontData, float red, float green,

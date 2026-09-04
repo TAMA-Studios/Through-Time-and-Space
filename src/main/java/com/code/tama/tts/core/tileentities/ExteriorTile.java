@@ -411,7 +411,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	public void onLoad() {
 		super.onLoad();
 		if (this.level != null) {
-			if (this.level.isClientSide)
+			if (this.level.isClientSide && false) // Shouldn't need this one either hopefully
 				Networking.sendToServer(new TriggerSyncExteriorPacketC2S(this.level.dimension(),
 						this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()));
 			else
@@ -445,7 +445,8 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void updateModel() {
-
+		if (true)
+			return; // We shouldn't need this. Hopefully.
 		if (this.level instanceof ServerLevel serverLevel) {
 			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
 			if (level1 != null) {
