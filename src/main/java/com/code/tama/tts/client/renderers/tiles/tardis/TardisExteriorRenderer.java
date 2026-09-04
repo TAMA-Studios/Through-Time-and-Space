@@ -113,7 +113,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 			// stack.mulPose(Axis.ZN.rotationDegrees(180));
 		}
 
-		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
+		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModel().getModel());
 		JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
 		// parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(leftAngle);

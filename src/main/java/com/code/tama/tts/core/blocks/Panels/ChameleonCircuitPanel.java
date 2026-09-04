@@ -186,48 +186,38 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 			return InteractionResult.FAIL;
 
 		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
+			ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
 			switch (button) {
 				case MINUS :
-					tardisLevelCapability.GetData().setExteriorModel(
-							ExteriorsRegistry.CycleDown(tardisLevelCapability.GetData().getExteriorModel()));
+					tardisLevelCapability.GetData().CycleVariantDown();
 
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-
-					tardisLevelCapability.GetExteriorTile().UpdateAll();
-
+					Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
+							ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
+					tardisLevelCapability.UpdateClient(DataUpdateValues.DATA);
 					lClickAnim(world, pos);
-					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case VARIANT :
 					tardisLevelCapability.GetData().CycleVariant();
 
-					ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
-					assert serverLevel != null;
-					if (tardisLevelCapability.GetExteriorTile() != null) {
-						tardisLevelCapability.GetData().CycleVariant();
-
-						Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
-								ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
-
-						tardisLevelCapability.GetExteriorTile().UpdateAll();
-					}
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
+					Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
+							ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
+					tardisLevelCapability.UpdateClient(DataUpdateValues.DATA);
 					mClickAnim(world, pos);
 					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case POSITIVE :
-					tardisLevelCapability.GetData().setExteriorModel(
-							ExteriorsRegistry.Cycle(tardisLevelCapability.GetData().getExteriorModel()));
+					tardisLevelCapability.GetData().CycleVariant();
 
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-
-					tardisLevelCapability.GetExteriorTile().UpdateAll();
+					Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
+							ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
+					tardisLevelCapability.UpdateClient(DataUpdateValues.DATA);
 					rClickAnim(world, pos);
-					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
+					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;

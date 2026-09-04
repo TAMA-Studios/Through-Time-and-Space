@@ -58,8 +58,7 @@ public class TriggerSyncExteriorPacketC2S {
 							.GetTARDISCapSupplier(serverLevel.getServer().getLevel(exteriorTile.GetInterior()))
 							.ifPresent(cap -> {
 								Networking.sendPacketToDimension(packet.level,
-										new SyncExteriorPacketS2C(exteriorTile.getModelIndex(), exteriorTile.state,
-												exteriorTile.DoorsOpen(),
+										new SyncExteriorPacketS2C(exteriorTile.state, exteriorTile.DoorsOpen(),
 												ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()),
 												exteriorTile.targetLevel, exteriorTile.targetY, exteriorTile.targetPos,
 												packet.blockX, packet.blockY, packet.blockZ));

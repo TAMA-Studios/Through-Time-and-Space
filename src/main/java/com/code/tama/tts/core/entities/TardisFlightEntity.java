@@ -20,16 +20,11 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -37,8 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import com.code.tama.triggerapi.universal.UniversalCommon;
 
 /**
  * A real, physical, rideable form of a TARDIS' {@link ExteriorTile}, used for
@@ -60,14 +53,8 @@ import com.code.tama.triggerapi.universal.UniversalCommon;
 public class TardisFlightEntity extends Mob {
 
 	// ---- Synced, render-relevant snapshot of the ExteriorTile we came from ----
-	private static final EntityDataAccessor<String> MODEL_NAMESPACE = SynchedEntityData
-			.defineId(TardisFlightEntity.class, EntityDataSerializers.STRING);
-	private static final EntityDataAccessor<String> MODEL_PATH = SynchedEntityData.defineId(TardisFlightEntity.class,
-			EntityDataSerializers.STRING);
-
 	private static final EntityDataAccessor<Integer> MODEL_ID = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.INT);
-
 	private static final EntityDataAccessor<Integer> FACING = SynchedEntityData.defineId(TardisFlightEntity.class,
 			EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DOORS_OPEN = SynchedEntityData.defineId(TardisFlightEntity.class,
@@ -123,8 +110,6 @@ public class TardisFlightEntity extends Mob {
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(MODEL_NAMESPACE, "tts");
-		this.entityData.define(MODEL_PATH, "police_box");
 		this.entityData.define(MODEL_ID, 1);
 		this.entityData.define(FACING, Direction.NORTH.get3DDataValue());
 		this.entityData.define(DOORS_OPEN, 0);
@@ -186,9 +171,6 @@ public class TardisFlightEntity extends Mob {
 		}
 
 		Direction facing = data.contains("facing") ? Direction.byName(data.getString("facing")) : null;
-
-		entity.entityData.set(MODEL_NAMESPACE, modelNamespace);
-		entity.entityData.set(MODEL_PATH, modelPath);
 
 		entity.entityData.set(FACING, (facing == null ? Direction.NORTH : facing).get3DDataValue());
 		entity.entityData.set(DOORS_OPEN, data.getInt("doorsOpen"));
@@ -371,10 +353,6 @@ public class TardisFlightEntity extends Mob {
 	// =====================================================================
 	// Client-side rendering accessors
 	// =====================================================================
-
-	public ResourceLocation getSyncedModel() {
-		return UniversalCommon.newRL(this.entityData.get(MODEL_NAMESPACE), this.entityData.get(MODEL_PATH));
-	}
 
 	public int getSyncedModelID() {
 		return this.entityData.get(MODEL_ID);

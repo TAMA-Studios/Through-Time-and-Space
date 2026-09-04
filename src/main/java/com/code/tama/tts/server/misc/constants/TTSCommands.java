@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
-import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
@@ -181,7 +180,6 @@ public class TTSCommands {
 		tile.ShouldMakeDimOnNextTick = true;
 
 		tile.setModel(0);
-		tile.setModelIndex(ExteriorsRegistry.Get(0).getModel());
 		tile.UpdateAll();
 
 		source.sendSuccess(() -> Component.literal("Placed TARDIS at " + player.position()), true);

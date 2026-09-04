@@ -63,7 +63,6 @@ public class TardisFlightRenderer extends EntityRenderer<TardisFlightEntity> {
 			this.scratchTileFacing = facing;
 		}
 
-		this.scratchTile.setModelIndex(entity.getSyncedModel());
 		this.scratchTile.setClientTransparency(entity.getSyncedTransparency());
 		this.scratchTile.SetDoorsOpen(entity.getSyncedDoorsOpen());
 		this.scratchTile.Model = ExteriorsRegistry.Get(entity.getSyncedModelID());

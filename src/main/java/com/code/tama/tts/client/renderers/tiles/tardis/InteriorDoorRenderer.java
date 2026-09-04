@@ -133,9 +133,13 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					.toRadians(rightAngle);
 			cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntLeftDoor").yRot = (float) Math
 					.toRadians(-leftAngle);
-			renderBone(door, poseStack,
-					bufferSource.getBuffer(renderer.getRenderType(cap.GetData().getExteriorModel().getTexture())),
+
+			renderBone(door, poseStack, bufferSource.getBuffer(renderer.getRenderType(renderer.getTexture())),
 					combinedLight);
+
+			if (renderer.getLightMap() != null)
+				renderBone(door, poseStack, bufferSource.getBuffer(renderer.getRenderType(renderer.getLightMap())),
+						combinedLight);
 		});
 
 		poseStack.popPose();

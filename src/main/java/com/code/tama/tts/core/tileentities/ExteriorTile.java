@@ -30,7 +30,6 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,8 +78,6 @@ public class ExteriorTile extends AbstractPortalTile {
 	private float transparency = 1.0f; // Default fully visible
 	int DoorState;
 	@Getter
-	@Setter
-	ResourceLocation ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
 	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
 
 	public String PlacerName;
@@ -117,15 +114,12 @@ public class ExteriorTile extends AbstractPortalTile {
 			Capabilities.getCap(Capabilities.TARDIS_LEVEL_CAPABILITY,
 					this.level.getServer().getLevel(this.INTERIOR_DIMENSION)).ifPresent(cap -> {
 						if (cap.GetExteriorTile() == this) {
-							this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 							this.Model = cap.GetData().getExteriorModel();
 							tag.put("model", ExteriorModelContainer.CODEC.encodeStart(NbtOps.INSTANCE, this.Model).get()
 									.orThrow());
 						}
 					});
 		}
-		tag.putString("modelPath", this.getModelIndex().getPath());
-		tag.putString("modelNamespace", this.getModelIndex().getNamespace());
 		tag.putFloat("Transparency", this.transparency);
 		ExteriorModelContainer.CODEC.encode(this.GetVariant(), NbtOps.INSTANCE, tag);
 		assert this.level != null;
@@ -374,11 +368,6 @@ public class ExteriorTile extends AbstractPortalTile {
 		if (tag.contains("artificial"))
 			this.isArtificial = tag.getBoolean("artificial");
 
-		if (tag.contains("modelPath") && tag.contains("modelNamespace")) {
-			this.ModelIndex = new ResourceLocation(tag.getString("modelNamespace"), tag.getString("modelPath"));
-		} else {
-			this.ModelIndex = ExteriorsRegistry.EXTERIORS.get(0).getModel();
-		}
 		if (tag.contains("model")) {
 			this.Model = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, tag.get("model")).get().orThrow();
 		}
@@ -444,7 +433,6 @@ public class ExteriorTile extends AbstractPortalTile {
 			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
 			if (level1 != null) {
 				level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-					this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 					this.Model = cap.GetData().getExteriorModel();
 					cap.UpdateClient(DataUpdateValues.RENDERING);
 					// Networking.sendPacketToDimension(this.level.dimension(), new
@@ -462,11 +450,10 @@ public class ExteriorTile extends AbstractPortalTile {
 			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
 			if (level1 != null) {
 				level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
-					this.ModelIndex = cap.GetData().getExteriorModel().getModel();
 					this.Model = cap.GetData().getExteriorModel();
 					cap.UpdateClient(DataUpdateValues.RENDERING);
 					Networking.sendPacketToDimension(this.level.dimension(),
-							new SyncExteriorPacketS2C(getModelIndex(), state, DoorsOpen(),
+							new SyncExteriorPacketS2C(state, DoorsOpen(),
 									ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()), targetLevel,
 									targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(),
 									this.getBlockPos().getZ()));

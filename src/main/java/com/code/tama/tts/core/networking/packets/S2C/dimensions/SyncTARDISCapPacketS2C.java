@@ -164,7 +164,6 @@ public class SyncTARDISCapPacketS2C {
 							cap.setData(packet.data);
 							if (cap.GetExteriorTile() != null) {
 								cap.GetExteriorTile().Model = cap.GetData().getExteriorModel();
-								cap.GetExteriorTile().setModelIndex(cap.GetData().getExteriorModel().getModel());
 							}
 							break;
 						}

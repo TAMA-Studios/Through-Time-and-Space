@@ -51,6 +51,10 @@ public class TARDISClientData {
 		return getExteriorRenderer().getJavaJSON().getPart("InteriorBOTI");
 	}
 
+	public JavaJSONRenderer getBaseRoot() {
+		return getExteriorRenderer().getJavaJSON().getPart("baseRoot");
+	}
+
 	public JavaJSONRenderer getInteriorDoor() {
 		return getExteriorRenderer().getJavaJSON().getPart("InteriorDoor");
 	}

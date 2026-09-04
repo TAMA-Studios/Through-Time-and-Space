@@ -121,7 +121,11 @@ public class TARDISData {
 	}
 
 	public void CycleVariant() {
-		this.ExteriorModel = ExteriorsRegistry.Cycle(this.ExteriorModel);
+		this.SetExteriorVariant(ExteriorsRegistry.Cycle(this.ExteriorModel));
+	}
+
+	public void CycleVariantDown() {
+		this.SetExteriorVariant(ExteriorsRegistry.CycleDown(this.ExteriorModel));
 	}
 
 	public boolean IsViewingTARDIS(UUID player) {
@@ -132,7 +136,6 @@ public class TARDISData {
 		this.ExteriorModel = model;
 		if (this.TARDIS.GetExteriorTile() != null) {
 			this.TARDIS.GetExteriorTile().Model = model;
-			this.TARDIS.GetExteriorTile().setModelIndex(model.getModel());
 			this.TARDIS.GetExteriorTile().UpdateAll();
 			this.TARDIS.GetExteriorTile().setChanged();
 		}
@@ -169,7 +172,6 @@ public class TARDISData {
 		if (this.TARDIS.GetExteriorTile() == null)
 			return;
 		this.TARDIS.GetExteriorTile().Model = container;
-		this.TARDIS.GetExteriorTile().setModelIndex(container.getModel());
 		this.TARDIS.GetExteriorTile().UpdateAll();
 	}
 

@@ -717,8 +717,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 				if (this.GetExteriorTile() != null) {
 					Objects.requireNonNull(cap.GetExteriorTile()).Model = cap.data.getExteriorModel();
-					Objects.requireNonNull(cap.GetExteriorTile()).setModelIndex(cap.data.getExteriorModel().getModel());
-					Objects.requireNonNull(cap.GetExteriorTile()).setChanged();
+					Objects.requireNonNull(cap.GetExteriorTile()).UpdateAll();
 					cap.GetExteriorTile().getLevel().sendBlockUpdated(cap.GetExteriorTile().getBlockPos(),
 							cap.GetExteriorTile().getBlockState(), cap.GetExteriorTile().getBlockState(), 3);
 				}
