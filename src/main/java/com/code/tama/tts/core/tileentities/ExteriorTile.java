@@ -1,12 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Objects;
-import java.util.UUID;
-
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.client.gui.ARSRoomRegistry;
@@ -30,10 +29,6 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -56,12 +51,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import java.util.Objects;
+import java.util.UUID;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -445,14 +443,14 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void updateModel() {
-		if (true)
-			return; // We shouldn't need this. Hopefully.
+//		if (true)
+//			return; // We shouldn't need this. Hopefully.
 		if (this.level instanceof ServerLevel serverLevel) {
 			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
 			if (level1 != null) {
 				level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 					this.Model = cap.GetData().getExteriorModel();
-					cap.UpdateClient(DataUpdateValues.RENDERING);
+//					cap.UpdateClient(DataUpdateValues.RENDERING);
 					Networking.sendPacketToDimension(this.level.dimension(),
 							new SyncExteriorPacketS2C(state, DoorsOpen(),
 									ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()), targetLevel,

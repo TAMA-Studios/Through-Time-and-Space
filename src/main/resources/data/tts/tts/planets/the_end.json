@@ -1,0 +1,13 @@
+{
+    "name": "The End",
+    "id": "minecraft:the_end",
+
+    "size": 2000,
+    "texture": "tts:textures/space/stars/sol.png",
+
+    "x": 50000,
+    "y": 300,
+    "z": 400,
+
+    "rotation_speed": 48000
+  }

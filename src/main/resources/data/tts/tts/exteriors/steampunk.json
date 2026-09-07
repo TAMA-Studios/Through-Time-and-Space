@@ -1,7 +1,9 @@
 {
   "values" : {
+    "collection": "voxel",
+    "parent": "steampunk",
     "lightmap" : "tts:textures/exteriors/voxel/steampunk/_lightmap.png",
-    "modelname" : "tts:models/exterior/steampunk.json",
+    "model" : "tts:models/exterior/steampunk.json",
     "name" : "steampunk",
     "texture" : "tts:textures/exteriors/voxel/steampunk.png"
   }

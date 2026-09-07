@@ -1,20 +1,18 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.rendering.VortexRenderer;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.rendering.VortexRenderer;
-import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Getter
 @Setter
@@ -57,6 +55,18 @@ public class TARDISClientData {
 
 	public JavaJSONRenderer getInteriorDoors() {
 		return getExteriorRenderer().getJavaJSON().getPart("InteriorDoors");
+	}
+
+	public JavaJSONRenderer getLeftDoor() {
+		return getExteriorRenderer().getJavaJSON().getPart("LeftDoor");
+	}
+
+	public JavaJSONRenderer getRightDoor() {
+		return getExteriorRenderer().getJavaJSON().getPart("RightDoor");
+	}
+
+	public JavaJSONRenderer getDoors() {
+		return getExteriorRenderer().getJavaJSON().getPart("Doors");
 	}
 
 	public JavaJSONRenderer getInteriorDoorFrame() {

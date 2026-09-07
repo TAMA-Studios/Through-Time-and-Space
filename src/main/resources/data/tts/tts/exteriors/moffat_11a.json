@@ -1,8 +1,10 @@
 {
   "values" : {
-    "lightmap" : "tts:textures/exteriors/voxel/moffat/m11a_lightmap.png",
-    "modelname" : "tts:models/exterior/voxel_moffat.json",
+    "collection": "voxel",
+    "parent": "moffat",
+    "lightmap" : "tts:textures/exteriors/voxel/moffat/mof_11a_lightmap.png",
+    "model" : "tts:models/exterior/voxel_moffat.json",
     "name" : "voxel.moffat.11a",
-    "texture" : "tts:textures/exteriors/voxel/moffat/m11a.png"
+    "texture" : "tts:textures/exteriors/voxel/moffat/mof_11a.png"
   }
 }

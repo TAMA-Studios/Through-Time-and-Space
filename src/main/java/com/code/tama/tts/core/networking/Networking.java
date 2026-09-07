@@ -1,11 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.networking;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import com.code.tama.triggerapi.boti.packets.BOTIPackets;
+import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
+import com.code.tama.triggerapi.networking.gui.*;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.*;
 import com.code.tama.tts.core.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
@@ -22,7 +21,6 @@ import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C
 import com.code.tama.tts.core.networking.packets.S2C.exterior.ExteriorStatePacket;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
-
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -38,10 +36,10 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import com.code.tama.triggerapi.boti.packets.BOTIPackets;
-import com.code.tama.triggerapi.dimensions.packets.DimensionPacketsRegistration;
-import com.code.tama.triggerapi.networking.gui.*;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Networking {
 	public static int ID = 0;
@@ -122,6 +120,9 @@ public class Networking {
 
 		register(SyncCapVariantPacketS2C.class, SyncCapVariantPacketS2C::encode, SyncCapVariantPacketS2C::decode,
 				SyncCapVariantPacketS2C::handle);
+
+		register(ChameleonCircuitActionC2SPacket.class, ChameleonCircuitActionC2SPacket::encode, ChameleonCircuitActionC2SPacket::decode,
+				ChameleonCircuitActionC2SPacket::handle);
 
 		register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode,
 				TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);

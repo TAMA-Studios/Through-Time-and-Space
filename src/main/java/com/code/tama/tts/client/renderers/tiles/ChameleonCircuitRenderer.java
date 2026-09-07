@@ -1,15 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.tileentities.ChameleonCircuitPanelTileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
@@ -17,9 +15,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
 	public static final int fullBright = 0xF000F0; // LightTexture.pack(15, 15);
@@ -89,6 +87,17 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 				// OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
 				renderBone(root, poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
 						.getRenderType(cap.GetData().getExteriorModel().getTexture())), combinedLight);
+				renderBone(root, poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
+						.getRenderType(cap.GetData().getExteriorModel().getLightMap())), 0xf000f0);
+
+				cap.GetClientData().getLeftDoor().setRotation(0, 0, 0);
+				cap.GetClientData().getRightDoor().setRotation(0, 0, 0);
+
+				renderBone(cap.GetClientData().getDoors(), poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
+						.getRenderType(cap.GetData().getExteriorModel().getTexture())), combinedLight);
+
+				renderBone(cap.GetClientData().getDoors(), poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
+						.getRenderType(cap.GetData().getExteriorModel().getLightMap())), 0xf000f0);
 			}
 			poseStack.popPose();
 

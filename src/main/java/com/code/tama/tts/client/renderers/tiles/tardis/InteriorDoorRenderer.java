@@ -1,29 +1,28 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.animation.GeoAnimTicker;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.tileentities.DoorTile;
+import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.animation.GeoAnimTicker;
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	private static long lastTicks = -1;
@@ -102,37 +101,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 				pose.popPose();
 
 				pose.popPose();
-				pose.pushPose();
-
-				poseStack.mulPose(Axis.XP.rotationDegrees(180));
-				poseStack.mulPose(Axis.YP.rotationDegrees(180));
-				poseStack.translate(-0.5, -.001, 1); // The .001 on the Y is to move it JUST above the ground for Z
-														// fighting
-
-				// Set bone rotations directly on the model, rotating the pose stack would
-				// swing the entire frame. These bones are on the exterior renderer's JSON,
-				// matching what setupInteriorDoorPose() does, but with eased angles.
-				poseStack.scale(door.model.modelScale, door.model.modelScale, door.model.modelScale);
-				cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntRightDoor").yRot = (float) Math
-						.toRadians(rightAngle);
-				cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntLeftDoor").yRot = (float) Math
-						.toRadians(-leftAngle);
-
-				RenderSystem.disableDepthTest();
-
-				renderBone(door, poseStack,
-						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
-						combinedLight);
-
-				if (renderer.getLightMap() != null)
-					renderBone(door, poseStack,
-							bufferSource
-									.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
-							combinedLight);
-
-				((MultiBufferSource.BufferSource) bufferSource).endBatch();
-				RenderSystem.enableDepthTest();
-				pose.popPose();
+				renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, rightAngle, leftAngle, renderer);
 				pose.pushPose();
 			}, (pose, buf) -> {
 			}, (pose, buf) -> {
@@ -165,69 +134,65 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
 				pose.popPose();
-				pose.pushPose();
+				renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, rightAngle, leftAngle, renderer);
 
-				poseStack.mulPose(Axis.XP.rotationDegrees(180));
-				poseStack.mulPose(Axis.YP.rotationDegrees(180));
-				poseStack.translate(-0.5, -.001, 1); // The .001 on the Y is to move it JUST above the ground for Z
-														// fighting
-
-				// Set bone rotations directly on the model, rotating the pose stack would
-				// swing the entire frame. These bones are on the exterior renderer's JSON,
-				// matching what setupInteriorDoorPose() does, but with eased angles.
-				poseStack.scale(door.model.modelScale, door.model.modelScale, door.model.modelScale);
-				cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntRightDoor").yRot = (float) Math
-						.toRadians(rightAngle);
-				cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntLeftDoor").yRot = (float) Math
-						.toRadians(-leftAngle);
-
-				RenderSystem.disableDepthTest();
-
-				renderBone(door, poseStack,
-						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
-						combinedLight);
-
-				if (renderer.getLightMap() != null)
-					renderBone(door, poseStack,
-							bufferSource
-									.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
-							combinedLight);
-
-				((MultiBufferSource.BufferSource) bufferSource).endBatch();
-				RenderSystem.enableDepthTest();
-				pose.popPose();
 				pose.pushPose();
 			});
 
-			poseStack.mulPose(Axis.XP.rotationDegrees(180));
-			poseStack.mulPose(Axis.YP.rotationDegrees(180));
-			poseStack.translate(-0.5, -.001, 0.5); // The .001 on the Y is to move it JUST above the ground for Z
-													// fighting
+			poseStack.translate(0, 0, -0.5);
 
-			// Set bone rotations directly on the model, rotating the pose stack would
-			// swing the entire frame. These bones are on the exterior renderer's JSON,
-			// matching what setupInteriorDoorPose() does, but with eased angles.
-			poseStack.scale(door.model.modelScale, door.model.modelScale, door.model.modelScale);
+			renderDoors(poseStack, bufferSource, combinedLight, cap, poseStack, door, frame, rightAngle, leftAngle, renderer, true);
+		});
+
+		poseStack.popPose();
+	}
+	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, float rightAngle, float leftAngle, AbstractJSONRenderer renderer) {
+		renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, null, rightAngle, leftAngle, renderer, false);
+	}
+
+	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, JavaJSONRenderer frame, float rightAngle, float leftAngle, AbstractJSONRenderer renderer, boolean renderFrame) {
+		pose.pushPose();
+
+		poseStack.mulPose(Axis.XP.rotationDegrees(180));
+		poseStack.mulPose(Axis.YP.rotationDegrees(180));
+		poseStack.translate(-0.5, -.001, 1); // The .001 on the Y is to move it JUST above the ground for Z
+		// fighting
+
+		// Set bone rotations directly on the model, rotating the pose stack would
+		// swing the entire frame. These bones are on the exterior renderer's JSON,
+		// matching what setupInteriorDoorPose() does, but with eased angles.
+		poseStack.scale(door.model.modelScale, door.model.modelScale, door.model.modelScale);
+		cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntRightDoor").yRot = (float) Math
+				.toRadians(rightAngle);
+		cap.GetClientData().getExteriorRenderer().getJavaJSON().getPart("IntLeftDoor").yRot = (float) Math
+				.toRadians(-leftAngle);
+
+		RenderSystem.disableDepthTest();
+
+		if (renderFrame)
 			renderBone(frame, poseStack,
 					bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
 					combinedLight);
 
-			renderBone(door, poseStack,
-					bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
-					combinedLight);
+		else
+		renderBone(door, poseStack,
+				bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
+				combinedLight);
 
-			if (renderer.getLightMap() != null) {
+		if (renderer.getLightMap() != null) {
+			if (renderFrame)
 				renderBone(frame, poseStack,
 						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
 						combinedLight);
+else
+			renderBone(door, poseStack,
+					bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
+					combinedLight);
+		}
 
-				renderBone(door, poseStack,
-						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
-						combinedLight);
-			}
-		});
-
-		poseStack.popPose();
+		((MultiBufferSource.BufferSource) bufferSource).endBatch();
+		RenderSystem.enableDepthTest();
+		pose.popPose();
 	}
 
 	private float landFadeAnimation(long startTick) {
@@ -245,9 +210,9 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	}
 
 	public void renderBOTI(PoseStack pose, AbstractPortalTile portal, MultiBufferSource.BufferSource botiSource) {
-		pose.pushPose();
-		renderSky(portal, pose, botiSource);
-		pose.popPose();
+//		pose.pushPose();
+//		renderSky(portal, pose, botiSource);
+//		pose.popPose();
 
 		pose.pushPose();
 		pose.translate(1.5, -0.5, -0.5);
@@ -258,10 +223,8 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	public static void renderSky(AbstractPortalTile portal, PoseStack pose, MultiBufferSource.BufferSource botiSource) {
 		pose.pushPose();
 		pose.scale(2, 4, 2);
-
-		// Update sky color every 20 seconds or when null
-
-		StencilUtils.drawColoredFrame(pose, 2, 4, portal.SkyColor);
+		pose.translate(0, 0, 100);
+		StencilUtils.drawColoredFrame(pose, 200, 400, portal.SkyColor);
 		botiSource.endBatch();
 
 		pose.popPose();
