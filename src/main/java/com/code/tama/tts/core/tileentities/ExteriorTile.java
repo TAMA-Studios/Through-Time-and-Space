@@ -1,19 +1,20 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
-import com.code.tama.triggerapi.universal.UniversalServerOnly;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.Objects;
+import java.util.UUID;
+
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.client.gui.ARSRoomRegistry;
+import com.code.tama.tts.core.achievements.TTSAchievement;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.events.TardisEvent;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
-import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncExteriorPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
@@ -29,6 +30,10 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -51,15 +56,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.UUID;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 public class ExteriorTile extends AbstractPortalTile {
 	public ExteriorState state = ExteriorState.LANDED;
@@ -76,7 +78,7 @@ public class ExteriorTile extends AbstractPortalTile {
 	private float transparency = 1.0f; // Default fully visible
 	int DoorState;
 	@Getter
-	public ExteriorModelContainer Model = ExteriorsRegistry.EXTERIORS.get(0);
+	public ExteriorModelContainer Model;
 
 	public String PlacerName;
 	public UUID PlacerUUID;
@@ -300,6 +302,7 @@ public class ExteriorTile extends AbstractPortalTile {
 			if (EntityToTeleport instanceof ServerPlayer player) {
 				player.getAbilities().flying = false;
 				player.onUpdateAbilities();
+				TTSAchievement.Achievements.TARDIS_ENTRY.trigger(player);
 			}
 			SeamlessTeleport.teleportTo(EntityToTeleport, Interior, X, Y, Z, yRot, xRot);
 			// EntityToTeleport.teleportTo(Interior, X, Y, Z, Set.of(), yRot, 0);
@@ -443,19 +446,21 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	public void updateModel() {
-//		if (true)
-//			return; // We shouldn't need this. Hopefully.
+		// if (true)
+		// return; // We shouldn't need this. Hopefully.
 		if (this.level instanceof ServerLevel serverLevel) {
 			ServerLevel level1 = serverLevel.getServer().getLevel(this.INTERIOR_DIMENSION);
 			if (level1 != null) {
 				level1.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent(cap -> {
 					this.Model = cap.GetData().getExteriorModel();
-//					cap.UpdateClient(DataUpdateValues.RENDERING);
-					Networking.sendPacketToDimension(this.level.dimension(),
-							new SyncExteriorPacketS2C(state, DoorsOpen(),
-									ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()), targetLevel,
-									targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(),
-									this.getBlockPos().getZ()));
+					// cap.UpdateClient(DataUpdateValues.RENDERING);
+					// Networking.sendPacketToDimension(this.level.dimension(),
+					// new SyncExteriorPacketS2C(state, DoorsOpen(),
+					// ExteriorsRegistry.GetOrdinal(cap.GetData().getExteriorModel()), targetLevel,
+					// targetY, targetPos, this.getBlockPos().getX(), this.getBlockPos().getY(),
+					// this.getBlockPos().getZ()));
+					this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(),
+							Block.UPDATE_CLIENTS);
 					this.setChanged();
 				});
 			}
@@ -518,7 +523,11 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	private void makeInterior(boolean isArtificial) {
-		assert level != null;
+		assert this.level != null;
+		if (this.level.getPlayerByUUID(this.PlacerUUID) != null)
+			TTSAchievement.Achievements.CREATED_TARDIS
+					.trigger((ServerPlayer) this.level.getPlayerByUUID(this.PlacerUUID));
+
 		if (level.isClientSide || level.getServer() == null)
 			return;
 		level.getServer().execute(() -> {

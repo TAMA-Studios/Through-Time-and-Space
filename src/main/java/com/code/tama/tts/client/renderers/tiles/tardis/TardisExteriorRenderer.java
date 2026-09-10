@@ -1,11 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
@@ -14,6 +9,8 @@ import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,7 +20,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
 
@@ -54,7 +56,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	@Override
 	public void render(@NotNull T exteriorTile, float partialTicks, @NotNull PoseStack stack,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-		if (exteriorTile.getLevel() != null
+		if (exteriorTile.Model == null || exteriorTile.getLevel() != null
 				&& exteriorTile.getLevel().getBlockState(exteriorTile.getBlockPos()).getBlock().equals(Blocks.AIR))
 			return;
 
@@ -145,8 +147,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 								OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 						if (true) // TODO: CONFIG FOR PARTIAL BOTI
+						{
 							partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 									OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+						}
+						pose.translate(0, -1.5, 0);
+						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
 						botiSource.endBatch();
 						pose.popPose();
 					},
@@ -172,8 +178,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 						pose.pushPose();
 						pose.translate(-0.5, 1.4, -0.62);
-						// StencilUtils.drawColoredFrame(pose, 2, 4, exteriorTile.SkyColor);
-						// botiSource.endBatch();
 
 						pose.mulPose(Axis.XP.rotationDegrees(180));
 
@@ -181,23 +185,8 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						botiSource.endBatch();
 						pose.popPose();
 
-						pose.pushPose();
-						pose.translate(0, 1.5, 0);
-						RenderSystem.disableDepthTest();
-
-						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
-
-						parsed.getPart("Doors").render(stack,
-								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
-								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-
-						parsed.getPart("Doors").render(stack,
-								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())),
-								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-
+						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
 						((MultiBufferSource.BufferSource) bufferSource).endBatch();
-						RenderSystem.enableDepthTest();
-						pose.popPose();
 					});
 
 			// Flush again after FBOHelper returns -- anything queued inside the lambdas
@@ -221,5 +210,26 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
 		stack.popPose();
+	}
+
+	private static <T extends ExteriorTile> void renderDoors(@NotNull T exteriorTile, @NotNull PoseStack stack,
+			@NotNull MultiBufferSource bufferSource, int combinedLight, PoseStack pose, JavaJSONModel parsed,
+			AbstractJSONRenderer ext, float transparency) {
+		pose.pushPose();
+		pose.translate(0, 1.5, 0);
+		RenderSystem.disableDepthTest();
+
+		pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
+
+		parsed.getPart("Doors").render(stack,
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
+		parsed.getPart("Doors").render(stack,
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())), 0xf000f0,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
+		RenderSystem.enableDepthTest();
+		pose.popPose();
 	}
 }

@@ -5,7 +5,7 @@
     "doorMaxDegrees" : 35,
     "lightmap" : "tts:textures/exteriors/ttcapsule.png",
     "model" : "tts:models/exterior/ttcapsule.json",
-    "name" : "ttcapsule",
+    "name" : "voxel.ttcapsule",
     "texture" : "tts:textures/exteriors/ttcapsule.png"
   }
 }

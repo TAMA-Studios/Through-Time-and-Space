@@ -16,12 +16,24 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+	/**
+	 * @return The last player to interact with a TARDIS Control
+	 */
+	ServerPlayer getLastToInteract();
+
+	/**
+	 * @param pilot
+	 *            The last player to interact with a TARDIS Control
+	 */
+	void setLastToInteract(ServerPlayer pilot);
+
 	/** Whether the current TARDIS is marked as Operator */
 	boolean isOperator();
 	void setOperator(boolean b);

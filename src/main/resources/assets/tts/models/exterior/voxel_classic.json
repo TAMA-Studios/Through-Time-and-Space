@@ -1,6 +1,7 @@
 {
-	"texture": "tts:textures/exteriors/voxel/classic/classic_1a.png",
-	"lightmap": "tts:textures/exteriors/voxel/classic/classic_lightmap_a.png",
+	"credit": "Made with Blockbench",
+	"texture": "tts:exteriors/voxel/classic/classic_1a",
+	"lightmap": "tts:exteriors/voxel/classic/classic_lightmap_a",
 	"texture_width": 140,
 	"texture_height": 140,
 	"scale": 1,
@@ -17,7 +18,7 @@
 					"children": [
 						{
 							"pivot": [10.5,-20.5,-6.25],
-							"rotation": [0,-180,0],
+							"rotation": [-180,0,180],
 							"cubes": [
 								{
 									"uv": [0,86],
@@ -56,7 +57,7 @@
 						},
 						{
 							"pivot": [-10.5,-21.5,-6.275],
-							"rotation": [0,-180,0],
+							"rotation": [-180,0,180],
 							"cubes": [
 								{
 									"uv": [95,7],
@@ -82,7 +83,7 @@
 						},
 						{
 							"pivot": [-10.5,-20.5,-6.275],
-							"rotation": [0,-180,0],
+							"rotation": [-180,0,180],
 							"cubes": [
 								{
 									"uv": [95,7],
@@ -95,7 +96,7 @@
 						},
 						{
 							"pivot": [10.5,-21.5,-6.25],
-							"rotation": [0,-180,0],
+							"rotation": [-180,0,180],
 							"cubes": [
 								{
 									"uv": [0,48],
@@ -365,7 +366,7 @@
 								},
 								{
 									"pivot": [10.5,16.5,10.5],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [0,48],
@@ -430,7 +431,7 @@
 								},
 								{
 									"pivot": [0.5,2,-11],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [13,99],
@@ -456,7 +457,7 @@
 								},
 								{
 									"pivot": [10.5,15.5,10.5],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [0,48],
@@ -508,7 +509,7 @@
 								},
 								{
 									"pivot": [10,14.5,10],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [13,49],
@@ -534,7 +535,7 @@
 								},
 								{
 									"pivot": [10.5,17.5,10.5],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [0,48],
@@ -885,62 +886,6 @@
 					]
 				},
 				{
-					"group_name": "LeftDoor",
-					"pivot": [9,-2,-10],
-					"rotation": [0,0,0],
-					"cubes": [
-						{
-							"uv": [118,59],
-							"size": [9,34,1],
-							"origin": [-9,-34,0],
-							"inflate": 0,
-							"mirror": false
-						},
-						{
-							"uv": [118,92],
-							"size": [9,1,1],
-							"origin": [-9,0,0],
-							"inflate": 0,
-							"mirror": false
-						}
-					]
-				},
-				{
-					"group_name": "RightDoor",
-					"pivot": [-9,-2,-10],
-					"rotation": [0,0,0],
-					"cubes": [
-						{
-							"uv": [110,101],
-							"size": [9,34,1],
-							"origin": [0,-34,0],
-							"inflate": 0,
-							"mirror": false
-						},
-						{
-							"uv": [119,102],
-							"size": [2,34,0],
-							"origin": [8,-34,-0.25],
-							"inflate": 0.01,
-							"mirror": false
-						},
-						{
-							"uv": [119,135],
-							"size": [2,1,0],
-							"origin": [8,0,-0.25],
-							"inflate": 0.01,
-							"mirror": false
-						},
-						{
-							"uv": [110,134],
-							"size": [9,1,1],
-							"origin": [0,0,0],
-							"inflate": 0,
-							"mirror": false
-						}
-					]
-				},
-				{
 					"group_name": "InteriorDoors",
 					"pivot": [-9,-2,5.775],
 					"rotation": [0,0,0],
@@ -952,7 +897,7 @@
 							"children": [
 								{
 									"pivot": [-9,0,1],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [110,101],
@@ -965,7 +910,7 @@
 								},
 								{
 									"pivot": [-9,0,0.75],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [102,75],
@@ -978,7 +923,7 @@
 								},
 								{
 									"pivot": [-9,0,-0.25],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [90,75],
@@ -1030,7 +975,7 @@
 								},
 								{
 									"pivot": [-9,0,1.25],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [119,102],
@@ -1043,7 +988,7 @@
 								},
 								{
 									"pivot": [-9,1,1.25],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [119,135],
@@ -1056,7 +1001,7 @@
 								},
 								{
 									"pivot": [-9,1,1],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [110,134],
@@ -1076,7 +1021,7 @@
 							"children": [
 								{
 									"pivot": [9,0,1],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [118,59],
@@ -1089,7 +1034,7 @@
 								},
 								{
 									"pivot": [9,1,1],
-									"rotation": [0,-180,0],
+									"rotation": [-180,0,180],
 									"cubes": [
 										{
 											"uv": [118,92],
@@ -1099,6 +1044,69 @@
 											"mirror": false
 										}
 									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"group_name": "Doors",
+					"pivot": [-9,-2,-10],
+					"rotation": [0,0,0],
+					"children": [
+						{
+							"group_name": "LeftDoor",
+							"pivot": [18,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [118,59],
+									"size": [9,34,1],
+									"origin": [-9,-34,0],
+									"inflate": 0,
+									"mirror": false
+								},
+								{
+									"uv": [118,92],
+									"size": [9,1,1],
+									"origin": [-9,0,0],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "RightDoor",
+							"pivot": [0,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [110,101],
+									"size": [9,34,1],
+									"origin": [0,-34,0],
+									"inflate": 0,
+									"mirror": false
+								},
+								{
+									"uv": [119,102],
+									"size": [2,34,0],
+									"origin": [8,-34,-0.25],
+									"inflate": 0.01,
+									"mirror": false
+								},
+								{
+									"uv": [119,135],
+									"size": [2,1,0],
+									"origin": [8,0,-0.25],
+									"inflate": 0.01,
+									"mirror": false
+								},
+								{
+									"uv": [110,134],
+									"size": [9,1,1],
+									"origin": [0,0,0],
+									"inflate": 0,
+									"mirror": false
 								}
 							]
 						}

@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
-	"texture": "_lightmap",
-	"lightmap": "_lightmap",
+	"texture": "_lightmap.png/_lightmap",
+	"lightmap": "_lightmap.png/_lightmap",
 	"texture_width": 256,
 	"texture_height": 256,
 	"scale": 1,
@@ -86,7 +86,7 @@
 							"cubes": [
 								{
 									"uv": [198,192],
-									"size": [18,34,0],
+									"size": [18,35,0],
 									"origin": [-9,-34,-11.25],
 									"inflate": 0,
 									"mirror": false

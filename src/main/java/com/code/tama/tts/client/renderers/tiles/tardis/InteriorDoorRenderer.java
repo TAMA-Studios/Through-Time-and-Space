@@ -1,11 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.animation.GeoAnimTicker;
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.tileentities.DoorTile;
@@ -14,15 +11,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import org.jetbrains.annotations.NotNull;
 
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.animation.GeoAnimTicker;
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
+import com.code.tama.triggerapi.boti.BOTIUtils;
+import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 
 public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 	private static long lastTicks = -1;
@@ -97,12 +99,12 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 				pose.translate(0.5, 2.2, 1);
 				pose.scale(door.model.modelScale, door.model.modelScale, door.model.modelScale);
 				renderBone(boti, pose, buf.getBuffer(RenderType.solid()), 0xf000f0);
-				buf.endBatch();
-				pose.popPose();
-
 				pose.popPose();
 				renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, rightAngle, leftAngle, renderer);
 				pose.pushPose();
+				buf.endBatch();
+				pose.popPose();
+
 			}, (pose, buf) -> {
 			}, (pose, buf) -> {
 				pose.pushPose();
@@ -141,16 +143,22 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 
 			poseStack.translate(0, 0, -0.5);
 
-			renderDoors(poseStack, bufferSource, combinedLight, cap, poseStack, door, frame, rightAngle, leftAngle, renderer, true);
+			renderDoors(poseStack, bufferSource, combinedLight, cap, poseStack, door, frame, rightAngle, leftAngle,
+					renderer, true);
 		});
 
 		poseStack.popPose();
 	}
-	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, float rightAngle, float leftAngle, AbstractJSONRenderer renderer) {
-		renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, null, rightAngle, leftAngle, renderer, false);
+	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource,
+			int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, float rightAngle,
+			float leftAngle, AbstractJSONRenderer renderer) {
+		renderDoors(poseStack, bufferSource, combinedLight, cap, pose, door, null, rightAngle, leftAngle, renderer,
+				false);
 	}
 
-	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, JavaJSONRenderer frame, float rightAngle, float leftAngle, AbstractJSONRenderer renderer, boolean renderFrame) {
+	private static void renderDoors(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource,
+			int combinedLight, ITARDISLevel cap, PoseStack pose, JavaJSONRenderer door, JavaJSONRenderer frame,
+			float rightAngle, float leftAngle, AbstractJSONRenderer renderer, boolean renderFrame) {
 		pose.pushPose();
 
 		poseStack.mulPose(Axis.XP.rotationDegrees(180));
@@ -175,19 +183,19 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					combinedLight);
 
 		else
-		renderBone(door, poseStack,
-				bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
-				combinedLight);
+			renderBone(door, poseStack,
+					bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getTexture())),
+					combinedLight);
 
 		if (renderer.getLightMap() != null) {
 			if (renderFrame)
 				renderBone(frame, poseStack,
 						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
 						combinedLight);
-else
-			renderBone(door, poseStack,
-					bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
-					combinedLight);
+			else
+				renderBone(door, poseStack,
+						bufferSource.getBuffer(renderer.getRenderType(cap.GetClientData().getExterior().getLightMap())),
+						combinedLight);
 		}
 
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
@@ -210,9 +218,9 @@ else
 	}
 
 	public void renderBOTI(PoseStack pose, AbstractPortalTile portal, MultiBufferSource.BufferSource botiSource) {
-//		pose.pushPose();
-//		renderSky(portal, pose, botiSource);
-//		pose.popPose();
+		pose.pushPose();
+		renderSky(portal, pose, botiSource);
+		pose.popPose();
 
 		pose.pushPose();
 		pose.translate(1.5, -0.5, -0.5);
@@ -223,8 +231,7 @@ else
 	public static void renderSky(AbstractPortalTile portal, PoseStack pose, MultiBufferSource.BufferSource botiSource) {
 		pose.pushPose();
 		pose.scale(2, 4, 2);
-		pose.translate(0, 0, 100);
-		StencilUtils.drawColoredFrame(pose, 200, 400, portal.SkyColor);
+		StencilUtils.drawColoredFrame(pose, 4, 6, portal.SkyColor);
 		botiSource.endBatch();
 
 		pose.popPose();

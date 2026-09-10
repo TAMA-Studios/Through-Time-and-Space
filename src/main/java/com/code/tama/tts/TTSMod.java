@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
+import com.code.tama.tts.core.achievements.TTSAchievementTriggers;
 import com.code.tama.tts.core.compat.ModCompat;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.dimensions.Biomes;
@@ -115,6 +116,8 @@ public class TTSMod {
 		Biomes.BIOME_MODIFIERS.register(modEventBus);
 		Biomes.CHUNK_GENERATORS.register(modEventBus);
 		ModCompat.Run();
+
+		modEventBus.addListener(TTSAchievementTriggers::register);
 	}
 
 	private void registrates(IEventBus modEventBus) {

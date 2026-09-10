@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.core.achievements.TTSAchievement;
 import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.exceptions.InvalidPlanetException;
 import com.code.tama.tts.core.networking.Networking;
@@ -277,6 +278,8 @@ public class CommonEvents {
 	public static void TARDISDemat(TardisEvent.TakeOff event) {
 		switch (event.state) {
 			case START : {
+				TTSAchievement.Achievements.FIRST_TAKEOFF.trigger(event.level.getLastToInteract());
+
 				System.out.printf("Taking off with destination: %s",
 						event.level.GetNavigationalData().getDestination());
 				CameraShakeHandler.startShake(
@@ -295,9 +298,42 @@ public class CommonEvents {
 	public static void TARDISRemat(TardisEvent.Land event) {
 		switch (event.state) {
 			case START : {
+				TTSAchievement.Achievements.FIRST_FLIGHT.trigger(event.level.getLastToInteract());
+
 				if (event.level.GetData().getControlData().isBrakes())
 					CameraShakeHandler.startShake(
 							event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount(), 9000);
+				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
+				break;
+			}
+			case END : {
+				CameraShakeHandler.endShake();
+				if (event.level.GetData().getControlData().isBrakes()) {
+					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
+					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1);
+					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1); // Play at interior
+				}
+				if (event.level.GetLevel() != null)
+					event.level.GetLevel().playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS);
+				System.out.println("Finished Landing");
+				break;
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void TARDISCrash(TardisEvent.Crash event) {
+		switch (event.state) {
+			case START : {
+				TTSAchievement.Achievements.CRASH.trigger(event.level.getLastToInteract());
+
+				CameraShakeHandler.startShake(
+						event.level.GetFlightData().getFlightTerminationProtocol().getLandShakeAmount() * 5, 9000);
 				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
 				break;
 			}

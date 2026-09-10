@@ -24,6 +24,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -247,6 +248,9 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 			return;
 		}
 
+		if (player instanceof ServerPlayer p)
+			capability.setLastToInteract(p);
+
 		InteractionResult interactionResult = this.GetControl().OnRightClick(capability, player);
 
 		this.level().playSound(player, this.blockPosition(),
@@ -273,15 +277,18 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 			return;
 		}
 
+		if (entity instanceof ServerPlayer p)
+			capability.setLastToInteract(p);
+
 		InteractionResult interactionResult = this.GetControl().OnLeftClick(capability, entity);
 
-		if (entity instanceof Player player)
+		if (entity instanceof Player player) {
 			this.level().playSound(player, this.blockPosition(),
 					interactionResult == InteractionResult.SUCCESS
 							? this.GetControl().GetSuccessSound()
 							: this.GetControl().GetFailSound(),
 					SoundSource.BLOCKS);
-		else
+		} else
 			this.level().playSound(null, this.blockPosition(),
 					interactionResult == InteractionResult.SUCCESS
 							? this.GetControl().GetSuccessSound()

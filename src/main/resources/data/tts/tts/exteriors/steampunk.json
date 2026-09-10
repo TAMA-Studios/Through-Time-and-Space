@@ -4,7 +4,7 @@
     "parent": "steampunk",
     "lightmap" : "tts:textures/exteriors/voxel/steampunk/_lightmap.png",
     "model" : "tts:models/exterior/steampunk.json",
-    "name" : "steampunk",
+    "name" : "voxel.steampunk",
     "texture" : "tts:textures/exteriors/voxel/steampunk.png"
   }
 }

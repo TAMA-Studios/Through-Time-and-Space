@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
-	"texture": "m11a",
-	"lightmap": "m12a_lightmap",
+	"texture": "m11a.png/m11a",
+	"lightmap": "m12a_lightmap.png/m12a_lightmap",
 	"texture_width": 140,
 	"texture_height": 140,
 	"scale": 1,
@@ -236,34 +236,6 @@
 									"mirror": false
 								}
 							]
-						}
-					]
-				},
-				{
-					"group_name": "RightDoor",
-					"pivot": [-9,-2,-10],
-					"rotation": [0,0,0],
-					"cubes": [
-						{
-							"uv": [110,101],
-							"size": [9,34,1],
-							"origin": [0,-34,0],
-							"inflate": 0,
-							"mirror": false
-						}
-					]
-				},
-				{
-					"group_name": "LeftDoor",
-					"pivot": [9,-2,-10],
-					"rotation": [0,0,0],
-					"cubes": [
-						{
-							"uv": [118,59],
-							"size": [9,34,1],
-							"origin": [-9,-34,0],
-							"inflate": 0,
-							"mirror": false
 						}
 					]
 				},
@@ -638,6 +610,41 @@
 											"mirror": false
 										}
 									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"group_name": "Doors",
+					"pivot": [9,-2,-10],
+					"rotation": [0,0,0],
+					"children": [
+						{
+							"group_name": "RightDoor",
+							"pivot": [-18,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [110,101],
+									"size": [9,34,1],
+									"origin": [0,-34,0],
+									"inflate": 0,
+									"mirror": false
+								}
+							]
+						},
+						{
+							"group_name": "LeftDoor",
+							"pivot": [0,0,0],
+							"rotation": [0,0,0],
+							"cubes": [
+								{
+									"uv": [118,59],
+									"size": [9,34,1],
+									"origin": [-9,-34,0],
+									"inflate": 0,
+									"mirror": false
 								}
 							]
 						}
