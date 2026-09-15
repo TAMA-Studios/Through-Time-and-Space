@@ -1,8 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.triggerapi.codec.Codecs;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
@@ -20,16 +23,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.codec.Codecs;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Getter
 @Setter
