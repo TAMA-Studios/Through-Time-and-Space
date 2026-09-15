@@ -65,12 +65,12 @@ public class TTSBlocks {
 
 	public static final BlockEntry<TerminalBlock> DEV_TERMINAL = registrate()
 			.block("dev_terminal", (p) -> new TerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
-			.simpleItem().register();
+			.airState().simpleItem().register();
 
 	public static final BlockEntry<ConsoleTerminalBlock> TARDIS_TERMINAL = registrate()
 			.block("tardis_terminal",
 					(p) -> new ConsoleTerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
-			.simpleItem().register();
+			.airState().simpleItem().register();
 
 	public static final BlockEntry<WireBlock> WIRES = registrate().block("wires", WireBlock::new)
 			.properties((p) -> p.noOcclusion()).simpleItem().airState().register();
@@ -566,6 +566,11 @@ public class TTSBlocks {
 	public static final BlockEntry<ExteriorBlock> EXTERIOR_BLOCK = Builder("exterior_block",
 			prop -> new ExteriorBlock(prop, TTSTileEntities.EXTERIOR_TILE))
 			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
+
+	@MainTab
+	public static final BlockEntry<ExteriorTopBlock> EXTERIOR_TOP = Builder("exterior_top",
+			prop -> new ExteriorTopBlock(prop)).properties(p -> p.noOcclusion().strength(999f)).airState()
+			.item(ExteriorItem::new).build().register();
 
 	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)

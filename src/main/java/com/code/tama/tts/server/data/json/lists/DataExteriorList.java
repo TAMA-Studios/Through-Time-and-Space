@@ -1,14 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.json.lists;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.data.json.dataHolders.DataExterior;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DataExteriorList {
 	@Getter
@@ -38,7 +38,8 @@ public class DataExteriorList {
 					if (!groupList.contains(exterior.parent()))
 						groupList.add(exterior.parent());
 				} else {
-					ExteriorsRegistry.COLLECTIONS.put(exterior.collection(), new ArrayList<>(List.of(exterior.parent())));
+					ExteriorsRegistry.COLLECTIONS.put(exterior.collection(),
+							new ArrayList<>(List.of(exterior.parent())));
 				}
 
 				if (ExteriorsRegistry.GROUPS.containsKey(exterior.parent()))

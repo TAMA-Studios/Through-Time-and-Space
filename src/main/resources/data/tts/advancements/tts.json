@@ -1,25 +1,19 @@
 {
-  "criteria" : {
-    "tts" : {
-      "conditions" : { },
-      "trigger" : "minecraft:tick"
-    }
-  },
-  "display" : {
-    "announce_to_chat" : true,
-    "description" : {
-      "text" : "Through Time and Space!"
+  "display": {
+    "icon": {
+      "item": "tts:sonic/coral"
     },
-    "frame" : "task",
-    "hidden" : false,
-    "icon" : {
-      "item" : "tts:exterior"
-    },
-    "show_toast" : true,
-    "title" : {
-      "text" : "A great adventure"
-    }
+    "title": "Through Time and Space",
+    "description": "Anywhere in time and space, where to start?",
+    "background": "tts:textures/block/roundel/cherry_planks.png",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
   },
-  "requirements" : [ [ "tts" ] ],
-  "sends_telemetry_event" : true
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:tick"
+    }
+  }
 }

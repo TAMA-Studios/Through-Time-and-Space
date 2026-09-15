@@ -54,6 +54,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -70,6 +71,7 @@ import com.code.tama.triggerapi.data.DatapackRegistry;
 import com.code.tama.triggerapi.helpers.MathUtils;
 
 public class TARDISLevelCapability implements ITARDISLevel {
+	ServerPlayer lastInteractor = null;
 	private boolean isOperator = false;
 	private final PowerHandler powerHandler = new PowerHandler(this);
 	private Thread TickThread;
@@ -234,6 +236,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	@Override
 	public Level GetLevel() {
 		return this.level;
+	}
+
+	@Override
+	public ServerPlayer getLastToInteract() {
+		return this.lastInteractor;
+	}
+
+	@Override
+	public void setLastToInteract(ServerPlayer pilot) {
+		this.lastInteractor = pilot;
 	}
 
 	@Override

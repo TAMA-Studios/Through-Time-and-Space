@@ -33,6 +33,9 @@ public class TTSItems {
 	public static final ItemEntry<Item> HUON_BOTTLE;
 
 	@MainTab
+	public static final ItemEntry<Item> HAMMER;
+
+	@MainTab
 	public static final ItemEntry<Item> MATRIX_CORE;
 
 	@MainTab
@@ -88,6 +91,7 @@ public class TTSItems {
 	public static final ItemEntry<TemporalImprintReaderItem> TEMPORAL_IMPRINT_READER;
 
 	static {
+		HAMMER = register("hammer", (NonNullFunction<Item.Properties, Item>) Item::new);
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
 

@@ -45,6 +45,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.time.TimeMachine;
 import com.code.tama.triggerapi.gui.CustomGuiProvider;
 import com.code.tama.triggerapi.gui.GuiLoader;
 import com.code.tama.triggerapi.lua.LuaScriptEngine;
@@ -133,10 +134,19 @@ public class TTSCommands {
 				return SharedSuggestionProvider.suggest(s, builder);
 			}).executes(ctx -> placeRift(ctx.getSource(), StringArgumentType.getString(ctx, "whats_inside"))));
 
+	public static LiteralArgumentBuilder<CommandSourceStack> travel = Commands.literal("travel")
+			.then(Commands.argument("timezone", StringArgumentType.string()).suggests((context, builder) -> {
+				List<String> s = new ArrayList<>();
+				s.add("past");
+				s.add("present");
+				s.add("future");
+				return SharedSuggestionProvider.suggest(s, builder);
+			}).executes(ctx -> travel(ctx.getSource(), StringArgumentType.getString(ctx, "timezone"))));
+
 	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
 
 	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(listguis)
-			.then(opengui).then(lua).then(forceLand);
+			.then(opengui).then(lua).then(forceLand).then(travel);
 
 	public static LiteralArgumentBuilder<CommandSourceStack> operator = Commands.literal("operator").then(createTardis)
 			.then(interior).then(subsystem).then(createRift).then(OP).then(delete);
@@ -157,6 +167,34 @@ public class TTSCommands {
 			assert player != null;
 			return Component.literal("Placed subsystem " + system + " at " + player.position());
 		}, true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travel(CommandSourceStack stack, String zone) {
+		if (stack.isPlayer()) {
+			ServerPlayer player = stack.getPlayer();
+			assert player != null;
+			TimeMachine.travel(player, zone.equals("future") ? 2 : zone.equals("present") ? 1 : 0);
+			return Command.SINGLE_SUCCESS;
+		} else
+			return 0;
+	}
+
+	private static int travelFuture(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 2);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travelPresent(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 1);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travelPast(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 0);
 		return Command.SINGLE_SUCCESS;
 	}
 

@@ -35,11 +35,12 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 			.group(Codec.DOUBLE.fieldOf("x").forGetter(SpaceTimeCoordinate::GetX),
 					Codec.DOUBLE.fieldOf("y").forGetter(SpaceTimeCoordinate::GetY),
 					Codec.DOUBLE.fieldOf("z").forGetter(SpaceTimeCoordinate::GetZ),
-					Codec.DOUBLE.fieldOf("time").forGetter(SpaceTimeCoordinate::GetTime),
+					Codec.INT.fieldOf("timeZone").forGetter(SpaceTimeCoordinate::GetTime),
 					Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(SpaceTimeCoordinate::getLevelKey))
 			.apply(instance, SpaceTimeCoordinate::new));
 
-	double Time = 0, X = 0, Y = 0, Z = 0;
+	int TimeZone = 0;
+	double X = 0, Y = 0, Z = 0;
 	ResourceKey<Level> level = Level.OVERWORLD;
 
 	public SpaceTimeCoordinate(BlockPos pos) {
@@ -67,18 +68,18 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 		Z = z;
 	}
 
-	public SpaceTimeCoordinate(double x, double y, double z, double time) {
+	public SpaceTimeCoordinate(double x, double y, double z, int timeZone) {
 		X = x;
 		Y = y;
 		Z = z;
-		Time = time;
+		TimeZone = timeZone;
 	}
 
-	public SpaceTimeCoordinate(double x, double y, double z, double time, ResourceKey<Level> level) {
+	public SpaceTimeCoordinate(double x, double y, double z, int timeZone, ResourceKey<Level> level) {
 		X = x;
 		Y = y;
 		Z = z;
-		Time = time;
+		TimeZone = timeZone;
 		this.level = level;
 	}
 
@@ -101,8 +102,8 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 		return new BlockPos((int) this.X, (int) this.Y, (int) this.Z);
 	}
 
-	public double GetTime() {
-		return this.Time;
+	public int GetTime() {
+		return this.TimeZone;
 	}
 
 	public double GetX() {
@@ -128,12 +129,12 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 	}
 
 	public SpaceTimeCoordinate copy() {
-		return new SpaceTimeCoordinate(X, Y, Z, Time, level);
+		return new SpaceTimeCoordinate(X, Y, Z, TimeZone, level);
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
-		this.Time = nbt.getDouble("time");
+		this.TimeZone = nbt.getInt("time");
 		this.X = nbt.getDouble("x");
 		this.Y = nbt.getDouble("y");
 		this.Z = nbt.getDouble("z");
@@ -151,7 +152,7 @@ public class SpaceTimeCoordinate implements INBTSerializable<CompoundTag> {
 	@Override
 	public CompoundTag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
-		tag.putDouble("time", this.Time);
+		tag.putInt("time", this.TimeZone);
 		tag.putDouble("x", this.X);
 		tag.putDouble("y", this.Y);
 		tag.putDouble("z", this.Z);

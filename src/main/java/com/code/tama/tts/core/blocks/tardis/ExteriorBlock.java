@@ -243,7 +243,10 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 									SoundSource.BLOCKS, 0.5f, 1f);
 						}
 					});
-				level.setBlockAndUpdate(blockPos, blockState.setValue(DOORS, exteriorTile.DoorsOpen() > 0));
+				level.setBlockAndUpdate(blockPos, blockState.setValue(DOORS, exteriorTile.DoorsOpen() != 0));
+
+				level.setBlockAndUpdate(blockPos.above(),
+						TTSBlocks.EXTERIOR_TOP.getDefaultState().setValue(DOORS, exteriorTile.DoorsOpen() != 0));
 			}
 		}
 		return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
@@ -253,6 +256,9 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull BlockState state1, boolean simulated) {
 		super.onPlace(state, level, pos, state1, simulated);
+
+		level.setBlockAndUpdate(pos.above(), TTSBlocks.EXTERIOR_TOP.getDefaultState()
+				.setValue(DOORS, state.getValue(DOORS)).setValue(FACING, state.getValue(FACING)));
 
 		if (state.hasBlockEntity()) {
 			if (level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {

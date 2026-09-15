@@ -7,6 +7,7 @@ import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +36,9 @@ public class ConsoleTerminalBlock extends HorizontalDirectionalBlock {
 			BlockHitResult hit) {
 		if (level.isClientSide) {
 			openConsole(level);
+		} else {
+			TARDISLevelCapability.GetTARDISCapSupplier(level)
+					.ifPresent((cap) -> cap.setLastToInteract((ServerPlayer) player));
 		}
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}

@@ -1,15 +1,25 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.Panels;
 
-import com.code.tama.triggerapi.animation.GeoHelper;
-import com.code.tama.triggerapi.animation.GeoModel;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.gui.ChameleonCircuitScreen;
 import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.tileentities.ChameleonCircuitPanelTileEntity;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -35,17 +45,10 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings("deprecation")
 public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
@@ -162,60 +165,60 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 	}
 
 	@Override
-public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos,
-                                      @NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
-	if (hand.equals(InteractionHand.OFF_HAND))
-		return InteractionResult.PASS;
+	public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos,
+			@NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
+		if (hand.equals(InteractionHand.OFF_HAND))
+			return InteractionResult.PASS;
 
-	ChameleonCircuitButtons button = this.getButton(
-			(100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
-			(100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
-			state.getValue(FACING).getOpposite());
+		ChameleonCircuitButtons button = this.getButton(
+				(100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
+				(100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
+				state.getValue(FACING).getOpposite());
 
-	if (button == ChameleonCircuitButtons.EMPTY) {
-		if (world.isClientSide) {
-			net.minecraft.client.Minecraft.getInstance().setScreen(new ChameleonCircuitScreen());
+		if (button == ChameleonCircuitButtons.EMPTY) {
+			if (world.isClientSide) {
+				net.minecraft.client.Minecraft.getInstance().setScreen(new ChameleonCircuitScreen());
+			}
+			return InteractionResult.SUCCESS;
 		}
+
+		if (world.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		boolean Crouching = player.isCrouching();
+
+		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
+			switch (button) {
+				case MINUS :
+					ChameleonCircuitActions.prevVariant(world, tardisLevelCapability);
+					rClickAnim(world, pos);
+					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+					break;
+				case VARIANT :
+					if (Crouching) {
+						ChameleonCircuitActions.nextCollection(world, tardisLevelCapability);
+						player.sendSystemMessage(Component.literal("Set Collection to: "
+								+ tardisLevelCapability.GetData().getExteriorModel().getCollection()));
+					} else {
+						ChameleonCircuitActions.nextGroup(world, tardisLevelCapability);
+						player.sendSystemMessage(Component.literal(
+								"Set Group to: " + tardisLevelCapability.GetData().getExteriorModel().getParent()));
+					}
+					mClickAnim(world, pos);
+					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+					break;
+				case POSITIVE :
+					ChameleonCircuitActions.nextVariant(world, tardisLevelCapability);
+					lClickAnim(world, pos);
+					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
+					break;
+				default :
+					TTSMod.LOGGER.info("NOPE!");
+			}
+		});
+
 		return InteractionResult.SUCCESS;
 	}
-
-	if (world.isClientSide)
-		return InteractionResult.SUCCESS;
-
-	boolean Crouching = player.isCrouching();
-
-	GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
-		switch (button) {
-			case MINUS :
-				ChameleonCircuitActions.prevVariant(world, tardisLevelCapability);
-				rClickAnim(world, pos);
-				world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-				break;
-			case VARIANT :
-				if (Crouching) {
-					ChameleonCircuitActions.nextCollection(world, tardisLevelCapability);
-					player.sendSystemMessage(Component.literal("Set Collection to: "
-							+ tardisLevelCapability.GetData().getExteriorModel().getCollection()));
-				} else {
-					ChameleonCircuitActions.nextGroup(world, tardisLevelCapability);
-					player.sendSystemMessage(Component.literal("Set Group to: "
-							+ tardisLevelCapability.GetData().getExteriorModel().getParent()));
-				}
-				mClickAnim(world, pos);
-				world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-				break;
-			case POSITIVE :
-				ChameleonCircuitActions.nextVariant(world, tardisLevelCapability);
-				lClickAnim(world, pos);
-				world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
-				break;
-			default :
-				TTSMod.LOGGER.info("NOPE!");
-		}
-	});
-
-	return InteractionResult.SUCCESS;
-}
 
 	@Override
 	public GeoModel getGeoModel() {

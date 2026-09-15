@@ -2,11 +2,9 @@
 package com.code.tama.tts.core.registries;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.core.datagen.assets.DataBlockStateProvider;
-import com.google.gson.JsonElement;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
@@ -25,12 +23,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.code.tama.triggerapi.GrammarNazi;
 import com.code.tama.triggerapi.helpers.MathUtils;
-import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @SuppressWarnings("unchecked")
 public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
@@ -52,8 +49,8 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	public TTSBlockBuilder<T, P> verySimpleBlock() {
-		return this.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion()).defaultBlockstate()
-				.defaultLang().defaultLoot().simpleBlockItemBlockParent();
+		return this.properties(p -> p.mapColor(MapColor.COLOR_BROWN).strength(1.25F).noOcclusion()).defaultLang()
+				.defaultLoot().simpleBlockItemBlockParent();
 	}
 
 	public TTSBlockBuilder<T, P> light(int Light) {
@@ -119,31 +116,16 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <I extends Item> ItemBuilder<I, BlockBuilder<T, P>> item(
 			NonNullBiFunction<? super T, Item.Properties, ? extends I> factory) {
-		return ((ItemBuilder) this.getOwner()
+		return (ItemBuilder<I, BlockBuilder<T, P>>) (Object) this.getOwner()
 				.item(this, this.getName(), (p) -> (Item) factory.apply(this.getEntry(), p))
 				.setData(ProviderType.LANG, (ctx, provider) -> {
-					provider.add(ctx.get().getDescriptionId(), Arrays.stream(ctx.getName().split("/")).toList()
-							.get(Arrays.stream(ctx.getName().split("/")).toArray().length));
-				})).model((ctx, prov) -> {
-					Optional<String> model = this.getOwner().getDataProvider(ProviderType.BLOCKSTATE)
-							.flatMap((p) -> p.getExistingVariantBuilder((Block) this.getEntry()))
-							.map((b) -> (BlockStateProvider.ConfiguredModelList) b.getModels().get(b.partialState()))
-							.map(BlockStateProvider.ConfiguredModelList::toJSON).filter(JsonElement::isJsonObject)
-							.map((j) -> j.getAsJsonObject().get("model")).map(JsonElement::getAsString);
-
-					if (model.isPresent())
-						((RegistrateItemModelProvider) prov)
-								.withExistingParent("item/" + ((DataGenContext<Item, I>) ctx).getName(), model.get());
-
-					else
-						((RegistrateItemModelProvider) prov).withExistingParent(
-								"item/" + ((DataGenContext<Item, I>) ctx).getName(),
-								((RegistrateItemModelProvider) prov).modLoc("block/" + this.getName()));
-
-					// ((RegistrateItemModelProvider) prov).blockItem(this.asSupplier());
-
+					String[] parts = ctx.getName().split("/");
+					provider.add(ctx.get().getDescriptionId(), parts[parts.length - 1]);
+				}).model((ctx, prov) -> {
+					prov.withExistingParent("item/" + ctx.getName(), prov.modLoc("block/" + this.getName()));
 				});
 	}
 
@@ -208,30 +190,43 @@ public class TTSBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
 	@Override
 	public TTSBlockBuilder<T, P> defaultBlockstate() {
-		try {
-			return this.blockstate((ctx, prov) -> prov.simpleBlock((Block) ctx.getEntry()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		return this.blockstate((ctx, prov) -> {
+			// Safe name from Registrate context without relying on ForgeRegistries
+			String path = ctx.getName();
 
-		return this;
+			// Build the texture location (e.g.,
+			// "tts:block/decoration/sov/outer_corridor_top")
+			ResourceLocation textureLoc = prov.modLoc("block/" + path);
+
+			// Build the model at "tts:block/decoration/sov/outer_corridor_top"
+			var model = prov.models().withExistingParent(path, prov.mcLoc("block/cube_all")).texture("all", textureLoc);
+
+			// Register the simple blockstate mapping
+			prov.simpleBlock(ctx.getEntry(), model);
+		});
+	}
+
+	private ResourceLocation key(Block block) {
+		return ForgeRegistries.BLOCKS.getKey(block);
+	}
+
+	public ResourceLocation blockTexture(Block block) {
+		ResourceLocation name = key(block);
+		return new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + name.getPath());
 	}
 
 	public TTSBlockBuilder<T, P> offsetBlockState() {
-		try {
-			return this.blockstate((ctx, prov) -> {
-				String pre, suf, key;
-				key = ForgeRegistries.BLOCKS.getKey(ctx.getEntry()).getPath();
-				pre = prov.blockTexture(getEntry()).getNamespace();
-				suf = prov.blockTexture(getEntry()).getPath();
-				ResourceLocation tex = UniversalCommon.newRL(pre, suf.replace("_offset", ""));
-				prov.models().singleTexture(key, UniversalCommon.modRL("block/cube_all_offset"), "all", tex);
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		return this.blockstate((ctx, prov) -> {
+			String key = ctx.getName();
+			ResourceLocation tex = new ResourceLocation(prov.blockTexture(ctx.getEntry()).getNamespace(),
+					prov.blockTexture(ctx.getEntry()).getPath().replace("_offset", ""));
 
-		return this;
+			var model = prov.models().singleTexture(key, new ResourceLocation("tts", "block/cube_all_offset"), "all",
+					tex);
+
+			// You MUST bind the model to the block, otherwise the state is empty
+			prov.simpleBlock(ctx.getEntry(), model);
+		});
 	}
 
 	public TTSBlockBuilder<T, P> blankBlockstate() {

@@ -1,0 +1,34 @@
+{
+  "variants" : {
+    "facing=east,turning=0" : {
+      "model" : "tts:block/gear/clockwise",
+      "y" : 90
+    },
+    "facing=east,turning=1" : {
+      "model" : "tts:block/gear/counter_clockwise",
+      "y" : 90
+    },
+    "facing=north,turning=0" : {
+      "model" : "tts:block/gear/clockwise"
+    },
+    "facing=north,turning=1" : {
+      "model" : "tts:block/gear/counter_clockwise"
+    },
+    "facing=south,turning=0" : {
+      "model" : "tts:block/gear/clockwise",
+      "y" : 180
+    },
+    "facing=south,turning=1" : {
+      "model" : "tts:block/gear/counter_clockwise",
+      "y" : 180
+    },
+    "facing=west,turning=0" : {
+      "model" : "tts:block/gear/clockwise",
+      "y" : 270
+    },
+    "facing=west,turning=1" : {
+      "model" : "tts:block/gear/counter_clockwise",
+      "y" : 270
+    }
+  }
+}

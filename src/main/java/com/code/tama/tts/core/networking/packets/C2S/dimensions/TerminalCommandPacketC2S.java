@@ -63,7 +63,7 @@ public class TerminalCommandPacketC2S {
 			try {
 				response = run(tardis, msg.command.trim());
 			} catch (Exception e) {
-				response = "ERR: " + e.getMessage();
+				response = "Internal Server Error: " + e.getMessage();
 			}
 
 			tardis.UpdateClient(DataUpdateValues.ALL);
@@ -176,6 +176,7 @@ public class TerminalCommandPacketC2S {
 			}
 
 			case "dest", "destination" -> destination(t, args);
+			case "time" -> destinationTime(t, args);
 			case "nudge" -> nudge(t, args);
 			case "facing" -> {
 				if (args.length > 1 && args[1].equalsIgnoreCase("cycle")) {
@@ -273,6 +274,21 @@ public class TerminalCommandPacketC2S {
 		} catch (NumberFormatException e) {
 			return "ERR: x/y/z must be whole numbers.";
 		}
+	}
+
+	private static String destinationTime(ITARDISLevel t, String[] args) {
+		if (args.length < 1)
+			return "usage: time [past/present/future]";
+
+		String zone = args[0];
+
+		if (zone.equals("past") || zone.equals("present") || zone.equals("future")) {
+			SpaceTimeCoordinate coordinate = t.GetNavigationalData().getDestination();
+			coordinate.setTimeZone(zone.equals("past") ? 0 : zone.equals("present") ? 1 : 2);
+			t.GetNavigationalData().forceSetDestination(coordinate);
+			return "Destination timezone set to " + zone;
+		}
+		return "ERR: Timezone falls outside acceptable range!";
 	}
 
 	private static String nudge(ITARDISLevel t, String[] args) {

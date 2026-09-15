@@ -12,6 +12,7 @@ import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalCommandPacketC2S;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.mojang.blaze3d.platform.InputConstants;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -79,13 +80,13 @@ public class TARDISConsoleScreen extends Screen {
 		this.topPos = (this.height - GUI_H) / 2;
 
 		if (log.isEmpty()) {
-			printLocal("TARDIS Interface Console v1.0");
+			printLocal("tarDOS Shell v1.0");
 			printLocal("Type 'help' for a list of commands, or 'man <command>' for details.");
 			printLocal("");
 		}
 
-		int inputY = topPos + GUI_H - 22;
-		input = new EditBox(this.font, leftPos + 18, inputY, GUI_W - 36, 14, Component.empty());
+		int inputY = topPos + GUI_H - 17;
+		input = new EditBox(this.font, leftPos + 70, inputY, GUI_W - 36, 14, Component.empty());
 		input.setMaxLength(256);
 		input.setBordered(false);
 		input.setTextColor(COL_TEXT);
@@ -124,7 +125,7 @@ public class TARDISConsoleScreen extends Screen {
 	public void appendOutput(String message) {
 		if (message == null || message.isEmpty())
 			return;
-		boolean isError = message.startsWith("ERR:");
+		boolean isError = message.startsWith("ERR:") || message.contains("Error");
 		int color = isError ? COL_TEXT_ERR : COL_TEXT_DIM;
 		for (String part : message.split("\n", -1))
 			addWrapped(color, part);
@@ -182,7 +183,6 @@ public class TARDISConsoleScreen extends Screen {
 
 			if (!current.isEmpty()) {
 				lines.add(current.toString());
-				current = new StringBuilder();
 			}
 
 			// A single word longer than the whole line - hard break it.
@@ -295,7 +295,7 @@ public class TARDISConsoleScreen extends Screen {
 	// Rendering
 
 	@Override
-	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partialTick) {
+	public void render(@NotNull GuiGraphics gfx, int mouseX, int mouseY, float partialTick) {
 		renderBackground(gfx);
 		drawFrame(gfx);
 		drawTitle(gfx);
@@ -313,7 +313,7 @@ public class TARDISConsoleScreen extends Screen {
 	}
 
 	private void drawTitle(GuiGraphics gfx) {
-		gfx.drawCenteredString(this.font, "T.A.R.D.I.S. CONSOLE", leftPos + GUI_W / 2, topPos + 4, COL_TEXT);
+		gfx.drawCenteredString(this.font, "tarDOS Terminal", leftPos + GUI_W / 2, topPos + 4, COL_TEXT);
 	}
 
 	private void drawLog(GuiGraphics gfx) {
@@ -343,8 +343,9 @@ public class TARDISConsoleScreen extends Screen {
 	}
 
 	private void drawPrompt(GuiGraphics gfx) {
-		int promptY = topPos + GUI_H - 22;
-		gfx.drawString(this.font, ">", leftPos + 10, promptY + 3, COL_TEXT, false);
+		int promptY = topPos + GUI_H - 20;
+		gfx.drawString(this.font, Minecraft.getInstance().player.getDisplayName().getString() + " [ ~ ] $ ",
+				leftPos + 10, promptY + 3, COL_TEXT, false);
 		gfx.fill(leftPos + 8, topPos + GUI_H - 26, leftPos + GUI_W - 8, topPos + GUI_H - 26 + 1, COL_FRAME_LIGHT);
 	}
 

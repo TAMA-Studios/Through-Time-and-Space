@@ -72,6 +72,11 @@ public final class DimensionManager implements DimensionAPI {
 	private DimensionManager() {
 	}
 
+	@Override
+	@Nullable public ServerLevel peekLevel(MinecraftServer server, ResourceKey<Level> levelKey) {
+		return server.forgeGetWorldMap().get(levelKey);
+	}
+
 	/** ======================== Core Dimension Creation ======================== */
 
 	@SuppressWarnings("deprecation")
@@ -241,7 +246,8 @@ public final class DimensionManager implements DimensionAPI {
 	public ServerLevel getOrCreateLevel(MinecraftServer server, ResourceKey<Level> levelKey,
 			Supplier<LevelStem> factory) {
 		Map<ResourceKey<Level>, ServerLevel> map = server.forgeGetWorldMap();
-		return map.getOrDefault(levelKey, createAndRegisterLevel(server, map, levelKey, factory));
+		ServerLevel existing = map.get(levelKey);
+		return existing != null ? existing : createAndRegisterLevel(server, map, levelKey, factory);
 	}
 
 	public void markDimensionForUnregistration(MinecraftServer server, ResourceKey<Level> level) {

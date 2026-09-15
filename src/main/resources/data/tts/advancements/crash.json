@@ -2,7 +2,7 @@
   "parent": "tts:created_tardis",
   "display": {
     "icon": {
-      "item": "tts:tardis"
+      "item": "tts:manual"
     },
     "title": {
       "text": "Another happy landing!"
