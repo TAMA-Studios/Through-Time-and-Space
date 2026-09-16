@@ -230,6 +230,7 @@ public class ExteriorTile extends AbstractPortalTile {
 
 		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {
 			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(door));
+			cap.GetEnvironmentalData().setOxygenLevel(0.0f);
 
 			this.setTargetLevel(INTERIOR_DIMENSION, cap.GetData().getDoorData().getLocation().GetBlockPos(),
 					cap.GetData().getDoorData().getYRot(), true);

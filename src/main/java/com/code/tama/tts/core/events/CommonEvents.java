@@ -18,6 +18,7 @@ import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
+import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
@@ -34,6 +35,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -390,18 +392,21 @@ public class CommonEvents {
 		if (event.level.getServer().getLevel(event.level.dimension()) == null)
 			return;
 
-		event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
+		float O2 = OxygenHelper.getO2(event.level);
+		if ((O2 != 20 && Math.toIntExact((long) (event.level.getGameTime() % (Math.min(O2, 1) * 10))) == 0)) {
+			event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
 
-			if (entity instanceof LivingEntity livingEntity) {
-				// TODO: REAL Oxygen implementation
-				float O2 = OxygenHelper.getO2(event.level);
+				if (entity instanceof LivingEntity livingEntity) {
+					// TODO: REAL Oxygen implementation
 
-				if (O2 != 20 && event.level.getGameTime() % O2 == 0) {
+					if (entity instanceof Player p
+							&& p.getItemBySlot(EquipmentSlot.HEAD).getItem().equals(TTSItems.OXYGENATOR.get()))
+						return;
+
 					entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
-
 				}
-			}
-		}));
+			}));
+		}
 	}
 
 	@SubscribeEvent

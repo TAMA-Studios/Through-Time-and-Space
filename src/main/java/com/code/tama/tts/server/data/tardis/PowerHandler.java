@@ -37,7 +37,7 @@ public class PowerHandler {
 	private long totalEnergyGenerated = 0;
 	private long totalEnergyConsumed = 0;
 	private long lastTickTime = 0;
-	private double efficiency = 0.95; // 95% efficiency by default
+	private double efficiency = 0.55; // 55% efficiency by default
 
 	// Capacitor characteristics (in FE)
 	private static final int MAX_CAPACITY = Integer.MAX_VALUE;

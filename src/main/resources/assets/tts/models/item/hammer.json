@@ -1,0 +1,103 @@
+{
+  "credit" : "Made with Blockbench",
+  "display" : {
+    "firstperson_lefthand" : {
+      "translation" : [ 0, 3, 0 ]
+    },
+    "firstperson_righthand" : {
+      "translation" : [ 0, 3, 0 ]
+    },
+    "fixed" : {
+      "rotation" : [ 0, 90, 0 ]
+    },
+    "ground" : {
+      "translation" : [ 0, 4.25, 0 ]
+    },
+    "gui" : {
+      "rotation" : [ 0, 90, 0 ],
+      "translation" : [ 0, 1, 0 ]
+    },
+    "head" : {
+      "translation" : [ 0, 11.25, 0 ]
+    },
+    "thirdperson_lefthand" : {
+      "translation" : [ 0, 3.5, 0 ]
+    },
+    "thirdperson_righthand" : {
+      "translation" : [ 0, 3.5, 0 ]
+    }
+  },
+  "elements" : [ {
+    "faces" : {
+      "down" : {
+        "texture" : "#1",
+        "uv" : [ 6, 0, 4, 4 ]
+      },
+      "east" : {
+        "texture" : "#1",
+        "uv" : [ 0, 0, 4, 2 ]
+      },
+      "north" : {
+        "texture" : "#1",
+        "uv" : [ 2, 4, 4, 6 ]
+      },
+      "south" : {
+        "texture" : "#1",
+        "uv" : [ 4, 4, 6, 6 ]
+      },
+      "up" : {
+        "texture" : "#1",
+        "uv" : [ 2, 8, 0, 4 ]
+      },
+      "west" : {
+        "texture" : "#1",
+        "uv" : [ 0, 2, 4, 4 ]
+      }
+    },
+    "from" : [ 7, 9, 6 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 7, 9, 6 ]
+    },
+    "to" : [ 9, 11, 10 ]
+  }, {
+    "faces" : {
+      "down" : {
+        "texture" : "#1",
+        "uv" : [ 11, 0, 12, 1 ]
+      },
+      "east" : {
+        "texture" : "#1",
+        "uv" : [ 11, 0, 12, 10 ]
+      },
+      "north" : {
+        "texture" : "#1",
+        "uv" : [ 11, 0, 12, 10 ]
+      },
+      "south" : {
+        "texture" : "#1",
+        "uv" : [ 11, 0, 12, 10 ]
+      },
+      "up" : {
+        "texture" : "#1",
+        "uv" : [ 15, 0, 16, 1 ]
+      },
+      "west" : {
+        "texture" : "#1",
+        "uv" : [ 11, 0, 12, 10 ]
+      }
+    },
+    "from" : [ 7.5, 0.2, 7.5 ],
+    "rotation" : {
+      "angle" : 0,
+      "axis" : "y",
+      "origin" : [ 6.5, 0.2, 7.5 ]
+    },
+    "to" : [ 8.5, 11.2, 8.5 ]
+  } ],
+  "textures" : {
+    "1" : "tts:item/hammer",
+    "particle" : "tts:item/hammer"
+  }
+}

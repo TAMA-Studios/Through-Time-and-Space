@@ -3,7 +3,6 @@ package com.code.tama.tts.core.registries.tardis;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import java.awt.*;
 import java.util.List;
 
 import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
@@ -90,6 +89,15 @@ public class ControlsRegistry {
 	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
 			() -> new SimplestControl("engine_break", tardis -> tardis.GetData().getControlData().setEngineBrake(true),
 					tardis -> tardis.GetData().getControlData().setEngineBrake(false)));
+
+	public static final RegistryObject<SimplestControl> TIMEY_WIMEY = CONTROLS.register("timey_wimey",
+			() -> new SimplestControl("timey_wimey", tardis -> {
+				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
+				tardis.GetNavigationalData().getDestination().setTimeZone(timezone + 1 > 2 ? 0 : timezone + 1);
+			}, tardis -> {
+				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
+				tardis.GetNavigationalData().getDestination().setTimeZone(timezone - 1 < 0 ? 2 : timezone - 1);
+			}));
 
 	public static final RegistryObject<SimplestControl> MAVITY = CONTROLS.register("mavity",
 			() -> new SimplestControl("mavity",

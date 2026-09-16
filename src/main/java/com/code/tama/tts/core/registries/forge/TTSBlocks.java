@@ -63,6 +63,9 @@ public class TTSBlocks {
 	public static final BlockEntry<Block> MATRIX_CASING = registrate().block("matrix_casing", Block::new).simpleItem()
 			.stateWithExistingModel().register();
 
+	public static final BlockEntry<Block> CRYSTALLINE_BLOCK = registrate().block("crystalline_block", Block::new)
+			.simpleItem().stateWithExistingModel().register();
+
 	public static final BlockEntry<TerminalBlock> DEV_TERMINAL = registrate()
 			.block("dev_terminal", (p) -> new TerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
 			.airState().simpleItem().register();
@@ -712,6 +715,11 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<DematerializationCircuitCoreBlock> DEMATERIALIZATION_CIRCUIT_CORE = Builder(
 			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel()
+			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<DematerializationCircuitCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder(
+			"oxygenator_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel("oxygenator")
 			.simpleItem().register();
 
 	@MainTab

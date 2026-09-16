@@ -21,6 +21,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 
 @SuppressWarnings("deprecation")
@@ -31,6 +33,21 @@ public class TTSItems {
 
 	@MainTab
 	public static final ItemEntry<Item> HUON_BOTTLE;
+
+	@MainTab
+	public static final ItemEntry<Item> STEEL_INGOT;
+
+	@MainTab
+	public static final ItemEntry<Item> DALEKANIUM_INGOT;
+
+	@MainTab
+	public static final ItemEntry<Item> DIMENSIONAL_DAMS;
+
+	@MainTab
+	public static final ItemEntry<Item> FINE_SANDPAPER;
+
+	@MainTab
+	public static final ItemEntry<ArmorItem> OXYGENATOR;
 
 	@MainTab
 	public static final ItemEntry<Item> HAMMER;
@@ -92,6 +109,20 @@ public class TTSItems {
 
 	static {
 		HAMMER = register("hammer", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		STEEL_INGOT = register("steel_ingot", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		DALEKANIUM_INGOT = register("dalekanium_ingot", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		DIMENSIONAL_DAMS = register("dimensional_dams", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		FINE_SANDPAPER = register("fine_sandpaper", (NonNullFunction<Item.Properties, Item>) Item::new);
+
+		OXYGENATOR = register("oxygenator",
+				(NonNullFunction<Item.Properties, ArmorItem>) properties -> new ArmorItem(ArmorMaterials.LEATHER,
+						ArmorItem.Type.HELMET, properties) {
+
+				});
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
 
