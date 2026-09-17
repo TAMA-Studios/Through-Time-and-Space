@@ -59,7 +59,6 @@ public class SpaceSkyEffects extends DimensionSpecialEffects {
 
 	private static VertexBuffer sunVBO = null;
 
-	/** Keyed by whatever unique id your planet data object exposes. */
 	private static final Map<String, VertexBuffer> planetVBOs = new HashMap<>();
 
 	// -------------------------------------------------------------------------

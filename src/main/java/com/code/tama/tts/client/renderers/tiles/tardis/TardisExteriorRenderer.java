@@ -56,7 +56,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	@Override
 	public void render(@NotNull T exteriorTile, float partialTicks, @NotNull PoseStack stack,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-		if (exteriorTile.getLevel() != null
+		if (exteriorTile.Model == null || exteriorTile.getLevel() != null
 				&& exteriorTile.getLevel().getBlockState(exteriorTile.getBlockPos()).getBlock().equals(Blocks.AIR))
 			return;
 
@@ -107,13 +107,13 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 			if (exteriorTile.getBlockState().getBlock() instanceof ExteriorBlock)
 				stack.mulPose(exteriorTile.getBlockState().getValue(ExteriorBlock.FACING).getOpposite().getRotation());
 
-			stack.mulPose(exteriorTile.getFacing().getRotation());
+			// stack.mulPose(exteriorTile.getFacing().getRotation());
 			stack.mulPose(Axis.YP.rotationDegrees(180));
-			// stack.mulPose(Axis.XN.rotationDegrees(90));
-			stack.mulPose(Axis.ZN.rotationDegrees(180));
+			stack.mulPose(Axis.XN.rotationDegrees(90));
+			// stack.mulPose(Axis.ZN.rotationDegrees(180));
 		}
 
-		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModelIndex());
+		AbstractJSONRenderer ext = new AbstractJSONRenderer(exteriorTile.getModel().getModel());
 		JavaJSONModel parsed = JavaJSON.getParsedJavaJSON(ext).getModelInfo().getModel();
 
 		// parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(leftAngle);
@@ -147,8 +147,12 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 								OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 						if (true) // TODO: CONFIG FOR PARTIAL BOTI
+						{
 							partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 									OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
+						}
+						pose.translate(0, -1.5, 0);
+						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
 						botiSource.endBatch();
 						pose.popPose();
 					},
@@ -163,7 +167,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						pose.translate(0, 0.5, -0.5);
 						// boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-						// if (true) // TODO: CONFIG FOR PARTIAL BOTI
+						// if (true) // TODO: CONFIG FOR PARTIAL BOTI`
 						// partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
 						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
 						// botiSource.endBatch();
@@ -174,8 +178,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 						pose.pushPose();
 						pose.translate(-0.5, 1.4, -0.62);
-						// StencilUtils.drawColoredFrame(pose, 2, 4, exteriorTile.SkyColor);
-						// botiSource.endBatch();
 
 						pose.mulPose(Axis.XP.rotationDegrees(180));
 
@@ -183,22 +185,8 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 						botiSource.endBatch();
 						pose.popPose();
 
-						pose.pushPose();
-						pose.translate(0, 1.5, 0);
-						RenderSystem.disableDepthTest();
-
-						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
-
-						parsed.getPart("LeftDoor").render(stack,
-								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
-								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-						parsed.getPart("RightDoor").render(stack,
-								bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())),
-								combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
-
+						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
 						((MultiBufferSource.BufferSource) bufferSource).endBatch();
-						RenderSystem.enableDepthTest();
-						pose.popPose();
 					});
 
 			// Flush again after FBOHelper returns -- anything queued inside the lambdas
@@ -222,5 +210,26 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
 		stack.popPose();
+	}
+
+	private static <T extends ExteriorTile> void renderDoors(@NotNull T exteriorTile, @NotNull PoseStack stack,
+			@NotNull MultiBufferSource bufferSource, int combinedLight, PoseStack pose, JavaJSONModel parsed,
+			AbstractJSONRenderer ext, float transparency) {
+		pose.pushPose();
+		pose.translate(0, 1.5, 0);
+		RenderSystem.disableDepthTest();
+
+		pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
+
+		parsed.getPart("Doors").render(stack,
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
+		parsed.getPart("Doors").render(stack,
+				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())), 0xf000f0,
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+
+		RenderSystem.enableDepthTest();
+		pose.popPose();
 	}
 }

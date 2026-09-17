@@ -92,6 +92,56 @@ public class EnvironmentViewerUtils {
 		}
 	}
 
+	public static void startRWF(ServerPlayer player, ITARDISLevel tardis) {
+		if (!tardis.GetData().IsViewingTARDIS(player.getUUID())) {
+			tardis.GetData().SetViewing(player.getUUID(), PlayerPosition.builder().pos(player.position())
+					.YRot(player.getYHeadRot()).Xrot(player.getXRot()).levelKey(tardis.GetLevel().dimension()).build());
+		}
+
+		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, player)
+				.ifPresent(cap -> cap.SetViewingTARDIS(tardis.GetLevel().dimension().location().toString()));
+
+		Networking.sendToPlayer(player, new SyncViewedTARDISS2C(tardis.GetLevel().dimension().location().toString()));
+		player.setInvisible(true);
+		player.sendSystemMessage(Component.translatable("tts.notification.key_to_exit",
+				ClientSetup.EXIT_VIEW.getKey().getDisplayName()));
+		updatePlayerAbilities(player, player.getAbilities(), true);
+		player.onUpdateAbilities();
+	}
+
+	public static void stopRWF(ServerPlayer serverPlayer) {
+		Capabilities.getCap(Capabilities.PLAYER_CAPABILITY, serverPlayer).ifPresent(playerCap -> {
+			ServerLevel tardisLevel = ServerLifecycleHooks.getCurrentServer().getLevel(
+					ResourceKey.create(Registries.DIMENSION, new ResourceLocation(playerCap.GetViewingTARDIS())));
+			GetTARDISCapSupplier(tardisLevel).ifPresent(tardis -> {
+				if (playerCap.GetViewingTARDIS().isEmpty())
+					return; // Not viewing a TARDIS
+				PlayerPosition targetPosition = tardis.GetData().getViewingPlayerMap().get(serverPlayer.getUUID());
+
+				if (targetPosition == null) { // If target position is for SOME REASON null, tp the player
+					// to the TARDIS
+					// interior door
+					targetPosition = PlayerPosition.builder().levelKey(tardis.GetLevel().dimension())
+							.pos(tardis.GetData().getDoorData().getLocation().GetBlockPos()
+									.relative(Direction.fromYRot(tardis.GetData().getDoorData().getYRot()), 1)
+									.getCenter())
+							.build();
+				}
+
+				serverPlayer.teleportTo(tardisLevel, targetPosition.pos.x, targetPosition.pos.y, targetPosition.pos.z,
+						targetPosition.YRot, targetPosition.Xrot);
+
+				updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
+				serverPlayer.onUpdateAbilities();
+
+				tardis.GetData().getViewingPlayerMap().remove(serverPlayer.getUUID());
+				serverPlayer.setInvisible(false);
+				Networking.sendToPlayer(serverPlayer, new SyncViewedTARDISS2C(""));
+				playerCap.SetViewingTARDIS(""); // Isn't viewing a TARDIS anymore
+			});
+		});
+	}
+
 	public static void updatePlayerAbilities(ServerPlayer player, Abilities abilities, boolean spectator) {
 		if (spectator) {
 			abilities.flying = false;

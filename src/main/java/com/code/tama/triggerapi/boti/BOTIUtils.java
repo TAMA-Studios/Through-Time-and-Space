@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -93,6 +94,7 @@ public class BOTIUtils {
 		if (!TTSConfig.ClientConfig.BOTI_ENABLED.get())
 			return;
 		RenderSystem.enableDepthTest();
+		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 		Minecraft minecraft = Minecraft.getInstance();
 
 		assert minecraft.level != null;
@@ -116,6 +118,10 @@ public class BOTIUtils {
 				}
 			}
 		} else {
+			pose.pushPose();
+			pose.scale(2, 4, 2);
+			pose.popPose();
+
 			pose.pushPose();
 
 			var mc = Minecraft.getInstance();

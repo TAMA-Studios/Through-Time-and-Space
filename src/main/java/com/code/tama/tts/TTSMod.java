@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.renderers.worlds.helper.CustomLevelRenderer;
+import com.code.tama.tts.core.achievements.TTSAchievementTriggers;
 import com.code.tama.tts.core.compat.ModCompat;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.dimensions.Biomes;
@@ -50,6 +51,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.code.tama.triggerapi.TriggerAPI;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.FileHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -69,6 +71,7 @@ public class TTSMod {
 		REGISTRATE.skipErrors(true);
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+		AnimationTicker.init();
 		// This comment suppresses the "InstantiationOfUtilityClass" warning
 		// noinspection InstantiationOfUtilityClass
 		triggerAPI = new TriggerAPI(modEventBus, MODID);
@@ -113,6 +116,8 @@ public class TTSMod {
 		Biomes.BIOME_MODIFIERS.register(modEventBus);
 		Biomes.CHUNK_GENERATORS.register(modEventBus);
 		ModCompat.Run();
+
+		modEventBus.addListener(TTSAchievementTriggers::register);
 	}
 
 	private void registrates(IEventBus modEventBus) {

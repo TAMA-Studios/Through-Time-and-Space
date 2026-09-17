@@ -47,7 +47,7 @@ public class FlightTerminationProtocol {
 		CameraShakeHandler.startShake(this.LandShakeAmount, 40);
 		if (this.ShouldBeInaccurate())
 			this.SetLandPos(level.getBlockRandomPos(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-					(int) ((this.Accuracy - 1) * 10)));
+					(int) ((this.Accuracy - 1) * 10)).atY(blockPos.getY()));
 	}
 
 	public void SetLandPos(BlockPos pos) {

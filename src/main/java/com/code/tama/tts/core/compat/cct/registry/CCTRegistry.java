@@ -5,11 +5,9 @@ import static com.code.tama.tts.TTSMod.registrate;
 
 import java.util.function.Function;
 
-import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.compat.cct.CCTARDISInterface;
 import com.code.tama.tts.core.compat.cct.blocks.TardisCCInterfaceBlock;
 import com.code.tama.tts.core.compat.cct.tiles.TardisCCInterfaceTile;
-import com.code.tama.tts.core.registries.TTSRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -29,7 +27,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class CCTRegistry {
-	TTSRegistrate REGISTRATE = TTSMod.registrate();
 
 	public static final BlockEntry<TardisCCInterfaceBlock> TARDIS_INTERFACE_BLOCK = registrate()
 			.block("tardis_interface_block", TardisCCInterfaceBlock::new).simpleItem().defaultBlockstate().register();

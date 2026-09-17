@@ -31,10 +31,10 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 			JsonObject valuesObject = jsonObject.getAsJsonObject("values");
 
 			// Validate name and model fields
-			if (valuesObject.has("name") && valuesObject.has("modelname") && valuesObject.has("texture")
+			if (valuesObject.has("name") && valuesObject.has("model") && valuesObject.has("texture")
 					&& valuesObject.has("lightmap")) {
 				String name = valuesObject.get("name").getAsString();
-				String modelName = valuesObject.get("modelname").getAsString();
+				String modelName = valuesObject.get("model").getAsString();
 
 				// Check for non-empty name
 				if (name.isEmpty()) {
@@ -91,8 +91,10 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 						JsonObject jsonObject = jsonElement.getAsJsonObject();
 						if (isValidJson(jsonObject)) {
 							JsonObject valuesObject = jsonObject.getAsJsonObject("values");
+							String collection = valuesObject.get("collection").getAsString();
+							String parent = valuesObject.get("parent").getAsString();
 							String name = valuesObject.get("name").getAsString();
-							String modelname = valuesObject.get("modelname").getAsString();
+							String modelname = valuesObject.get("model").getAsString();
 							String texture = valuesObject.get("texture").getAsString();
 							String light = valuesObject.get("lightmap").getAsString();
 
@@ -105,10 +107,10 @@ public class ExteriorDataLoader implements ResourceManagerReloadListener {
 							ResourceLocation textureLoc = new ResourceLocation(texture);
 
 							// Create DataExterior and add it to the list
-							if (!dataExteriorList
-									.contains(new DataExterior(name, modelLocation, textureLoc, lightmapLoc, maxDeg)))
-								dataExteriorList
-										.add(new DataExterior(name, modelLocation, textureLoc, lightmapLoc, maxDeg));
+							DataExterior d = new DataExterior(collection, parent, name, modelLocation, textureLoc,
+									lightmapLoc, maxDeg);
+							if (!dataExteriorList.contains(d))
+								dataExteriorList.add(d);
 
 							// LOGGER.info("Loaded DataExterior from {}: {}", location,
 							// dataExterior);

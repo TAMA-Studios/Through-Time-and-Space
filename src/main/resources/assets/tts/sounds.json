@@ -1,4 +1,22 @@
 {
+  "keyboard_01" : {
+    "sounds" : [ {
+      "name" : "tts:keyboard_01",
+      "streaming" : false
+    } ]
+  },
+  "keyboard_02" : {
+    "sounds" : [ {
+      "name" : "tts:keyboard_02",
+      "streaming" : false
+    } ]
+  },
+  "keyboard_spacebar" : {
+    "sounds" : [ {
+      "name" : "tts:keyboard_spacebar",
+      "streaming" : false
+    } ]
+  },
   "button_click_01" : {
     "sounds" : [ {
       "name" : "tts:button_click_01",

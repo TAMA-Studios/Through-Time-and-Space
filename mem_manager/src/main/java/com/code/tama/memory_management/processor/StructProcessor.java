@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SupportedAnnotationTypes(
-        "com.tama.rew.memory_management.Struct"
+        "com.code.tama.memory_management.Struct"
 )
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class StructProcessor extends AbstractProcessor {
@@ -164,13 +164,13 @@ public class StructProcessor extends AbstractProcessor {
                 writer.write("package " + packageName + ";\n\n");
 
                 writer.write("import org.lwjgl.system.MemoryUtil;\n");
-                writer.write("import com.code.tama.rew.common.memory_management.ImAnArena;\n");
-                writer.write("import com.code.tama.rew.common.memory_management.MemAccessException;\n");
+                writer.write("import com.code.tama.triggerapi.memory_management.ImAnArena;\n");
+                writer.write("import com.code.tama.triggerapi.memory_management.MemAccessException;\n");
                 writer.write("\n");
 
                 writer.write("/**\n");
                 writer.write(" * Generated native-memory representation of "
-                        + generatedName.replace("Mem", "") + ".\n");
+                        + generatedName.replace("Native", "") + ".\n");
                 writer.write(" * DO NOT EDIT.\n");
                 writer.write(" */\n");
 

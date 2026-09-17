@@ -108,14 +108,14 @@ public class SonicOverlayRenderer {
 												ent.getCapability(ForgeCapabilities.ENERGY).orElseGet(null)
 														.getEnergyStored()))
 												.withStyle(ChatFormatting.WHITE),
-										0, -15, white, false, stack.last().pose(), bufferSource,
+										0, -45, white, false, stack.last().pose(), bufferSource,
 										Font.DisplayMode.NORMAL, 0, light);
 
 					if (ent != null && ent instanceof IWeldable weldable)
 						Minecraft.getInstance().font.drawInBatch(
 								Component.literal(String.format("Weld: %s", weldable.getWeldProgress()))
 										.withStyle(ChatFormatting.WHITE),
-								0, -15, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0,
+								0, -35, white, false, stack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0,
 								light);
 
 					// stack.translate(0, 5, 0);

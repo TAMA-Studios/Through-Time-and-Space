@@ -1,0 +1,10 @@
+{
+  "values" : {
+    "collection": "voxel",
+    "parent": "moffat",
+    "lightmap" : "tts:textures/exteriors/voxel/moffat/mof_12b_lightmap.png",
+    "model" : "tts:models/exterior/voxel_moffat.json",
+    "name" : "voxel.moffat.12b",
+    "texture" : "tts:textures/exteriors/voxel/moffat/mof_12b.png"
+  }
+}

@@ -34,7 +34,7 @@ public class StopViewingExteriorC2S {
 					.getLevel(context.get().getSender().level().dimension()).getEntity(mes.player);
 
 			if (player1.getVehicle() instanceof TardisFlightEntity tardisFlightEntity) {
-				if(tardisFlightEntity.isTouchingGround()) {
+				if (tardisFlightEntity.isTouchingGround()) {
 					tardisFlightEntity.Land(player1);
 				}
 			}

@@ -46,6 +46,7 @@ public class WorldHelper {
 	public static void PlaceStructure(ServerLevel serverLevel, BlockPos pos, ResourceLocation structure) {
 
 		StructureTemplate template = serverLevel.getStructureManager().getOrCreate(structure);
+
 		int X = -template.getSize().getX();
 		int Y = -template.getSize().getY();
 		int Z = -template.getSize().getZ();

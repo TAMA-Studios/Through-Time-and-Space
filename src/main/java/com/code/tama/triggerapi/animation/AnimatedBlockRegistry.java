@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
 
 /**
  * Tracks which world positions currently hold an animated block, without any

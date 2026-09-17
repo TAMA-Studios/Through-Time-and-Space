@@ -1,9 +1,11 @@
 {
   "values" : {
+    "collection": "voxel",
+    "parent": "tt_capsule",
     "doorMaxDegrees" : 35,
     "lightmap" : "tts:textures/exteriors/ttcapsule.png",
-    "modelname" : "tts:models/exterior/ttcapsule.json",
-    "name" : "ttcapsule",
+    "model" : "tts:models/exterior/ttcapsule.json",
+    "name" : "voxel.ttcapsule",
     "texture" : "tts:textures/exteriors/ttcapsule.png"
   }
 }

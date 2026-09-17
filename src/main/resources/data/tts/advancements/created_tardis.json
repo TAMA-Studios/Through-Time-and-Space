@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "tts:manual"
+    },
+    "title": {
+      "text": "It's Bigger on the Inside"
+    },
+    "description": {
+      "text": "Create your first TARDIS!"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "created_tardis": {
+      "trigger": "tts:tardis_event",
+      "event": "created_tardis"
+    }
+  }
+}

@@ -48,10 +48,12 @@ public class AbstractConsoleTile extends BlockEntity {
 				if (level.isClientSide)
 					tile.GetRotorAnimation().animateWhen(cap.GetFlightData().isPlayRotorAnimation(),
 							(int) level.getGameTime());
-				else if (cap.GetFlightData().isInFlight()) {
-					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level, pos);
-				} else
-					cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
+				// else if (cap.GetFlightData().isInFlight() &&
+				// !cap.GetFlightData().IsTakingOff()) {
+				// cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().PlayLooped(level,
+				// pos);
+				// } else
+				// cap.GetFlightData().getFlightSoundScheme().GetFlightLoop().Stop();
 			});
 		}
 	}
@@ -70,7 +72,7 @@ public class AbstractConsoleTile extends BlockEntity {
 		super.saveAdditional(tag);
 	}
 
-	private void summonButtons(Level level) {
+	void summonButtons(Level level) {
 		BlockPos blockPos = this.getBlockPos();
 		Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 

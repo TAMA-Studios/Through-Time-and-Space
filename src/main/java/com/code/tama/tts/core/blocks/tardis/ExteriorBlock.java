@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -26,8 +28,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -40,6 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -52,6 +57,8 @@ import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
 @SuppressWarnings("deprecation")
 public class ExteriorBlock extends FallingBlock implements EntityBlock {
+
+	public static final BooleanProperty DOORS = BooleanProperty.create("doors");
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final VoxelRotatedShape SHAPE_CLOSED = new VoxelRotatedShape(createShapeClosed().optimize());
 	public static final VoxelRotatedShape SHAPE_OPEN = new VoxelRotatedShape(createShape().optimize());
@@ -63,7 +70,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public ExteriorBlock(Properties p_49795_, Supplier<? extends BlockEntityType<? extends ExteriorTile>> factory) {
 		super(p_49795_);
 		this.exteriorType = factory;
-		this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(DOORS, false));
 	}
 
 	public static VoxelShape createShape() {
@@ -114,6 +121,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> StateDefinition) {
 		super.createBlockStateDefinition(StateDefinition);
 		StateDefinition.add(FACING);
+		StateDefinition.add(DOORS);
 	}
 
 	// @Override
@@ -150,7 +158,7 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 			@NotNull CollisionContext context) {
 		if (getter.getBlockEntity(pos) == null)
 			return SHAPE_OPEN.GetShapeFromRotation(state.getValue(FACING));
-		return ((ExteriorTile) getter.getBlockEntity(pos)).DoorsOpen() > 0
+		return state.getValue(DOORS)
 				? SHAPE_OPEN.GetShapeFromRotation(state.getValue(FACING)).move(0,
 						BlockUtils.getReverseHeightModifier(getter.getBlockState(pos.below())), 0)
 				: SHAPE_CLOSED.GetShapeFromRotation(state.getValue(FACING)).move(0,
@@ -211,31 +219,35 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos,
 			@NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
+
 		if (level.getBlockEntity(blockPos) != null
 				&& level.getBlockEntity(blockPos) instanceof ExteriorTile exteriorTile) {
+			exteriorTile.CycleDoors();
 
-			if (!level.isClientSide && exteriorTile.GetInterior() != null)
-				GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior())).ifPresent(cap -> {
-					cap.GetData().getInteriorDoorData().CycleDoor();
-					int oDoorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
-					cap.GetData().getInteriorDoorData().CycleDoor();
-					int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
+			if (!level.isClientSide) {
+				if (level.getGameTime() - exteriorTile.timeCreated < 1200) {
+					player.displayClientMessage(Component.translatable("tts.tooEarly",
+							(1200 - (level.getGameTime() - exteriorTile.timeCreated)) / 20), true);
+					return InteractionResult.FAIL;
+				}
 
-					if (doorsOpen - oDoorsOpen == -2) {
-						level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_CLOSE.get(),
-								SoundSource.BLOCKS, 0.5f, 1f);
-					}
-					if (doorsOpen - oDoorsOpen == 1) {
-						level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_OPEN.get(),
-								SoundSource.BLOCKS, 0.5f, 1f);
-					}
-				});
+				if (exteriorTile.GetInterior() != null)
+					GetTARDISCapSupplier(level.getServer().getLevel(exteriorTile.GetInterior())).ifPresent(cap -> {
+						int doorsOpen = cap.GetData().getInteriorDoorData().getDoorsOpen();
 
-			if (level.getGameTime() - exteriorTile.timeCreated < 1200) {
-				player.displayClientMessage(Component.translatable("tts.tooEarly",
-						(1200 - (level.getGameTime() - exteriorTile.timeCreated)) / 20), true);return InteractionResult.FAIL;
-			} else
-				exteriorTile.CycleDoors();
+						if (doorsOpen == 0) {
+							level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_CLOSE.get(),
+									SoundSource.BLOCKS, 0.5f, 1f);
+						} else {
+							level.playSound(null, player.blockPosition(), TTSSounds.TARDIS_DOOR_OPEN.get(),
+									SoundSource.BLOCKS, 0.5f, 1f);
+						}
+					});
+				level.setBlockAndUpdate(blockPos, blockState.setValue(DOORS, exteriorTile.DoorsOpen() != 0));
+
+				level.setBlockAndUpdate(blockPos.above(),
+						TTSBlocks.EXTERIOR_TOP.getDefaultState().setValue(DOORS, exteriorTile.DoorsOpen() != 0));
+			}
 		}
 		return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
 	}
@@ -244,6 +256,9 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull BlockState state1, boolean simulated) {
 		super.onPlace(state, level, pos, state1, simulated);
+
+		level.setBlockAndUpdate(pos.above(), TTSBlocks.EXTERIOR_TOP.getDefaultState()
+				.setValue(DOORS, state.getValue(DOORS)).setValue(FACING, state.getValue(FACING)));
 
 		if (state.hasBlockEntity()) {
 			if (level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {
@@ -284,6 +299,13 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		if (level.getBlockEntity(pos) != null) {
+			ItemEntity entity = EntityType.ITEM.create(level);
+			if (newState == null || newState.equals(Blocks.AIR.defaultBlockState()))
+				entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
+			entity.setPos(pos.getCenter());
+			level.addFreshEntity(entity);
+		}
 		super.onRemove(state, level, pos, newState, movedByPiston);
 	}
 
@@ -304,4 +326,13 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 		}
 	}
 
+	public static ItemStack createExteriorItem(BlockEntity blockEntity) {
+		ItemStack stack = new ItemStack(TTSBlocks.EXTERIOR_BLOCK.get().asItem());
+
+		CompoundTag tag = blockEntity.serializeNBT();
+
+		stack.getOrCreateTag().put("BlockEntityTag", tag);
+
+		return stack;
+	}
 }

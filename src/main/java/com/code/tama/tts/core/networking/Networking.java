@@ -1,20 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.networking;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.TTSMod;
-import com.code.tama.tts.core.networking.packets.C2S.dimensions.ChooseARSRoomC2S;
-import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
-import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
-import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
+import com.code.tama.tts.core.networking.packets.C2S.dimensions.*;
 import com.code.tama.tts.core.networking.packets.C2S.entities.BlowUpCreeperPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.entities.ControlClickedPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.entities.ControlHitPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
+import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.*;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncButtonAnimationSetPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
@@ -67,6 +66,24 @@ public class Networking {
 		DimensionPacketsRegistration.registerPackets();
 		BOTIPackets.registerPackets();
 
+		UniversalCommon.Networking.registerMsg(FlightLoopSoundPacketS2C.class);
+
+		INSTANCE.registerMessage(id(), TerminalCommandPacketC2S.class, TerminalCommandPacketC2S::encode,
+				TerminalCommandPacketC2S::new, TerminalCommandPacketC2S::handle);
+
+		INSTANCE.registerMessage(id(), TerminalResponsePacketS2C.class, TerminalResponsePacketS2C::encode,
+				TerminalResponsePacketS2C::new, TerminalResponsePacketS2C::handle,
+				Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+		INSTANCE.registerMessage(id(), TerminalActionPacketC2S.class, TerminalActionPacketC2S::encode,
+				TerminalActionPacketC2S::new, TerminalActionPacketC2S::handle);
+
+		INSTANCE.registerMessage(id(), TerminalSetDestinationPacketC2S.class, TerminalSetDestinationPacketC2S::encode,
+				TerminalSetDestinationPacketC2S::new, TerminalSetDestinationPacketC2S::handle);
+
+		INSTANCE.registerMessage(id(), TerminalSendMessagePacketC2S.class, TerminalSendMessagePacketC2S::encode,
+				TerminalSendMessagePacketC2S::new, TerminalSendMessagePacketC2S::handle);
+
 		UniversalCommon.Networking.registerMsg(SyncTARDISFlightEventPacketS2C.class);
 		UniversalCommon.Networking.registerMsg(SyncLevelCapPacketS2C.class);
 
@@ -105,6 +122,9 @@ public class Networking {
 
 		register(SyncCapVariantPacketS2C.class, SyncCapVariantPacketS2C::encode, SyncCapVariantPacketS2C::decode,
 				SyncCapVariantPacketS2C::handle);
+
+		register(ChameleonCircuitActionC2SPacket.class, ChameleonCircuitActionC2SPacket::encode,
+				ChameleonCircuitActionC2SPacket::decode, ChameleonCircuitActionC2SPacket::handle);
 
 		register(TriggerSyncCapVariantPacketC2S.class, TriggerSyncCapVariantPacketC2S::encode,
 				TriggerSyncCapVariantPacketC2S::decode, TriggerSyncCapVariantPacketC2S::handle);

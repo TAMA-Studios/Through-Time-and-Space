@@ -6,9 +6,11 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.io.IOException;
 
 import com.code.tama.tts.client.models.*;
+import com.code.tama.tts.client.models.armor.RespiratorModel;
 import com.code.tama.tts.client.models.consoles.CoralConsoleModel;
 import com.code.tama.tts.client.models.consoles.HudolinConsoleModel;
 import com.code.tama.tts.client.models.consoles.NESSConsoleModel;
+import com.code.tama.tts.client.models.consoles.TakomakModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
@@ -46,8 +48,7 @@ public class ClientSetup {
 
 	public static final KeyMapping EXIT_VIEW = new KeyMapping("tts.keybinds.exterior_view_cancel",
 			KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, // Default mapping is on the keyboard
-			GLFW.GLFW_KEY_G,
-			"key.categories.tts.main" // Mapping will be in the main tts category
+			GLFW.GLFW_KEY_G, "key.categories.tts.main" // Mapping will be in the main tts category
 	);
 
 	public static final KeyMapping SONIC_GLASSES = new KeyMapping("tts.keybinds.holo_glasses_gui",
@@ -62,6 +63,7 @@ public class ClientSetup {
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.TAKOMAK_CONSOLE_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.NESS_CONSOLE_BLOCK.get(), RenderType.translucent());
 
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
@@ -123,12 +125,14 @@ public class ClientSetup {
 
 	@SubscribeEvent
 	public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
+		event.registerLayerDefinition(RespiratorModel.LAYER_LOCATION, RespiratorModel::createBodyLayer);
 		event.registerLayerDefinition(HartnellRotorModel.LAYER_LOCATION, HartnellRotorModel::createBodyLayer);
 		event.registerLayerDefinition(CoralConsoleTopper.LAYER_LOCATION, CoralConsoleTopper::createBodyLayer);
 		event.registerLayerDefinition(VortexCannon.LAYER_LOCATION, VortexCannon::createBodyLayer);
 		event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION,
 				ColinRichmondInteriorDoors::createBodyLayer);
 		event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
+		event.registerLayerDefinition(TakomakModel.LAYER_LOCATION, TakomakModel::createBodyLayer);
 		event.registerLayerDefinition(CoralConsoleModel.LAYER_LOCATION, CoralConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(ShellBaseModel.LAYER_LOCATION, ShellBaseModel::createBodyLayer);
@@ -142,7 +146,8 @@ public class ClientSetup {
 		event.registerEntityRenderer(TTSEntities.MODULAR_CONTROL.get(), ControlRenderer::new);
 		event.registerEntityRenderer(TTSEntities.FALLING_EXTERIOR.get(), FallingExteriorRenderer::new);
 		event.registerEntityRenderer(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
-//		EntityRenderers.register(TTSEntities.TARDIS_FLIGHT.get(), TardisFlightRenderer::new);
+		// EntityRenderers.register(TTSEntities.TARDIS_FLIGHT.get(),
+		// TardisFlightRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.CHROMIUM_BLOCK_ENTITY.get(),
 		// ChromiumBlockEntityRenderer::new);
 		// event.registerBlockEntityRenderer(TTSTileEntities.COMPRESSED_MULTIBLOCK_TILE.get(),

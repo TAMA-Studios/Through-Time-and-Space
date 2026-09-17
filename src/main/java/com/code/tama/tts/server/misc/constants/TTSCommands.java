@@ -8,8 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.code.tama.triggerapi.boti.teleporting.TickScheduler;
-import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
@@ -44,11 +42,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.code.tama.triggerapi.dimensions.DimensionAPI;
+import com.code.tama.triggerapi.dimensions.time.TimeMachine;
 import com.code.tama.triggerapi.gui.CustomGuiProvider;
 import com.code.tama.triggerapi.gui.GuiLoader;
 import com.code.tama.triggerapi.lua.LuaScriptEngine;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TTSCommands {
@@ -108,8 +108,7 @@ public class TTSCommands {
 			.then(Commands.argument("dimension", ResourceLocationArgument.id())
 					.suggests((context, builder) -> SharedSuggestionProvider
 							.suggest(tardisDimList(context.getSource().getServer()), builder))
-					.executes(
-							ctx -> deleteTardis(ctx.getSource(), ResourceLocationArgument.getId(ctx, "dimension"))));
+					.executes(ctx -> deleteTardis(ctx.getSource(), ResourceLocationArgument.getId(ctx, "dimension"))));
 
 	public static LiteralArgumentBuilder<CommandSourceStack> subsystem = Commands.literal("place_subsystem")
 			.then(Commands.argument("subsystem", StringArgumentType.string()).suggests((context, builder) -> {
@@ -126,7 +125,6 @@ public class TTSCommands {
 	public static LiteralArgumentBuilder<CommandSourceStack> forceLand = Commands.literal("force_land")
 			.executes(ctx -> placeTARDIS(ctx.getSource()));
 
-
 	public static LiteralArgumentBuilder<CommandSourceStack> createRift = Commands.literal("create_rift")
 			.then(Commands.argument("whats_inside", StringArgumentType.string()).suggests((context, builder) -> {
 				List<RiftData.WheelOfFortune> entries = Arrays.stream(RiftData.WheelOfFortune.values()).toList();
@@ -136,12 +134,22 @@ public class TTSCommands {
 				return SharedSuggestionProvider.suggest(s, builder);
 			}).executes(ctx -> placeRift(ctx.getSource(), StringArgumentType.getString(ctx, "whats_inside"))));
 
+	public static LiteralArgumentBuilder<CommandSourceStack> travel = Commands.literal("travel")
+			.then(Commands.argument("timezone", StringArgumentType.string()).suggests((context, builder) -> {
+				List<String> s = new ArrayList<>();
+				s.add("past");
+				s.add("present");
+				s.add("future");
+				return SharedSuggestionProvider.suggest(s, builder);
+			}).executes(ctx -> travel(ctx.getSource(), StringArgumentType.getString(ctx, "timezone"))));
+
 	public static LiteralArgumentBuilder<CommandSourceStack> BASE = Commands.literal("tardis-tts");
 
-	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(listguis).then(opengui).then(lua).then(forceLand);
+	public static LiteralArgumentBuilder<CommandSourceStack> debug = Commands.literal("debug").then(listguis)
+			.then(opengui).then(lua).then(forceLand).then(travel);
 
-	public static LiteralArgumentBuilder<CommandSourceStack> operator = Commands.literal("operator").then(createTardis).then(interior).then(subsystem)
-			.then(createRift).then(OP).then(delete);
+	public static LiteralArgumentBuilder<CommandSourceStack> operator = Commands.literal("operator").then(createTardis)
+			.then(interior).then(subsystem).then(createRift).then(OP).then(delete);
 
 	private static int placeSystem(CommandSourceStack source, String system) {
 		ServerPlayer player = source.getPlayer();
@@ -159,6 +167,34 @@ public class TTSCommands {
 			assert player != null;
 			return Component.literal("Placed subsystem " + system + " at " + player.position());
 		}, true);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travel(CommandSourceStack stack, String zone) {
+		if (stack.isPlayer()) {
+			ServerPlayer player = stack.getPlayer();
+			assert player != null;
+			TimeMachine.travel(player, zone.equals("future") ? 2 : zone.equals("present") ? 1 : 0);
+			return Command.SINGLE_SUCCESS;
+		} else
+			return 0;
+	}
+
+	private static int travelFuture(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 2);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travelPresent(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 1);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int travelPast(CommandSourceStack stack) {
+		ServerPlayer player = stack.getPlayer();
+		TimeMachine.travel(player, 0);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -181,6 +217,9 @@ public class TTSCommands {
 
 		tile.ShouldMakeDimOnNextTick = true;
 
+		tile.setModel(0);
+		tile.UpdateAll();
+
 		source.sendSuccess(() -> Component.literal("Placed TARDIS at " + player.position()), true);
 		return Command.SINGLE_SUCCESS;
 	}
@@ -189,10 +228,11 @@ public class TTSCommands {
 		ServerPlayer player = source.getPlayer();
 		Level level = source.getLevel();
 
-
 		TARDISLevelCapability.GetTARDISCapSupplier(level).ifPresent(cap -> {
 			cap.setOperator(true);
-			source.sendSuccess(() -> Component.literal("Made TARDIS an Operator TARDIS " + cap.GetLevel().dimension().location().getPath()), true);
+			source.sendSuccess(() -> Component
+					.literal("Made TARDIS an Operator TARDIS " + cap.GetLevel().dimension().location().getPath()),
+					true);
 		});
 		return Command.SINGLE_SUCCESS;
 	}
@@ -276,14 +316,17 @@ public class TTSCommands {
 		success.set(-1);
 		targetLevel.getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY).ifPresent((cap) -> {
 			cap.GetExteriorTile().UtterlyDestroy();
-			DimensionAPI.get().markDimensionForUnregistration(ServerLifecycleHooks.getCurrentServer(), ResourceKey.create(Registries.DIMENSION, dimension));
-			source.sendSuccess(() -> Component.literal("Successfully marked TARDIS for unregistration: " + dimension), true);
+			DimensionAPI.get().markDimensionForUnregistration(ServerLifecycleHooks.getCurrentServer(),
+					ResourceKey.create(Registries.DIMENSION, dimension));
+			source.sendSuccess(() -> Component.literal("Successfully marked TARDIS for unregistration: " + dimension),
+					true);
 			success.set(Command.SINGLE_SUCCESS);
 		});
 		if (success.get() != -1)
 			return success.get();
 
-		source.sendSuccess(() -> Component.literal("Successfully marked TARDIS for unregistration: " + dimension), true);
+		source.sendSuccess(() -> Component.literal("Successfully marked TARDIS for unregistration: " + dimension),
+				true);
 		return Command.SINGLE_SUCCESS;
 	}
 

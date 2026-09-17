@@ -11,12 +11,14 @@ import java.util.stream.StreamSupport;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.core.achievements.TTSAchievement;
 import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.core.exceptions.InvalidPlanetException;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSDamageSources;
+import com.code.tama.tts.core.registries.forge.TTSItems;
 import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
@@ -33,6 +35,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -231,7 +234,7 @@ public class CommonEvents {
 		// Networking.sendPacketToDimension(event.getPlayer().level().dimension(), new
 		// SyncCapLightLevelPacket((float) Integer.parseInt(event.getRawText()) / 10));
 		// }
-		}
+	}
 
 	private static final float VANILLA_GRAVITY = 0.08F;
 
@@ -277,6 +280,8 @@ public class CommonEvents {
 	public static void TARDISDemat(TardisEvent.TakeOff event) {
 		switch (event.state) {
 			case START : {
+				TTSAchievement.Achievements.FIRST_TAKEOFF.trigger(event.level.getLastToInteract());
+
 				System.out.printf("Taking off with destination: %s",
 						event.level.GetNavigationalData().getDestination());
 				CameraShakeHandler.startShake(
@@ -295,6 +300,8 @@ public class CommonEvents {
 	public static void TARDISRemat(TardisEvent.Land event) {
 		switch (event.state) {
 			case START : {
+				TTSAchievement.Achievements.FIRST_FLIGHT.trigger(event.level.getLastToInteract());
+
 				if (event.level.GetData().getControlData().isBrakes())
 					CameraShakeHandler.startShake(
 							event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount(), 9000);
@@ -305,8 +312,40 @@ public class CommonEvents {
 				CameraShakeHandler.endShake();
 				if (event.level.GetData().getControlData().isBrakes()) {
 					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
-					event.level.GetExteriorTile().getLevel().playLocalSound(event.level.GetExteriorTile().getBlockPos(),
-							TTSSounds.THUD.get(), SoundSource.BLOCKS, 1, 1, true); // Play at exterior
+					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1);
+					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1); // Play at interior
+				}
+				if (event.level.GetLevel() != null)
+					event.level.GetLevel().playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS);
+				System.out.println("Finished Landing");
+				break;
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void TARDISCrash(TardisEvent.Crash event) {
+		switch (event.state) {
+			case START : {
+				TTSAchievement.Achievements.CRASH.trigger(event.level.getLastToInteract());
+
+				CameraShakeHandler.startShake(
+						event.level.GetFlightData().getFlightTerminationProtocol().getLandShakeAmount() * 5, 9000);
+				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
+				break;
+			}
+			case END : {
+				CameraShakeHandler.endShake();
+				if (event.level.GetData().getControlData().isBrakes()) {
+					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
+					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
+							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
+							SoundSource.BLOCKS, 1, 1);
 					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
 							SoundSource.BLOCKS, 1, 1); // Play at interior
 				}
@@ -353,18 +392,21 @@ public class CommonEvents {
 		if (event.level.getServer().getLevel(event.level.dimension()) == null)
 			return;
 
-		event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
+		float O2 = OxygenHelper.getO2(event.level);
+		if ((O2 != 20 && Math.toIntExact((long) (event.level.getGameTime() % (Math.min(O2, 1) * 10))) == 0)) {
+			event.level.getServer().getLevel(event.level.dimension()).getAllEntities().forEach((entity -> {
 
-			if (entity instanceof LivingEntity livingEntity) {
-				// TODO: REAL Oxygen implementation
-				float O2 = OxygenHelper.getO2(event.level);
+				if (entity instanceof LivingEntity livingEntity) {
+					// TODO: REAL Oxygen implementation
 
-				if (O2 != 20 && event.level.getGameTime() % O2 == 0) {
+					if (entity instanceof Player p
+							&& p.getItemBySlot(EquipmentSlot.HEAD).getItem().equals(TTSItems.OXYGENATOR.get()))
+						return;
+
 					entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);
-
 				}
-			}
-		}));
+			}));
+		}
 	}
 
 	@SubscribeEvent

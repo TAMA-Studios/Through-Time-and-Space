@@ -1,5 +1,14 @@
 TODO:
 
+Bugs:
+DING! Frag links
+Visual: frag links on subsystems no connect
+Can't enter exterior
+E.DC
+Interior door not spawning on creation
+Lang
+Text overlap on manual
+
 weight: influences what the behavior should be
 
 Add a custom overlay registry atp

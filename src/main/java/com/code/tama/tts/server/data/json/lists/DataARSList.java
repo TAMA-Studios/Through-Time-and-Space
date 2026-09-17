@@ -16,7 +16,6 @@ public class DataARSList {
 	@Getter
 	private static List<ARSStructureContainer> StructureList;
 
-
 	public static void setList(List<ARSStructureContainer> list) {
 		StructureList = removeDuplicates(list);
 		List<ARSRoomRegistry.ARSRoomInfo> tempInfo = new ArrayList<>();

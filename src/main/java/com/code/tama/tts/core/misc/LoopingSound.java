@@ -17,7 +17,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
 	}
 
 	public LoopingSound(SoundEvent event) {
-		super(event, SoundSource.MUSIC, SoundInstance.createUnseededRandom());
+		super(event, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 
 		this.looping = true;
 		this.delay = 0;

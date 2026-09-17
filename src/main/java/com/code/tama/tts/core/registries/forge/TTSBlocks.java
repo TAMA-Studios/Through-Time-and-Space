@@ -30,6 +30,7 @@ import com.code.tama.tts.core.tileentities.boti.BotiWindowBlock;
 import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.TakomakConsoleTile;
 import com.code.tama.tts.core.worlds.tree.GallifreyanOakTreeGrower;
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
@@ -59,6 +60,21 @@ public class TTSBlocks {
 
 	public static final BlockEntry<ExampleTileBlock> EXAMPLE_TILE_BLOCK = registrate()
 			.block("example_tile_block", ExampleTileBlock::new).simpleItem().defaultBlockstate().register();
+
+	public static final BlockEntry<Block> MATRIX_CASING = registrate().block("matrix_casing", Block::new).simpleItem()
+			.stateWithExistingModel().register();
+
+	public static final BlockEntry<Block> CRYSTALLINE_BLOCK = registrate().block("crystalline_block", Block::new)
+			.simpleItem().stateWithExistingModel().register();
+
+	public static final BlockEntry<TerminalBlock> DEV_TERMINAL = registrate()
+			.block("dev_terminal", (p) -> new TerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
+			.airState().simpleItem().register();
+
+	public static final BlockEntry<ConsoleTerminalBlock> TARDIS_TERMINAL = registrate()
+			.block("tardis_terminal",
+					(p) -> new ConsoleTerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
+			.airState().simpleItem().register();
 
 	public static final BlockEntry<WireBlock> WIRES = registrate().block("wires", WireBlock::new)
 			.properties((p) -> p.noOcclusion()).simpleItem().airState().register();
@@ -556,6 +572,11 @@ public class TTSBlocks {
 			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
+	public static final BlockEntry<ExteriorTopBlock> EXTERIOR_TOP = Builder("exterior_top",
+			prop -> new ExteriorTopBlock(prop)).properties(p -> p.noOcclusion().strength(999f)).airState()
+			.item(ExteriorItem::new).build().register();
+
+	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
 			.properties(BlockBehaviour.Properties::noOcclusion).airState().simpleItem().register();
 
@@ -572,6 +593,13 @@ public class TTSBlocks {
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion).airState()
 			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<ConsoleBlock<TakomakConsoleTile>> TAKOMAK_CONSOLE_BLOCK = Builder(
+			"takomak_console_block", p -> new ConsoleBlock<TakomakConsoleTile>(p, TTSTileEntities.TAKOMAK_CONSOLE_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.TAKOMAK_CONSOLE_TILE, block, prop)).build()
 			.simpleItem().register();
 
 	@MainTab
@@ -695,6 +723,11 @@ public class TTSBlocks {
 	@MainTab
 	public static final BlockEntry<DematerializationCircuitCoreBlock> DEMATERIALIZATION_CIRCUIT_CORE = Builder(
 			"dematerialization_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel()
+			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<DematerializationCircuitCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder(
+			"oxygenator_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel("oxygenator")
 			.simpleItem().register();
 
 	@MainTab

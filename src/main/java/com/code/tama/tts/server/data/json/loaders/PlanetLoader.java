@@ -80,6 +80,7 @@ public class PlanetLoader extends AbstractDPLoaderGSON<PlanetLoader.Planet> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<Planet> list() {
 		return ((AbstractDPLoader.AbstractDPList<PlanetLoader.Planet>) DatapackRegistry.getLoader(PlanetLoader.ID).list)
 				.getList();

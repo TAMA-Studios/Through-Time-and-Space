@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.phys.Vec3;
 
+import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
@@ -63,7 +64,7 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 		}
 		poseStack.scale(1f, 1f, 1f);
 		assert Minecraft.getInstance().level != null;
-		float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
+		float ticks = AnimationTicker.getTicks() + partialTicks;
 		this.MODEL.SetupAnimations(ConsoleTile, ticks);
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE)),
 				combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);

@@ -4,10 +4,9 @@ package com.code.tama.tts.client.renderers.tiles;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
-import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ChameleonCircuitPanelTileEntity;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +18,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 
 public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
 	public static final int fullBright = 0xF000F0; // LightTexture.pack(15, 15);
@@ -42,7 +42,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 		if (chameleonCircuit.getLevel() == null)
 			return;
 		GetTARDISCapSupplier(chameleonCircuit.getLevel()).ifPresent(cap -> {
-			ExteriorModelContainer exteriorModelContainer = cap.GetData().getExteriorModel();
+			JavaJSONRenderer root = cap.GetClientData().getBaseRoot();
 			poseStack.pushPose();
 			poseStack.translate(0.5, 0.52, 0.5);
 			poseStack.mulPose(Axis.YP.rotationDegrees(180));
@@ -50,7 +50,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			poseStack.scale(0.2f, 0.2f, 0.2f);
 
 			assert Minecraft.getInstance().level != null;
-			float time = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+			float time = AnimationTicker.getTicks() + partialTicks;
 			if (time % 10 < 2) {
 				float glitchOffset = (Math.random() > 0.5) ? 0.1f : -0.1f;
 				poseStack.translate(glitchOffset, 0, 0);
@@ -70,28 +70,41 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			// this.modelName = cap.GetData().getExteriorModel().getName();
 			// }
 
-			poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
+			poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks() % 360));
 
 			// this.MODEL.renderToBuffer(poseStack,
 			// bufferSource.getBuffer(RenderType.entityTranslucent(json.getTexture())),
 			// fullBright,
 			// OverlayTexture.NO_OVERLAY, r, g, b, flicker);
 
-			if (exteriorModelContainer == null) {
-				exteriorModelContainer = ExteriorsRegistry.Get(0);
-				model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))
-						.getModelInfo().getModel();
-			}
-
-			if (model != null) {
+			if (root != null) {
 				poseStack.translate(0, 1.5f, 0);
-				model.getPart("baseRoot").render(poseStack,
-						bufferSource.getBuffer(model.renderType(exteriorModelContainer.getTexture())), 0xf000f0,
-						OverlayTexture.NO_OVERLAY, r, g, b, flicker);
+				// root.render(poseStack,
+				// bufferSource.getBuffer(model.renderType(exteriorTile.Model.getTexture())),
+				// combinedLight,
+				// OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				//
+				// root.render(poseStack,
+				// bufferSource.getBuffer(model.getRenderType(exteriorTile.Model.getLightMap())),
+				// 0xf000f0,
+				// OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				renderBone(root, poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
+						.getRenderType(cap.GetData().getExteriorModel().getTexture())), combinedLight);
+				renderBone(root, poseStack, bufferSource.getBuffer(cap.GetClientData().getExteriorRenderer()
+						.getRenderType(cap.GetData().getExteriorModel().getLightMap())), 0xf000f0);
 
-				model.getPart("baseRoot").render(poseStack,
-						bufferSource.getBuffer(model.renderType(exteriorModelContainer.getLightMap())), 0xf000f0,
-						OverlayTexture.NO_OVERLAY, r, g, b, flicker);
+				cap.GetClientData().getLeftDoor().setRotation(0, 0, 0);
+				cap.GetClientData().getRightDoor().setRotation(0, 0, 0);
+
+				renderBone(
+						cap.GetClientData().getDoors(), poseStack, bufferSource.getBuffer(cap.GetClientData()
+								.getExteriorRenderer().getRenderType(cap.GetData().getExteriorModel().getTexture())),
+						combinedLight);
+
+				renderBone(
+						cap.GetClientData().getDoors(), poseStack, bufferSource.getBuffer(cap.GetClientData()
+								.getExteriorRenderer().getRenderType(cap.GetData().getExteriorModel().getLightMap())),
+						0xf000f0);
 			}
 			poseStack.popPose();
 
@@ -112,5 +125,10 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 
 			poseStack.popPose();
 		});
+	}
+
+	private static void renderBone(JavaJSONRenderer bone, @NotNull PoseStack poseStack, VertexConsumer bufferSource,
+			int combinedLight) {
+		bone.render(poseStack, bufferSource, combinedLight, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
 	}
 }

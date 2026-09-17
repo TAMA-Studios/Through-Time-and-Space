@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import com.code.tama.triggerapi.boti.packets.SeamlessTeleportPrepareIdPacket;
 import com.code.tama.tts.core.config.TTSConfig;
 import com.code.tama.tts.core.networking.Networking;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +26,7 @@ import com.code.tama.triggerapi.boti.ChunkGatheringThread;
 import com.code.tama.triggerapi.boti.packets.S2C.SeamlessChunkPreloadPacketS2C;
 import com.code.tama.triggerapi.boti.packets.SeamlessPreparePacket;
 import com.code.tama.triggerapi.boti.packets.SeamlessTeleportPacket;
+import com.code.tama.triggerapi.boti.packets.SeamlessTeleportPrepareIdPacket;
 
 public class SeamlessTeleport {
 
@@ -57,13 +57,14 @@ public class SeamlessTeleport {
 		ACTIVE_PREPARES.put(player.getUUID(), teleportId);
 
 		// Tell the client to open its staging buffer under this UUID and arm the hold.
-//		Networking.sendToPlayer(player, new SeamlessPreparePacket(teleportId));
+		// Networking.sendToPlayer(player, new SeamlessPreparePacket(teleportId));
 		Networking.sendToPlayer(player, new SeamlessTeleportPrepareIdPacket(teleportId));
 
 		startGatherThread(player, destLevel, destPos, yaw, teleportId,
 				"SeamlessTeleport-Prepare-" + player.getName().getString(), () -> {
 					SeamlessTeleportState.markPrepared(player);
-					LOGGER.debug("[ST] prepare() finished for {}.", player.getName().getString());
+					// LOGGER.debug("[ST] prepare() finished for {}.",
+					// player.getName().getString());
 				}, () -> {
 					ACTIVE_PREPARES.remove(player.getUUID());
 					TickScheduler.runAfter(200, () -> removeChunkTickets(destLevel, destPos, preloadRadius));

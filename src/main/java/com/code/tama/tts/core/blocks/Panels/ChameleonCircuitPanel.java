@@ -14,13 +14,10 @@ import javax.annotation.Nullable;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
+import com.code.tama.tts.client.gui.ChameleonCircuitScreen;
 import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
-import com.code.tama.tts.core.networking.Networking;
-import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
-import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ChameleonCircuitPanelTileEntity;
-import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -170,58 +167,49 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state, Level world, @NotNull BlockPos pos,
 			@NotNull Player player, @NotNull InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide)
-			return InteractionResult.FAIL;
 		if (hand.equals(InteractionHand.OFF_HAND))
 			return InteractionResult.PASS;
-		System.out.println("Block was hit on face: " + hit.getDirection());
 
 		ChameleonCircuitButtons button = this.getButton(
 				(100.0F * (float) (hit.getLocation().x() - (double) pos.getX())) / 100.0F,
 				(100.0F * (float) (hit.getLocation().z() - (double) pos.getZ())) / 100.0F,
 				state.getValue(FACING).getOpposite());
 
-		boolean Crouching = player.isCrouching();
+		if (button == ChameleonCircuitButtons.EMPTY) {
+			if (world.isClientSide) {
+				net.minecraft.client.Minecraft.getInstance().setScreen(new ChameleonCircuitScreen());
+			}
+			return InteractionResult.SUCCESS;
+		}
 
-		if (button == null)
-			return InteractionResult.FAIL;
+		if (world.isClientSide)
+			return InteractionResult.SUCCESS;
+
+		boolean Crouching = player.isCrouching();
 
 		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MINUS :
-					tardisLevelCapability.GetData().setExteriorModel(
-							ExteriorsRegistry.CycleDown(tardisLevelCapability.GetData().getExteriorModel()));
-
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
-					world.scheduleTick(pos, this, 10);
+					ChameleonCircuitActions.prevVariant(world, tardisLevelCapability);
+					rClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case VARIANT :
-					tardisLevelCapability.GetData().CycleVariant();
-
-					ServerLevel serverLevel = world.getServer().getLevel(tardisLevelCapability.GetCurrentLevel());
-					assert serverLevel != null;
-					if (tardisLevelCapability.GetExteriorTile() != null) {
-						tardisLevelCapability.GetData().CycleVariant();
-
-						Networking.sendPacketToDimension(world.dimension(), new SyncCapVariantPacketS2C(
-								ExteriorsRegistry.GetOrdinal(tardisLevelCapability.GetData().getExteriorModel())));
-
-						tardisLevelCapability.GetExteriorTile().setChanged();
+					if (Crouching) {
+						ChameleonCircuitActions.nextCollection(world, tardisLevelCapability);
+						player.sendSystemMessage(Component.literal("Set Collection to: "
+								+ tardisLevelCapability.GetData().getExteriorModel().getCollection()));
+					} else {
+						ChameleonCircuitActions.nextGroup(world, tardisLevelCapability);
+						player.sendSystemMessage(Component.literal(
+								"Set Group to: " + tardisLevelCapability.GetData().getExteriorModel().getParent()));
 					}
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
-					world.scheduleTick(pos, this, 10);
+					mClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case POSITIVE :
-					tardisLevelCapability.GetData().setExteriorModel(
-							ExteriorsRegistry.Cycle(tardisLevelCapability.GetData().getExteriorModel()));
-
-					tardisLevelCapability.UpdateClient(DataUpdateValues.RENDERING);
-					world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
-					world.scheduleTick(pos, this, 10);
+					ChameleonCircuitActions.nextVariant(world, tardisLevelCapability);
+					lClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				default :
@@ -229,7 +217,6 @@ public class ChameleonCircuitPanel extends HorizontalDirectionalBlock
 			}
 		});
 
-		// }
 		return InteractionResult.SUCCESS;
 	}
 

@@ -11,8 +11,8 @@ import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.CoralConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
+import com.code.tama.tts.client.renderers.tiles.console.TakomakConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.*;
-import com.code.tama.tts.client.renderers.tiles.decoration.CoralConsoleTopperRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.FabricatorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
@@ -25,6 +25,7 @@ import com.code.tama.tts.core.tileentities.boti.BotiWindowTile;
 import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.TakomakConsoleTile;
 import com.code.tama.tts.core.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorTile;
@@ -91,6 +92,10 @@ public class TTSTileEntities {
 	public static final BlockEntityEntry<HudolinConsoleTile> HUDOLIN_CONSOLE_TILE = registrate()
 			.blockEntity("hudolin_console_tile", HudolinConsoleTile::new).validBlocks(TTSBlocks.HUDOLIN_CONSOLE_BLOCK)
 			.renderer(() -> HudolinConsoleRenderer::new).register();
+
+	public static final BlockEntityEntry<TakomakConsoleTile> TAKOMAK_CONSOLE_TILE = registrate()
+			.blockEntity("takomak_console_tile", TakomakConsoleTile::new).validBlocks(TTSBlocks.TAKOMAK_CONSOLE_BLOCK)
+			.renderer(() -> TakomakConsoleRenderer::new).register();
 
 	public static final BlockEntityEntry<CoralConsoleTile> CORAL_CONSOLE_TILE = registrate()
 			.blockEntity("coral_console_tile", CoralConsoleTile::new).validBlocks(TTSBlocks.CORAL_CONSOLE_BLOCK)

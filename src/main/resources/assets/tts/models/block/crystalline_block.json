@@ -1,0 +1,7 @@
+{
+  "parent" : "minecraft:block/cube_column",
+  "textures" : {
+    "end" : "tts:block/crystalline/crystalline_top",
+    "side" : "tts:block/crystalline/crystalline_side"
+  }
+}

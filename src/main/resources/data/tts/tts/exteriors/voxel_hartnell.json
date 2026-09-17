@@ -1,0 +1,10 @@
+{
+  "values" : {
+    "collection": "voxel",
+    "parent": "hartnell",
+    "lightmap" : "tts:textures/exteriors/voxel/classic/classic_lightmap_a.png",
+    "model" : "tts:models/exterior/voxel_classic.json",
+    "name" : "voxel.hartnell.a",
+    "texture" : "tts:textures/exteriors/voxel/classic/classic_1a.png"
+  }
+}

@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
+import java.util.List;
+
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
@@ -9,19 +11,29 @@ import com.code.tama.tts.server.data.tardis.PowerHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
+	/**
+	 * @return The last player to interact with a TARDIS Control
+	 */
+	ServerPlayer getLastToInteract();
+
+	/**
+	 * @param pilot
+	 *            The last player to interact with a TARDIS Control
+	 */
+	void setLastToInteract(ServerPlayer pilot);
+
 	/** Whether the current TARDIS is marked as Operator */
 	boolean isOperator();
 	void setOperator(boolean b);
@@ -163,6 +175,15 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	 */
 	void sendInterCommMessage(String message, ResourceLocation recipient);
 
+	/**
+	 * NEW: exposes the log of received Inter TARDIS Communications messages so
+	 * clients (e.g. the terminal GUI) can display them. TARDISLevelCapability
+	 * already generates this via its {@code @Getter} on the InterCommsMessages
+	 * field, so no implementation change is needed there - this just promotes it
+	 * onto the interface.
+	 */
+	List<String> getInterCommsMessages();
+
 	// ARS
 
 	List<ARSGrid> getARSGrids();
@@ -171,6 +192,5 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	void removeARSGrid(ARSPos pos);
 
-	@Nullable
-    ARSGrid getGridAt(ARSPos pos);
+	@Nullable ARSGrid getGridAt(ARSPos pos);
 }

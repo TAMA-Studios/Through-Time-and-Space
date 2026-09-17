@@ -49,7 +49,13 @@ public class EmptyShellBlock extends Block implements EntityBlock {
 					used.shrink(1);
 				}
 
-				if (used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get()) && shell.PlasmicShellPlates < 5) {
+				if (used.getItem().equals(TTSItems.DIMENSIONAL_DAMS.get()) && shell.StructuralBeams == 4) {
+					shell.Dams = true;
+					used.shrink(1);
+				}
+
+				if (shell.Dams && used.getItem().equals(TTSItems.PLASMIC_SHELL_PLATING.get())
+						&& shell.PlasmicShellPlates < 5) {
 					// Make sure you have more structural beams than you do plasmic shell plates
 					if (shell.StructuralBeams - shell.PlasmicShellPlates >= 1) {
 						shell.PlasmicShellPlates++;
@@ -57,7 +63,8 @@ public class EmptyShellBlock extends Block implements EntityBlock {
 					}
 				}
 
-				if (shell.PlasmicShellPlates == 4 && shell.StructuralBeams == 4 && shell.getWeldProgress() == 100) {
+				if (shell.PlasmicShellPlates == 4 && shell.StructuralBeams == 4 && shell.getWeldProgress() == 100
+						&& shell.isDams() && !(shell.getStoredEnergy() < 1000)) {
 					shell.ShouldMakeExt = true;
 				}
 

@@ -1,0 +1,11 @@
+{
+  "values" : {
+    "collection": "ichnea",
+    "parent": "hudolin",
+    "doorMaxDegrees" : -75,
+    "lightmap" : "tts:textures/exteriors/ichnea/hudolin_emissive.png",
+    "model" : "tts:models/exterior/hudolin.json",
+    "name" : "ichnea.hudolin",
+    "texture" : "tts:textures/exteriors/ichnea/hudolin.png"
+  }
+}

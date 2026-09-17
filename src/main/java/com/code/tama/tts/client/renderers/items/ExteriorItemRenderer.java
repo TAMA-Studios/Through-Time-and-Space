@@ -1,6 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
@@ -14,15 +17,18 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
-	ExteriorModelContainer exteriorModelContainer;
-	JavaJSONModel model;
+	Map<ItemStack, RenderInfo> INFO_MAP = new HashMap<>();
+
 	public ExteriorItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
 		super(dispatcher, modelSet);
 	}
@@ -30,10 +36,26 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 	@Override
 	public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext context,
 			@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		if (exteriorModelContainer == null) {
-			exteriorModelContainer = ExteriorsRegistry.Get(0);
-			model = JavaJSON.getParsedJavaJSON(new AbstractJSONRenderer(exteriorModelContainer.getModel()))
-					.getModelInfo().getModel();
+		RenderInfo info;
+		if (!INFO_MAP.containsKey(stack)) {
+			info = new RenderInfo();
+			INFO_MAP.put(stack, info);
+		} else
+			info = INFO_MAP.get(stack);
+
+		if (info.exteriorModelContainer == null) {
+			info.exteriorModelContainer = ExteriorsRegistry.Get(0);
+
+			if (stack.getTag() != null && stack.getTag().contains("BlockEntityTag")) {
+				CompoundTag tag = stack.getTag().getCompound("BlockEntityTag");
+				if (tag.contains("model")) {
+					info.exteriorModelContainer = ExteriorModelContainer.CODEC.parse(NbtOps.INSTANCE, tag.get("model"))
+							.get().orThrow();
+				}
+			}
+
+			info.ext = new AbstractJSONRenderer(info.exteriorModelContainer.getModel());
+			info.model = JavaJSON.getParsedJavaJSON(info.ext).getModelInfo().getModel();
 		}
 		poseStack.pushPose();
 
@@ -45,7 +67,7 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 			if (Minecraft.getInstance().level == null)
 				poseStack.mulPose(Axis.YP.rotationDegrees(220f));
 			else
-				poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
+				poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks() % 360));
 
 			poseStack.translate(-0.5, 0, -0.5);
 
@@ -53,11 +75,28 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 			poseStack.scale(0.3f, 0.3f, 0.3f);
 		}
 
-		if (model != null) {
-			model.renderToBuffer(poseStack, buffer.getBuffer(model.renderType(exteriorModelContainer.getTexture())),
-					0xf000f0, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+		if (info.model != null) {
+			info.model.getPart("baseRoot").render(poseStack,
+					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getTexture())), packedLight,
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 0);
+
+			info.model.getPart("baseRoot").render(poseStack,
+					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getLightMap())), 0xf000f0,
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 0);
 		}
 
 		poseStack.popPose();
+	}
+
+	public static class RenderInfo {
+		public RenderInfo() {
+			ext = null;
+			exteriorModelContainer = null;
+			model = null;
+		}
+
+		ExteriorModelContainer exteriorModelContainer;
+		JavaJSONModel model;
+		AbstractJSONRenderer ext;
 	}
 }

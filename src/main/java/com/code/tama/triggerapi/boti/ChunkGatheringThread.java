@@ -17,7 +17,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.*;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -216,7 +218,6 @@ public class ChunkGatheringThread extends Thread {
 						continue;
 
 					targetLevel.getChunkSource().getLightEngine().lightChunk(chunk, false).join();
-
 					LevelChunkSection section = chunk.getSection(chunk.getSectionIndex(targetPos.getY() - 16));
 					LevelChunkSection sectionAbove = chunk.getSection(chunk.getSectionIndex(targetPos.getY()));
 					LevelChunkSection sectionHigher = chunk.getSection(chunk.getSectionIndex(targetPos.getY() + 16)); // NEW

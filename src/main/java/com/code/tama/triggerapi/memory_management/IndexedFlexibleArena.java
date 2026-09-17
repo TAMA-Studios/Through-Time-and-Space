@@ -1,37 +1,77 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.triggerapi.memory_management;
 
+import lombok.Getter;
 import org.lwjgl.system.MemoryUtil;
 
 public class IndexedFlexibleArena implements ImAnArena {
-	long address, offset;
-	long index[];
 
-	public IndexedFlexibleArena(long maxSize) {
-		this.address = MemoryUtil.nmemAlloc(maxSize); // Allocate 1MiB to the arena
-		this.offset = 0;
-		this.index = new long[Math.toIntExact(maxSize)];
+	@Getter
+	private long address;
+	private long offset;
+	private final long maxSize;
+
+	private final long[] index;
+	private long indexCount;
+
+	/**
+	 * This constructor allocates 1MB of RAM, with 100_000 max allocations.
+	 *
+	 * @throws MemAccessException
+	 */
+	public IndexedFlexibleArena() throws MemAccessException {
+		this(1024 * 1024, 100_000);
 	}
 
-	public long alloc() throws MemAccessException {
-		if (Long.BYTES + ((this.offset + 1) * getBlockSize()) > 1024 * 1024)
-			throw new MemAccessException("Error: Exceeded arena size!");
-		return this.offset++;
+	/**
+	 * This constructor allocates with 100_000 max allocations.
+	 *
+	 * @throws MemAccessException
+	 */
+	public IndexedFlexibleArena(long maxSize) throws MemAccessException {
+		this(maxSize, 100_000);
+	}
+
+	public IndexedFlexibleArena(long maxSize, int maxAllocations) throws MemAccessException {
+		if (maxSize <= 0)
+			throw new MemAccessException("Arena size must be greater than zero!");
+
+		if (maxAllocations <= 0)
+			throw new MemAccessException("Maximum allocation count must be greater than zero!");
+
+		this.address = MemoryUtil.nmemAlloc(maxSize);
+		this.offset = 0;
+		this.maxSize = maxSize;
+		this.index = new long[maxAllocations];
+		this.indexCount = 0;
 	}
 
 	@Override
-	public long alloc(long toAlloc) throws MemAccessException {
-		if (toAlloc > getBlockSize())
-			throw new MemAccessException("Error: Amount to allocate exceeds arena's block size!");
-		return this.alloc();
+	public long alloc() throws MemAccessException {
+		throw new MemAccessException("This method is not implemented in an IndexedFlexibleArena!");
+	}
+
+	@Override
+	public long alloc(long size) throws MemAccessException {
+		if (size <= 0)
+			throw new MemAccessException("Allocation size must be greater than zero!");
+
+		if (offset + size > maxSize)
+			throw new MemAccessException("Error: Amount to allocate exceeds arena's maximum allocated size!");
+
+		if (indexCount >= index.length)
+			throw new MemAccessException("Error: Maximum number of allocations exceeded!");
+
+		long allocationIndex = indexCount++;
+
+		index[Math.toIntExact(allocationIndex)] = offset;
+		offset += size;
+
+		return allocationIndex;
 	}
 
 	public long getAddr(long index) {
-		return this.index[Math.toIntExact(index)];
-	}
-
-	public long getBlockSize() {
-		return MemoryUtil.memGetLong(this.address);
+		return address + this.index[Math.toIntExact(index)];
 	}
 
 	@Override
@@ -42,6 +82,7 @@ public class IndexedFlexibleArena implements ImAnArena {
 		}
 
 		offset = 0;
+		indexCount = 0;
 	}
 
 	@Override

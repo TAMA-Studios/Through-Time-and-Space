@@ -3,13 +3,13 @@ package com.code.tama.tts.core.registries.tardis;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import java.awt.*;
 import java.util.List;
 
 import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.tardis.controls.*;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +19,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.gui.AstralMapScreen;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -59,6 +60,17 @@ public class ControlsRegistry {
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(true),
 					tardis -> tardis.GetData().getControlData().setVortexAnchor(false)));
 
+	public static final RegistryObject<SimplestControl> ASTRAL_MAP = CONTROLS.register("astral_map",
+			() -> new SimplestControl("astral_map", tardis -> {
+				if (tardis.GetLevel().isClientSide)
+					Minecraft.getInstance().setScreen(new AstralMapScreen(tardis.GetCurrentLevel(), null,
+							tardis.GetNavigationalData().getDestination()));
+			}, tardis -> {
+				if (tardis.GetLevel().isClientSide)
+					Minecraft.getInstance().setScreen(new AstralMapScreen(tardis.GetCurrentLevel(), null,
+							tardis.GetNavigationalData().getDestination()));
+			}));
+
 	public static final RegistryObject<SimplestControl> HUM_CONTROL = CONTROLS.register("interior_hum",
 			() -> new SimplestControl("interior_hum", (tardis) -> {
 				InteriorHumDPLoader loader = (InteriorHumDPLoader) DatapackRegistry.getLoader(InteriorHumDPLoader.ID);
@@ -77,6 +89,15 @@ public class ControlsRegistry {
 	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
 			() -> new SimplestControl("engine_break", tardis -> tardis.GetData().getControlData().setEngineBrake(true),
 					tardis -> tardis.GetData().getControlData().setEngineBrake(false)));
+
+	public static final RegistryObject<SimplestControl> TIMEY_WIMEY = CONTROLS.register("timey_wimey",
+			() -> new SimplestControl("timey_wimey", tardis -> {
+				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
+				tardis.GetNavigationalData().getDestination().setTimeZone(timezone + 1 > 2 ? 0 : timezone + 1);
+			}, tardis -> {
+				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
+				tardis.GetNavigationalData().getDestination().setTimeZone(timezone - 1 < 0 ? 2 : timezone - 1);
+			}));
 
 	public static final RegistryObject<SimplestControl> MAVITY = CONTROLS.register("mavity",
 			() -> new SimplestControl("mavity",

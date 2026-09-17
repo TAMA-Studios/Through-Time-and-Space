@@ -14,6 +14,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +42,6 @@ public class HologramRenderer {
 		if (mc.level == null)
 			return;
 
-		assert mc.player != null;
 		if (!mc.player.getInventory().getArmor(3).getItem().equals(TTSItems.HOLO_GLASSES.get()))
 			return;
 
@@ -59,14 +59,19 @@ public class HologramRenderer {
 		PoseStack poseStack = event.getPoseStack();
 		poseStack.pushPose();
 
+		// IMPORTANT: VBO already contains world-space vertices.
+		// We translate by negative camera position once.
 		poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-		RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-		RenderSystem.setShaderColor(0.5f, 0.5f, 1f, 0.5f);
+		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+		RenderSystem.setShaderColor(0.5f, 0.5f, 1f, 1f);
+		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 
 		vbo.bind();
 		vbo.drawWithShader(poseStack.last().pose(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
 		VertexBuffer.unbind();
+
+		RenderSystem.setShaderColor(1, 1, 1f, 1);
 
 		poseStack.popPose();
 	}

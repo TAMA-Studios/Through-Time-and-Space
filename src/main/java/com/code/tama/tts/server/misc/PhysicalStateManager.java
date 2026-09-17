@@ -1,16 +1,40 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc;
 
+import com.code.tama.tts.core.networking.Networking;
+import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacketS2C;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.tardis.ExteriorState;
+import com.code.tama.tts.server.tardis.flightsoundschemes.flightsounds.AbstractFlightSound;
+import com.code.tama.tts.server.threads.FlightSoundThread;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PhysicalStateManager {
+
+	/**
+	 * Fixed reference point inside the TARDIS interior, used purely as the lookup
+	 * key for the flight sound system (see {@link FlightSoundThread}).
+	 */
+	private static final BlockPos AMBIENT_SOUND_POS = BlockPos.ZERO;
+
+	/**
+	 * How long to sleep between polls while waiting on a stage's sound to finish.
+	 */
+	private static final long POLL_INTERVAL_MS = 50L;
+
+	/**
+	 * Safety net: if a stage's sound never reports finished (e.g. a broken/absent
+	 * sound scheme), give up waiting after this many polls instead of hanging the
+	 * Takeoff/Landing thread forever. ~1 minutes at 50ms/poll.
+	 */
+	private static final int MAX_POLLS = 20 * 60 * 1;
 
 	private ExteriorTile exteriorTile;
 	private final ITARDISLevel itardisLevel;
@@ -34,100 +58,134 @@ public class PhysicalStateManager {
 		this.exteriorTile = exteriorTile;
 	}
 
-	/* ==================== SERVER METHODS ==================== */
+	/* CLIENT */
 
-	private void landAnimation(long startTick, boolean server) {
+	public void clientLand(long startTick) {
+		landFadeAnimation(startTick);
+	}
+
+	public void clientTakeOff(long startTick) {
+		takeOffFadeAnimation(startTick);
+	}
+
+	private void landFadeAnimation(long startTick) {
 		float base = 1.0f;
 		float initialAmp = 1.0f;
 		float decay = 0.05f;
 		float freq = 0.3f;
 
 		while (this.exteriorTile.state.equals(ExteriorState.LANDING)) {
-			if (!server) {
-				assert this.exteriorTile.getLevel() != null;
-				long tick = this.exteriorTile.getLevel().getGameTime() - startTick;
-				float amp = (float) (initialAmp * Math.exp(-decay * tick));
-				float alpha = base - (amp * (float) Math.abs(Math.sin(freq * tick)));
-				exteriorTile.setTransparency(alpha);
-			}
-			if (server) {
-				// Wait for the landing to be finished
-				assert itardisLevel != null;
-				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding().IsFinished()) {
-					itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
-					break;
-				}
-			}
+			assert this.exteriorTile.getLevel() != null;
+
+			float tick = (this.exteriorTile.getLevel().getGameTime() - startTick) / 5;
+
+			float amp = (float) (initialAmp * Math.exp(-decay * tick));
+			float alpha = base - amp * (float) Math.abs(Math.sin(freq * tick));
+
+			exteriorTile.setTransparency(alpha);
 		}
 	}
 
-	private void takeOffAnimation(long startTick, boolean server) {
+	private void takeOffFadeAnimation(long startTick) {
 		float base = 0.0f;
 		float initialAmp = 1.0f;
 		float decay = 0.05f;
 		float freq = 0.3f;
-		if (this.exteriorTile == null)
-			itardisLevel.Fly();
 
-		while (this.exteriorTile.state.equals(ExteriorState.TAKINGOFF)) {// itardisLevel.GetFlightData().IsTakingOff())
-																			// {
-			if (!server) { // If it's client side, actually do the animation
-				assert exteriorTile.getLevel() != null;
-				long tick = exteriorTile.getLevel().getGameTime() - startTick;
-				float amp = (float) (initialAmp * Math.exp(-decay * tick));
-				float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
-				exteriorTile.setTransparency(alpha);
-			}
-			if (server) { // If it is server side, just wait for the animation to be done
-				assert itardisLevel != null;
-				if (itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff().IsFinished()) {
-					itardisLevel.UpdateExteriorState(ExteriorState.SHOULDNTEXIST);
-					itardisLevel.Fly();
-					break;
-				}
-			}
+		while (this.exteriorTile.state.equals(ExteriorState.TAKINGOFF)) {
+			assert exteriorTile.getLevel() != null;
+			long tick = exteriorTile.getLevel().getGameTime() - startTick;
+			float amp = (float) (initialAmp * Math.exp(-decay * tick));
+			float alpha = base + (amp * (float) Math.abs(Math.sin(freq * tick)));
+			exteriorTile.setTransparency(alpha);
 		}
 	}
 
-	/* ==================== CLIENT ENTRY POINTS ==================== */
+	/* SERVER */
 
-	public void clientLand(long startTick) {
-		landAnimation(startTick, false);
+	/**
+	 * Drives the full Taking Off stage: plays the takeoff sound, waits for it to
+	 * actually finish (instead of spinning forever - see below), then destroys the
+	 * exterior and calls {@link ITARDISLevel#Fly()} to enter In Flight, immediately
+	 * followed by starting the looping flight-loop sound.
+	 */
+	public void serverTakeOff() {
+		assert itardisLevel != null;
+		assert exteriorTile != null;
+
+		ServerLevel interior = (ServerLevel) itardisLevel.GetLevel();
+
+		// Make sure nothing stale is occupying the ambient sound slot
+		FlightSoundThread.stop(interior, AMBIENT_SOUND_POS);
+
+		itardisLevel.UpdateExteriorState(ExteriorState.TAKINGOFF);
+
+		AbstractFlightSound takeoffSound = itardisLevel.GetFlightData().getFlightSoundScheme().GetTakeoff();
+		takeoffSound.SetFinished(false);
+		new FlightSoundThread(interior, AMBIENT_SOUND_POS, takeoffSound).start();
+
+		if (!waitUntilFinished(takeoffSound)) {
+			System.err.println("[TTS] Takeoff sound for TARDIS at " + AMBIENT_SOUND_POS
+					+ " never reported finished - forcing takeoff to continue anyway.");
+		}
+
+		// Takeoff sound is done - remove the exterior and actually go flying
+		itardisLevel.UpdateExteriorState(ExteriorState.SHOULDNTEXIST);
+		itardisLevel.Fly();
+
+		// Flight Loop plays from here through In Flight and Vortex Limbo, until
+		// serverLand() stops it
+		Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(true), interior);
 	}
 
-	public void clientTakeOff(long startTick) {
-		takeOffAnimation(startTick, false);
-	}
-
-	/* ==================== ANIMATION CORE ==================== */
-
+	/**
+	 * Drives the full Landing stage: stops the flight loop, places the exterior at
+	 * the destination, plays the landing sound, waits for it to actually finish,
+	 * then marks the TARDIS fully Landed.
+	 */
 	public void serverLand() {
 		assert itardisLevel != null;
+
+		ServerLevel interior = (ServerLevel) itardisLevel.GetLevel();
+
+		// Flight loop stops the instant landing begins.
+		Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(false), interior);
+		FlightSoundThread.stop(interior, AMBIENT_SOUND_POS);
+
+		// Physically place the exterior at the destination
 		itardisLevel.Land();
-		long tick = this.itardisLevel.GetLevel().getGameTime();
-		// Play landing sound to everyone in dimension
-		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetLanding().Play(player.level(), player.blockPosition()));
 
 		this.exteriorTile = itardisLevel.GetExteriorTile();
 
 		itardisLevel.UpdateExteriorState(ExteriorState.LANDING);
-
 		itardisLevel.UpdateClient(DataUpdateValues.ALL);
-		// run the animation server-side
-		landAnimation(tick, true);
+
+		AbstractFlightSound landingSound = itardisLevel.GetFlightData().getFlightSoundScheme().GetLanding();
+		landingSound.SetFinished(false);
+		new FlightSoundThread(interior, AMBIENT_SOUND_POS, landingSound).start();
+
+		itardisLevel.GetFlightData().setPlayRotorAnimation(false);
+
+		if (!waitUntilFinished(landingSound)) {
+			System.err.println("[TTS] Landing sound for TARDIS at " + AMBIENT_SOUND_POS
+					+ " never reported finished - forcing landing to finish anyway.");
+		}
+
+		itardisLevel.UpdateExteriorState(ExteriorState.LANDED);
 	}
 
-	public void serverTakeOff() {
-		assert itardisLevel != null;
-		long tick = itardisLevel.GetLevel().getGameTime();
-		// Play takeoff sound to everyone in dimension
-		this.itardisLevel.GetLevel().players().forEach(player -> this.itardisLevel.GetFlightData()
-				.getFlightSoundScheme().GetTakeoff().Play(player.level(), player.blockPosition()));
-
-		itardisLevel.UpdateExteriorState(ExteriorState.TAKINGOFF);
-		assert exteriorTile.getLevel() != null;
-		// run the animation server-side
-		takeOffAnimation(tick, true);
+	private boolean waitUntilFinished(AbstractFlightSound sound) {
+		int polls = 0;
+		while (!sound.IsFinished()) {
+			if (++polls > MAX_POLLS)
+				return false;
+			try {
+				Thread.sleep(POLL_INTERVAL_MS);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return false;
+			}
+		}
+		return true;
 	}
 }

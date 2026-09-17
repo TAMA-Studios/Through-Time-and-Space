@@ -14,6 +14,12 @@ public class TTSSounds {
 	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,
 			MODID);
 
+	public static final RegistryObject<SoundEvent> KEYBOARD_01 = registerSound("keyboard_01");
+
+	public static final RegistryObject<SoundEvent> KEYBOARD_02 = registerSound("keyboard_02");
+
+	public static final RegistryObject<SoundEvent> KEYBOARD_SPACE = registerSound("keyboard_spacebar");
+
 	public static final RegistryObject<SoundEvent> BUTTON_CLICK_01 = registerSound("button_click_01");
 
 	public static final RegistryObject<SoundEvent> KEYBOARD_PRESS_01 = registerSound("keyboard_press_01");

@@ -4,6 +4,8 @@ package com.code.tama.triggerapi.dimensions;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +20,13 @@ public interface DimensionAPI {
 	static DimensionAPI get() {
 		return DimensionManager.INSTANCE;
 	}
+
+	/**
+	 * Gets a level only if it already exists. Unlike {@link #getOrCreateLevel},
+	 * this never registers a dimension, making it safe to call from hot paths such
+	 * as block-change hooks.
+	 */
+	@Nullable ServerLevel peekLevel(final MinecraftServer server, final ResourceKey<Level> levelKey);
 
 	/**
 	 * @return An immutable copy of the dimensions that will be unregistered at the

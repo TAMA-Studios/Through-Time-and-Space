@@ -1,8 +1,0 @@
-{
-  "values" : {
-    "lightmap" : "tts:textures/exteriors/ichnea/awj.png",
-    "modelname" : "tts:models/exterior/ichnea/awj.json",
-    "name" : "ichnea.awj",
-    "texture" : "tts:textures/exteriors/ichnea/awj.png"
-  }
-}

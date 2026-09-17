@@ -52,9 +52,9 @@ public class PreflightChecklistCategory extends UICategory {
 
 			poseStack.popPose();
 
-			drawDriftBar(poseStack, 0, cap.GetData().getControlData().isCoordinateLock());
-			drawDriftBar(poseStack, 1, cap.GetData().getControlData().isVortexAnchor());
-			drawDriftBar(poseStack, 2, cap.GetData().isPowered());
+			drawCheckbox(poseStack, 0, cap.GetData().getControlData().isCoordinateLock());
+			drawCheckbox(poseStack, 1, !cap.GetData().getControlData().isVortexAnchor());
+			drawCheckbox(poseStack, 2, cap.GetData().isPowered());
 
 			// poseStack.pushPose();
 			//
@@ -78,7 +78,7 @@ public class PreflightChecklistCategory extends UICategory {
 		});
 	}
 
-	public void drawDriftBar(PoseStack stack, float why, boolean checked) {
+	public void drawCheckbox(PoseStack stack, float why, boolean checked) {
 		stack.pushPose();
 
 		BufferBuilder builder = Tesselator.getInstance().getBuilder();

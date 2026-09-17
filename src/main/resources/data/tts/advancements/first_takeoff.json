@@ -1,0 +1,24 @@
+{
+  "parent": "tts:created_tardis",
+  "display": {
+    "icon": {
+      "item": "tts:manual"
+    },
+    "title": {
+      "text": "Geronimo!"
+    },
+    "description": {
+      "text": "Dematerialize the TARDIS"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "first_takeoff": {
+      "trigger": "tts:tardis_event",
+      "event": "first_takeoff"
+    }
+  }
+}

@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -25,20 +24,17 @@ public class SyncExteriorPacketS2C {
 
 	final ResourceKey<Level> level;
 
-	final ResourceLocation model;
-
 	final BlockPos targetPos;
 
 	final float targetY;
 
 	final int variant;
 
-	public SyncExteriorPacketS2C(ResourceLocation model, ExteriorState state, int doorsOpen, int variant,
-			@NotNull ResourceKey<Level> level, float targetY, BlockPos targetPos, int x, int y, int z) {
+	public SyncExteriorPacketS2C(ExteriorState state, int doorsOpen, int variant, @NotNull ResourceKey<Level> level,
+			float targetY, BlockPos targetPos, int x, int y, int z) {
 		this.state = state;
 		this.doors = doorsOpen;
 		this.variant = variant;
-		this.model = model;
 		this.level = level;
 		this.targetY = targetY;
 		this.targetPos = targetPos;
@@ -48,13 +44,12 @@ public class SyncExteriorPacketS2C {
 	}
 
 	public static SyncExteriorPacketS2C decode(FriendlyByteBuf buffer) {
-		return new SyncExteriorPacketS2C(buffer.readResourceLocation(), buffer.readEnum(ExteriorState.class),
-				buffer.readInt(), buffer.readInt(), buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
+		return new SyncExteriorPacketS2C(buffer.readEnum(ExteriorState.class), buffer.readInt(), buffer.readInt(),
+				buffer.readResourceKey(Registries.DIMENSION), buffer.readFloat(),
 				buffer.readJsonWithCodec(BlockPos.CODEC), buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}
 
 	public static void encode(SyncExteriorPacketS2C packet, FriendlyByteBuf buffer) {
-		buffer.writeResourceLocation(packet.model);
 		buffer.writeEnum(packet.state);
 		buffer.writeInt(packet.doors);
 		buffer.writeInt(packet.variant);
@@ -78,7 +73,6 @@ public class SyncExteriorPacketS2C {
 					exteriorTile.targetPos = packet.targetPos;
 					exteriorTile.targetLevel = packet.level;
 					exteriorTile.setModel(packet.variant);
-					exteriorTile.setModelIndex(packet.model);
 					exteriorTile.state = packet.state;
 					exteriorTile.SetDoorsOpen(packet.doors);
 				}
