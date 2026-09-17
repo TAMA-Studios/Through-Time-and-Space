@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 	Map<ItemStack, RenderInfo> INFO_MAP = new HashMap<>();
@@ -66,7 +67,7 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 			if (Minecraft.getInstance().level == null)
 				poseStack.mulPose(Axis.YP.rotationDegrees(220f));
 			else
-				poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
+				poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks() % 360));
 
 			poseStack.translate(-0.5, 0, -0.5);
 

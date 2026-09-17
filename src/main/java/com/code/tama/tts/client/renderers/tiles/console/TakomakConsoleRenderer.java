@@ -3,9 +3,9 @@ package com.code.tama.tts.client.renderers.tiles.console;
 
 import static com.code.tama.tts.TTSMod.MODID;
 
-import com.code.tama.tts.client.models.consoles.HudolinConsoleModel;
+import com.code.tama.tts.client.models.consoles.TakomakModel;
 import com.code.tama.tts.client.models.core.IAnimateableModel;
-import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.TakomakConsoleTile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
@@ -25,22 +25,21 @@ import net.minecraft.world.phys.Vec3;
 import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
-public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
+public class TakomakConsoleRenderer<T extends TakomakConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
 		implements
 			BlockEntityRenderer<T> {
 	public static final ResourceLocation EMMISIVE = new ResourceLocation(MODID,
-			"textures/tiles/console/hudolin_emmisives.png");
-	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID,
-			"textures/tiles/console/hudolin_console.png");
+			"textures/tiles/console/tokamak_emmisives.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(MODID, "textures/tiles/console/tokamak.png");
 	public final C MODEL;
 
-	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
-		this.MODEL = model; // context.bakeLayer(HudolinConsole.LAYER_LOCATION);
+	public TakomakConsoleRenderer(BlockEntityRendererProvider.Context context, C model) {
+		this.MODEL = model;
 	}
 
 	@SuppressWarnings("unchecked")
-	public HudolinConsoleRenderer(BlockEntityRendererProvider.Context context) {
-		this.MODEL = (C) new HudolinConsoleModel<>(context.bakeLayer(HudolinConsoleModel.LAYER_LOCATION));
+	public TakomakConsoleRenderer(BlockEntityRendererProvider.Context context) {
+		this.MODEL = (C) new TakomakModel<>(context.bakeLayer(TakomakModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -48,9 +47,9 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 
 		poseStack.pushPose();
-		poseStack.mulPose(Axis.XP.rotationDegrees(180));
-		poseStack.mulPose(Axis.YP.rotationDegrees(180));
-		poseStack.translate(-0.5, 0, 0.5);
+		poseStack.translate(0.5, 1.5, 0.5);
+		poseStack.mulPose(Axis.ZP.rotationDegrees(0xB4)); // Rot 180
+
 		assert ConsoleTile.getLevel() != null;
 		if (ConsoleTile.getLevel() != null) {
 			float offs;
@@ -60,9 +59,10 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 			else
 				offs = BlockUtils.getReverseHeightModifier(
 						ConsoleTile.getLevel().getBlockState(ConsoleTile.getBlockPos().below()));
+			offs -= 0.5;
 			poseStack.translate(0, offs, 0);
 		}
-		poseStack.scale(1f, 1f, 1f);
+
 		assert Minecraft.getInstance().level != null;
 		float ticks = AnimationTicker.getTicks() + partialTicks;
 		this.MODEL.SetupAnimations(ConsoleTile, ticks);
@@ -71,6 +71,7 @@ public class HudolinConsoleRenderer<T extends HudolinConsoleTile, C extends Hier
 
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(EMMISIVE)), 0xf000f0,
 				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+
 		poseStack.popPose();
 	}
 

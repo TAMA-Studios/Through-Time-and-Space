@@ -14,7 +14,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -89,7 +88,9 @@ public final class TemporalDiffLog extends SavedData {
 
 	/**
 	 * Applies every recorded edit for {@code chunk}'s position into that chunk,
-	 * decayed by {@code steps}.
+	 * decayed by {@code steps} and varied by {@code weathering}'s intensity field
+	 * -- the same field the terrain pass uses, so a house standing in a
+	 * heavily-weathered patch decays harder than one in an untouched one.
 	 * <p>
 	 * Writes go directly to the {@link ChunkAccess}, <strong>never</strong> through
 	 * {@code ServerLevel#setBlock}. This is load-bearing: this method runs from
@@ -99,17 +100,13 @@ public final class TemporalDiffLog extends SavedData {
 	 * chunk whose promotion is blocked on this event handler returning --
 	 * deadlocking the chunk task and hanging the client on "waiting for chunk".
 	 * <p>
-	 * Ground lookups use
-	 * {@link net.minecraft.world.level.chunk.ChunkGenerator#getBaseHeight}, which
-	 * samples the density functions directly and touches no chunk storage, so it is
-	 * safe in this context.
-	 * <p>
-	 * Idempotent: it writes fixed states from a log, so re-running it on a chunk
-	 * that already has them is a no-op. That is why the caller replays on
-	 * <em>every</em> load rather than guarding it -- a guard would silently drop
-	 * edits made while the chunk was unloaded.
+	 * Idempotent: it writes fixed states from a log (each block's outcome is a
+	 * deterministic function of its position, not of how many times this has run),
+	 * so re-running it on a chunk that already has them is a no-op. That is why the
+	 * caller replays on <em>every</em> load rather than guarding it -- a guard
+	 * would silently drop edits made while the chunk was unloaded.
 	 */
-	public void replayInto(ServerLevel target, ChunkAccess chunk, int steps) {
+	public void replayInto(ServerLevel target, ChunkAccess chunk, int steps, TemporalWeathering weathering) {
 		ChunkPos chunkPos = chunk.getPos();
 		List<BlockChangeRecord> records = forChunk(chunkPos);
 		if (records.isEmpty())
@@ -117,24 +114,23 @@ public final class TemporalDiffLog extends SavedData {
 
 		var generator = target.getChunkSource().getGenerator();
 		var randomState = target.getChunkSource().randomState();
+		long dimSeed = target.getSeed();
 		BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
 		for (BlockChangeRecord record : records) {
-			BlockState decayed = TemporalDecayRegistry.decay(record.sourceState(), steps);
-			if (decayed == null)
-				decayed = Blocks.AIR.defaultBlockState();
-
 			int groundY = 0;
 			if (record.needsGroundLookup()) {
 				groundY = generator.getBaseHeight(record.x(), record.z(), Heightmap.Types.WORLD_SURFACE, target,
 						randomState);
 			}
 			int y = record.resolveY(groundY);
-
 			if (y < target.getMinBuildHeight() || y >= target.getMaxBuildHeight())
 				continue;
 
 			cursor.set(record.x(), y, record.z());
+			double intensity = weathering.sampleIntensity(record.x(), record.z());
+			BlockState decayed = TemporalDecayRegistry.decay(record.sourceState(), steps, cursor, dimSeed, intensity);
+
 			chunk.setBlockState(cursor, decayed, false);
 		}
 

@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 
 public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCircuitPanelTileEntity> {
 	public static final int fullBright = 0xF000F0; // LightTexture.pack(15, 15);
@@ -49,7 +50,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			poseStack.scale(0.2f, 0.2f, 0.2f);
 
 			assert Minecraft.getInstance().level != null;
-			float time = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+			float time = AnimationTicker.getTicks() + partialTicks;
 			if (time % 10 < 2) {
 				float glitchOffset = (Math.random() > 0.5) ? 0.1f : -0.1f;
 				poseStack.translate(glitchOffset, 0, 0);
@@ -69,7 +70,7 @@ public class ChameleonCircuitRenderer implements BlockEntityRenderer<ChameleonCi
 			// this.modelName = cap.GetData().getExteriorModel().getName();
 			// }
 
-			poseStack.mulPose(Axis.YP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() % 360));
+			poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks() % 360));
 
 			// this.MODEL.renderToBuffer(poseStack,
 			// bufferSource.getBuffer(RenderType.entityTranslucent(json.getTexture())),

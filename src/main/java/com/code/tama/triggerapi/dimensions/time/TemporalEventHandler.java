@@ -89,8 +89,21 @@ public final class TemporalEventHandler {
 			if (!target.hasChunkAt(projected))
 				continue;
 
-			BlockState decayed = TemporalDecayRegistry.decay(newState, steps);
-			target.setBlock(projected, decayed == null ? Blocks.AIR.defaultBlockState() : decayed, 2);
+			if (TemporalDecayRegistry.isFragile(newState)) {
+				target.setBlock(projected, Blocks.AIR.defaultBlockState(), 2);
+				continue;
+			}
+
+			// Single-block sample, not a whole-chunk scan -- cheap enough to build on
+			// demand
+			// so this live edit uses the same intensity field the chunk's own weathering
+			// pass
+			// used, rather than assuming zero intensity.
+			double intensity = new TemporalWeathering(target.getSeed(), steps, TimeTravelConfig.WEATHER_THRESHOLD,
+					TimeTravelConfig.WEATHER_DEPTH).sampleIntensity(projected.getX(), projected.getZ());
+
+			BlockState decayed = TemporalDecayRegistry.decay(newState, steps, projected, target.getSeed(), intensity);
+			target.setBlock(projected, decayed, 2);
 		}
 	}
 
@@ -120,9 +133,11 @@ public final class TemporalEventHandler {
 		// persistent -- an in-memory set would re-weather everything after each restart
 		// and
 		// the world would erode a step further every time you loaded the save.
+		TemporalWeathering weathering = new TemporalWeathering(level.getSeed(), steps,
+				TimeTravelConfig.WEATHER_THRESHOLD, TimeTravelConfig.WEATHER_DEPTH);
+
 		if (TemporalChunkState.get(level).markWeathered(pos)) {
-			new TemporalWeathering(level.getSeed(), steps, TimeTravelConfig.WEATHER_THRESHOLD,
-					TimeTravelConfig.WEATHER_DEPTH).apply(level, chunk);
+			weathering.apply(level, chunk);
 
 			// The future loses its fragile blocks entirely.
 			if (steps >= 2) {
@@ -139,9 +154,14 @@ public final class TemporalEventHandler {
 		// way in. Guarding this behind an "already processed" flag is what silently
 		// swallowed
 		// edits to previously-visited chunks.
+		//
+		// Reuses `weathering` -- same intensity field the terrain pass just used, so a
+		// house
+		// standing in a heavily-weathered patch of ground decays harder than one that
+		// isn't.
 		ServerLevel base = server.getLevel(linkage.base());
 		if (base != null) {
-			TemporalDiffLog.get(base).replayInto(level, chunk, steps);
+			TemporalDiffLog.get(base).replayInto(level, chunk, steps, weathering);
 		}
 	}
 

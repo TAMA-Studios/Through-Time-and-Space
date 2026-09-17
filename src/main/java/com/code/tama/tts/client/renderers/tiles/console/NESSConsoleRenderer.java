@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.SnowLayerBlock;
 
+import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends HierarchicalModel<Entity> & IAnimateableModel<T>>
@@ -68,7 +69,7 @@ public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends Hierarchic
 		}
 		poseStack.scale(1f, 1f, 1f);
 		assert Minecraft.getInstance().level != null;
-		float ticks = Minecraft.getInstance().level.getGameTime() + partialTicks;
+		float ticks = AnimationTicker.getTicks() + partialTicks;
 		this.MODEL.SetupAnimations(ConsoleTile, ticks);
 		this.MODEL.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE)),
 				combinedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -86,8 +87,8 @@ public class NESSConsoleRenderer<T extends NESSConsoleTile, C extends Hierarchic
 
 	public int Light(int combinedLight, boolean inverse) {
 		if (inverse)
-			return Minecraft.getInstance().level.getGameTime() % 80 <= 40 ? 0xf000f0 : combinedLight;
+			return AnimationTicker.getTicks() % 80 <= 40 ? 0xf000f0 : combinedLight;
 		else
-			return Minecraft.getInstance().level.getGameTime() % 80 >= 40 ? 0xf000f0 : combinedLight;
+			return AnimationTicker.getTicks() % 80 >= 40 ? 0xf000f0 : combinedLight;
 	}
 }

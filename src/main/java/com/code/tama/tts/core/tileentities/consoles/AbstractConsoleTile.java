@@ -72,7 +72,7 @@ public class AbstractConsoleTile extends BlockEntity {
 		super.saveAdditional(tag);
 	}
 
-	private void summonButtons(Level level) {
+	void summonButtons(Level level) {
 		BlockPos blockPos = this.getBlockPos();
 		Vec3 centerPos = new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
 

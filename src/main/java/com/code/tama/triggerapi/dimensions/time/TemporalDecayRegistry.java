@@ -4,6 +4,7 @@ package com.code.tama.triggerapi.dimensions.time;
 import static com.code.tama.tts.TTSMod.MODID;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.BlockPos;
@@ -17,154 +18,209 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * The decay chain: a directed mapping
- * {@code block -> what it becomes after one step of
- * aging}. Applying the chain N times is what produces "the future is doubly
- * decayed" without any special-cased future logic -- future simply runs the
- * same transform present runs, twice.
+ * The decay chain, now branching rather than a straight lookup.
  * <p>
- * Chains terminate either at a fixed point (a block that maps to itself) or at
- * air.
+ * A single-outcome chain (the original design) gives every block of a given
+ * type the exact same fate: a whole wall of oak planks becomes a whole wall of
+ * oak slabs, uniformly, which reads as "the top half vanished" rather than as a
+ * building falling apart. Branching fixes this by picking <em>one of
+ * several</em> outcomes per block -- including, deliberately, "no change this
+ * step" as one of the options, so some sections of a wall stay intact next to
+ * sections that have crumbled or rotted through.
+ * <p>
+ * Selection is deterministic (hashed from world seed + block position + step
+ * index), not {@code Random}-backed, so the same wall decays the same way every
+ * time the chunk is replayed -- it varies in space, not in time.
  */
 public final class TemporalDecayRegistry {
 
-	/**
-	 * Blocks in this tag are removed entirely in downstream dimensions rather than
-	 * decayed. Data-driven so that mod-added flowers/torches/etc. get swept in
-	 * without a code change.
-	 */
 	public static final TagKey<Block> FRAGILE = TagKey.create(net.minecraft.core.registries.Registries.BLOCK,
 			new ResourceLocation(MODID, "fragile_in_future"));
 
-	private static final Map<Block, Block> CHAIN = new HashMap<>();
+	/** One possible fate for a decaying block, with a relative likelihood. */
+	public record DecayOutcome(Block block, int weight) {
+	}
 
-	/** Guards against a malformed (cyclic) chain spinning forever. */
+	private static final Map<Block, List<DecayOutcome>> BRANCHES = new HashMap<>();
 	private static final int MAX_CHAIN_WALK = 16;
+
+	private static final Map<Block, Boolean> FRAGILE_CACHE = new java.util.IdentityHashMap<>();
 
 	private TemporalDecayRegistry() {
 	}
 
+	private static DecayOutcome o(Block block, int weight) {
+		return new DecayOutcome(block, weight);
+	}
+
+	private static void branch(Block from, DecayOutcome... outcomes) {
+		BRANCHES.put(from, List.of(outcomes));
+	}
+
 	static {
-		// --- stone family -------------------------------------------------
-		link(Blocks.STONE, Blocks.COBBLESTONE);
-		link(Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE);
-		link(Blocks.MOSSY_COBBLESTONE, Blocks.GRAVEL);
-		link(Blocks.GRAVEL, Blocks.GRAVEL); // terminal
+		// --- stone family ---------------------------------------------------------
+		// Every branch includes a "stays as-is" option so not every block in a wall
+		// moves.
+		branch(Blocks.STONE, o(Blocks.STONE, 40), o(Blocks.COBBLESTONE, 60));
+		branch(Blocks.COBBLESTONE, o(Blocks.COBBLESTONE, 35), o(Blocks.MOSSY_COBBLESTONE, 45), o(Blocks.GRAVEL, 20));
+		branch(Blocks.MOSSY_COBBLESTONE, o(Blocks.MOSSY_COBBLESTONE, 40), o(Blocks.GRAVEL, 45),
+				o(Blocks.MOSS_BLOCK, 15));
+		branch(Blocks.GRAVEL, o(Blocks.GRAVEL, 100));
 
-		link(Blocks.STONE_BRICKS, Blocks.CRACKED_STONE_BRICKS);
-		link(Blocks.CRACKED_STONE_BRICKS, Blocks.MOSSY_STONE_BRICKS);
-		link(Blocks.MOSSY_STONE_BRICKS, Blocks.GRAVEL);
+		branch(Blocks.STONE_BRICKS, o(Blocks.STONE_BRICKS, 30), o(Blocks.CRACKED_STONE_BRICKS, 50),
+				o(Blocks.MOSSY_STONE_BRICKS, 20));
+		branch(Blocks.CRACKED_STONE_BRICKS, o(Blocks.CRACKED_STONE_BRICKS, 35), o(Blocks.MOSSY_STONE_BRICKS, 40),
+				o(Blocks.GRAVEL, 25));
+		branch(Blocks.MOSSY_STONE_BRICKS, o(Blocks.MOSSY_STONE_BRICKS, 60), o(Blocks.GRAVEL, 40));
 
-		link(Blocks.STONE_BRICK_STAIRS, Blocks.MOSSY_STONE_BRICK_STAIRS);
-		link(Blocks.STONE_BRICK_SLAB, Blocks.MOSSY_STONE_BRICK_SLAB);
-		link(Blocks.COBBLESTONE_STAIRS, Blocks.MOSSY_COBBLESTONE_STAIRS);
-		link(Blocks.COBBLESTONE_SLAB, Blocks.MOSSY_COBBLESTONE_SLAB);
-		link(Blocks.COBBLESTONE_WALL, Blocks.MOSSY_COBBLESTONE_WALL);
+		branch(Blocks.STONE_BRICK_STAIRS, o(Blocks.STONE_BRICK_STAIRS, 40), o(Blocks.MOSSY_STONE_BRICK_STAIRS, 60));
+		branch(Blocks.STONE_BRICK_SLAB, o(Blocks.STONE_BRICK_SLAB, 40), o(Blocks.MOSSY_STONE_BRICK_SLAB, 60));
+		branch(Blocks.COBBLESTONE_STAIRS, o(Blocks.COBBLESTONE_STAIRS, 40), o(Blocks.MOSSY_COBBLESTONE_STAIRS, 60));
+		branch(Blocks.COBBLESTONE_SLAB, o(Blocks.COBBLESTONE_SLAB, 40), o(Blocks.MOSSY_COBBLESTONE_SLAB, 60));
+		branch(Blocks.COBBLESTONE_WALL, o(Blocks.COBBLESTONE_WALL, 40), o(Blocks.MOSSY_COBBLESTONE_WALL, 60));
 
-		// --- surface ------------------------------------------------------
-		link(Blocks.GRASS_BLOCK, Blocks.DIRT);
-		link(Blocks.DIRT, Blocks.COARSE_DIRT);
-		link(Blocks.COARSE_DIRT, Blocks.GRAVEL);
-		link(Blocks.PODZOL, Blocks.COARSE_DIRT);
-		link(Blocks.SAND, Blocks.SANDSTONE);
-		link(Blocks.SANDSTONE, Blocks.SAND);
+		// --- surface ----------------------------------------------------------------
+		branch(Blocks.GRASS_BLOCK, o(Blocks.GRASS_BLOCK, 50), o(Blocks.DIRT, 35), o(Blocks.COARSE_DIRT, 15));
+		branch(Blocks.DIRT, o(Blocks.DIRT, 55), o(Blocks.COARSE_DIRT, 30), o(Blocks.GRAVEL, 15));
+		branch(Blocks.COARSE_DIRT, o(Blocks.COARSE_DIRT, 60), o(Blocks.GRAVEL, 40));
+		branch(Blocks.PODZOL, o(Blocks.PODZOL, 55), o(Blocks.COARSE_DIRT, 45));
+		branch(Blocks.SAND, o(Blocks.SAND, 60), o(Blocks.SANDSTONE, 40));
+		branch(Blocks.SANDSTONE, o(Blocks.SANDSTONE, 70), o(Blocks.SAND, 30));
 
-		// --- wood (rots away entirely) ------------------------------------
-		link(Blocks.OAK_PLANKS, Blocks.OAK_SLAB);
-		link(Blocks.OAK_SLAB, Blocks.AIR);
-		link(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB);
-		link(Blocks.SPRUCE_SLAB, Blocks.AIR);
-		link(Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG);
-		link(Blocks.STRIPPED_OAK_LOG, Blocks.AIR);
-		link(Blocks.OAK_LEAVES, Blocks.AIR);
+		// --- wood: this is the branch that fixes the "flat slab pancake" complaint --
+		// Four distinct fates instead of one: some planks survive, some become slabs
+		// (visually lower), some rot through to cobwebs, some are swallowed by
+		// encroaching
+		// moss/rubble, some are just gone. A wall built from this looks like a ruin,
+		// not
+		// a uniformly mown lawn.
+		branch(Blocks.OAK_PLANKS, o(Blocks.OAK_PLANKS, 25), o(Blocks.OAK_SLAB, 40), o(Blocks.COBWEB, 10),
+				o(Blocks.MOSSY_COBBLESTONE, 10), o(Blocks.AIR, 15));
+		branch(Blocks.OAK_SLAB, o(Blocks.OAK_SLAB, 30), o(Blocks.AIR, 45), o(Blocks.COBBLESTONE, 15),
+				o(Blocks.MOSSY_COBBLESTONE, 10));
 
-		// --- metals -------------------------------------------------------
-		link(Blocks.IRON_BLOCK, Blocks.RAW_IRON_BLOCK);
-		link(Blocks.RAW_IRON_BLOCK, Blocks.AIR);
-		link(Blocks.COPPER_BLOCK, Blocks.EXPOSED_COPPER);
-		link(Blocks.EXPOSED_COPPER, Blocks.WEATHERED_COPPER);
-		link(Blocks.WEATHERED_COPPER, Blocks.OXIDIZED_COPPER);
-		link(Blocks.OXIDIZED_COPPER, Blocks.OXIDIZED_COPPER); // terminal
+		branch(Blocks.SPRUCE_PLANKS, o(Blocks.SPRUCE_PLANKS, 25), o(Blocks.SPRUCE_SLAB, 40), o(Blocks.COBWEB, 10),
+				o(Blocks.MOSSY_COBBLESTONE, 10), o(Blocks.AIR, 15));
+		branch(Blocks.SPRUCE_SLAB, o(Blocks.SPRUCE_SLAB, 30), o(Blocks.AIR, 45), o(Blocks.COBBLESTONE, 15),
+				o(Blocks.MOSSY_COBBLESTONE, 10));
 
-		// --- glass --------------------------------------------------------
-		link(Blocks.GLASS, Blocks.AIR);
-		link(Blocks.GLASS_PANE, Blocks.AIR);
+		branch(Blocks.OAK_LOG, o(Blocks.OAK_LOG, 30), o(Blocks.STRIPPED_OAK_LOG, 40), o(Blocks.AIR, 30));
+		branch(Blocks.STRIPPED_OAK_LOG, o(Blocks.STRIPPED_OAK_LOG, 40), o(Blocks.AIR, 60));
+		branch(Blocks.OAK_LEAVES, o(Blocks.AIR, 100));
+
+		// --- metals
+		// -------------------------------------------------------------------
+		branch(Blocks.IRON_BLOCK, o(Blocks.IRON_BLOCK, 50), o(Blocks.RAW_IRON_BLOCK, 50));
+		branch(Blocks.RAW_IRON_BLOCK, o(Blocks.RAW_IRON_BLOCK, 60), o(Blocks.AIR, 40));
+
+		branch(Blocks.COPPER_BLOCK, o(Blocks.COPPER_BLOCK, 10), o(Blocks.EXPOSED_COPPER, 60),
+				o(Blocks.WEATHERED_COPPER, 30));
+		branch(Blocks.EXPOSED_COPPER, o(Blocks.EXPOSED_COPPER, 20), o(Blocks.WEATHERED_COPPER, 55),
+				o(Blocks.OXIDIZED_COPPER, 25));
+		branch(Blocks.WEATHERED_COPPER, o(Blocks.WEATHERED_COPPER, 40), o(Blocks.OXIDIZED_COPPER, 60));
+		branch(Blocks.OXIDIZED_COPPER, o(Blocks.OXIDIZED_COPPER, 100));
+
+		// --- glass
+		// ----------------------------------------------------------------------
+		branch(Blocks.GLASS, o(Blocks.GLASS, 40), o(Blocks.AIR, 60));
+		branch(Blocks.GLASS_PANE, o(Blocks.GLASS_PANE, 40), o(Blocks.AIR, 60));
 	}
 
-	public static void link(Block from, Block to) {
-		CHAIN.put(from, to);
+	public static void registerBranch(Block from, DecayOutcome... outcomes) {
+		branch(from, outcomes);
 	}
+
+	public static boolean hasChain(Block block) {
+		return BRANCHES.containsKey(block);
+	}
+
+	/* ======================== Decay ======================== */
 
 	/**
-	 * Applies the decay chain {@code steps} times.
-	 * <p>
-	 * Blockstate properties (stair facing, slab type, wall connections) are
-	 * preserved where the target block shares them, so a mossy stair comes out
-	 * facing the same way the clean stair did.
+	 * Applies {@code steps} of branching decay to {@code state}, positioned at
+	 * {@code pos}.
 	 *
-	 * @param state
-	 *            the source state, as it exists in the base dimension
-	 * @param steps
-	 *            0 for the base itself, 1 for present, 2 for future
-	 * @return the decayed state, possibly {@link Blocks#AIR}
+	 * @param dimSeed
+	 *            the target dimension's seed, mixed into the per-block hash so
+	 *            present and future decay differently rather than identically
+	 * @param intensity
+	 *            0..1 regional bias toward more severe outcomes. Pass the same
+	 *            value used by {@link TemporalWeathering} at this column so that
+	 *            structures decay harder in the same patches natural terrain does
+	 *            -- a wall standing in an already-weathered region should look
+	 *            worse than one in an untouched one.
 	 */
-	public static BlockState decay(BlockState state, int steps) {
+	public static BlockState decay(BlockState state, int steps, BlockPos pos, long dimSeed, double intensity) {
 		if (steps <= 0 || state.isAir())
 			return state;
-
-		// Fragile blocks don't gradually decay -- they simply aren't there any more.
 		if (isFragile(state))
 			return Blocks.AIR.defaultBlockState();
 
 		BlockState current = state;
 		for (int i = 0; i < steps; i++) {
-			Block next = CHAIN.get(current.getBlock());
-			if (next == null)
+			List<DecayOutcome> outcomes = BRANCHES.get(current.getBlock());
+			if (outcomes == null)
 				break; // no rule: leave as-is
-			if (next == current.getBlock())
-				break; // terminal: stop walking
-			if (next == Blocks.AIR)
+			if (outcomes.size() == 1 && outcomes.get(0).block() == current.getBlock())
+				break; // terminal
+
+			double sample = unitDouble(hash(dimSeed, pos.getX(), pos.getY(), pos.getZ(), i));
+			// Skewing toward 1 as intensity rises biases the weighted pick toward outcomes
+			// later in each branch's list -- by convention, later entries are more severe.
+			double skewed = Math.pow(sample, 1.0 / (1.0 + intensity * 3.0));
+
+			Block picked = pickWeighted(outcomes, skewed);
+			if (picked == current.getBlock())
+				break; // rolled "no change" -- stop here
+			if (picked == Blocks.AIR)
 				return Blocks.AIR.defaultBlockState();
-			current = copyProperties(current, next.defaultBlockState());
+
+			current = copyProperties(current, picked.defaultBlockState());
 		}
 		return current;
 	}
 
-	/**
-	 * Walks the chain to its end, for the weathering pass where "how worn" is
-	 * driven by a noise field rather than a fixed step count.
-	 */
-	public static BlockState decayFully(BlockState state) {
-		return decay(state, MAX_CHAIN_WALK);
+	public static BlockState decayFully(BlockState state, BlockPos pos, long dimSeed, double intensity) {
+		return decay(state, MAX_CHAIN_WALK, pos, dimSeed, intensity);
 	}
 
-	/**
-	 * Caches the collision-shape heuristic per block. Shape lookups are not free,
-	 * and {@code stripFragile} asks this question up to 1024 times per chunk.
-	 */
-	private static final Map<Block, Boolean> FRAGILE_CACHE = new java.util.IdentityHashMap<>();
+	private static Block pickWeighted(List<DecayOutcome> outcomes, double skewedSample) {
+		int total = 0;
+		for (DecayOutcome out : outcomes)
+			total += out.weight();
 
-	/**
-	 * A block is fragile if it is explicitly tagged, or -- as a fallback for
-	 * untagged mod content -- if it has no collision shape and doesn't occlude.
-	 * That catches torches, flowers, carpets, rails and the like automatically.
-	 * <p>
-	 * Convenience overload for callers with no position in hand (e.g. the diff log,
-	 * which holds states but not yet a resolved target position).
-	 */
+		double target = skewedSample * total;
+		double cumulative = 0;
+		for (DecayOutcome out : outcomes) {
+			cumulative += out.weight();
+			if (target <= cumulative)
+				return out.block();
+		}
+		return outcomes.get(outcomes.size() - 1).block();
+	}
+
+	/** SplitMix64-style finalizer -- cheap, no allocation, deterministic. */
+	private static long hash(long seed, int x, int y, int z, int salt) {
+		long h = seed ^ ((long) x * 0x9E3779B97F4A7C15L) ^ ((long) y * 0xBF58476D1CE4E5B9L)
+				^ ((long) z * 0x94D049BB133111EBL) ^ ((long) salt * 0xD6E8FEB86659FD93L);
+		h ^= (h >>> 33);
+		h *= 0xff51afd7ed558ccdL;
+		h ^= (h >>> 33);
+		h *= 0xc4ceb9fe1a85ec53L;
+		h ^= (h >>> 33);
+		return h;
+	}
+
+	private static double unitDouble(long hash) {
+		return (hash >>> 11) * 0x1.0p-53;
+	}
+
+	/* ======================== Fragility ======================== */
+
 	public static boolean isFragile(BlockState state) {
 		return isFragile(state, EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
 	}
 
-	/**
-	 * Position-aware form. Prefer this wherever a position is available.
-	 * <p>
-	 * A level and position are <strong>required</strong>, never null: blocks with
-	 * an {@code offsetType} (grass, flowers, pointed dripstone) route
-	 * {@code getShape} through {@code BlockState#getOffset}, whose offset function
-	 * dereferences the position to derive its per-block jitter. Passing null there
-	 * NPEs inside vanilla.
-	 */
 	public static boolean isFragile(BlockState state, BlockGetter level, BlockPos pos) {
 		if (state.is(FRAGILE))
 			return true;
@@ -179,10 +235,6 @@ public final class TemporalDecayRegistry {
 		try {
 			fragile = !state.canOcclude() && state.getCollisionShape(level, pos).isEmpty();
 		} catch (Exception e) {
-			// Some modded blocks assume a fully-populated level in getShape. A chunk
-			// mid-load
-			// isn't that, so treat an angry block as "not fragile" rather than taking down
-			// the chunk task.
 			fragile = false;
 		}
 
@@ -190,12 +242,12 @@ public final class TemporalDecayRegistry {
 		return fragile;
 	}
 
-	/** Clears the per-block heuristic cache. Call on server stop. */
 	public static void clearCache() {
 		FRAGILE_CACHE.clear();
 	}
 
-	/** Carries over any property the destination state also declares. */
+	/* ======================== Property carry-over ======================== */
+
 	private static BlockState copyProperties(BlockState from, BlockState to) {
 		BlockState result = to;
 		for (net.minecraft.world.level.block.state.properties.Property<?> property : from.getProperties()) {

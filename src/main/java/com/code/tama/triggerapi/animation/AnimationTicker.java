@@ -8,14 +8,14 @@ import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
 
-public class GeoAnimTicker {
+public class AnimationTicker {
 	@Getter
 	static volatile long ticks = 0;
 	static ScheduledFuture<?> tick;
 	private static final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(1);
 
 	public static void init() {
-		tick = executor.scheduleAtFixedRate(GeoAnimTicker::tick, 0, 50, TimeUnit.MILLISECONDS);
+		tick = executor.scheduleAtFixedRate(AnimationTicker::tick, 0, 50, TimeUnit.MILLISECONDS);
 	}
 
 	public static void tick() {

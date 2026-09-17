@@ -51,7 +51,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.code.tama.triggerapi.TriggerAPI;
-import com.code.tama.triggerapi.animation.GeoAnimTicker;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.FileHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -71,7 +71,7 @@ public class TTSMod {
 		REGISTRATE.skipErrors(true);
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-		GeoAnimTicker.init();
+		AnimationTicker.init();
 		// This comment suppresses the "InstantiationOfUtilityClass" warning
 		// noinspection InstantiationOfUtilityClass
 		triggerAPI = new TriggerAPI(modEventBus, MODID);

@@ -48,7 +48,7 @@ public class AnimatedBlockRenderCore {
 			var consumer = buffer.getBuffer(type);
 			usedAnyBuffer = true;
 
-			entry.player.apply(model, GeoAnimTicker.getTicks(), partialTick);
+			entry.player.apply(model, AnimationTicker.getTicks(), partialTick);
 
 			int packedLight = LevelRenderer.getLightColor(level, pos);
 

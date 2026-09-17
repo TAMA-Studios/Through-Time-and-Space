@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONRenderer;
-import com.code.tama.triggerapi.animation.GeoAnimTicker;
+import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.triggerapi.boti.BOTIUtils;
 import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
@@ -112,12 +112,11 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 					pose.pushPose();
 					if (cap.GetFlightData().IsTakingOff()) {
 						if (lastTicks == -1)
-							lastTicks = GeoAnimTicker.getTicks();
+							lastTicks = AnimationTicker.getTicks();
 						double transparency = landFadeAnimation(lastTicks);
 						RenderSystem.setShaderColor(1F, 1F, 1F, (float) transparency);
 					}
-					pose.mulPose(
-							Axis.ZP.rotationDegrees((float) Minecraft.getInstance().level.getGameTime() / 100 * 360f));
+					pose.mulPose(Axis.ZP.rotationDegrees((float) AnimationTicker.getTicks() / 100 * 360f));
 					pose.mulPose(Axis.YP.rotationDegrees(180));
 					pose.translate(0, 0, 500);
 					pose.scale(1.5f, 1.5f, 1.5f);
@@ -209,7 +208,7 @@ public class InteriorDoorRenderer implements BlockEntityRenderer<DoorTile> {
 		float decay = 0.05f;
 		float freq = 0.3f;
 
-		float tick = (GeoAnimTicker.getTicks() - startTick) / 5;
+		float tick = (AnimationTicker.getTicks() - startTick) / 5;
 
 		float amp = (float) (initialAmp * Math.exp(-decay * tick));
 		float alpha = base - amp * (float) Math.abs(Math.sin(freq * tick));

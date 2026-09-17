@@ -6,9 +6,11 @@ import static com.code.tama.tts.TTSMod.MODID;
 import java.io.IOException;
 
 import com.code.tama.tts.client.models.*;
+import com.code.tama.tts.client.models.armor.RespiratorModel;
 import com.code.tama.tts.client.models.consoles.CoralConsoleModel;
 import com.code.tama.tts.client.models.consoles.HudolinConsoleModel;
 import com.code.tama.tts.client.models.consoles.NESSConsoleModel;
+import com.code.tama.tts.client.models.consoles.TakomakModel;
 import com.code.tama.tts.client.particles.ElectricSparkParticle;
 import com.code.tama.tts.client.renderers.ControlRenderer;
 import com.code.tama.tts.client.renderers.exteriors.FallingExteriorRenderer;
@@ -61,6 +63,7 @@ public class ClientSetup {
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.EXTERIOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.DOOR_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.HUDOLIN_CONSOLE_BLOCK.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.TAKOMAK_CONSOLE_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.NESS_CONSOLE_BLOCK.get(), RenderType.translucent());
 
 			ItemBlockRenderTypes.setRenderLayer(TTSBlocks.MONITOR_PANEL.get(), RenderType.cutout());
@@ -122,12 +125,14 @@ public class ClientSetup {
 
 	@SubscribeEvent
 	public static void registerModels(EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
+		event.registerLayerDefinition(RespiratorModel.LAYER_LOCATION, RespiratorModel::createBodyLayer);
 		event.registerLayerDefinition(HartnellRotorModel.LAYER_LOCATION, HartnellRotorModel::createBodyLayer);
 		event.registerLayerDefinition(CoralConsoleTopper.LAYER_LOCATION, CoralConsoleTopper::createBodyLayer);
 		event.registerLayerDefinition(VortexCannon.LAYER_LOCATION, VortexCannon::createBodyLayer);
 		event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION,
 				ColinRichmondInteriorDoors::createBodyLayer);
 		event.registerLayerDefinition(HudolinConsoleModel.LAYER_LOCATION, HudolinConsoleModel::createBodyLayer);
+		event.registerLayerDefinition(TakomakModel.LAYER_LOCATION, TakomakModel::createBodyLayer);
 		event.registerLayerDefinition(CoralConsoleModel.LAYER_LOCATION, CoralConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(NESSConsoleModel.LAYER_LOCATION, NESSConsoleModel::createBodyLayer);
 		event.registerLayerDefinition(ShellBaseModel.LAYER_LOCATION, ShellBaseModel::createBodyLayer);

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.code.tama.tts.client.manual.ManualItem;
 import com.code.tama.tts.core.items.TwineItem;
+import com.code.tama.tts.core.items.armor.RespiratorArmorItem;
 import com.code.tama.tts.core.items.core.NozzleItem;
 import com.code.tama.tts.core.items.gadgets.*;
 import com.code.tama.tts.core.items.tabs.MainTab;
@@ -47,7 +48,7 @@ public class TTSItems {
 	public static final ItemEntry<Item> FINE_SANDPAPER;
 
 	@MainTab
-	public static final ItemEntry<ArmorItem> OXYGENATOR;
+	public static final ItemEntry<RespiratorArmorItem> OXYGENATOR;
 
 	@MainTab
 	public static final ItemEntry<Item> HAMMER;
@@ -119,9 +120,8 @@ public class TTSItems {
 		FINE_SANDPAPER = register("fine_sandpaper", (NonNullFunction<Item.Properties, Item>) Item::new);
 
 		OXYGENATOR = register("oxygenator",
-				(NonNullFunction<Item.Properties, ArmorItem>) properties -> new ArmorItem(ArmorMaterials.LEATHER,
-						ArmorItem.Type.HELMET, properties) {
-
+				(NonNullFunction<Item.Properties, RespiratorArmorItem>) properties -> new RespiratorArmorItem(
+						ArmorMaterials.LEATHER, ArmorItem.Type.HELMET, properties) {
 				});
 
 		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);

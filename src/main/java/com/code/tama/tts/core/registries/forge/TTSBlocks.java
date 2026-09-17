@@ -30,6 +30,7 @@ import com.code.tama.tts.core.tileentities.boti.BotiWindowBlock;
 import com.code.tama.tts.core.tileentities.consoles.CoralConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.HudolinConsoleTile;
 import com.code.tama.tts.core.tileentities.consoles.NESSConsoleTile;
+import com.code.tama.tts.core.tileentities.consoles.TakomakConsoleTile;
 import com.code.tama.tts.core.worlds.tree.GallifreyanOakTreeGrower;
 import com.code.tama.tts.mixin.BlockBehaviorAccessor;
 import com.code.tama.tts.mixin.BlockBehaviourPropertiesAccessor;
@@ -592,6 +593,13 @@ public class TTSBlocks {
 			"hudolin_console_block", p -> new ConsoleBlock<HudolinConsoleTile>(p, TTSTileEntities.HUDOLIN_CONSOLE_TILE))
 			.properties(BlockBehaviour.Properties::noOcclusion).airState()
 			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.HUDOLIN_CONSOLE_TILE, block, prop)).build()
+			.simpleItem().register();
+
+	@MainTab
+	public static final BlockEntry<ConsoleBlock<TakomakConsoleTile>> TAKOMAK_CONSOLE_BLOCK = Builder(
+			"takomak_console_block", p -> new ConsoleBlock<TakomakConsoleTile>(p, TTSTileEntities.TAKOMAK_CONSOLE_TILE))
+			.properties(BlockBehaviour.Properties::noOcclusion).airState()
+			.item((block, prop) -> new ConsoleItem<>(TTSTileEntities.TAKOMAK_CONSOLE_TILE, block, prop)).build()
 			.simpleItem().register();
 
 	@MainTab
