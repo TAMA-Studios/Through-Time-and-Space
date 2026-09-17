@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tts:block/fault_locator"
+    }
+  }
+}

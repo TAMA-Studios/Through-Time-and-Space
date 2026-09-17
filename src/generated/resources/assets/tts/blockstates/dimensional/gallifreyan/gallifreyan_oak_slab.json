@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,waterlogged=false": {
+      "model": "minecraft:block/air"
+    },
+    "type=bottom,waterlogged=true": {
+      "model": "minecraft:block/air"
+    },
+    "type=double,waterlogged=false": {
+      "model": "minecraft:block/air"
+    },
+    "type=double,waterlogged=true": {
+      "model": "minecraft:block/air"
+    },
+    "type=top,waterlogged=false": {
+      "model": "minecraft:block/air"
+    },
+    "type=top,waterlogged=true": {
+      "model": "minecraft:block/air"
+    }
+  }
+}

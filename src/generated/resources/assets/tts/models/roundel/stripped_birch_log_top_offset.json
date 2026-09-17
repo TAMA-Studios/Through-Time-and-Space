@@ -1,0 +1,6 @@
+{
+  "parent": "tts:block/cube_all_offset",
+  "textures": {
+    "all": "tts:block/roundel/stripped_birch_log_top"
+  }
+}

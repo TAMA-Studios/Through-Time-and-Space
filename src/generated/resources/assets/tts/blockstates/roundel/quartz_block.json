@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tts:roundel/quartz_block"
+    }
+  }
+}

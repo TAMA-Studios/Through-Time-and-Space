@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "doors=false,facing=east": {
+      "model": "minecraft:block/air"
+    },
+    "doors=false,facing=north": {
+      "model": "minecraft:block/air"
+    },
+    "doors=false,facing=south": {
+      "model": "minecraft:block/air"
+    },
+    "doors=false,facing=west": {
+      "model": "minecraft:block/air"
+    },
+    "doors=true,facing=east": {
+      "model": "minecraft:block/air"
+    },
+    "doors=true,facing=north": {
+      "model": "minecraft:block/air"
+    },
+    "doors=true,facing=south": {
+      "model": "minecraft:block/air"
+    },
+    "doors=true,facing=west": {
+      "model": "minecraft:block/air"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tts:zeiton/raw_zeiton_block"
+    }
+  }
+}
