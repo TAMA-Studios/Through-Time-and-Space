@@ -83,16 +83,16 @@ public class ModularControl extends AbstractControlEntity implements IEntityAddi
 		// Y starts at 0 and goes up, entity position is the bottom of the control,
 		// matching
 		// the old min/max corner behavior so position + size stay in sync.
-		float fullH = record.hh() * 2f;
-		this.size = RotatedHitboxUtil.rotatedTightAABB(record.hw(), record.hh(), record.hd(), record.yawDeg());
+		float fullH = (float) (record.hh() * 2f);
+		this.size = RotatedHitboxUtil.rotatedTightAABB(record.hw(), record.hh(), record.hd(), (float) record.yawDeg());
 		this.SetDimensions(EntityDimensions.scalable((float) (this.size.getXsize()), (float) (this.size.getYsize())));
 
-		this.SetDimensions(EntityDimensions.scalable(record.hw() * 2f, fullH));
+		this.SetDimensions(EntityDimensions.scalable((float) (record.hw() * 2f), fullH));
 		this.consoleTile = consoleTile;
 		this.SetIdentifier(record.ID());
 
-		this.setYRot(record.yawDeg());
-		this.yRotO = record.yawDeg();
+		this.setYRot((float) record.yawDeg());
+		this.yRotO = (float) record.yawDeg();
 	}
 
 	// ------------------------------------------------------------------

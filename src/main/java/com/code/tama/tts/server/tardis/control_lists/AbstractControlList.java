@@ -26,7 +26,7 @@ public abstract class AbstractControlList {
 
 	/** Min/max corners, no rotation. */
 	@Deprecated
-	public int AddControl(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+	public int AddControl(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		return MinMaxAddControl(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
@@ -57,26 +57,21 @@ public abstract class AbstractControlList {
 	 * @param yawDeg
 	 *            rotation around Y axis in degrees
 	 */
-	public int AddControl(float cx, float cy, float cz, float hw, float hh, float hd, float yawDeg) {
+	public int AddControl(double cx, double cy, double cz, double hw, double hh, double hd, double yawDeg) {
 		PositionSizeMap.add(new ControlEntityRecord(cx, cy, cz, hw, hh, hd, yawDeg, ID++));
 		return ID;
 	}
 
 	/** Center via vector + half-extents via vector + yaw. */
-	public int AddControl(Vector3f center, Vector3f halfExtents, float yawDeg) {
+	public int AddControl(Vector3f center, Vector3f halfExtents, double yawDeg) {
 		return AddControl(center.x, center.y, center.z, halfExtents.x, halfExtents.y, halfExtents.z, yawDeg);
 	}
 
 	// Internal: min/max corners -> center+half-extents (used by no-rotation
 	// overloads)
-	private int MinMaxAddControl(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-		float cx = (minX + maxX) / 2f;
-		float cy = (minY + maxY) / 2f;
-		float cz = (minZ + maxZ) / 2f;
-		float hw = (maxX - minX) / 2f;
-		float hh = (maxY - minY) / 2f;
-		float hd = (maxZ - minZ) / 2f;
-		PositionSizeMap.add(new ControlEntityRecord(cx, cy, cz, hw, hh, hd, (float) 0.0, ID++));
+	private int MinMaxAddControl(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+		PositionSizeMap.add(new ControlEntityRecord(minX + (maxX / 2), minY, minZ + (maxZ / 2), maxX / 2, maxY / 2,
+				maxZ / 2, (double) 0.0, ID++));
 		return ID;
 	}
 }

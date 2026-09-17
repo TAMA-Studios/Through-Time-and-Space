@@ -47,8 +47,9 @@ public class TakomakConsoleRenderer<T extends TakomakConsoleTile, C extends Hier
 			@NotNull MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
 
 		poseStack.pushPose();
-		poseStack.translate(0.5, 1.5, 0.5);
+		poseStack.translate(0.5, 1.467, 0.5);
 		poseStack.mulPose(Axis.ZP.rotationDegrees(0xB4)); // Rot 180
+		poseStack.mulPose(Axis.YP.rotationDegrees(0xB4)); // Rot 180
 
 		assert ConsoleTile.getLevel() != null;
 		if (ConsoleTile.getLevel() != null) {

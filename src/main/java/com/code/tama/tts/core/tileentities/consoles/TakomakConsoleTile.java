@@ -39,7 +39,7 @@ public class TakomakConsoleTile extends AbstractConsoleTile {
 				offs = BlockUtils.getReverseHeightModifier(this.getLevel().getBlockState(this.getBlockPos().below()));
 
 			offs -= 0.05f;
-			offs += 0.5f;
+			// offs += 0.5f;
 
 			// Spawn position uses the record's center (cx/cy/cz)
 			Vec3 summonPos = centerPos.add(record.cx(), record.cy() - record.hh() - offs, record.cz());
@@ -49,12 +49,12 @@ public class TakomakConsoleTile extends AbstractConsoleTile {
 
 			// Stamp the yaw from the record onto the entity so getLocalHitboxSlices() works
 			// correctly
-			entity.setYRot(record.yawDeg());
-			entity.yRotO = record.yawDeg();
+			entity.setYRot((float) record.yawDeg());
+			entity.yRotO = (float) record.yawDeg();
 
 			entity.setPos(summonPos);
-			entity.setYRot(record.yawDeg());
-			entity.yRotO = record.yawDeg();
+			entity.setYRot((float) record.yawDeg());
+			entity.yRotO = (float) record.yawDeg();
 			entity.refreshDimensions(); // forces makeBoundingBox to re-run with correct yaw
 
 			level.addFreshEntity(entity);
@@ -70,4 +70,5 @@ public class TakomakConsoleTile extends AbstractConsoleTile {
 
 		level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 	}
+
 }

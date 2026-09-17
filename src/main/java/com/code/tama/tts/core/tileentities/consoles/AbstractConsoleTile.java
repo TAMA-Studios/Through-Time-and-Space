@@ -1,14 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities.consoles;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 import com.code.tama.tts.core.entities.controls.ModularControl;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.tardis.control_lists.AbstractControlList;
-import com.code.tama.tts.server.tardis.control_lists.ControlEntityRecord;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
-public class AbstractConsoleTile extends BlockEntity {
+public abstract class AbstractConsoleTile extends BlockEntity {
 
 	private boolean IsDestroyed = false;
 
@@ -95,12 +93,12 @@ public class AbstractConsoleTile extends BlockEntity {
 
 			// Stamp the yaw from the record onto the entity so getLocalHitboxSlices() works
 			// correctly
-			entity.setYRot(record.yawDeg());
-			entity.yRotO = record.yawDeg();
+			entity.setYRot((float) record.yawDeg());
+			entity.yRotO = (float) record.yawDeg();
 
 			entity.setPos(summonPos);
-			entity.setYRot(record.yawDeg());
-			entity.yRotO = record.yawDeg();
+			entity.setYRot((float) record.yawDeg());
+			entity.yRotO = (float) record.yawDeg();
 			entity.refreshDimensions(); // forces makeBoundingBox to re-run with correct yaw
 
 			level.addFreshEntity(entity);
@@ -126,14 +124,7 @@ public class AbstractConsoleTile extends BlockEntity {
 		return this.ControlAnimationMap;
 	}
 
-	public AbstractControlList GetControlList() {
-		return new AbstractControlList() {
-			@Override
-			public ArrayList<ControlEntityRecord> getPositionSizeMap() {
-				return super.getPositionSizeMap();
-			}
-		};
-	}
+	public abstract AbstractControlList GetControlList();
 
 	public AnimationState GetRotorAnimation() {
 		return this.RotorAnimationState;
