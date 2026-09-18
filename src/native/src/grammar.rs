@@ -1,6 +1,6 @@
 use jni::JNIEnv;
 use jni::objects::{JClass, JString, JObjectArray, JObject};
-use jni::sys::{jstring, jboolean, jobjectArray};
+use jni::sys::{jstring, jboolean};
 
 // ── CapitalizeFirstLetters ────────────────────────────────────────────────────
 // Java: native String capitalizeFirstLetters(String text);

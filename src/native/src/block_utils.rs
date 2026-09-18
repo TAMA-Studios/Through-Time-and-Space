@@ -1,7 +1,6 @@
 use jni::JNIEnv;
 use jni::objects::JClass;
 use jni::sys::{jint, jfloat, jlong, jdouble, jboolean, jstring};
-use jni::objects::JString;
 
 // ── GetPackedLight ────────────────────────────────────────────────────────────
 // Pass the raw block/sky brightness values from Java,  we do the bit math.
@@ -21,7 +20,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_ge
 // Returns "x,y,z"
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_getRelativeBlockPos(
-    mut env: JNIEnv, _class: JClass,
+    env: JNIEnv, _class: JClass,
     bx: jint, by: jint, bz: jint,
     ox: jint, oy: jint, oz: jint,
 ) -> jstring {
@@ -35,7 +34,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_ge
 // Returns "x,y,z"
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_helpers_world_BlockUtils_fromChunkAndLocal(
-    mut env: JNIEnv, _class: JClass,
+    env: JNIEnv, _class: JClass,
     chunk_x: jint, chunk_z: jint,
     local_x: jint, local_y: jint, local_z: jint,
 ) -> jstring {

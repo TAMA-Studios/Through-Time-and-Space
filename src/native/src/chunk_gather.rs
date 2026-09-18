@@ -1,6 +1,6 @@
 use jni::JNIEnv;
-use jni::objects::{JClass, JBooleanArray, JIntArray};
-use jni::sys::{jboolean, jbooleanArray, jint, jintArray};
+use jni::objects::{JClass, JBooleanArray};
+use jni::sys::{jbooleanArray, jint, jintArray};
 
 // -- Flood-fill reachability (BFS) ---------------------------------------------
 //
@@ -14,7 +14,7 @@ use jni::sys::{jboolean, jbooleanArray, jint, jintArray};
 // Java: native boolean[] floodFill(boolean[] solid, int sizeX, int sizeY, int sizeZ);
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_floodFill(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _class: JClass,
     solid: JBooleanArray,
     size_x: jint,
@@ -114,7 +114,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
 //           int originX, int originY, int originZ, int facing);
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_findExposedBlocks(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _class: JClass,
     solid: JBooleanArray,
     reachable: JBooleanArray,
@@ -122,7 +122,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
     size_y: jint,
     size_z: jint,
     origin_x: jint,
-    origin_y: jint,
+    _origin_y: jint,
     origin_z: jint,
     facing: jint,
 ) -> jintArray {
@@ -210,7 +210,7 @@ pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_f
 // Java: native int[] unpackIndex(int flatIndex, int sizeY, int sizeZ);
 #[no_mangle]
 pub extern "system" fn Java_com_code_tama_triggerapi_boti_ChunkGatheringThread_unpackIndex(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _class: JClass,
     flat: jint,
     size_y: jint,
