@@ -1,14 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.events;
 
-import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
-import com.code.tama.triggerapi.exceptions.GrammarException;
-import com.code.tama.triggerapi.gui.GuiLoader;
-import com.code.tama.triggerapi.helpers.GravityHelper;
-import com.code.tama.triggerapi.helpers.OxygenHelper;
-import com.code.tama.triggerapi.helpers.PlanetHelper;
-import com.code.tama.triggerapi.helpers.ThreadUtils;
-import com.code.tama.triggerapi.universal.UniversalCommon;
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.client.util.CameraShakeHandler;
@@ -24,6 +23,7 @@ import com.code.tama.tts.core.worlds.dimension.TDimensions;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.data.json.loaders.*;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -61,12 +61,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
+import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
+import com.code.tama.triggerapi.exceptions.GrammarException;
+import com.code.tama.triggerapi.gui.GuiLoader;
+import com.code.tama.triggerapi.helpers.GravityHelper;
+import com.code.tama.triggerapi.helpers.OxygenHelper;
+import com.code.tama.triggerapi.helpers.PlanetHelper;
+import com.code.tama.triggerapi.helpers.ThreadUtils;
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class CommonEvents {
@@ -282,8 +284,9 @@ public class CommonEvents {
 
 				System.out.printf("Taking off with destination: %s",
 						event.level.GetNavigationalData().getDestination());
-				CameraShakeHandler.startShake(
-						event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount() * Math.max(1, event.level.getRevTime() / 40), 999);
+				CameraShakeHandler
+						.startShake(event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount()
+								* Math.max(1, event.level.getRevTime() / 40), 999);
 				break;
 			}
 			case END : {

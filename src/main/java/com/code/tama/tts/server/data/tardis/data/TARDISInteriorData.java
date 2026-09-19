@@ -1,7 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
-import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.TardisAmbientParticle;
@@ -9,6 +8,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
+
+import com.code.tama.triggerapi.helpers.MathUtils;
 
 @Getter
 @Setter
@@ -18,7 +19,8 @@ public class TARDISInteriorData {
 					Codec.FLOAT.fieldOf("gravity_level").forGetter(TARDISInteriorData::getGravityLevel),
 					Codec.FLOAT.fieldOf("oxygen_level").forGetter(TARDISInteriorData::getOxygenLevel),
 					Codec.INT.fieldOf("humId").forGetter(TARDISInteriorData::getHum),
-					TardisAmbientParticle.CODEC.fieldOf("ambient_particle").forGetter(TARDISInteriorData::getAmbientParticle))
+					TardisAmbientParticle.CODEC.fieldOf("ambient_particle")
+							.forGetter(TARDISInteriorData::getAmbientParticle))
 			.apply(instance, TARDISInteriorData::new));
 
 	float LightLevel, gravityLevel = 0.08f, oxygenLevel;
@@ -26,7 +28,8 @@ public class TARDISInteriorData {
 	int hum;
 	TardisAmbientParticle ambientParticle;
 
-	public TARDISInteriorData(float lightLevel, float gravityLevel, float oxygenLevel, int hum, TardisAmbientParticle ambientParticle) {
+	public TARDISInteriorData(float lightLevel, float gravityLevel, float oxygenLevel, int hum,
+			TardisAmbientParticle ambientParticle) {
 		LightLevel = lightLevel;
 		this.gravityLevel = gravityLevel;
 		this.oxygenLevel = oxygenLevel;
