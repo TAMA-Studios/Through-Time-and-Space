@@ -1,12 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities;
 
-import com.code.tama.triggerapi.boti.AbstractPortalTile;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.core.blocks.tardis.DecoyExteriorBlock;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +18,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.boti.AbstractPortalTile;
 
 public class DecoyExteriorTile extends AbstractPortalTile {
 	@Getter

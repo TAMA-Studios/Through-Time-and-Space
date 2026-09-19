@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.forge;
 
+import static com.code.tama.tts.TTSMod.registrate;
+
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -31,10 +33,9 @@ import com.code.tama.tts.core.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {

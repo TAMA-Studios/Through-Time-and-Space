@@ -1,12 +1,19 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.tardis;
 
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.DecoyExteriorTile;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -31,12 +38,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 @SuppressWarnings("deprecation")
 public class DecoyExteriorBlock extends Block implements EntityBlock {

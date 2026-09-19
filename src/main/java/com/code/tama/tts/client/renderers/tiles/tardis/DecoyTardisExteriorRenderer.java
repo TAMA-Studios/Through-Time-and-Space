@@ -1,9 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.tiles.tardis;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.blocks.tardis.DecoyExteriorBlock;
@@ -12,12 +9,17 @@ import com.code.tama.tts.core.tileentities.DecoyExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Blocks;
-import org.jetbrains.annotations.NotNull;
+
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import com.code.tama.triggerapi.helpers.world.BlockUtils;
 
 public class DecoyTardisExteriorRenderer<T extends DecoyExteriorTile> implements BlockEntityRenderer<T> {
 

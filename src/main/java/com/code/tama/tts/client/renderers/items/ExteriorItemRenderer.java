@@ -1,13 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,10 +20,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 	public static Map<ItemStack, RenderInfo> INFO_MAP = new HashMap<>();

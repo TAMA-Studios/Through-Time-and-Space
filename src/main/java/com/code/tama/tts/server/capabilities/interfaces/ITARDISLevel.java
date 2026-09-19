@@ -1,6 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.interfaces;
 
+import java.util.List;
+
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
@@ -8,6 +10,9 @@ import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
 import com.code.tama.tts.server.data.tardis.PowerHandler;
 import com.code.tama.tts.server.data.tardis.data.*;
 import com.code.tama.tts.server.tardis.ExteriorState;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,10 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 	/**

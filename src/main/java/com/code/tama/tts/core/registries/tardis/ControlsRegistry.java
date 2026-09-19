@@ -1,11 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.tardis;
 
-import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.gui.AstralMapScreen;
+import static com.code.tama.tts.TTSMod.MODID;
+
+import java.util.List;
+
 import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.tardis.controls.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -15,9 +18,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.List;
-
-import static com.code.tama.tts.TTSMod.MODID;
+import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.gui.AstralMapScreen;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
