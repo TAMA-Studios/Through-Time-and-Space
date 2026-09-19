@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.client.manual.ManualItem;
 import com.code.tama.tts.core.items.TwineItem;
 import com.code.tama.tts.core.items.armor.RespiratorArmorItem;
@@ -17,7 +13,6 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -25,6 +20,10 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("deprecation")
 public class TTSItems {
@@ -128,7 +127,7 @@ public class TTSItems {
 
 		MATRIX_CORE = register("matrix_core", (NonNullFunction<Item.Properties, Item>) Item::new);
 
-		HOLO_GLASSES = registrate().item("holo_glasses", HoloGlasses::new).register();
+		HOLO_GLASSES = registrate().item("gadgets/holo_glasses", HoloGlasses::new).register();
 
 		VORTEX_MANIPULATOR = registrate().item("gadgets/vortex_manipulator", VortexManipulatorItem::new).register();
 

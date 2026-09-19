@@ -1,14 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.tardis;
 
-import static com.code.tama.tts.TTSMod.MODID;
-
-import java.util.List;
-
+import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.gui.AstralMapScreen;
 import com.code.tama.tts.server.data.json.loaders.InteriorHumDPLoader;
 import com.code.tama.tts.server.data.tardis.EnergyMode;
 import com.code.tama.tts.server.tardis.controls.*;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -18,8 +15,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
-import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.gui.AstralMapScreen;
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.MODID;
 
 @SuppressWarnings("unused")
 public class ControlsRegistry {
@@ -123,8 +121,8 @@ public class ControlsRegistry {
 			}));
 
 	public static final RegistryObject<SimplestControl> BRAKES = CONTROLS.register("brakes",
-			() -> new SimplestControl("brakes", tardis -> tardis.GetData().getControlData().setBrakes(true),
-					tardis -> tardis.GetData().getControlData().setBrakes(false)));
+			() -> new SimplestControl("brakes", tardis -> tardis.GetData().getControlData().setHandbrake(true),
+					tardis -> tardis.GetData().getControlData().setHandbrake(false)));
 
 	public static final RegistryObject<SimplestControl> REFUEL = CONTROLS.register("refuel",
 			() -> new SimplestControl("refuel", tardis -> {

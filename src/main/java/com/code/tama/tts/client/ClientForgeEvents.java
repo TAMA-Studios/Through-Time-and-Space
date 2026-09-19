@@ -1,22 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client;
 
-import static com.code.tama.tts.TTSMod.MODID;
-import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
-
-import java.util.Objects;
-
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.core.entities.TardisFlightEntity;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.entities.StopViewingExteriorC2S;
 import com.code.tama.tts.server.capabilities.Capabilities;
+import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-
+import com.code.tama.tts.server.data.tardis.TardisAmbientParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -25,6 +24,13 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.code.tama.tts.TTSMod.MODID;
+import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
@@ -87,7 +93,39 @@ public class ClientForgeEvents {
 					Networking.sendToServer(new StopViewingExteriorC2S(event.player.getUUID()));
 				}
 			});
+
+			TARDISLevelCapability.GetClientTARDISCapSupplier().ifPresent(tardis -> {
+					TardisAmbientParticle ambient = tardis.GetEnvironmentalData().getAmbientParticle();
+
+					if (ambient == null)
+						return;
+
+					if (ThreadLocalRandom.current().nextFloat() >= ambient.probability())
+						return;
+
+					List<Vec3> valid_spawn_sections = tardis.getARSGrids().stream()
+							.map(arsGrid -> arsGrid.getPos().getCenter().getCenter())
+							.toList();
+					Vec3 spawnPos = getRandomInteriorPosition(valid_spawn_sections);
+
+					if (!event.player.level().getBlockState(BlockPos.containing(spawnPos)).getBlock().equals(Blocks.AIR))
+				event.player.level().addParticle(
+							ambient.particle(),
+							spawnPos.x,
+							spawnPos.y,
+							spawnPos.z,
+							0.0,
+							0.0,
+							0.0
+					);
+			});
 		}
+	}
+
+	public static Vec3 getRandomInteriorPosition(List<Vec3> valid_sectors) {
+		Vec3 player = Minecraft.getInstance().player.position();
+		List<Vec3> valid = valid_sectors.stream().filter(v -> v.closerThan(player, 48)).toList();
+		return valid.get(ThreadLocalRandom.current().nextInt(valid.size())).add(ThreadLocalRandom.current().nextDouble(48) - 24, ThreadLocalRandom.current().nextDouble(48) - 24,ThreadLocalRandom.current().nextDouble(48) - 24);
 	}
 
 	@SubscribeEvent

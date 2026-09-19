@@ -1,15 +1,14 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.misc.containers;
 
-import java.util.Random;
-
 import com.code.tama.tts.client.util.CameraShakeHandler;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Getter
@@ -44,7 +43,7 @@ public class FlightTerminationProtocol {
 	 *            The level that the Exterior will be placed in
 	 */
 	public void OnLand(ITARDISLevel itardisLevel, BlockPos blockPos, Level level) {
-		CameraShakeHandler.startShake(this.LandShakeAmount, 40);
+		CameraShakeHandler.startShake(this.LandShakeAmount * itardisLevel.getFlightSpeed(), 40);
 		if (this.ShouldBeInaccurate())
 			this.SetLandPos(level.getBlockRandomPos(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
 					(int) ((this.Accuracy - 1) * 10)).atY(blockPos.getY()));

@@ -1,17 +1,13 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.client.renderers.items;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
+import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,13 +17,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
-import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.animation.AnimationTicker;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
-	Map<ItemStack, RenderInfo> INFO_MAP = new HashMap<>();
+	public static Map<ItemStack, RenderInfo> INFO_MAP = new HashMap<>();
 
 	public ExteriorItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
 		super(dispatcher, modelSet);
@@ -58,31 +54,44 @@ public class ExteriorItemRenderer extends BlockEntityWithoutLevelRenderer {
 			info.model = JavaJSON.getParsedJavaJSON(info.ext).getModelInfo().getModel();
 		}
 		poseStack.pushPose();
+		poseStack.translate(0.5f, 0.25, 0.5);
 
-		poseStack.scale(0.35f, 0.35f, 0.35f);
-		poseStack.translate(1.5, -0.25f, 0);
+		poseStack.scale(0.4f, 0.4f, 0.4f);
+		poseStack.scale(info.model.modelScale, info.model.modelScale, info.model.modelScale);
+
+		poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
 		if (context.equals(ItemDisplayContext.GUI)) {
-			poseStack.mulPose(Axis.XP.rotationDegrees(20f));
-			if (Minecraft.getInstance().level == null)
-				poseStack.mulPose(Axis.YP.rotationDegrees(220f));
-			else
-				poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks() % 360));
-
-			poseStack.translate(-0.5, 0, -0.5);
+			poseStack.mulPose(Axis.XN.rotationDegrees(20f));
+			poseStack.mulPose(Axis.YP.rotationDegrees(220f));
+			// poseStack.mulPose(Axis.YP.rotationDegrees((float) AnimationTicker.getTicks()
+			// % 360));
 
 		} else {
+			if (context.equals(ItemDisplayContext.HEAD)) {
+				poseStack.translate(0.15, -2, 0);
+				poseStack.mulPose(Axis.XN.rotationDegrees(22.5f));
+				poseStack.scale(6, 6, 6);
+			}
 			poseStack.scale(0.3f, 0.3f, 0.3f);
 		}
 
 		if (info.model != null) {
 			info.model.getPart("baseRoot").render(poseStack,
 					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getTexture())), packedLight,
-					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 0);
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1);
 
 			info.model.getPart("baseRoot").render(poseStack,
 					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getLightMap())), 0xf000f0,
-					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 0);
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1);
+
+			info.model.getPart("Doors").render(poseStack,
+					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getTexture())), packedLight,
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1);
+
+			info.model.getPart("Doors").render(poseStack,
+					buffer.getBuffer(info.ext.getRenderType(info.exteriorModelContainer.getLightMap())), 0xf000f0,
+					OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1);
 		}
 
 		poseStack.popPose();

@@ -1,16 +1,15 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.networking.packets.C2S.dimensions;
 
-import java.util.function.Supplier;
-
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Single generic C2S packet covering every no-argument terminal action
@@ -73,7 +72,7 @@ public class TerminalActionPacketC2S {
 						.setVortexAnchor(!tardis.GetData().getControlData().isVortexAnchor());
 
 				case TOGGLE_ENGINE_BRAKE ->
-					tardis.GetData().getControlData().setBrakes(!tardis.GetData().getControlData().isEngineBrake());
+					tardis.GetData().getControlData().setEngineBrake(!tardis.GetData().getControlData().isEngineBrake());
 
 				case TOGGLE_APC ->
 					tardis.GetData().getControlData().setAPCState(!tardis.GetData().getControlData().isAPCState());

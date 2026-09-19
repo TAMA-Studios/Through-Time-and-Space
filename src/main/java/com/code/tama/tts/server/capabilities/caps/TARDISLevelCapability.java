@@ -1,12 +1,8 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
+import com.code.tama.triggerapi.data.DatapackRegistry;
+import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
@@ -17,6 +13,7 @@ import com.code.tama.tts.core.misc.LoopingSound;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapLightPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapPacketC2S;
+import com.code.tama.tts.core.networking.packets.S2C.FlightLoopSoundPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISCapPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncTARDISFlightEventPacketS2C;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.ExteriorStatePacket;
@@ -41,8 +38,6 @@ import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,13 +61,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
-import com.code.tama.triggerapi.data.DatapackRegistry;
-import com.code.tama.triggerapi.helpers.MathUtils;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
 public class TARDISLevelCapability implements ITARDISLevel {
 	ServerPlayer lastInteractor = null;
-	private boolean isOperator = false;
+	private long revTime = 0;
+	private int Speed;
+	private boolean isOperator = false, ShouldRev = false;
 	private final PowerHandler powerHandler = new PowerHandler(this);
 	private Thread TickThread;
 	private TARDISData data = new TARDISData(this);
@@ -371,6 +372,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		}
 
 		this.GetFlightData().setInFlight(true);
+		this.setFlightSpeed((int) (this.getRevTime() / 40)); // For every 2 seconds you rev, you get +1 speed
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.TakeOff(this, TardisEvent.State.END));
 
 		this.UpdateClient(DataUpdateValues.ALL);
@@ -389,9 +391,9 @@ public class TARDISLevelCapability implements ITARDISLevel {
 		SpaceTimeCoordinate delta = flightData.distanceToLoc();
 
 		double speed = TTSConfig.ServerConfig.BLOCKS_PER_TICK.get() + this.data.getControlData().GetArtronPacketOutput()
-				+ (this.data.getControlData().isAPCState() ? 10 : 0); // speed in blocks per tick, calculated using
+				+ (this.data.getControlData().isAPCState() ? 10 : 0) + this.getFlightSpeed(); // speed in blocks per tick, calculated using
 		// default config value, + Artron packet output
-		// + APC on ? 10 : 0
+		// + APC on ? 10 : 0 + getFlightSpeed()
 
 		double dx = Math.signum(delta.GetX()) * speed;
 		double dy = Math.signum(delta.GetY()) * speed;
@@ -519,7 +521,7 @@ public class TARDISLevelCapability implements ITARDISLevel {
 			this.GetData().getControlData().setArtronPacketOutput(1);
 			this.GetData().getControlData()
 					.setFlightTerminationProtocol(FlightTerminationProtocolRegistry.POLITE_TERMINUS);
-			this.GetData().getControlData().setBrakes(false);
+			this.GetData().getControlData().setHandbrake(false);
 		}
 		if (!this.CanTakeoff())
 			return;
@@ -761,6 +763,21 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public void Tick() {
 		this.ticks++;
 
+		if (this.ShouldRev)  {
+			if (this.revTime == 0) {
+				Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(true), this.level);
+			}
+			if (this.data.getControlData().isHandbrake())
+				this.revTime++;
+			else {
+				this.ShouldRev = false;
+				this.revTime = 0;
+				Networking.sendPacketToDimension(new FlightLoopSoundPacketS2C(false), this.level);
+//				FlightSoundThread.stop(this.level, AMBIENT_SOUND_POS);
+				this.Dematerialize();
+			}
+		}
+
 		TickThread();
 
 		if (this.ticks % 600 == 1) { // Update client every 30 seconds
@@ -894,5 +911,25 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public static List<String> getTARDISes(MinecraftServer server) {
 		return server.levelKeys().stream().map(ResourceKey::location).map(ResourceLocation::toString)
 				.filter(dim -> dim.startsWith(TTSMod.MODID + "-tardis:")).collect(Collectors.toList());
+	}
+
+    public long getRevTime() {
+        return revTime;
+    }
+
+    public void setRevTime(long revTime) {
+        this.revTime = revTime;
+    }
+
+	public void setFlightSpeed(int speed) {
+		this.Speed = speed;
+	}
+
+	public int getFlightSpeed() {
+		return Math.max(this.Speed, 1);
+	}
+
+	public void setShouldRev(boolean shouldRev) {
+		this.ShouldRev = shouldRev;
 	}
 }

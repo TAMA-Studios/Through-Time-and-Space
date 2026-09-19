@@ -1,18 +1,16 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.triggerapi.universal.UniversalCommon;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-
-import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class ThrottleControl extends AbstractControl {
 	ITARDISLevel itardisLevel;
@@ -60,6 +58,8 @@ public class ThrottleControl extends AbstractControl {
 
 		this.itardisLevel = itardisLevel;
 		this.SetAnimationState(1.0f);
+
+		if (itardisLevel.GetData().getControlData().isHandbrake()) itardisLevel.setShouldRev(true);
 
 		if (!itardisLevel.GetFlightData().IsTakingOff() && !itardisLevel.GetFlightData().isInFlight()) {
 			// Dematerialize() (via PhysicalStateManager) now owns playing the

@@ -16,8 +16,8 @@ public class ControlParameters {
 	public static Codec<ControlParameters> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("helmic_regulator").forGetter(ControlParameters::getHelmicRegulator),
 					Codec.BOOL.fieldOf("apc_state").forGetter(ControlParameters::isAPCState),
-					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isEngineBrake),
-					Codec.BOOL.fieldOf("engine_brake").forGetter(ControlParameters::isBrakes),
+					Codec.BOOL.fieldOf("engine_brake").forGetter(ControlParameters::isEngineBrake),
+					Codec.BOOL.fieldOf("brakes").forGetter(ControlParameters::isHandbrake),
 					Codec.BOOL.fieldOf("anchor").forGetter(ControlParameters::isVortexAnchor),
 					Codec.BOOL.fieldOf("stabilizers").forGetter(ControlParameters::isStabilizers),
 					Codec.BOOL.fieldOf("simple_mode").forGetter(ControlParameters::isSimpleMode),
@@ -28,17 +28,17 @@ public class ControlParameters {
 			.apply(instance, ControlParameters::new));
 
 	FlightTerminationProtocol flightTerminationProtocol = FlightTerminationProtocolRegistry.POLITE_TERMINUS;
-	public boolean APCState, Brakes, EngineBrake, SimpleMode, CoordinateLock, VortexAnchor, Stabilizers;
+	public boolean APCState, Handbrake, EngineBrake, SimpleMode, CoordinateLock, VortexAnchor, Stabilizers;
 	public int ArtronPacketOutput;
 	public int HelmicRegulator;
 
-	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean engineBrake, Boolean brakes,
+	public ControlParameters(Integer helmicRegulator, Boolean apcState, Boolean engineBrake, Boolean handbrake,
 			Boolean anchor, Boolean stabilizers, Boolean simpleMode, Boolean coordinateLock, Integer artronPacketOutput,
 			FlightTerminationProtocol flightTerminationProtocol) {
 		this.flightTerminationProtocol = flightTerminationProtocol;
 		this.APCState = apcState;
 		this.EngineBrake = engineBrake;
-		this.Brakes = brakes;
+		this.Handbrake = handbrake;
 		this.VortexAnchor = anchor;
 		this.Stabilizers = stabilizers;
 		this.SimpleMode = simpleMode;

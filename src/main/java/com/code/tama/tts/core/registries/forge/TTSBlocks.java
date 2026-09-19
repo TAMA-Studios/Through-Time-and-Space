@@ -1,10 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
-import java.util.List;
-
 import com.code.tama.tts.core.blocks.EmptyShellBlock;
 import com.code.tama.tts.core.blocks.HardLightBlock;
 import com.code.tama.tts.core.blocks.Panels.*;
@@ -18,6 +14,7 @@ import com.code.tama.tts.core.blocks.monitor.MonitorBlock;
 import com.code.tama.tts.core.blocks.monitor.MonitorPanel;
 import com.code.tama.tts.core.blocks.subsystems.DematerializationCircuitCoreBlock;
 import com.code.tama.tts.core.blocks.subsystems.NetherReactorCoreBlock;
+import com.code.tama.tts.core.blocks.subsystems.OxygenatorCoreBlock;
 import com.code.tama.tts.core.blocks.tardis.*;
 import com.code.tama.tts.core.blocks.tardis.DoorBlock;
 import com.code.tama.tts.core.items.blocks.CompressedMultiblockItem;
@@ -38,7 +35,6 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -52,6 +48,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+
+import java.util.List;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings({"unused", "deprecation"})
 public class TTSBlocks {
@@ -572,9 +572,13 @@ public class TTSBlocks {
 			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
-	public static final BlockEntry<ExteriorTopBlock> EXTERIOR_TOP = Builder("exterior_top",
-			prop -> new ExteriorTopBlock(prop)).properties(p -> p.noOcclusion().strength(999f)).airState()
-			.item(ExteriorItem::new).build().register();
+	public static final BlockEntry<DecoyExteriorBlock> DECOY_EXTERIOR_BLOCK = Builder("decoy_exterior_block",
+			prop -> new DecoyExteriorBlock(prop, TTSTileEntities.DECOY_EXTERIOR_TILE))
+			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
+
+	@MainTab
+	public static final BlockEntry<ExteriorTopBlock> EXTERIOR_TOP = Builder("exterior_top", ExteriorTopBlock::new)
+			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
 
 	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)
@@ -726,9 +730,8 @@ public class TTSBlocks {
 			.simpleItem().register();
 
 	@MainTab
-	public static final BlockEntry<DematerializationCircuitCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder(
-			"oxygenator_circuit_core", DematerializationCircuitCoreBlock::new).stateWithExistingModel("oxygenator")
-			.simpleItem().register();
+	public static final BlockEntry<OxygenatorCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder("oxygenator_circuit_core",
+			OxygenatorCoreBlock::new).stateWithExistingModel("oxygenator").simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",

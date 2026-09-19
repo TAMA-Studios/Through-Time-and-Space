@@ -1,8 +1,6 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.registries.forge;
 
-import static com.code.tama.tts.TTSMod.registrate;
-
 import com.code.tama.tts.client.renderers.monitors.CRTMonitorRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
@@ -15,6 +13,7 @@ import com.code.tama.tts.client.renderers.tiles.console.TakomakConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.*;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.FabricatorRenderer;
+import com.code.tama.tts.client.renderers.tiles.tardis.DecoyTardisExteriorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.TardisExteriorRenderer;
@@ -32,9 +31,10 @@ import com.code.tama.tts.core.tileentities.monitors.MonitorTile;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import static com.code.tama.tts.TTSMod.registrate;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
@@ -76,6 +76,10 @@ public class TTSTileEntities {
 	public static final BlockEntityEntry<ExteriorTile> EXTERIOR_TILE = registrate()
 			.blockEntity("exterior_tile", ExteriorTile::new).validBlocks(TTSBlocks.EXTERIOR_BLOCK)
 			.renderer(() -> TardisExteriorRenderer::new).register();
+
+	public static final BlockEntityEntry<DecoyExteriorTile> DECOY_EXTERIOR_TILE = registrate()
+			.blockEntity("decoy_exterior_tile", DecoyExteriorTile::new).validBlocks(TTSBlocks.DECOY_EXTERIOR_BLOCK)
+			.renderer(() -> DecoyTardisExteriorRenderer::new).register();
 
 	public static final BlockEntityEntry<HartnellRotorTile> HARTNELL_ROTOR = registrate()
 			.blockEntity("hartnell_rotor", HartnellRotorTile::new).validBlocks(TTSBlocks.HARTNELL_ROTOR)

@@ -3,27 +3,23 @@ package com.code.tama.tts.client.renderers.tiles.tardis;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
-import com.code.tama.triggerapi.boti.BOTIUtils;
-import com.code.tama.triggerapi.helpers.rendering.StencilUtils;
 import com.code.tama.triggerapi.helpers.world.BlockUtils;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
-import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.core.blocks.tardis.DecoyExteriorBlock;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
-import com.code.tama.tts.core.tileentities.ExteriorTile;
+import com.code.tama.tts.core.tileentities.DecoyExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEntityRenderer<T> {
+public class DecoyTardisExteriorRenderer<T extends DecoyExteriorTile> implements BlockEntityRenderer<T> {
 
 	// Door animation constants -- tweak these to taste
 	private static final float DOOR_MAX = 5.625f; // counter range 0 → this
@@ -32,10 +28,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 	// half a second)
 	private static final float DOOR_MAX_DEG = 75f; // max rotation in degrees when fully open
 
-	public TardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
+	public DecoyTardisExteriorRenderer(BlockEntityRendererProvider.Context context) {
 	}
 
-	public TardisExteriorRenderer() {
+	public DecoyTardisExteriorRenderer() {
 	}
 
 	/**
@@ -56,7 +52,6 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 				&& exteriorTile.getLevel().getBlockState(exteriorTile.getBlockPos()).getBlock().equals(Blocks.AIR))
 			return;
 
-		float transparency = exteriorTile.getTransparency();
 		ExteriorAnimationData data = exteriorTile.exteriorAnimationData;
 
 		// ---- Tick door counters once per frame ----
@@ -92,7 +87,7 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		stack.translate(0.5, offs + 1.5, 0.5);
 
 		if (exteriorTile.getLevel() != null) {
-			if (exteriorTile.getBlockState().getBlock() instanceof ExteriorBlock)
+			if (exteriorTile.getBlockState().getBlock() instanceof DecoyExteriorBlock)
 				stack.mulPose(exteriorTile.getBlockState().getValue(ExteriorBlock.FACING).getOpposite().getRotation());
 
 			// stack.mulPose(exteriorTile.getFacing().getRotation());
@@ -113,94 +108,25 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 		parsed.getPart("LeftDoor").yRot = (float) Math.toRadians(easing(data.FrameLeft / DOOR_MAX) * maxDeg);
 		parsed.getPart("RightDoor").yRot = (float) Math.toRadians(-easing(data.FrameRight / DOOR_MAX) * maxDeg);
 
-		ModelPart boti = parsed.getPart("BOTI").modelPart;
-		ModelPart partialBOTI = parsed.getPart("PartialBOTI").modelPart;
-
-		if (false) { // TODO: CONFIG!
-			HalfBOTIRenderer.render(exteriorTile.getLevel(), exteriorTile, stack, bufferSource, partialTicks,
-					combinedLight, combinedOverlay);
-		} else {
-			stack.pushPose();
-			stack.translate(0, 0, 0.5);
-
-			exteriorTile.getFBOContainer().Render(stack,
-
-					// STENCIL PASS -- mark portal opening pixels, no color output
-					(pose, botiSource) -> {
-						pose.pushPose();
-						pose.translate(0, 1.5, 0);
-
-						pose.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
-
-						boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
-								OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-						if (true) // TODO: CONFIG FOR PARTIAL BOTI
-						{
-							partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
-									OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-						}
-						pose.translate(0, -1.5, 0);
-						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
-						botiSource.endBatch();
-						pose.popPose();
-					},
-
-					// FRAME PASS -- unused, sky handled in scene pass
-					(pose, buffer) -> {
-					},
-
-					// SCENE PASS -- sky > BOTI blocks > door overlay (front-most)
-					(pose, botiSource) -> {
-						pose.pushPose();
-						pose.translate(0, 0.5, -0.5);
-						// boti.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
-						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-						// if (true) // TODO: CONFIG FOR PARTIAL BOTI`
-						// partialBOTI.render(stack, botiSource.getBuffer(RenderType.solid()), 0xf000f0,
-						// OverlayTexture.NO_OVERLAY, 0, 0, 0, 0);
-						// botiSource.endBatch();
-
-						StencilUtils.drawColoredFrame(pose, 2, 4, exteriorTile.SkyColor);
-						botiSource.endBatch();
-						pose.popPose();
-
-						pose.pushPose();
-						pose.translate(-0.5, 1.4, -0.62);
-
-						pose.mulPose(Axis.XP.rotationDegrees(180));
-
-						BOTIUtils.RenderScene(pose, exteriorTile);
-						botiSource.endBatch();
-						pose.popPose();
-
-						renderDoors(exteriorTile, stack, bufferSource, combinedLight, pose, parsed, ext, transparency);
-						((MultiBufferSource.BufferSource) bufferSource).endBatch();
-					});
-
-			// Flush again after FBOHelper returns -- anything queued inside the lambdas
-			// via bufferSource lands on main while we know mainTarget is correctly bound.
-			((MultiBufferSource.BufferSource) bufferSource).endBatch();
-
-			stack.popPose();
-		}
+		renderDoors(exteriorTile, stack, bufferSource, combinedLight, stack, parsed, ext, 1.0f);
 
 		stack.translate(0, 1.5, 0);
 
 		stack.scale(parsed.modelScale, parsed.modelScale, parsed.modelScale);
 		parsed.getPart("baseRoot").render(stack,
 				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getTexture())), combinedLight,
-				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		parsed.getPart("baseRoot").render(stack,
 				bufferSource.getBuffer(ext.getRenderType(exteriorTile.Model.getLightMap())), 0xf000f0,
-				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, transparency);
+				OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 
 		((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
 		stack.popPose();
 	}
 
-	private static <T extends ExteriorTile> void renderDoors(@NotNull T exteriorTile, @NotNull PoseStack stack,
+	private static <T extends DecoyExteriorTile> void renderDoors(@NotNull T exteriorTile, @NotNull PoseStack stack,
 			@NotNull MultiBufferSource bufferSource, int combinedLight, PoseStack pose, JavaJSONModel parsed,
 			AbstractJSONRenderer ext, float transparency) {
 		pose.pushPose();

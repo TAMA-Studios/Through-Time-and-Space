@@ -1,4 +1,4 @@
-// 1.20.1	2026-09-17T01:09:23.911610353	Registrate Provider for tts [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2026-09-18T12:17:56.24766999	Registrate Provider for tts [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 2fd4f4c8a0bde3fd2db81272eb9983e7a5a7bb34 assets/tts/blockstates/ars_panel.json
 3dff9e1ec59415779195d2abfa9f07bc17b428a1 assets/tts/blockstates/boti_window.json
 fdded51e46912304ce7618ce85c3b7c65d30b5d3 assets/tts/blockstates/brushed_steel.json
@@ -33,6 +33,7 @@ aa2de7c79d8a6a4d0ccf17954b0ecf83589083c8 assets/tts/blockstates/decoration/indus
 c2884cd17baf859a145e14c98510239c9980646c assets/tts/blockstates/decoration/structural_steel_brushed/structural_steel.json
 6ce39c4b7419328ac79803009ca2875f06e8fab2 assets/tts/blockstates/decoration/structural_steel_brushed/structural_steel_rusted.json
 6f26453401592509040efed05cc524150f54a1b9 assets/tts/blockstates/decoration/structural_steel_brushed/structural_steel_weathered.json
+ab09260e42a069a52230057a6d00af22fda23150 assets/tts/blockstates/decoy_exterior_block.json
 e25d00ce03a74ab5ab248243a0ffb356306b8f87 assets/tts/blockstates/dematerialization_circuit_core.json
 16ae5c3b2dc94000101110634a2a85faf2cf5141 assets/tts/blockstates/destination_info_panel.json
 486dc0dce97e44bb29040f042d52d7c042b4c263 assets/tts/blockstates/dev_terminal.json
@@ -202,8 +203,8 @@ dee8e85598aabb718b3619bed4b3b02fcd866a26 assets/tts/blockstates/void_block.json
 455730050436c19ddabf62e9534e0151d52dda9e assets/tts/blockstates/zeiton/raw_zeiton_block.json
 62308c5762fa872982e68820a4a5b0ca7626b44d assets/tts/blockstates/zeiton/zeiton_block.json
 47388a64cb2ab580728e8922bf1a55f25b24b95f assets/tts/blockstates/zeiton/zeiton_ore.json
-66f97d1b647b9fc865f3dc49fd1c16188296b5fa assets/tts/lang/en_ud.json
-a58db8da57874d3c9a749bf34d01c7c3e47768b0 assets/tts/lang/en_us.json
+d66fb621f97c5ce26bd592168b188ec92220d4d5 assets/tts/lang/en_ud.json
+718b0b26128a51462c2f7417cec2a060f32342c0 assets/tts/lang/en_us.json
 36dfa842f0218ad668d3dc950f936b6fdda356e4 assets/tts/models/block/brushed_steel.json
 110bf9546098bbc0e53b692d13dd341dc21be474 assets/tts/models/block/carbon_steel.json
 5f47d47ea70dacc27c90ae3c9d41ac3c97417ae6 assets/tts/models/block/carbon_steel_.json
@@ -277,6 +278,7 @@ a7ba8cb258989b039ef82c12595c1fda9573b2fc assets/tts/models/dimensional/gallifrey
 3dd31913ccb7d6665a748456d06fc27f9939c953 assets/tts/models/dimensional/moon/moon_rock.json
 5ab2572bdf9873df1b8b082c4a06705535647bab assets/tts/models/dimensional/varos/rocks.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/gadgets/ars_tablet.json
+76f5ea9a7af8d4948343fc37b9ec3db63bee73ce assets/tts/models/gadgets/holo_glasses.json
 f33a33998e429302c326bb0e65be26d9bb6478f8 assets/tts/models/gadgets/twine_spool.json
 67bb0a893264cff5c4d62c7978f729d05e39a4f4 assets/tts/models/gadgets/vortex_manipulator.json
 f6286ce6b35dc344ab78b03d09b6226d2b6a9da9 assets/tts/models/item/advanced_control_circuit.json
@@ -359,6 +361,7 @@ ffa72a47163ae2f4d9ae04d385e310e9a587a889 assets/tts/models/item/decoration/sov/i
 41af6d43da33fb90c05a36066769e35f06b59d72 assets/tts/models/item/decoration/structural_steel_brushed/structural_steel_weathered.json
 eb7e60d71ccf1713accacea2af0ecacf352e6add assets/tts/models/item/decoration/tube_runner_light.json
 688af519842eac99b92801962e5d18de03b12ca7 assets/tts/models/item/decoration/tube_wall.json
+bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/decoy_exterior_block.json
 c09690f95908dcf2dbd2255702b77aa94ef82035 assets/tts/models/item/dematerialization_circuit_core.json
 eb0b3d6829ea880d56ad22e67fe8cd0c28a7c026 assets/tts/models/item/destination_info_panel.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dev_terminal.json
@@ -381,7 +384,7 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/gall
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/gallifreyan/gallifreyan_sand.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/moon/moon_rock.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/dimensional/varos/rocks.json
-a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/dimensional_dams.json
+f342143c8e83d1d67788e1cc408b9cf18b84f60a assets/tts/models/item/dimensional_dams.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/door_block.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/dynamorphic_controller_core.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/dynamorphic_generator_stack.json
@@ -392,13 +395,12 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/exterior_top.jso
 e854afe7aeea8c02c22dad312a0d791f462430e5 assets/tts/models/item/fault_locator.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/fine_sandpaper.json
 fc26f17246f46bffeaca15e2f15bc7345dd5ea12 assets/tts/models/item/fragment_links.json
-a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/growth_cake.json
+583f2221032e6c1ec50cf2293dce74cb226db32f assets/tts/models/item/growth_cake.json
 d7b13cdf429c4c586b1d1450374a2777f967b1c3 assets/tts/models/item/hammer.json
 61fbaf3901b33d54b7299b8f8fc081d56ebe653d assets/tts/models/item/hard_light.json
 70ed2c4107d93f7af92240d7ab1fb08b70e8b7d8 assets/tts/models/item/hartnell_door.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/hartnell_door_placeholder.json
 de41222254a66349de43a6bdeccc3557f40d2da0 assets/tts/models/item/hartnell_rotor.json
-a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/holo_glasses.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/hudolin_console_block.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/huon_bottle.json
 9826b69ed517ad2d9ce8e01277c7cf38f84917d6 assets/tts/models/item/interior_rock.json
@@ -523,7 +525,7 @@ bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/roundel/warped_p
 b443412e3addad4cfcaf17ae4958b1e9a05f67e6 assets/tts/models/item/sky_block.json
 269b8d2e66d302e182c5f6e347d773b471c6f981 assets/tts/models/item/sonic_configurator.json
 99f27f143a6c1baf9e01a11ec312d24639309473 assets/tts/models/item/steel_ingot.json
-a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/structural_beams.json
+71042bcd6f1bd79ef48f89713940ba82b0d7331a assets/tts/models/item/structural_beams.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/takomak_console_block.json
 bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f assets/tts/models/item/tardis_coral.json
 a163c9ce1e63e428f3fa804b66e491b455f18540 assets/tts/models/item/tardis_energy_port.json
@@ -728,6 +730,7 @@ f63f3c8835929aa50d28266fd3d4b209510d2711 data/tts/loot_tables/blocks/decoration/
 1dec6fe4ab2909ebd3915ae6a1bbbd15ea5e16f1 data/tts/loot_tables/blocks/decoration/structural_steel_brushed/structural_steel_weathered.json
 103e220cfd39ee9cc4c11beef845419398112a24 data/tts/loot_tables/blocks/decoration/tube_runner_light.json
 f868615b8f9c861f88b3fd59f06ca690d9104b76 data/tts/loot_tables/blocks/decoration/tube_wall.json
+ac03ec0710fc68a7b0dd9ff26d8ad637d3acfda0 data/tts/loot_tables/blocks/decoy_exterior_block.json
 bbf220876144af0411c8829c054d19f09999ee7e data/tts/loot_tables/blocks/dematerialization_circuit_core.json
 e624c38bffcd44f4e85e1a768a45b87d69e391b2 data/tts/loot_tables/blocks/destination_info_panel.json
 38c1af9150c4cb8dbabe1cf30ee626a056764261 data/tts/loot_tables/blocks/dev_terminal.json
