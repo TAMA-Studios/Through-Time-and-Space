@@ -15,6 +15,7 @@ import com.code.tama.tts.client.renderers.tiles.console.TakomakConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.decoration.*;
 import com.code.tama.tts.client.renderers.tiles.gadgets.CompressedMultiblockRenderer;
 import com.code.tama.tts.client.renderers.tiles.gadgets.FabricatorRenderer;
+import com.code.tama.tts.client.renderers.tiles.subsystem.DematCircuitRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.DecoyTardisExteriorRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.EmptyArtificialShellRenderer;
 import com.code.tama.tts.client.renderers.tiles.tardis.InteriorDoorRenderer;
@@ -30,6 +31,7 @@ import com.code.tama.tts.core.tileentities.consoles.TakomakConsoleTile;
 import com.code.tama.tts.core.tileentities.monitors.CRTMonitorTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorPanelTile;
 import com.code.tama.tts.core.tileentities.monitors.MonitorTile;
+import com.code.tama.tts.core.tileentities.multiblock.*;
 import com.tterrag.registrate.builders.BlockEntityBuilder;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -39,6 +41,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 @SuppressWarnings("unchecked")
 public class TTSTileEntities {
+	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
+			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
+
+	public static final BlockEntityEntry<AverageMultiblockSlaveTile> MULTIBLOCK_SLAVE_TILE = registrate()
+			.blockEntity("multiblock_slave_tile", AverageMultiblockSlaveTile::new)
+			.validBlocks(TTSBlocks.MULTIBLOCK_SLAVE).register();
 
 	public static final BlockEntityEntry<ChameleonCircuitPanelTileEntity> CHAMELEON_CIRCUIT_PANEL = registrate()
 			.blockEntity("chameleon_circuit_panel", ChameleonCircuitPanelTileEntity::new)
@@ -63,8 +71,25 @@ public class TTSTileEntities {
 			.blockEntity("boti_window", BotiWindowTile::new).validBlocks(TTSBlocks.BOTI_WINDOW)
 			.renderer(() -> context -> new BotiWindowRenderer()).register();
 
-	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
-			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
+	public static final BlockEntityEntry<DematCircuitBlockEntity> DEMAT_CIRCUIT = registrate()
+			.blockEntity("demat_circuit", DematCircuitBlockEntity::new)
+			.validBlocks(TTSBlocks.DEMATERIALIZATION_CIRCUIT_CORE).renderer(() -> DematCircuitRenderer::new).register();
+
+	public static final BlockEntityEntry<DynamorphicControllerBlockEntity> DYNAMO_CIRCUIT = registrate()
+			.blockEntity("demat_circuit", DynamorphicControllerBlockEntity::new)
+			.validBlocks(TTSBlocks.DYNAMORPHIC_CONTROLLER_CORE).register();
+
+	public static final BlockEntityEntry<DynamorphicGeneratorBlockEntity> DYNAMO_GEN = registrate()
+			.blockEntity("demat_circuit", DynamorphicGeneratorBlockEntity::new)
+			.validBlocks(TTSBlocks.DYNAMORPHIC_GENERATOR_STACK).register();
+
+	public static final BlockEntityEntry<OxygenatorCircuitBlockEntity> OXYGENATOR_CIRCUIT = registrate()
+			.blockEntity("demat_circuit", OxygenatorCircuitBlockEntity::new)
+			.validBlocks(TTSBlocks.OXYGENATOR_CIRCUIT_CORE).register();
+
+	public static final BlockEntityEntry<NetherReactorCircuitBlockEntity> NETHER_REACTOR_CIRCUIT = registrate()
+			.blockEntity("nether_reactor_circuit", NetherReactorCircuitBlockEntity::new)
+			.validBlocks(TTSBlocks.NETHER_REACTOR_CORE).register();
 
 	public static final BlockEntityEntry<FaultLocatorTile> FAULT_LOCATOR = registrate()
 			.blockEntity("fault_locator", FaultLocatorTile::new).validBlocks(TTSBlocks.FAULT_LOCATOR)

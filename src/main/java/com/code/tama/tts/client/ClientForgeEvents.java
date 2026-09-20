@@ -101,11 +101,11 @@ public class ClientForgeEvents {
 				if (ambient == null)
 					return;
 
-				if (ThreadLocalRandom.current().nextFloat() >= ambient.probability())
-					return;
+				// if (ThreadLocalRandom.current().nextFloat() >= ambient.probability())
+				// return;
 
 				List<Vec3> valid_spawn_sections = tardis.getARSGrids().stream()
-						.map(arsGrid -> arsGrid.getPos().getCenter().getCenter()).toList();
+						.map(arsGrid -> arsGrid.getPos().getOrigin().getCenter()).toList();
 				Vec3 spawnPos = getRandomInteriorPosition(valid_spawn_sections);
 
 				if (!event.player.level().getBlockState(BlockPos.containing(spawnPos)).getBlock().equals(Blocks.AIR))
@@ -117,7 +117,10 @@ public class ClientForgeEvents {
 
 	public static Vec3 getRandomInteriorPosition(List<Vec3> valid_sectors) {
 		Vec3 player = Minecraft.getInstance().player.position();
-		List<Vec3> valid = valid_sectors.stream().filter(v -> v.closerThan(player, 48)).toList();
+		List<Vec3> valid = new java.util.ArrayList<>(
+				valid_sectors.stream().filter(v -> v.closerThan(player, 48)).toList());
+		if (valid.isEmpty())
+			valid.add(Vec3.ZERO);
 		return valid.get(ThreadLocalRandom.current().nextInt(valid.size())).add(
 				ThreadLocalRandom.current().nextDouble(48) - 24, ThreadLocalRandom.current().nextDouble(48) - 24,
 				ThreadLocalRandom.current().nextDouble(48) - 24);

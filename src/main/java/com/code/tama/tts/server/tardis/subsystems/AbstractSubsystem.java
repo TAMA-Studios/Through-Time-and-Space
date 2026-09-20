@@ -2,20 +2,18 @@
 package com.code.tama.tts.server.tardis.subsystems;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import com.code.tama.tts.core.blocks.tardis.FragmentLinksBlock;
+import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.lwjgl.system.MemoryUtil;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -23,7 +21,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag> {
+public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>, ImASubsystem {
 	boolean Activated = false;
 	BlockPos blockPos = BlockPos.ZERO;
 
@@ -33,42 +31,29 @@ public abstract class AbstractSubsystem implements INBTSerializable<CompoundTag>
 	 */
 	public abstract Map<BlockPos, BlockState> BlockMap();
 
-	public boolean IsValid(Level level, BlockPos blockPos) {
-		AtomicReference<Boolean> IsValid = new AtomicReference<>(true);
-		for (Direction direction : Direction.values()) {
-			if (direction.equals(Direction.UP) || direction.equals(Direction.DOWN))
-				continue;
-			this.BlockMap().forEach((pos, state) -> {
-				if (!IsValid.get())
-					return;
-				BlockState state1 = level.getBlockState(pos.offset(blockPos));
-				if (!state1.getBlock().defaultBlockState().equals(state)
-						&& !(state1.getBlock() instanceof FragmentLinksBlock && state.getBlock().equals(Blocks.AIR))) {
-					IsValid.set(false);
-					return;
-				}
-			});
-		}
-		return IsValid.get();
-	}
-
-	/** When the subsystem is activated * */
-	public abstract void OnActivate(Level level, BlockPos blockPos);
-
-	/** When the subsystem is de-activated * */
-	public abstract void OnDeActivate(Level level, BlockPos blockPos);
-
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		this.Activated = nbt.getBoolean("active");
 		this.blockPos = NbtUtils.readBlockPos(nbt.getCompound("pos"));
 	}
 
-	public boolean isActivated(Level level) {
-		return this.Activated && this.IsValid(level, this.blockPos);
+	public boolean IsValid(Level level, BlockPos pos) {
+		long nopeAddr = MemoryUtil.nmemAlloc(1); // Lambda requires "Final or effectively final" and I aint making an
+													// atomic bool
+		MemoryUtil.memPutByte(nopeAddr, (byte) 0);
+
+		this.BlockMap().forEach((pos1, state) -> {
+			BlockPos worldPos = this.getBlockPos().offset(pos1);
+			BlockState one = level.getBlockState(worldPos).getBlock().defaultBlockState();
+			BlockState two = state.getBlock().defaultBlockState();
+			if (!one.equals(two) && !one.equals(TTSBlocks.FRAGMENT_LINKS.getDefaultState())) {
+				MemoryUtil.memPutByte(nopeAddr, (byte) 0x1);
+			}
+		});
+		return (!MemoryUtil.memGetBoolean(nopeAddr));
 	}
 
-	public abstract String name();
+	// public abstract String name();
 
 	@Override
 	public CompoundTag serializeNBT() {

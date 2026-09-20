@@ -354,9 +354,10 @@ public class TARDISTerminalScreen extends Screen {
 				y + 12, COL_TEXT_DIM);
 		line(gfx, "SPARKING: " + yesNo(tardis.GetData().isSparking()) + "   OPERATOR: " + yesNo(tardis.isOperator()), x,
 				y + 24, COL_TEXT_DIM);
-		line(gfx, "DEMAT. CIRCUIT: " + yesNo(
-				tardis.GetData().getSubSystemsData().getDematerializationCircuit().isActivated(tardis.GetLevel())), x,
-				y + 36, COL_TEXT_DIM);
+		line(gfx,
+				"DEMAT. CIRCUIT: "
+						+ yesNo(tardis.GetData().getSubSystemsData().getDematerializationCircuit().isActivated()),
+				x, y + 36, COL_TEXT_DIM);
 
 		line(gfx,
 				String.format("LIGHT: %.2f   GRAVITY: %.2f   OXYGEN: %.2f   HUM ID: %d",

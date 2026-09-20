@@ -4,6 +4,7 @@ package com.code.tama.tts.core.tileentities;
 import static com.code.tama.tts.TTSMod.MODID;
 import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.GetTARDISCapSupplier;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPa
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
+import com.code.tama.tts.core.tileentities.multiblock.ImAMultiblock;
 import com.code.tama.tts.core.worlds.TStemCreation;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
@@ -63,7 +65,7 @@ import com.code.tama.triggerapi.boti.teleporting.SeamlessTeleport;
 import com.code.tama.triggerapi.dimensions.DimensionAPI;
 import com.code.tama.triggerapi.universal.UniversalServerOnly;
 
-public class ExteriorTile extends AbstractPortalTile {
+public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 	public ExteriorState state = ExteriorState.LANDED;
 
 	private ResourceKey<Level> INTERIOR_DIMENSION;
@@ -328,6 +330,12 @@ public class ExteriorTile extends AbstractPortalTile {
 	}
 
 	@Override
+	public void setRemoved() {
+		this.removeThis(this.level, this.getBlockPos());
+		super.setRemoved();
+	}
+
+	@Override
 	public Packet<ClientGamePacketListener> getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
@@ -569,4 +577,13 @@ public class ExteriorTile extends AbstractPortalTile {
 		this.ShouldMakeDimOnNextTick = false;
 	}
 
+	@Override
+	public void onSlaveRemoved() {
+		this.level.removeBlockEntity(this.getBlockPos());
+	}
+
+	@Override
+	public List<BlockPos> getPositions() {
+		return List.of(BlockPos.ZERO.above());
+	}
 }

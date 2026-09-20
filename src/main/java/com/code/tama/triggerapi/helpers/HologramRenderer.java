@@ -62,7 +62,8 @@ public class HologramRenderer {
 		// IMPORTANT: VBO already contains world-space vertices.
 		// We translate by negative camera position once.
 		poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
-
+		// poseStack.scale(0.9999f, 0.9999f, 0.9999f);
+		// poseStack.translate(-0.0013, 0, 0.0005);
 		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 		RenderSystem.setShaderColor(0.5f, 0.5f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
@@ -94,6 +95,9 @@ public class HologramRenderer {
 
 			// Build vertices in WORLD SPACE
 			stack.translate(pos.getX(), pos.getY(), pos.getZ());
+
+			stack.scale(0.9999f, 0.9999f, 0.9999f);
+			stack.translate(-0.0013, 0, 0.0005);
 
 			mc.getBlockRenderer().renderBatched(container.getState(), pos, mc.level, stack, builder, false,
 					mc.level.random);

@@ -4,7 +4,7 @@ package com.code.tama.tts.core.blocks.tardis;
 import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.DOORS;
 import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
-import com.code.tama.tts.core.registries.forge.TTSBlocks;
+import com.code.tama.tts.core.tileentities.ExteriorTile;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,18 +36,20 @@ public class ExteriorTopBlock extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean idfk) {
-		if (!block.equals(TTSBlocks.EXTERIOR_BLOCK.get()))
-			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-		super.neighborChanged(state, level, pos, block, pos2, idfk);
+	public void onRemove(BlockState p_60515_, Level level, BlockPos pos, BlockState p_60518_, boolean p_60519_) {
+		if (level.isClientSide)
+			return;
+		if (level.getBlockEntity(pos.below()) instanceof ExteriorTile e)
+			e.removeThis(level, pos.below());
+		super.onRemove(p_60515_, level, pos, p_60518_, p_60519_);
 	}
 
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
 			BlockHitResult whoTfKnows) {
-		if (level.getBlockState(pos.below()).getBlock() instanceof ExteriorBlock block) {
+		if (level.getBlockState(pos.below()).getBlock() instanceof ExteriorBlock block)
 			block.use(state, level, pos.below(), player, hand, whoTfKnows);
-		}
+
 		return super.use(state, level, pos, player, hand, whoTfKnows);
 	}
 }

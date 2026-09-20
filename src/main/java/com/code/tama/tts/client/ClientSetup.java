@@ -128,6 +128,8 @@ public class ClientSetup {
 		event.registerLayerDefinition(RespiratorModel.LAYER_LOCATION, RespiratorModel::createBodyLayer);
 		event.registerLayerDefinition(HartnellRotorModel.LAYER_LOCATION, HartnellRotorModel::createBodyLayer);
 		event.registerLayerDefinition(CoralConsoleTopper.LAYER_LOCATION, CoralConsoleTopper::createBodyLayer);
+		event.registerLayerDefinition(DematCircuitSubsystemModel.LAYER_LOCATION,
+				DematCircuitSubsystemModel::createBodyLayer);
 		event.registerLayerDefinition(VortexCannon.LAYER_LOCATION, VortexCannon::createBodyLayer);
 		event.registerLayerDefinition(ColinRichmondInteriorDoors.LAYER_LOCATION,
 				ColinRichmondInteriorDoors::createBodyLayer);

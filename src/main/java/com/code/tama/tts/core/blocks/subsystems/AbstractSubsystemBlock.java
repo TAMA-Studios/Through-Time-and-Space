@@ -1,7 +1,9 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.subsystems;
 
+import com.code.tama.tts.core.tileentities.multiblock.AbstractCircuitBlockEntity;
 import com.code.tama.tts.server.tardis.subsystems.AbstractSubsystem;
+import com.code.tama.tts.server.tardis.subsystems.ImASubsystem;
 import lombok.Getter;
 
 import net.minecraft.core.BlockPos;
@@ -20,7 +22,10 @@ public abstract class AbstractSubsystemBlock extends Block {
 	}
 
 	public void OnActivate(Level level, BlockPos blockPos) {
-		this.getSubsystem().OnActivate(level, blockPos);
+		if (level.getBlockEntity(blockPos) instanceof ImASubsystem subsystem) {
+			subsystem.OnActivate(level, blockPos);
+		} else
+			subsystem.OnActivate(level, blockPos);
 	}
 
 	public void OnDeActivate(Level level, BlockPos blockPos) {
@@ -35,10 +40,12 @@ public abstract class AbstractSubsystemBlock extends Block {
 	 *            verifying that it in indeed a valid multiblock structure
 	 */
 	public void OnIntegration(Level level, BlockPos blockPos) {
-		this.subsystem.setBlockPos(blockPos);
-		if (this.subsystem.IsValid(level, blockPos)) {
-			level.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f);
-			this.OnActivate(level, blockPos);
+		if (level.getBlockEntity(blockPos) instanceof AbstractCircuitBlockEntity circuit) {
+			circuit.getSubsystem().setBlockPos(blockPos);
+			if (circuit.getSubsystem().IsValid(level, blockPos)) {
+				level.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.BLOCKS, 1f, 1f);
+				this.OnActivate(level, blockPos);
+			}
 		}
 	}
 }

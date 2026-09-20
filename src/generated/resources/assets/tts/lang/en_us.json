@@ -118,6 +118,7 @@
   "block.tts.matrix_casing": "matrix_casing",
   "block.tts.monitor_block": "monitor_block",
   "block.tts.monitor_panel": "monitor_panel",
+  "block.tts.multiblock_slave": "Multiblock Slave",
   "block.tts.ness_console_block": "ness_console_block",
   "block.tts.nether_reactor_core": "nether_reactor_core",
   "block.tts.oxygenator_circuit_core": "oxygenator_circuit_core",

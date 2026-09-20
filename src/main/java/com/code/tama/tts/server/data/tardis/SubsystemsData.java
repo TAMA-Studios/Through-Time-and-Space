@@ -52,7 +52,7 @@ public class SubsystemsData {
 	public int activeGeneratorStacks() {
 		int a = 0;
 		for (DynamorphicGeneratorStack dynamorphicGeneratorStack : DynamorphicGeneratorStacks) {
-			if (dynamorphicGeneratorStack.isActivated(tardis.GetLevel()))
+			if (dynamorphicGeneratorStack.isActivated())
 				a++;
 		}
 		return a;

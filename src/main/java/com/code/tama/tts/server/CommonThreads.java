@@ -10,7 +10,7 @@ public class CommonThreads {
 	public static Thread TARDISTickThread(ITARDISLevel cap) {
 		return ThreadUtils.NewThread((tardis) -> {
 			if (tardis.GetLevel().getGameTime() % 20 == 1)
-				if (tardis.GetData().getSubSystemsData().DynamorphicController.isActivated(tardis.GetLevel())
+				if (tardis.GetData().getSubSystemsData().DynamorphicController.isActivated()
 						&& !tardis.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty()
 						&& tardis.GetData().isRefueling() && !tardis.GetFlightData().isInFlight()) {
 					tardis.getEnergy().receivePower(EnergyMode.ARTRON, 1, false);

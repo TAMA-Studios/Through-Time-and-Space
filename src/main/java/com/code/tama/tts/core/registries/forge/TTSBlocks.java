@@ -16,9 +16,7 @@ import com.code.tama.tts.core.blocks.gadgets.*;
 import com.code.tama.tts.core.blocks.monitor.CRTMonitorBlock;
 import com.code.tama.tts.core.blocks.monitor.MonitorBlock;
 import com.code.tama.tts.core.blocks.monitor.MonitorPanel;
-import com.code.tama.tts.core.blocks.subsystems.DematerializationCircuitCoreBlock;
-import com.code.tama.tts.core.blocks.subsystems.NetherReactorCoreBlock;
-import com.code.tama.tts.core.blocks.subsystems.OxygenatorCoreBlock;
+import com.code.tama.tts.core.blocks.subsystems.*;
 import com.code.tama.tts.core.blocks.tardis.*;
 import com.code.tama.tts.core.blocks.tardis.DoorBlock;
 import com.code.tama.tts.core.items.blocks.CompressedMultiblockItem;
@@ -625,6 +623,9 @@ public class TTSBlocks {
 	public static final BlockEntry<ChameleonCircuitPanel> CHAMELEON_CIRCUIT_BLOCK = Builder("chameleon_circuit_panel",
 			p -> new ChameleonCircuitPanel(p, TTSTileEntities.CHAMELEON_CIRCUIT_PANEL)).controlPanelState()
 			.properties(BlockBehaviour.Properties::noOcclusion).register();
+
+	public static final BlockEntry<MultiblockSlaveBlock> MULTIBLOCK_SLAVE = Builder("multiblock_slave",
+			MultiblockSlaveBlock::new).airState().properties(BlockBehaviour.Properties::noOcclusion).register();
 
 	@MainTab
 	public static final BlockEntry<TARDISEnergyPort> TARDIS_ENERGY_PORT = Builder("tardis_energy_port",

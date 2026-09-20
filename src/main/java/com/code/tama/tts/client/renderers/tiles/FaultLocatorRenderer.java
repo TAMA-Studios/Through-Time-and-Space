@@ -36,7 +36,7 @@ public class FaultLocatorRenderer implements BlockEntityRenderer<FaultLocatorTil
 			// Do all of this ("cap" is the TARDIS level capability)
 			poseStack.pushPose();
 			List<String> CODES = new ArrayList<>();
-			if (!cap.GetData().getSubSystemsData().DematerializationCircuit.isActivated(cap.GetLevel()))
+			if (!cap.GetData().getSubSystemsData().DematerializationCircuit.isActivated())
 				CODES.add("0xFF");
 
 			int i = 0;

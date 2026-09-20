@@ -1,4 +1,4 @@
-// 1.20.1	2026-09-18T12:17:56.24766999	Registrate Provider for tts [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.20.1	2026-09-19T20:41:56.040071656	Registrate Provider for tts [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 2fd4f4c8a0bde3fd2db81272eb9983e7a5a7bb34 assets/tts/blockstates/ars_panel.json
 3dff9e1ec59415779195d2abfa9f07bc17b428a1 assets/tts/blockstates/boti_window.json
 fdded51e46912304ce7618ce85c3b7c65d30b5d3 assets/tts/blockstates/brushed_steel.json
@@ -76,6 +76,7 @@ d192774be46ad9b5c4b581d86083dd1199b06a80 assets/tts/blockstates/light_panel.json
 7264c9af852ba2ab9adae29e76e5cecc4b45edc7 assets/tts/blockstates/matrix_casing.json
 8022cb1ee88927bdcbb52aaa470ecdb8a42d1659 assets/tts/blockstates/monitor_block.json
 c37fec4d930b0c46362d542570a288211efb9a04 assets/tts/blockstates/monitor_panel.json
+3dff9e1ec59415779195d2abfa9f07bc17b428a1 assets/tts/blockstates/multiblock_slave.json
 3dff9e1ec59415779195d2abfa9f07bc17b428a1 assets/tts/blockstates/ness_console_block.json
 482ccd4a6ecaa4eda4ca67dbda6ba6ccc4d56de4 assets/tts/blockstates/nether_reactor_core.json
 add0378acec5ec39c9a63c66e17ff36cd622107d assets/tts/blockstates/oxygenator_circuit_core.json
@@ -203,8 +204,8 @@ dee8e85598aabb718b3619bed4b3b02fcd866a26 assets/tts/blockstates/void_block.json
 455730050436c19ddabf62e9534e0151d52dda9e assets/tts/blockstates/zeiton/raw_zeiton_block.json
 62308c5762fa872982e68820a4a5b0ca7626b44d assets/tts/blockstates/zeiton/zeiton_block.json
 47388a64cb2ab580728e8922bf1a55f25b24b95f assets/tts/blockstates/zeiton/zeiton_ore.json
-d66fb621f97c5ce26bd592168b188ec92220d4d5 assets/tts/lang/en_ud.json
-718b0b26128a51462c2f7417cec2a060f32342c0 assets/tts/lang/en_us.json
+82b3af6a04779453301f92f3ca728a0bca998265 assets/tts/lang/en_ud.json
+89424cae3d9124aed91fac9aa7f0067ed317ba19 assets/tts/lang/en_us.json
 36dfa842f0218ad668d3dc950f936b6fdda356e4 assets/tts/models/block/brushed_steel.json
 110bf9546098bbc0e53b692d13dd341dc21be474 assets/tts/models/block/carbon_steel.json
 5f47d47ea70dacc27c90ae3c9d41ac3c97417ae6 assets/tts/models/block/carbon_steel_.json
@@ -773,6 +774,7 @@ d2f2a1d0d3cfa7dc922c34ec2e6254301c36c781 data/tts/loot_tables/blocks/matrix_bloc
 5e7e0af8e32052bb9f4718a86158492e8f420b70 data/tts/loot_tables/blocks/matrix_casing.json
 b342c23e7545406dbcdc9254f779541655114e1f data/tts/loot_tables/blocks/monitor_block.json
 9cc33550911787d7971e6aa4a6efeddc5358be3a data/tts/loot_tables/blocks/monitor_panel.json
+cf124eb7fd012fc7c9e9857106c3d7c634a60474 data/tts/loot_tables/blocks/multiblock_slave.json
 236cb04f7d23f210c81b8dae1f005f3222513a29 data/tts/loot_tables/blocks/ness_console_block.json
 2e09b3838cb98b48815e344e917e676547558a81 data/tts/loot_tables/blocks/nether_reactor_core.json
 a076c2287da1fb87673000b0a398fe9989ac8368 data/tts/loot_tables/blocks/oxygenator_circuit_core.json

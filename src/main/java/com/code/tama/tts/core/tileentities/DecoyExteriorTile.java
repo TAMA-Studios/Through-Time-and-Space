@@ -104,7 +104,6 @@ public class DecoyExteriorTile extends AbstractPortalTile {
 	@Override
 	public @NotNull CompoundTag getUpdateTag() {
 		return this.saveWithoutMetadata();
-		// this.serializeNBT
 	}
 
 	@Override

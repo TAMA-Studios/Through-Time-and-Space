@@ -8,6 +8,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Vector3f;
+
+import net.minecraft.core.particles.DustParticleOptions;
 
 import com.code.tama.triggerapi.helpers.MathUtils;
 
@@ -26,7 +29,9 @@ public class TARDISInteriorData {
 	float LightLevel, gravityLevel = 0.08f, oxygenLevel;
 	ITARDISLevel TARDIS;
 	int hum;
-	TardisAmbientParticle ambientParticle;
+
+	TardisAmbientParticle ambientParticle = new TardisAmbientParticle(
+			new DustParticleOptions(new Vector3f(1, 1, 1), 1.0f), 0.4f);
 
 	public TARDISInteriorData(float lightLevel, float gravityLevel, float oxygenLevel, int hum,
 			TardisAmbientParticle ambientParticle) {

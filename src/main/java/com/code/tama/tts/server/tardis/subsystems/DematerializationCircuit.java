@@ -22,53 +22,7 @@ public class DematerializationCircuit extends AbstractSubsystem {
 		super(Activated, blockPos);
 	}
 
-	@Override
-	public Map<BlockPos, BlockState> BlockMap() {
-		// Map<BlockPos, BlockState> map = new java.util.HashMap<>(Map.of());
-		// map.put(BlockPos.ZERO.below(), Blocks.GOLD_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().south(),
-		// Blocks.REDSTONE_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().west(),
-		// Blocks.REDSTONE_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().east(),
-		// Blocks.REDSTONE_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().north(),
-		// Blocks.LAPIS_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().north().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().north().west(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().south().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.below().south().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		//
-		// map.put(BlockPos.ZERO.south(), Blocks.IRON_TRAPDOOR.defaultBlockState());
-		// map.put(BlockPos.ZERO.west(), Blocks.IRON_TRAPDOOR.defaultBlockState());
-		// map.put(BlockPos.ZERO.east(), Blocks.IRON_TRAPDOOR.defaultBlockState());
-		// map.put(BlockPos.ZERO.north().east(), Blocks.IRON_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.north().west(), Blocks.IRON_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.south().east(), Blocks.IRON_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.south().east(), Blocks.IRON_BLOCK.defaultBlockState());
-		//
-		// map.put(BlockPos.ZERO.above(), Blocks.REDSTONE_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().south(),
-		// Blocks.REDSTONE_LAMP.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().west(),
-		// Blocks.REDSTONE_LAMP.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().east(),
-		// Blocks.REDSTONE_LAMP.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().north(),
-		// Blocks.REDSTONE_LAMP.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().north().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().north().west(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().south().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-		// map.put(BlockPos.ZERO.above().south().east(),
-		// Blocks.COPPER_BLOCK.defaultBlockState());
-
+	public static Map<BlockPos, BlockState> GetOrCreateMap() {
 		if (Map == null || Map.isEmpty()) {
 			HashMap<Character, BlockState> key = new HashMap<>();
 			String map[] = new String[]{"CLC\nLRL\nCLC", "I I\nT#T\nITI", "CKC\nRGR\nCRC"};
@@ -86,8 +40,11 @@ public class DematerializationCircuit extends AbstractSubsystem {
 		}
 
 		return Map;
+	}
 
-		// return map;
+	@Override
+	public Map<BlockPos, BlockState> BlockMap() {
+		return GetOrCreateMap();
 	}
 
 	@Override

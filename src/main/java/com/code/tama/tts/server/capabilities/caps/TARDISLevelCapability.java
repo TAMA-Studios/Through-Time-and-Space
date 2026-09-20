@@ -104,12 +104,16 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	public CompoundTag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
 		this.powerHandler.saveNBT(tag);
-		tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
-		tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
-		tag.put("navigational_data",
-				TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
-		tag.put("environmental_data",
-				TARDISInteriorData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
+		if (data != null)
+			tag.put("data", TARDISData.CODEC.encodeStart(NbtOps.INSTANCE, data).get().orThrow());
+		if (flightData != null)
+			tag.put("flight_data", TARDISFlightData.CODEC.encodeStart(NbtOps.INSTANCE, flightData).get().orThrow());
+		if (navigationalData != null)
+			tag.put("navigational_data",
+					TARDISNavigationalData.CODEC.encodeStart(NbtOps.INSTANCE, navigationalData).get().orThrow());
+		if (environmentalData != null)
+			tag.put("environmental_data",
+					TARDISInteriorData.CODEC.encodeStart(NbtOps.INSTANCE, environmentalData).get().orThrow());
 
 		for (int i = 0; i < InterCommsMessages.size(); i++) {
 			tag.putString("mes_" + i, InterCommsMessages.get(i));
@@ -263,17 +267,17 @@ public class TARDISLevelCapability implements ITARDISLevel {
 
 	@Override
 	public boolean CanTakeoff() {
-		return this.isOperator || this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered() && this.data.getControlData().isCoordinateLock()
-				&& !this.data.getControlData().isVortexAnchor() && this.powerHandler.getPower() > 0
-				&& !this.data.getControlData().isEngineBrake();
+		return this.isOperator
+				|| this.data.getSubSystemsData().getDematerializationCircuit().isActivated() && this.data.isPowered()
+						&& this.data.getControlData().isCoordinateLock() && !this.data.getControlData().isVortexAnchor()
+						&& this.powerHandler.getPower() > 0 && !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override
 	public boolean CanFly() {
-		return this.isOperator || this.data.getSubSystemsData().getDematerializationCircuit().isActivated(this.level)
-				&& this.data.isPowered() && this.powerHandler.getPower() > 0
-				&& !this.data.getControlData().isEngineBrake();
+		return this.isOperator
+				|| this.data.getSubSystemsData().getDematerializationCircuit().isActivated() && this.data.isPowered()
+						&& this.powerHandler.getPower() > 0 && !this.data.getControlData().isEngineBrake();
 	}
 
 	@Override

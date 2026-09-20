@@ -53,13 +53,13 @@ public class FaultLocatorCategory extends UICategory {
 
 			List<String> faults = new ArrayList<>();
 
-			if (!cap.GetData().getSubSystemsData().DematerializationCircuit.isActivated(cap.GetLevel()))
+			if (!cap.GetData().getSubSystemsData().DematerializationCircuit.isActivated())
 				faults.add(getFault(Fault.DEMAT));
-			if (!cap.GetData().getSubSystemsData().DynamorphicController.isActivated(cap.GetLevel()))
+			if (!cap.GetData().getSubSystemsData().DynamorphicController.isActivated())
 				faults.add(getFault(Fault.DYNAMO_CONTROLLER));
 			if (!cap.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty())
 				faults.add(getFault(Fault.DYNAMO_CONTROLLER));
-			if (!cap.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated(cap.GetLevel()))
+			if (!cap.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated())
 				faults.add(getFault(Fault.NETHER_REACTOR_CORE));
 
 			if (cap.getEnergy().getPower() <= 0)

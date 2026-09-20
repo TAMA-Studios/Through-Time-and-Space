@@ -27,11 +27,16 @@ import com.code.tama.tts.core.registries.misc.SonicModeRegistry;
 import com.code.tama.tts.core.registries.misc.UICategoryRegistry;
 import com.code.tama.tts.core.registries.misc.UIComponentRegistry;
 import com.code.tama.tts.core.registries.tardis.ControlsRegistry;
+import com.code.tama.tts.core.registries.tardis.SubsystemsRegistry;
 import com.code.tama.tts.core.worlds.TTSFeatures;
 import com.code.tama.tts.core.worlds.tree.ModFoliagePlacers;
 import com.code.tama.tts.core.worlds.tree.TTSTrunkPlacerTypes;
 import com.code.tama.tts.server.data.json.Loaders;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
+import com.code.tama.tts.server.tardis.subsystems.DematerializationCircuit;
+import com.code.tama.tts.server.tardis.subsystems.DynamorphicController;
+import com.code.tama.tts.server.tardis.subsystems.DynamorphicGeneratorStack;
+import com.code.tama.tts.server.tardis.subsystems.NetherReactorCoreSubsystem;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -118,6 +123,15 @@ public class TTSMod {
 		ModCompat.Run();
 
 		modEventBus.addListener(TTSAchievementTriggers::register);
+
+		registerSubsystems();
+	}
+
+	private void registerSubsystems() {
+		SubsystemsRegistry.addSubsystem(new DematerializationCircuit());
+		SubsystemsRegistry.addSubsystem(new DynamorphicController());
+		SubsystemsRegistry.addSubsystem(new NetherReactorCoreSubsystem());
+		SubsystemsRegistry.addSubsystem(new DynamorphicGeneratorStack());
 	}
 
 	private void registrates(IEventBus modEventBus) {

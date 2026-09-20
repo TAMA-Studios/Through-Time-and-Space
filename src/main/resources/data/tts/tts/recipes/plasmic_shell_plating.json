@@ -1,0 +1,11 @@
+{
+  "values" : {
+    "1" : "tts:steel_ingot",
+    "2" : "tts:sandpaper",
+    "3" : "minecraft:quartz",
+    "4" : "minecraft:iron_ingot",
+    "nozzle" : "tts:basic_nozzle",
+    "result" : "tts:plasmic_shell_plating",
+    "time" : "320"
+  }
+}

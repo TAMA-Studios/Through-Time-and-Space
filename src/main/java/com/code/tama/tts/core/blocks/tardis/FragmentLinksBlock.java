@@ -4,7 +4,7 @@ package com.code.tama.tts.core.blocks.tardis;
 import com.code.tama.tts.core.blocks.subsystems.AbstractSubsystemBlock;
 import com.code.tama.tts.core.items.gadgets.SonicItem;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.enums.SonicInteractionType;
+import com.code.tama.tts.server.sonic.SonicBlockMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,7 +151,7 @@ public class FragmentLinksBlock extends Block implements EntityBlock {
 	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos blockPos,
 			Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
 		if (player.getItemInHand(interactionHand).getItem() instanceof SonicItem sonicItem) {
-			if (!sonicItem.InteractionType.equals(SonicInteractionType.BLOCKS))
+			if (!(sonicItem.InteractionType instanceof SonicBlockMode))
 				return super.use(state, level, blockPos, player, interactionHand, blockHitResult);
 			if (!this.TestForEngine(level, blockPos))
 				return super.use(state, level, blockPos, player, interactionHand, blockHitResult);

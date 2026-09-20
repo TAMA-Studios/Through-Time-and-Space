@@ -1,6 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.triggerapi.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 import com.code.tama.triggerapi.NativeLoader;
@@ -84,5 +88,56 @@ public class MathUtils {
 	 */
 	public static double angleBetween(Vec3 vec1, Vec3 vec2) {
 		return angleBetween(vec1.x, vec1.y, vec1.z, vec2.x, vec2.y, vec2.z);
+	}
+
+	/**
+	 * Generates a list of BlockPositions inside a cylinder based on radius and
+	 * height. Centered at (0, 0, 0) as the base center.
+	 */
+	public static List<BlockPos> getCylinderBlocks(double radius, int height) {
+		List<BlockPos> blocks = new ArrayList<>();
+		double radiusSq = radius * radius;
+		int maxRadius = (int) Math.ceil(radius);
+
+		for (int y = 0; y < height; y++) {
+			for (int x = -maxRadius; x <= maxRadius; x++) {
+				for (int z = -maxRadius; z <= maxRadius; z++) {
+					if ((x * x) + (z * z) <= radiusSq) {
+						blocks.add(new BlockPos(x, y, z));
+					}
+				}
+			}
+		}
+		return blocks;
+	}
+	public static List<BlockPos> getRelativeCube(int width, int height, int depth) {
+		List<BlockPos> blocks = new ArrayList<>();
+		int halfW = width / 2;
+		int halfD = depth / 2;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = -halfW; x <= halfW; x++) {
+				for (int z = -halfD; z <= halfD; z++) {
+					blocks.add(new BlockPos(x, y, z));
+				}
+			}
+		}
+		return blocks;
+	}
+	public static List<BlockPos> getRelativePyramid(int baseRadius) {
+		List<BlockPos> blocks = new ArrayList<>();
+		int currentRadius = baseRadius;
+		int yOffset = 0;
+
+		while (currentRadius >= 0) {
+			for (int x = -currentRadius; x <= currentRadius; x++) {
+				for (int z = -currentRadius; z <= currentRadius; z++) {
+					blocks.add(new BlockPos(x, yOffset, z));
+				}
+			}
+			currentRadius--;
+			yOffset++;
+		}
+		return blocks;
 	}
 }

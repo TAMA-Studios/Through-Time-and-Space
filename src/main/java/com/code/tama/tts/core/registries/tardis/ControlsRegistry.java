@@ -129,7 +129,7 @@ public class ControlsRegistry {
 	public static final RegistryObject<SimplestControl> REFUEL = CONTROLS.register("refuel",
 			() -> new SimplestControl("refuel", tardis -> {
 				if (!tardis.GetData().getSubSystemsData().DynamorphicGeneratorStacks.isEmpty()
-						&& tardis.GetData().getSubSystemsData().DynamorphicController.isActivated(tardis.GetLevel()))
+						&& tardis.GetData().getSubSystemsData().DynamorphicController.isActivated())
 					tardis.GetData().setRefueling(true);
 			}, tardis -> tardis.GetData().setRefueling(false)));
 
