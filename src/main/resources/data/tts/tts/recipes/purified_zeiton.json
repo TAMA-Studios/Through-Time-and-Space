@@ -1,0 +1,9 @@
+{
+  "values" : {
+    "1" : "tts:half_purified_zeiton",
+    "2" : "tts:huon_bottle",
+    "nozzle" : "tts:basic_nozzle",
+    "result" : "tts:purified_zeiton",
+    "time" : "160"
+  }
+}

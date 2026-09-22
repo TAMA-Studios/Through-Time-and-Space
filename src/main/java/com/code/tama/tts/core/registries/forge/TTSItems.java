@@ -48,7 +48,7 @@ public class TTSItems {
 	public static final ItemEntry<Item> FINE_SANDPAPER;
 
 	@MainTab
-	public static final ItemEntry<RespiratorArmorItem> OXYGENATOR;
+	public static final ItemEntry<RespiratorArmorItem> RESPIRATOR;
 
 	@MainTab
 	public static final ItemEntry<Item> HAMMER;
@@ -84,7 +84,11 @@ public class TTSItems {
 	public static final ItemEntry<NozzleItem> BASIC_NOZZLE;
 
 	@MainTab
-	public static final ItemEntry<Item> ZEITON = registrate().item("purified_zeiton_7", Item::new).register();
+	public static final ItemEntry<Item> PURIFIED_ZEITON = registrate().item("purified_zeiton", Item::new).register();
+
+	@MainTab
+	public static final ItemEntry<Item> HALF_PURIFIED_ZEITON = registrate().item("half_purified_zeiton", Item::new)
+			.register();
 
 	@MainTab
 	public static final ItemEntry<TwineItem> TWINE_SPOOL = registrate().item("gadgets/twine_spool", TwineItem::new)
@@ -119,12 +123,12 @@ public class TTSItems {
 
 		FINE_SANDPAPER = register("fine_sandpaper", (NonNullFunction<Item.Properties, Item>) Item::new);
 
-		OXYGENATOR = register("oxygenator",
+		RESPIRATOR = register("respirator",
 				(NonNullFunction<Item.Properties, RespiratorArmorItem>) properties -> new RespiratorArmorItem(
 						ArmorMaterials.LEATHER, ArmorItem.Type.HELMET, properties) {
 				});
 
-		RAW_ZEITON = register("zeiton_7", (NonNullFunction<Item.Properties, Item>) Item::new);
+		RAW_ZEITON = register("raw_zeiton", (NonNullFunction<Item.Properties, Item>) Item::new);
 
 		MATRIX_CORE = register("matrix_core", (NonNullFunction<Item.Properties, Item>) Item::new);
 
@@ -145,7 +149,7 @@ public class TTSItems {
 
 		CORAL_SONIC = registrate().item("sonic/coral", prop -> new SonicItem(prop, 5)).register();
 
-		ARS_TABLET = registrate().item("gadgets/ars_tablet", prop -> new ARSTabletItem(prop)).register();
+		ARS_TABLET = registrate().item("gadgets/ars_tablet", ARSTabletItem::new).register();
 
 		COPPER_SONIC = registrate().item("sonic/copper", prop -> new SonicItem(prop, 5)).register();
 

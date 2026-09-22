@@ -732,8 +732,9 @@ public class TTSBlocks {
 			.simpleItem().register();
 
 	@MainTab
-	public static final BlockEntry<OxygenatorCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder("oxygenator_circuit_core",
-			OxygenatorCoreBlock::new).stateWithExistingModel("oxygenator").simpleItem().register();
+	public static final BlockEntry<ElectrolysisSeperatorCoreBlock> OXYGENATOR_CIRCUIT_CORE = Builder(
+			"electrolysis_seperator_core", ElectrolysisSeperatorCoreBlock::new)
+			.stateWithExistingModel("electrolysis_separator").simpleItem().register();
 
 	@MainTab
 	public static final BlockEntry<NetherReactorCoreBlock> NETHER_REACTOR_CORE = Builder("nether_reactor_core",

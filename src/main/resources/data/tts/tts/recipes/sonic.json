@@ -2,10 +2,10 @@
   "values" : {
     "1" : "minecraft:iron_ingot",
     "2" : "minecraft:redstone",
-    "3" : "minecraft:redstone_lamp",
-    "4" : "minecraft:glass_pane",
-    "5" : "minecraft:iron_ingot",
-    "6" : "minecraft:iron_ingot",
+    "3" : "minecraft:advanced_control_circuit",
+    "4" : "minecraft:redstone_lamp",
+    "5" : "minecraft:stone_button",
+    "6" : "minecraft:gold_ingot",
     "nozzle" : "tts:basic_nozzle",
     "result" : "tts:sonic/coral",
     "time" : "160"

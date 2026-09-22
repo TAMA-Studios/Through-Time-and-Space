@@ -401,7 +401,7 @@ public class CommonEvents {
 					// TODO: REAL Oxygen implementation
 
 					if (entity instanceof Player p
-							&& p.getItemBySlot(EquipmentSlot.HEAD).getItem().equals(TTSItems.OXYGENATOR.get()))
+							&& p.getItemBySlot(EquipmentSlot.HEAD).getItem().equals(TTSItems.RESPIRATOR.get()))
 						return;
 
 					entity.hurt(new DamageSource(Holder.direct(TTSDamageSources.SUFFOCATION)), 1);

@@ -1,0 +1,24 @@
+{
+  "category" : "misc",
+  "key" : {
+    "s" : {
+      "item" : "minecraft:sponge"
+    },
+    "t" : {
+      "item" : "tts:steel_ingot"
+    },
+    "x" : {
+      "item": "minecraft:string"
+    },
+    "p" : {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern" : [ "x x", "tst", "ptp" ],
+  "result" : {
+    "count" : 1,
+    "item" : "tts:respirator"
+  },
+  "show_notification" : true,
+  "type" : "minecraft:crafting_shaped"
+}

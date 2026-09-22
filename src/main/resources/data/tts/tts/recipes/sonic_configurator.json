@@ -1,0 +1,13 @@
+{
+  "values" : {
+    "1" : "minecraft:iron_ingot",
+    "2" : "minecraft:redstone",
+    "3" : "minecraft:iron_ingot",
+    "4" : "minecraft:advanced_control_circuit",
+    "5" : "minecraft:iron_ingot",
+    "6" : "minecraft:iron_ingot",
+    "nozzle" : "tts:basic_nozzle",
+    "result" : "tts:sonic_configurator",
+    "time" : "160"
+  }
+}

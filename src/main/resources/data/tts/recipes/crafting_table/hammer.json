@@ -1,0 +1,18 @@
+{
+  "category" : "misc",
+  "key" : {
+    "s" : {
+      "item" : "minecraft:stick"
+    },
+    "t" : {
+      "item" : "tts:steel_ingot"
+    }
+  },
+  "pattern" : [ " ts", " st", "s  " ],
+  "result" : {
+    "count" : 1,
+    "item" : "tts:hammer"
+  },
+  "show_notification" : true,
+  "type" : "minecraft:crafting_shaped"
+}

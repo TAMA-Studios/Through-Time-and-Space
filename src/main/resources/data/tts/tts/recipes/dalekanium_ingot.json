@@ -1,0 +1,13 @@
+{
+  "values" : {
+    "1" : "tts:steel_ingot",
+    "2" : "minecraft:gold_ingot",
+    "3" : "tts:huon_bottle",
+    "4" : "minecraft:glass_pane",
+    "5" : "minecraft:iron_ingot",
+    "6" : "minecraft:iron_ingot",
+    "nozzle" : "tts:basic_nozzle",
+    "result" : "tts:sonic_configurator",
+    "time" : "160"
+  }
+}

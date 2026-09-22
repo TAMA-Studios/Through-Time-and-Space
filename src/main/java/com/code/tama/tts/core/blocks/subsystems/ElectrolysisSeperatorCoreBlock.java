@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class OxygenatorCoreBlock extends AbstractSubsystemBlock implements EntityBlock {
-	public OxygenatorCoreBlock(Properties properties) {
+public class ElectrolysisSeperatorCoreBlock extends AbstractSubsystemBlock implements EntityBlock {
+	public ElectrolysisSeperatorCoreBlock(Properties properties) {
 		super(properties.strength(1.5f).sound(SoundType.METAL), new OxygenatorCircuit());
 	}
 
