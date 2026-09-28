@@ -29,7 +29,7 @@ public class SyncCapLightLevelPacketS2C {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
 			if (Minecraft.getInstance().level != null) {
-				GetClientTARDISCapSupplier().ifPresent(cap -> cap.GetEnvironmentalData().SetLightLevel(packet.level));
+				GetClientTARDISCapSupplier().ifPresent(cap -> cap.GetInteriorData().SetLightLevel(packet.level));
 			}
 		});
 		context.setPacketHandled(true);

@@ -14,6 +14,8 @@ import com.code.tama.tts.client.gui.ARSRoomRegistry;
 import com.code.tama.tts.core.achievements.TTSAchievement;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.exterior.TriggerSyncExteriorPacketC2S;
 import com.code.tama.tts.core.networking.packets.S2C.exterior.SyncTransparencyPacketS2C;
@@ -27,14 +29,13 @@ import com.code.tama.tts.server.capabilities.caps.PlayerCapability;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
 import com.code.tama.tts.server.enums.Structures;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.threads.GetExteriorVariantThread;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.MemoryUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,6 +50,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -232,7 +234,7 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 
 		TARDISLevelCapability.GetTARDISCapSupplier(this.INTERIOR_DIMENSION).ifPresent(cap -> {
 			cap.GetData().setDoorBlock(new SpaceTimeCoordinate(door));
-			cap.GetEnvironmentalData().setOxygenLevel(0.0f);
+			cap.GetInteriorData().setOxygenLevel(0.0f);
 
 			this.setTargetLevel(INTERIOR_DIMENSION, cap.GetData().getDoorData().getLocation().GetBlockPos(),
 					cap.GetData().getDoorData().getYRot(), true);
@@ -331,7 +333,10 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 
 	@Override
 	public void setRemoved() {
-		this.removeThis(this.level, this.getBlockPos());
+		if (this.level != null && !this.level.isClientSide
+				&& !(this.level.getBlockState(this.worldPosition).getBlock() instanceof ExteriorBlock)) {
+			this.removeThis(this.level, this.getBlockPos());
+		}
 		super.setRemoved();
 	}
 
@@ -511,9 +516,9 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 			level.getServer().getLevel(this.GetInterior()).getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> {
 						if (((!this.getBlockPos()
-								.equals(cap.GetNavigationalData().GetExteriorLocation().GetBlockPos())))
+								.equals(cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos())))
 								|| cap.GetFlightData().isInFlight()) {
-							if (level.getBlockState(cap.GetNavigationalData().GetExteriorLocation().GetBlockPos())
+							if (level.getBlockState(cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos())
 									.equals(TTSBlocks.EXTERIOR_BLOCK.getDefaultState()))
 								this.UtterlyDestroy();
 							else
@@ -540,8 +545,20 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 		if (level.isClientSide || level.getServer() == null)
 			return;
 		level.getServer().execute(() -> {
-			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(
-					MODID + "-tardis", "owner-" + this.PlacerName.toLowerCase() + "-uuid-" + UUID.randomUUID()));
+			UUID tardisUUID = UUID.randomUUID();
+			long ownedTARDISes = MemoryUtil.nmemAlloc(Integer.BYTES);
+			if (this.PlacerUUID != null) {
+				Player p = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.PlacerUUID);
+				p.getCapability(Capabilities.PLAYER_CAPABILITY).ifPresent((cap) -> {
+					System.out.println("Hey!");
+					cap.AddOwnedTARDIS(String.valueOf(tardisUUID));
+					MemoryUtil.memPutInt(ownedTARDISes, cap.GetOwnedTARDISes());
+				});
+			}
+
+			ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION,
+					new ResourceLocation(MODID + "-tardis", "owner-" + this.PlacerName.toLowerCase() + "-count-"
+							+ MemoryUtil.memGetInt(ownedTARDISes) + "-uuid-" + tardisUUID));
 
 			ServerLevel tardisLevel;
 
@@ -555,9 +572,9 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 			GetTARDISCapSupplier(tardisLevel).ifPresent((cap) -> {
 				cap.SetExteriorTile(this);
 				assert this.getLevel() != null;
-				cap.GetNavigationalData().setExteriorDimensionKey(this.getLevel().dimension());
+				cap.GetNavigationalData().setLocDimensionKey(this.getLevel().dimension());
 				cap.GetNavigationalData().SetExteriorLocation(new SpaceTimeCoordinate(this.getBlockPos()));
-				BlockPos loc = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos();
+				BlockPos loc = cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos();
 				cap.GetNavigationalData().setDestination(new SpaceTimeCoordinate(
 						level.getBlockRandomPos(loc.getX(), loc.getY(), loc.getZ(), 500000).atY(64)));
 				cap.GetNavigationalData().SetCurrentLevel(this.level.dimension());
@@ -579,7 +596,8 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 
 	@Override
 	public void onSlaveRemoved() {
-		this.level.removeBlockEntity(this.getBlockPos());
+		if (this.level != null && !this.level.isClientSide)
+			this.level.removeBlock(this.getBlockPos(), false); // don't just removeBlockEntity
 	}
 
 	@Override

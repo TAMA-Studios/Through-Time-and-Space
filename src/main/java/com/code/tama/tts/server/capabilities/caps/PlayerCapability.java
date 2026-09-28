@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.code.tama.tts.core.misc.NBTUtils;
 import com.code.tama.tts.server.capabilities.interfaces.IPlayerCap;
-import com.code.tama.tts.server.misc.NBTUtils;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

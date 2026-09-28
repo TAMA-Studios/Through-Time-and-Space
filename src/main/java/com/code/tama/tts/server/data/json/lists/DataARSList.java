@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.code.tama.tts.client.gui.ARSRoomRegistry;
+import com.code.tama.tts.core.misc.containers.ARSStructureContainer;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
-import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import lombok.Getter;
 
 public class DataARSList {

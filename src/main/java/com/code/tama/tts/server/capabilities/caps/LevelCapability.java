@@ -1,18 +1,21 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.capabilities.caps;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.core.events.RiftEvent;
+import com.code.tama.tts.core.misc.containers.TIRBlockContainer;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncLevelCapPacketS2C;
 import com.code.tama.tts.server.capabilities.interfaces.ILevelCap;
 import com.code.tama.tts.server.data.RiftData;
-import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

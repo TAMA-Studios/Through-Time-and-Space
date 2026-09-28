@@ -66,7 +66,7 @@ public class ControlRenderer extends EntityRenderer<ModularControl> {
 		entity.GetControl().RenderFlightEvent(poseStack, buffer, entity);
 
 		GetTARDISCapSupplier(entity.level()).ifPresent((cap) -> {
-			if (cap.GetData().isSparking())
+			if (cap.GetData().isMalfunctioning())
 				if (entity.level().random.nextInt(100000) <= 5)
 					Spark(entity.level(), entity.position());
 		});

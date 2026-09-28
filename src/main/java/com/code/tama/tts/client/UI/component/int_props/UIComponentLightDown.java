@@ -21,7 +21,7 @@ public class UIComponentLightDown extends UIComponent {
 		assert monitor.getLevel() != null;
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			if (cap.GetLightLevel() > 0f)
-				cap.GetEnvironmentalData().SetLightLevel(cap.GetLightLevel() - 0.1f);
+				cap.GetInteriorData().SetLightLevel(cap.GetLightLevel() - 0.1f);
 		});
 	}
 }

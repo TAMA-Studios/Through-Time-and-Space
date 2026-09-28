@@ -797,8 +797,7 @@ public class LuaTableCreators {
 		TARDIS.set("flight", LuaCodecBridge.encodeToLua(TARDISFlightData.CODEC, tardis.GetFlightData()));
 		TARDIS.set("navigational",
 				LuaCodecBridge.encodeToLua(TARDISNavigationalData.CODEC, tardis.GetNavigationalData()));
-		TARDIS.set("environmental",
-				LuaCodecBridge.encodeToLua(TARDISInteriorData.CODEC, tardis.GetEnvironmentalData()));
+		TARDIS.set("environmental", LuaCodecBridge.encodeToLua(TARDISInteriorData.CODEC, tardis.GetInteriorData()));
 
 		LuaTable util = new LuaTable();
 

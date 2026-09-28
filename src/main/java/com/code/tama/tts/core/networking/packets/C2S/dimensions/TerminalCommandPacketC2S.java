@@ -4,12 +4,12 @@ package com.code.tama.tts.core.networking.packets.C2S.dimensions;
 import java.util.function.Supplier;
 
 import com.code.tama.tts.client.gui.terminal.ManPages;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.TerminalResponsePacketS2C;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -186,35 +186,36 @@ public class TerminalCommandPacketC2S {
 			}
 			case "increment" -> increment(t, args);
 			case "recall" -> {
-				t.GetNavigationalData().forceSetDestination(t.GetNavigationalData().GetPreviousLocation());
+				t.GetNavigationalData()
+						.forceSetDestination(t.GetNavigationalData().GetPreviousLocationSpaceTimeCoord());
 				yield "Destination set to previous location.";
 			}
 
 			case "light" -> {
-				float current = t.GetEnvironmentalData().getLightLevel();
+				float current = t.GetInteriorData().getLightLevel();
 				float target = resolveFloat(args, current, 0.1f);
-				t.GetEnvironmentalData().SetLightLevel(target);
-				yield "Light level: " + t.GetEnvironmentalData().getLightLevel();
+				t.GetInteriorData().SetLightLevel(target);
+				yield "Light level: " + t.GetInteriorData().getLightLevel();
 			}
 			case "gravity" -> {
-				float current = t.GetEnvironmentalData().getGravityLevel();
+				float current = t.GetInteriorData().getGravityLevel();
 				float target = resolveFloat(args, current, 0.02f);
-				t.GetEnvironmentalData().setGravityLevel(target);
+				t.GetInteriorData().setGravityLevel(target);
 				yield "Gravity level: " + target;
 			}
 			case "oxygen" -> {
-				float current = t.GetEnvironmentalData().getOxygenLevel();
+				float current = t.GetInteriorData().getOxygenLevel();
 				float target = resolveFloat(args, current, 0.05f);
-				t.GetEnvironmentalData().setOxygenLevel(target);
+				t.GetInteriorData().setOxygenLevel(target);
 				yield "Oxygen level: " + target;
 			}
 			case "hum" -> {
 				if (args.length > 1 && args[1].equalsIgnoreCase("cycle")) {
-					t.GetEnvironmentalData().setHum(t.GetEnvironmentalData().getHum() + 1);
+					t.GetInteriorData().setHum(t.GetInteriorData().getHum() + 1);
 				} else if (args.length > 1) {
-					t.GetEnvironmentalData().setHum(Integer.parseInt(args[1]));
+					t.GetInteriorData().setHum(Integer.parseInt(args[1]));
 				}
-				yield "Interior hum ID: " + t.GetEnvironmentalData().getHum();
+				yield "Interior hum ID: " + t.GetInteriorData().getHum();
 			}
 
 			case "door" -> door(t, args);
@@ -244,7 +245,7 @@ public class TerminalCommandPacketC2S {
 				+ '\n' + "Can takeoff: " + t.CanTakeoff() + "  Can fly: " + t.CanFly() + '\n' + "Power: "
 				+ t.getEnergy().getPower() + "  Powered: " + t.GetData().isPowered() + '\n' + "Location:    "
 				+ coordString(t.GetNavigationalData().getLocation()) + '\n' + "Destination: "
-				+ coordString(t.GetNavigationalData().getDestination()) + '\n' + "Increment: "
+				+ coordString(t.GetNavigationalData().GetDestinationSpacetimeCoord()) + '\n' + "Increment: "
 				+ t.GetNavigationalData().getIncrement() + '\n' + "Door state: "
 				+ t.GetData().getDoorData().getDoorsOpen();
 	}
@@ -265,7 +266,7 @@ public class TerminalCommandPacketC2S {
 					return "ERR: invalid dimension '" + args[4] + "'";
 				levelKey = ResourceKey.create(Registries.DIMENSION, rl);
 			} else {
-				levelKey = t.GetNavigationalData().getExteriorDimensionKey();
+				levelKey = t.GetNavigationalData().getLocDimensionKey();
 			}
 
 			SpaceTimeCoordinate coordinate = new SpaceTimeCoordinate(new BlockPos(x, y, z), levelKey);
@@ -283,7 +284,7 @@ public class TerminalCommandPacketC2S {
 		String zone = args[0];
 
 		if (zone.equals("past") || zone.equals("present") || zone.equals("future")) {
-			SpaceTimeCoordinate coordinate = t.GetNavigationalData().getDestination();
+			SpaceTimeCoordinate coordinate = t.GetNavigationalData().GetDestinationSpacetimeCoord();
 			coordinate.setTimeZone(zone.equals("past") ? 0 : zone.equals("present") ? 1 : 2);
 			t.GetNavigationalData().forceSetDestination(coordinate);
 			return "Destination timezone set to " + zone;
@@ -304,7 +305,7 @@ public class TerminalCommandPacketC2S {
 			}
 		}
 
-		SpaceTimeCoordinate dest = t.GetNavigationalData().getDestination();
+		SpaceTimeCoordinate dest = t.GetNavigationalData().GetDestinationSpacetimeCoord();
 		switch (args[1].toLowerCase()) {
 			case "x" -> dest.AddX(amount);
 			case "y" -> dest.AddY(amount);
@@ -429,7 +430,7 @@ public class TerminalCommandPacketC2S {
 	}
 
 	private static String coordString(SpaceTimeCoordinate c) {
-		return String.format("%.0f, %.0f, %.0f [%s]", c.GetX(), c.GetY(), c.GetZ(),
+		return String.format("%.0f, %.0f, %.0f [%s]", c.x(), c.y(), c.z(),
 				c.getLevel() == null ? "?" : c.getLevel().dimension().location().toString());
 	}
 

@@ -3,8 +3,8 @@ package com.code.tama.tts.core.tileentities;
 
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.core.blocks.tardis.DecoyExteriorBlock;
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

@@ -2,14 +2,14 @@
 package com.code.tama.tts.server.data.tardis.data;
 
 import com.code.tama.tts.core.config.TTSConfig;
+import com.code.tama.tts.core.misc.containers.FlightTerminationProtocol;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.registries.tardis.FlightSoundSchemesRegistry;
 import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.DecoyFlightEvent;
 import com.code.tama.tts.server.data.json.dataHolders.flightEvents.FlightEvent;
-import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.flightsoundschemes.AbstractSoundScheme;
 import com.code.tama.tts.server.tardis.flightsoundschemes.SmithSoundScheme;
 import com.mojang.serialization.Codec;
@@ -62,8 +62,8 @@ public class TARDISFlightData {
 	}
 
 	public SpaceTimeCoordinate distanceToLoc() {
-		return new SpaceTimeCoordinate(this.TARDIS.GetNavigationalData().getDestination().GetBlockPos().getCenter()
-				.subtract(this.TARDIS.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
+		return new SpaceTimeCoordinate(this.TARDIS.GetNavigationalData().GetDestinationSpacetimeCoord().GetBlockPos()
+				.getCenter().subtract(this.TARDIS.GetNavigationalData().getLocation().GetBlockPos().getCenter()));
 	}
 
 	public long getTicksUntilArrival() {
@@ -78,9 +78,9 @@ public class TARDISFlightData {
 		if (speed <= 0)
 			return Long.MAX_VALUE;
 
-		double ticksX = Math.abs(delta.GetX()) / speed;
-		double ticksY = Math.abs(delta.GetY()) / speed;
-		double ticksZ = Math.abs(delta.GetZ()) / speed;
+		double ticksX = Math.abs(delta.x()) / speed;
+		double ticksY = Math.abs(delta.y()) / speed;
+		double ticksZ = Math.abs(delta.z()) / speed;
 
 		double ticks = Math.max(ticksX, Math.max(ticksY, ticksZ));
 

@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
 
 public class ExteriorsRegistry {
 	public static ArrayList<ExteriorModelContainer> EXTERIORS = new ArrayList<>();

@@ -60,27 +60,38 @@ public class TTSBlocks {
 	public static final BlockEntry<ExampleTileBlock> EXAMPLE_TILE_BLOCK = registrate()
 			.block("example_tile_block", ExampleTileBlock::new).simpleItem().defaultBlockstate().register();
 
+	@MainTab
+	public static final BlockEntry<LampBlock> LAMP = registrate().block("lamp", LampBlock::new).simpleItem()
+			.defaultBlockstate().register();
+
+	@MainTab
 	public static final BlockEntry<Block> MATRIX_CASING = registrate().block("matrix_casing", Block::new).simpleItem()
 			.stateWithExistingModel().register();
 
+	@Decorational
 	public static final BlockEntry<Block> CRYSTALLINE_BLOCK = registrate().block("crystalline_block", Block::new)
 			.simpleItem().stateWithExistingModel().register();
 
+	@MainTab
 	public static final BlockEntry<TerminalBlock> DEV_TERMINAL = registrate()
 			.block("dev_terminal", (p) -> new TerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
 			.airState().simpleItem().register();
 
+	@MainTab
 	public static final BlockEntry<ConsoleTerminalBlock> TARDIS_TERMINAL = registrate()
 			.block("tardis_terminal",
 					(p) -> new ConsoleTerminalBlock(p.mapColor(MapColor.METAL).strength(3.5f).noOcclusion()))
 			.airState().simpleItem().register();
 
+	@Decorational
 	public static final BlockEntry<WireBlock> WIRES = registrate().block("wires", WireBlock::new)
 			.properties((p) -> p.noOcclusion()).simpleItem().airState().register();
 
+	@MainTab
 	public static final BlockEntry<FaultLocatorBlock> FAULT_LOCATOR = registrate()
 			.block("fault_locator", FaultLocatorBlock::new).simpleItem().defaultBlockstate().register();
 
+	@MainTab
 	public static final BlockEntry<CompressedMultiblockBlock> COMPRESSED_MULTIBLOCK = registrate()
 			.block("compressed_multiblock_block", CompressedMultiblockBlock::new).item(CompressedMultiblockItem::new)
 			.build().properties(BlockBehaviour.Properties::noOcclusion).defaultBlockstate().register();
@@ -577,7 +588,8 @@ public class TTSBlocks {
 
 	@MainTab
 	public static final BlockEntry<ExteriorTopBlock> EXTERIOR_TOP = Builder("exterior_top", ExteriorTopBlock::new)
-			.properties(p -> p.noOcclusion().strength(999f)).airState().item(ExteriorItem::new).build().register();
+			.properties(p -> p.noOcclusion().strength(999f)).light(5).airState().item(ExteriorItem::new).build()
+			.register();
 
 	@MainTab
 	public static final BlockEntry<EmptyShellBlock> EMPTY_SHELL = Builder("empty_shell", EmptyShellBlock::new)

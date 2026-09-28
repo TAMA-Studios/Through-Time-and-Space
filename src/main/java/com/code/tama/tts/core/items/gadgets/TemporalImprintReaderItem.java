@@ -6,10 +6,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.code.tama.tts.core.items.core.PowerableItem;
+import com.code.tama.tts.core.misc.containers.TIRBlockContainer;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.UpdateTIRPacketS2C;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

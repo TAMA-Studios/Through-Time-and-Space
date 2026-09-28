@@ -5,9 +5,9 @@ import java.util.Set;
 
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.entities.TardisFlightEntity;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public class SpatialFlightControl extends AbstractControl {
 		LOGGER.info("[SpatialFlight] tile.getBlockPos()={} tile.getLevel()={}", tile.getBlockPos(),
 				tile.getLevel() == null ? "null" : tile.getLevel().dimension().location());
 
-		SpaceTimeCoordinate exteriorLocation = itardisLevel.GetNavigationalData().GetExteriorLocation();
+		SpaceTimeCoordinate exteriorLocation = itardisLevel.GetNavigationalData().GetExteriorSpaceTimeCoord();
 		if (exteriorLocation == null) {
 			LOGGER.info("[SpatialFlight] GetExteriorLocation() returned null, aborting");
 			return InteractionResult.FAIL;

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.terminationprotocol;
 
-import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
+import com.code.tama.tts.core.misc.containers.FlightTerminationProtocol;
 
 public class QuickStopProtocol extends FlightTerminationProtocol {
 	public QuickStopProtocol() {

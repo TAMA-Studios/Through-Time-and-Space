@@ -53,4 +53,9 @@ public interface RenderStateShardAccessor {
 		throw new AssertionError();
 	}
 
+	@Accessor("POSITION_COLOR_SHADER")
+	static RenderStateShard.ShaderStateShard getPositionColorShader() {
+		throw new AssertionError();
+	}
+
 }

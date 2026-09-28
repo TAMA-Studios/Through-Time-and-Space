@@ -27,7 +27,7 @@ public class InteriorPropsUICategory extends UICategory {
 			String feLine = getPowerFE(cap.getEnergy().getPower());
 			String flow = cap.getEnergy().getPowerFlow() + " FE/t";
 			String voltage = cap.getEnergy().getVoltageInt() + " Volts";
-			String Gravity = "Gravity: " + cap.GetEnvironmentalData().getGravityLevel();
+			String Gravity = "Gravity: " + cap.GetInteriorData().getGravityLevel();
 
 			RenderSystem.disableDepthTest();
 

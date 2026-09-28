@@ -9,8 +9,9 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+
+import com.code.tama.triggerapi.universal.UniversalCommon;
 
 public class HoloOverlayRenderer {
 	public static int light = 0xf00f0;
@@ -23,7 +24,7 @@ public class HoloOverlayRenderer {
 			RenderSystem.defaultBlendFunc();
 			BufferBuilder builder = Tesselator.getInstance().getBuilder();
 			builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/holo/overlay.png"));
+			RenderSystem.setShaderTexture(0, UniversalCommon.modRL("textures/gui/holo/overlay.png"));
 
 			Window window = Minecraft.getInstance().getWindow();
 			stack.pushPose();

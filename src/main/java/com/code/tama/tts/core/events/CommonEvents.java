@@ -283,7 +283,7 @@ public class CommonEvents {
 				TTSAchievement.Achievements.FIRST_TAKEOFF.trigger(event.level.getLastToInteract());
 
 				System.out.printf("Taking off with destination: %s",
-						event.level.GetNavigationalData().getDestination());
+						event.level.GetNavigationalData().GetDestinationSpacetimeCoord());
 				CameraShakeHandler
 						.startShake(event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount()
 								* Math.max(1, event.level.getRevTime() / 40), 999);
@@ -306,7 +306,8 @@ public class CommonEvents {
 				if (event.level.GetData().getControlData().isHandbrake())
 					CameraShakeHandler.startShake(
 							event.level.GetFlightData().getFlightTerminationProtocol().getTakeoffShakeAmount(), 9000);
-				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
+				System.out.printf("Landing at: %s",
+						event.level.GetNavigationalData().GetExteriorSpaceTimeCoord().ReadableString());
 				break;
 			}
 			case END : {
@@ -314,15 +315,15 @@ public class CommonEvents {
 				if (event.level.GetData().getControlData().isHandbrake()) {
 					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
 					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
-							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
-							SoundSource.BLOCKS, 1, 1);
+							event.level.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(),
+							TTSSounds.THUD.get(), SoundSource.BLOCKS, 1, 1);
 					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
 							SoundSource.BLOCKS, 1, 1); // Play at interior
 				}
 				if (event.level.GetLevel() != null)
 					event.level.GetLevel().playSound(null,
-							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
-							SoundSource.BLOCKS);
+							event.level.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(),
+							TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				System.out.println("Finished Landing");
 				break;
 			}
@@ -337,7 +338,7 @@ public class CommonEvents {
 
 				CameraShakeHandler.startShake(
 						event.level.GetFlightData().getFlightTerminationProtocol().getLandShakeAmount() * 5, 9000);
-				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorLocation());
+				System.out.printf("Landing at: %s", event.level.GetNavigationalData().GetExteriorSpaceTimeCoord());
 				break;
 			}
 			case END : {
@@ -345,15 +346,15 @@ public class CommonEvents {
 				if (event.level.GetData().getControlData().isHandbrake()) {
 					CameraShakeHandler.startShake(1, 1); // Thud, TODO: Make sure Thud noise werks
 					ServerLifecycleHooks.getCurrentServer().getLevel(event.level.GetCurrentLevel()).playSound(null,
-							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
-							SoundSource.BLOCKS, 1, 1);
+							event.level.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(),
+							TTSSounds.THUD.get(), SoundSource.BLOCKS, 1, 1);
 					event.level.GetLevel().playSound(null, new BlockPos(0, 128, 0), TTSSounds.THUD.get(),
 							SoundSource.BLOCKS, 1, 1); // Play at interior
 				}
 				if (event.level.GetLevel() != null)
 					event.level.GetLevel().playSound(null,
-							event.level.GetNavigationalData().GetExteriorLocation().GetBlockPos(), TTSSounds.THUD.get(),
-							SoundSource.BLOCKS);
+							event.level.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(),
+							TTSSounds.THUD.get(), SoundSource.BLOCKS);
 				System.out.println("Finished Landing");
 				break;
 			}

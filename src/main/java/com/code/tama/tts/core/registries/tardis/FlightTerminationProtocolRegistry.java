@@ -3,7 +3,7 @@ package com.code.tama.tts.core.registries.tardis;
 
 import java.util.ArrayList;
 
-import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
+import com.code.tama.tts.core.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.EmergencyStopProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.PoliteTerminusProtocol;
 import com.code.tama.tts.server.tardis.terminationprotocol.QuickStopProtocol;

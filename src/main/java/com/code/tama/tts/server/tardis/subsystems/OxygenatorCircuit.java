@@ -46,13 +46,13 @@ public class OxygenatorCircuit extends AbstractSubsystem {
 	@Override
 	public void OnActivate(Level level, BlockPos blockPos) {
 		this.Activated = true;
-		GetTARDISCapSupplier(level).ifPresent(cap -> cap.GetEnvironmentalData().setOxygenLevel(20));
+		GetTARDISCapSupplier(level).ifPresent(cap -> cap.GetInteriorData().setOxygenLevel(20));
 	}
 
 	@Override
 	public void OnDeActivate(Level level, BlockPos blockPos) {
 		this.Activated = false;
-		GetTARDISCapSupplier(level).ifPresent(cap -> cap.GetEnvironmentalData().setOxygenLevel(0));
+		GetTARDISCapSupplier(level).ifPresent(cap -> cap.GetInteriorData().setOxygenLevel(0));
 	}
 
 	@Override

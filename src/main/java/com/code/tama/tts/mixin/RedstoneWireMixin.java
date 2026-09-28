@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin;
 
-import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
+import static com.code.tama.tts.core.misc.BlockStateProperties.SONICD;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.POWER;
 
 import org.spongepowered.asm.mixin.Mixin;

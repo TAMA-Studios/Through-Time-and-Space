@@ -13,8 +13,8 @@ import com.code.tama.tts.client.EmmisiveRenderType;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.ImAnInteractableAnimatedPanel;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
+import com.code.tama.tts.core.misc.containers.ARSStructureContainer;
 import com.code.tama.tts.core.registries.tardis.ARSRegistry;
-import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.renderer.RenderType;
@@ -45,7 +45,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.code.tama.triggerapi.animation.*;
+import com.code.tama.triggerapi.animation.GeoHelper;
+import com.code.tama.triggerapi.animation.GeoModel;
 import com.code.tama.triggerapi.helpers.MathUtils;
 import com.code.tama.triggerapi.helpers.world.WorldHelper;
 import com.code.tama.triggerapi.universal.UniversalCommon;

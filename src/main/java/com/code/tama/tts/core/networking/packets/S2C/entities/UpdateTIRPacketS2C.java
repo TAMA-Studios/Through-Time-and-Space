@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import com.code.tama.tts.core.misc.containers.TIRBlockContainer;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.misc.containers.TIRBlockContainer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;

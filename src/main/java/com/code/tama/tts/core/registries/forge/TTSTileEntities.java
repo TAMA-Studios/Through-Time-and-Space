@@ -8,6 +8,7 @@ import com.code.tama.tts.client.renderers.monitors.MonitorPanelRenderer;
 import com.code.tama.tts.client.renderers.monitors.MonitorRenderer;
 import com.code.tama.tts.client.renderers.tiles.ChameleonCircuitRenderer;
 import com.code.tama.tts.client.renderers.tiles.FaultLocatorRenderer;
+import com.code.tama.tts.client.renderers.tiles.LampTileRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.CoralConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.HudolinConsoleRenderer;
 import com.code.tama.tts.client.renderers.tiles.console.NESSConsoleRenderer;
@@ -43,6 +44,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class TTSTileEntities {
 	public static final BlockEntityEntry<ExampleTileEntity> EXAMPLE_TILE = registrate()
 			.blockEntity("example_tile", ExampleTileEntity::new).validBlocks(TTSBlocks.EXAMPLE_TILE_BLOCK).register();
+
+	public static final BlockEntityEntry<LampTile> LAMP = registrate().blockEntity("lamp_tile", LampTile::new)
+			.validBlocks(TTSBlocks.LAMP).renderer(() -> LampTileRenderer::new).register();
 
 	public static final BlockEntityEntry<AverageMultiblockSlaveTile> MULTIBLOCK_SLAVE_TILE = registrate()
 			.blockEntity("multiblock_slave_tile", AverageMultiblockSlaveTile::new)

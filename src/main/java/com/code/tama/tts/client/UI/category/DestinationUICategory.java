@@ -26,7 +26,7 @@ public class DestinationUICategory extends UICategory {
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			Font fontRenderer = Minecraft.getInstance().font;
 
-			String line3 = cap.GetNavigationalData().getDestination().ReadableStringShort();
+			String line3 = cap.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableStringShort();
 
 			RenderSystem.disableDepthTest();
 

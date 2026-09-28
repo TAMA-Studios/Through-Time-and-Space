@@ -4,12 +4,12 @@ package com.code.tama.tts.server.threads;
 import static com.code.tama.tts.core.blocks.tardis.ExteriorBlock.FACING;
 
 import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.misc.BlockHelper;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.BlockHelper;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
@@ -33,10 +33,11 @@ public class CrashThread extends Thread {
 		ServerLevel CurrentLevel = this.itardisLevel.GetLevel().getServer()
 				.getLevel(this.itardisLevel.GetCurrentLevel());
 		assert CurrentLevel != null;
-		CurrentLevel.setChunkForced((int) (this.itardisLevel.GetNavigationalData().getDestination().GetX() / 16),
-				(int) (this.itardisLevel.GetNavigationalData().getDestination().GetZ() / 16), true);
+		CurrentLevel.setChunkForced(
+				(int) (this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().x() / 16),
+				(int) (this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().z() / 16), true);
 		BlockPos pos = BlockHelper.snapToGround(this.itardisLevel.GetLevel(),
-				this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos());
+				this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().GetBlockPos());
 
 		this.itardisLevel.GetFlightData().getFlightTerminationProtocol().OnLand(this.itardisLevel, pos, CurrentLevel);
 		pos = this.itardisLevel.GetFlightData().getFlightTerminationProtocol().GetLandPos();
@@ -54,18 +55,19 @@ public class CrashThread extends Thread {
 
 		exteriorBlockState.setValue(FACING, this.itardisLevel.GetNavigationalData().getFacing());
 
-		CurrentLevel.setBlock(this.itardisLevel.GetNavigationalData().getDestination().GetBlockPos(),
+		CurrentLevel.setBlock(this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().GetBlockPos(),
 				TTSBlocks.EXTERIOR_BLOCK.get().defaultBlockState(), 3);
 		BlockState blockState = this.itardisLevel.GetLevel()
-				.getBlockState(this.itardisLevel.GetNavigationalData().GetExteriorLocation().GetBlockPos());
+				.getBlockState(this.itardisLevel.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos());
 		this.itardisLevel.GetLevel().setBlockAndUpdate(coords.GetBlockPos(), blockState);
 
 		// The pos needs to be final or effectively final
 		BlockPos finalPos = pos;
 		CurrentLevel.getServer().execute(new TickTask(1,
 				() -> this.itardisLevel.SetExteriorTile(((ExteriorTile) CurrentLevel.getBlockEntity(finalPos)))));
-		CurrentLevel.setChunkForced((int) (this.itardisLevel.GetNavigationalData().getDestination().GetX() / 16),
-				(int) (this.itardisLevel.GetNavigationalData().getDestination().GetZ() / 16), false);
+		CurrentLevel.setChunkForced(
+				(int) (this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().x() / 16),
+				(int) (this.itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().z() / 16), false);
 		this.itardisLevel.UpdateClient(DataUpdateValues.FLIGHT);
 		this.itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 		MinecraftForge.EVENT_BUS.post(new TardisEvent.Crash(this.itardisLevel, TardisEvent.State.END));

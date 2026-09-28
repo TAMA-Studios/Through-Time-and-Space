@@ -16,6 +16,7 @@ plugins {
 	id 'org.spongepowered.mixin' version '0.7.+'
 	id 'jacoco'
 	id 'com.gradleup.shadow' version '8.3.0'
+	id "org.jetbrains.kotlin.plugin.lombok" version '2.2.20'
 }
 
 jacoco {
@@ -167,6 +168,12 @@ repositories {
 			includeGroup("cc.tweaked")
 		}
 	}
+
+	maven {
+		name = "Kotlin for Forge"
+		url = "https://thedarkcolour.github.io/KotlinForForge/"
+	}
+	mavenCentral()
 }
 
 dependencies {
@@ -325,9 +332,11 @@ dependencies {
 	// Mixin
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
+	implementation "thedarkcolour:kotlinforforge-neoforge:6.0.0"
 
 	annotationProcessor project(':mem_manager')
 	implementation project(':mem_manager')
+	testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
 tasks.register('generateSourcesOnly', JavaCompile) {

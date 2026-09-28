@@ -4,6 +4,7 @@ package com.code.tama.tts.client.renderers.tiles.tardis;
 import com.code.tama.tts.client.animations.consoles.ExteriorAnimationData;
 import com.code.tama.tts.client.renderers.HalfBOTIRenderer;
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.client.renderers.tiles.LampTileRenderer;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 
 import com.code.tama.triggerapi.JavaInJSON.JavaJSON;
 import com.code.tama.triggerapi.JavaInJSON.JavaJSONModel;
@@ -183,6 +185,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 			// via bufferSource lands on main while we know mainTarget is correctly bound.
 			((MultiBufferSource.BufferSource) bufferSource).endBatch();
 
+			stack.mulPose(Axis.ZP.rotationDegrees(180f));
+			stack.translate(-0.5, 0.65, -1);
+			LampTileRenderer.renderLamp(partialTicks, stack, bufferSource);
+
 			stack.popPose();
 		}
 
@@ -221,5 +227,10 @@ public class TardisExteriorRenderer<T extends ExteriorTile> implements BlockEnti
 
 		RenderSystem.enableDepthTest();
 		pose.popPose();
+	}
+
+	@Override
+	public boolean shouldRender(T p_173568_, Vec3 p_173569_) {
+		return true;
 	}
 }

@@ -26,7 +26,7 @@ public class GravityHelper {
 	 */
 	public static float getGravity(Level level) {
 		if (GetTARDISCapSupplier(level).isPresent()) {
-			return GetTARDISCap(level).GetEnvironmentalData().getGravityLevel();
+			return GetTARDISCap(level).GetInteriorData().getGravityLevel();
 		}
 
 		return MAP.getOrDefault(level.dimension().location(), 0.08F);

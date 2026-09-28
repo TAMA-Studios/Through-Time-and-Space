@@ -13,11 +13,16 @@ public interface ImAMultiblock {
 	void onSlaveRemoved();
 
 	/** Removes the entire multiblock, all slaves and the master. */
-	default void removeThis(Level level, BlockPos masterPos) {
-		getPositions().forEach((localPos) -> {
+	default void removeSlaves(Level level, BlockPos masterPos) {
+		getPositions().forEach(localPos -> {
 			BlockPos worldPos = masterPos.offset(localPos);
-			level.removeBlock(worldPos, false);
+			if (level.getBlockState(worldPos).is(TTSBlocks.MULTIBLOCK_SLAVE.get())) // or EXTERIOR_TOP
+				level.removeBlock(worldPos, false);
 		});
+	}
+
+	default void removeThis(Level level, BlockPos masterPos) {
+		removeSlaves(level, masterPos);
 		level.removeBlock(masterPos, false);
 	}
 

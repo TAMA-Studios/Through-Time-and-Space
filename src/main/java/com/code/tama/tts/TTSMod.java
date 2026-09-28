@@ -149,19 +149,19 @@ public class TTSMod {
 				|| event.getTabKey() == TTSCreativeTabs.DECORATIONAL_TAB.getKey()) {
 
 			// Check items
+
+			ItemStack stack; // Preallocate the stack
+
 			for (Field f : TTSItems.class.getFields()) {
 
 				// Check if the field type is ItemEntry<?>
 				if (ItemEntry.class.isAssignableFrom(f.getType())) {
 
 					try {
-						// Get the value of the field
-						Object value = f.get(null);
-
-						if (value instanceof ItemEntry<?> entry) {
+						if (f.get(null) instanceof ItemEntry<?> entry) {
 							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
 								if (f.isAnnotationPresent(DimensionalTab.class)) {
-									ItemStack stack = entry.get().getDefaultInstance();
+									stack = entry.get().getDefaultInstance();
 									stack.setCount(1);
 									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
 										event.accept(stack);
@@ -169,7 +169,7 @@ public class TTSMod {
 
 							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
 								if (f.isAnnotationPresent(MainTab.class)) {
-									ItemStack stack = entry.get().getDefaultInstance();
+									stack = entry.get().getDefaultInstance();
 									stack.setCount(1);
 									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
 										event.accept(stack);
@@ -189,13 +189,10 @@ public class TTSMod {
 				if (BlockEntry.class.isAssignableFrom(f.getType())) {
 
 					try {
-						// Get the value of the field
-						Object value = f.get(null);
-
-						if (value instanceof BlockEntry<?> entry) {
+						if (f.get(null) instanceof BlockEntry<?> entry) {
 							if (event.getTabKey() == TTSCreativeTabs.DIMENSIONAL_TAB.getKey())
 								if (f.isAnnotationPresent(DimensionalTab.class)) {
-									ItemStack stack = entry.get().asItem().getDefaultInstance();
+									stack = entry.get().asItem().getDefaultInstance();
 									stack.setCount(1);
 									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
 										event.accept(stack);
@@ -203,7 +200,7 @@ public class TTSMod {
 
 							if (event.getTabKey() == TTSCreativeTabs.DECORATIONAL_TAB.getKey())
 								if (f.isAnnotationPresent(Decorational.class) || f.isAnnotationPresent(SOV.class)) {
-									ItemStack stack = entry.get().asItem().getDefaultInstance();
+									stack = entry.get().asItem().getDefaultInstance();
 									stack.setCount(1);
 									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
 										event.accept(stack);
@@ -211,7 +208,7 @@ public class TTSMod {
 
 							if (event.getTabKey() == TTSCreativeTabs.MAIN_TAB.getKey())
 								if (f.isAnnotationPresent(MainTab.class)) {
-									ItemStack stack = entry.get().asItem().getDefaultInstance();
+									stack = entry.get().asItem().getDefaultInstance();
 									stack.setCount(1);
 									if (stack.getCount() == 1 && !entry.get().asItem().equals(Items.AIR))
 										event.accept(stack);

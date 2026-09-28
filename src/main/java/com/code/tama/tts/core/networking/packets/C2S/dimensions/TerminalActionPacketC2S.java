@@ -3,10 +3,10 @@ package com.code.tama.tts.core.networking.packets.C2S.dimensions;
 
 import java.util.function.Supplier;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -101,7 +101,7 @@ public class TerminalActionPacketC2S {
 				case CYCLE_DESTINATION_FACING -> tardis.GetNavigationalData()
 						.setDestinationFacing(tardis.GetNavigationalData().NextDestinationFacing());
 				case RECALL_PREVIOUS_LOCATION -> tardis.GetNavigationalData()
-						.forceSetDestination(tardis.GetNavigationalData().GetPreviousLocation());
+						.forceSetDestination(tardis.GetNavigationalData().GetPreviousLocationSpaceTimeCoord());
 
 				case NUDGE_POS_X -> nudge(tardis, tardis.GetNavigationalData().getIncrement(), 0, 0);
 				case NUDGE_NEG_X -> nudge(tardis, -tardis.GetNavigationalData().getIncrement(), 0, 0);
@@ -119,18 +119,18 @@ public class TerminalActionPacketC2S {
 				case TOGGLE_OPERATOR -> tardis.setOperator(!tardis.isOperator());
 
 				case LIGHT_UP ->
-					tardis.GetEnvironmentalData().SetLightLevel(tardis.GetEnvironmentalData().getLightLevel() + 0.1f);
+					tardis.GetInteriorData().SetLightLevel(tardis.GetInteriorData().getLightLevel() + 0.1f);
 				case LIGHT_DOWN ->
-					tardis.GetEnvironmentalData().SetLightLevel(tardis.GetEnvironmentalData().getLightLevel() - 0.1f);
-				case GRAVITY_UP -> tardis.GetEnvironmentalData()
-						.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() + 0.02f);
-				case GRAVITY_DOWN -> tardis.GetEnvironmentalData()
-						.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() - 0.02f);
-				case OXYGEN_UP -> tardis.GetEnvironmentalData()
-						.setOxygenLevel(tardis.GetEnvironmentalData().getOxygenLevel() + 0.05f);
-				case OXYGEN_DOWN -> tardis.GetEnvironmentalData()
-						.setOxygenLevel(tardis.GetEnvironmentalData().getOxygenLevel() - 0.05f);
-				case HUM_CYCLE -> tardis.GetEnvironmentalData().setHum(tardis.GetEnvironmentalData().getHum() + 1);
+					tardis.GetInteriorData().SetLightLevel(tardis.GetInteriorData().getLightLevel() - 0.1f);
+				case GRAVITY_UP ->
+					tardis.GetInteriorData().setGravityLevel(tardis.GetInteriorData().getGravityLevel() + 0.02f);
+				case GRAVITY_DOWN ->
+					tardis.GetInteriorData().setGravityLevel(tardis.GetInteriorData().getGravityLevel() - 0.02f);
+				case OXYGEN_UP ->
+					tardis.GetInteriorData().setOxygenLevel(tardis.GetInteriorData().getOxygenLevel() + 0.05f);
+				case OXYGEN_DOWN ->
+					tardis.GetInteriorData().setOxygenLevel(tardis.GetInteriorData().getOxygenLevel() - 0.05f);
+				case HUM_CYCLE -> tardis.GetInteriorData().setHum(tardis.GetInteriorData().getHum() + 1);
 
 				case CYCLE_EXTERIOR -> tardis.GetData().CycleVariant();
 
@@ -147,7 +147,7 @@ public class TerminalActionPacketC2S {
 	}
 
 	private static void nudge(ITARDISLevel tardis, double dx, double dy, double dz) {
-		SpaceTimeCoordinate dest = tardis.GetNavigationalData().getDestination();
+		SpaceTimeCoordinate dest = tardis.GetNavigationalData().GetDestinationSpacetimeCoord();
 		dest.AddX(dx).AddY(dy).AddZ(dz);
 		tardis.GetNavigationalData().forceSetDestination(dest);
 	}

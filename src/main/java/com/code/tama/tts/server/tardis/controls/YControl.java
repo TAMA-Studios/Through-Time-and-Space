@@ -28,13 +28,14 @@ public class YControl extends AbstractControl {
 	@Override
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
 		itardisLevel.GetNavigationalData()
-				.setDestination(itardisLevel.GetNavigationalData().getDestination()
+				.setDestination(itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord()
 						.AddY(entity.isCrouching()
 								? itardisLevel.GetNavigationalData().getIncrement()
 								: -itardisLevel.GetNavigationalData().getIncrement()));
 		if (entity instanceof Player player)
-			player.displayClientMessage(Component.literal(
-					"Current Destination = " + itardisLevel.GetNavigationalData().getDestination().ReadableString()),
+			player.displayClientMessage(
+					Component.literal("Current Destination = "
+							+ itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableString()),
 					true);
 		return InteractionResult.SUCCESS;
 	}
@@ -42,12 +43,12 @@ public class YControl extends AbstractControl {
 	@Override
 	public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
 		itardisLevel.GetNavigationalData()
-				.setDestination(itardisLevel.GetNavigationalData().getDestination()
+				.setDestination(itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord()
 						.AddY(player.isCrouching()
 								? -itardisLevel.GetNavigationalData().getIncrement()
 								: itardisLevel.GetNavigationalData().getIncrement()));
-		player.displayClientMessage(Component.literal(
-				"Current Destination = " + itardisLevel.GetNavigationalData().getDestination().ReadableString()), true);
+		player.displayClientMessage(Component.literal("Current Destination = "
+				+ itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableString()), true);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -137,7 +137,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
-							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+							cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(), targetY, true));
 			return;
 		}
 
@@ -154,7 +154,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 
 		this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 				.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
-						cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+						cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(), targetY, true));
 
 	}
 
@@ -167,7 +167,7 @@ public abstract class AbstractPortalTile extends TickingTile {
 			this.fuckYouTimer = 0;
 			this.getLevel().getCapability(Capabilities.TARDIS_LEVEL_CAPABILITY)
 					.ifPresent(cap -> this.setTargetLevel(cap.GetCurrentLevel(),
-							cap.GetNavigationalData().GetExteriorLocation().GetBlockPos(), targetY, true));
+							cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos(), targetY, true));
 		}
 
 		this.fuckYouTimer++;

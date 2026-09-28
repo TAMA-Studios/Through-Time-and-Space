@@ -191,8 +191,8 @@ public class DestinationInfoBlock extends HorizontalDirectionalBlock implements 
 								+ tardisLevelCapability.GetNavigationalData().getLocation().ReadableString()));
 						player.sendSystemMessage(
 								Component.literal("Dimension: " + tardisLevelCapability.GetCurrentLevel().location()));
-						player.sendSystemMessage(Component.literal("Destination: "
-								+ tardisLevelCapability.GetNavigationalData().getDestination().ReadableString()));
+						player.sendSystemMessage(Component.literal("Destination: " + tardisLevelCapability
+								.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableString()));
 						// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 3), 3);
 						// world.scheduleTick(pos, this, 10);
 						world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);

@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.core.misc.containers.PlayerPosition;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TriggerSyncCapVariantPacketC2S;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
@@ -15,9 +18,6 @@ import com.code.tama.tts.server.data.tardis.ControlParameters;
 import com.code.tama.tts.server.data.tardis.DoorData;
 import com.code.tama.tts.server.data.tardis.ProtocolData;
 import com.code.tama.tts.server.data.tardis.SubsystemsData;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.misc.containers.PlayerPosition;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -47,7 +46,7 @@ public class TARDISData {
 							.forGetter(TARDISData::getExteriorModel),
 					Codec.BOOL.fieldOf("isPowered").forGetter(TARDISData::isPowered),
 					Codec.BOOL.fieldOf("isDiscoMode").forGetter(TARDISData::isIsDiscoMode),
-					Codec.BOOL.fieldOf("isSparking").forGetter(TARDISData::isSparking),
+					Codec.BOOL.fieldOf("isMalfunctioning").forGetter(TARDISData::isMalfunctioning),
 					Codec.BOOL.fieldOf("alarms").forGetter(TARDISData::isAlarmsState),
 					Codec.BOOL.fieldOf("refueling").forGetter(TARDISData::isRefueling),
 					DoorData.CODEC.fieldOf("interiorDoorData").forGetter(TARDISData::getInteriorDoorData),
@@ -62,9 +61,9 @@ public class TARDISData {
 	private long ticks = 0;
 	ControlParameters ControlData = new ControlParameters();
 	ExteriorModelContainer ExteriorModel = ExteriorsRegistry.EXTERIORS.get(0);
-	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(BlockPos.ZERO), 0);
+	DoorData InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(), 0);
 	UUID OwnerUUID;
-	boolean Powered, IsDiscoMode, Sparking, AlarmsState, Refueling;
+	boolean Powered, IsDiscoMode, Malfunctioning, AlarmsState, Refueling;
 	ProtocolData ProtocolsData = new ProtocolData();
 	SubsystemsData SubSystemsData = new SubsystemsData();
 	Map<UUID, PlayerPosition> ViewingPlayerMap = new HashMap<>();
@@ -95,7 +94,7 @@ public class TARDISData {
 		Powered = powered;
 		AlarmsState = alarms;
 		Refueling = refueling;
-		Sparking = isSparking;
+		Malfunctioning = isSparking;
 		this.doorBlock = doorBlock;
 		IsDiscoMode = isDiscoMode;
 		InteriorDoorData = interiorDoorData;
@@ -154,7 +153,7 @@ public class TARDISData {
 
 	public DoorData getDoorData() {
 		if (this.InteriorDoorData == null) {
-			this.InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(new BlockPos(0, 128, 0)), 0);
+			this.InteriorDoorData = new DoorData(0, new SpaceTimeCoordinate(), 0);
 		}
 		return this.InteriorDoorData;
 	}

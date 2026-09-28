@@ -11,10 +11,10 @@ import com.code.tama.tts.TTSMod;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.events.TardisEvent;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.DoorTile;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -135,10 +135,10 @@ public class DoorBlock extends Block implements EntityBlock {
 				return;
 
 			try {
-				BlockPos pos = cap.GetNavigationalData().GetExteriorLocation().GetBlockPos()
+				BlockPos pos = cap.GetNavigationalData().GetExteriorSpaceTimeCoord().GetBlockPos()
 						.relative(cap.GetNavigationalData().getFacing(), 2);
 				if (Interior.getServer().getLevel(cap.GetCurrentLevel()).getBlockEntity(cap.GetNavigationalData()
-						.GetExteriorLocation().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
+						.GetExteriorSpaceTimeCoord().GetBlockPos()) instanceof ExteriorTile exteriorTile) {
 					exteriorTile.SetInterior(Interior.dimension());
 				}
 				float yRot = -cap.GetExteriorTile().getBlockState().getValue(FACING).toYRot() + EntityToTeleport.yRotO;

@@ -2,8 +2,8 @@
 package com.code.tama.tts.core.compat.cct;
 
 import com.code.tama.tts.core.compat.cct.tiles.TardisCCInterfaceTile;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class CCTARDISInterface implements IPeripheral {
 	@LuaFunction(mainThread = true)
 	public void setDestinationLevel(String levelID) {
 		tile.getCap().ifPresent(t -> {
-			SpaceTimeCoordinate c = t.GetNavigationalData().getDestination();
+			SpaceTimeCoordinate c = t.GetNavigationalData().GetDestinationSpacetimeCoord();
 			c.setLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(levelID)));
 			t.GetNavigationalData().setDestination(c);
 		});

@@ -1,9 +1,11 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.data.tardis.data;
 
+import com.code.tama.tts.core.misc.containers.NativeSpaceCoordinate;
+import com.code.tama.tts.core.misc.containers.SpaceCoordinate;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -19,21 +21,26 @@ import net.minecraft.world.level.Level;
 public class TARDISNavigationalData {
 	public static final Codec<TARDISNavigationalData> CODEC = RecordCodecBuilder.create(instance -> instance
 			.group(Codec.INT.fieldOf("increment").forGetter(TARDISNavigationalData::getIncrement),
-					ResourceKey.codec(Registries.DIMENSION).fieldOf("exteriorDimensionKey")
-							.forGetter(TARDISNavigationalData::getExteriorDimensionKey),
-					SpaceTimeCoordinate.CODEC.fieldOf("destination").forGetter(TARDISNavigationalData::getDestination),
+					SpaceTimeCoordinate.CODEC.fieldOf("destination")
+							.forGetter(TARDISNavigationalData::GetDestinationSpacetimeCoord),
 					SpaceTimeCoordinate.CODEC.fieldOf("location").forGetter(TARDISNavigationalData::getLocation),
-					SpaceTimeCoordinate.CODEC.fieldOf("previous_location")
-							.forGetter(TARDISNavigationalData::GetPreviousLocation),
+					SpaceTimeCoordinate.CODEC
+							.fieldOf("previous_location")
+							.forGetter(TARDISNavigationalData::GetPreviousLocationSpaceTimeCoord),
 					Direction.CODEC.fieldOf("facing").forGetter(TARDISNavigationalData::getFacing),
 					Direction.CODEC.fieldOf("destinationFacing")
-							.forGetter(TARDISNavigationalData::getDestinationFacing))
+							.forGetter(TARDISNavigationalData::getDestinationFacing),
+					ResourceKey.codec(Registries.DIMENSION).fieldOf("locDimensionKey")
+							.forGetter(TARDISNavigationalData::getLocDimensionKey),
+					ResourceKey.codec(Registries.DIMENSION).fieldOf("dest")
+							.forGetter(TARDISNavigationalData::getDestDimensionKey))
 			.apply(instance, TARDISNavigationalData::new));
 
-	SpaceTimeCoordinate Destination = new SpaceTimeCoordinate(), Location = new SpaceTimeCoordinate(),
-			PreviousLocation = new SpaceTimeCoordinate();
-
-	ResourceKey<Level> ExteriorDimensionKey = Level.OVERWORLD;
+	ResourceKey<Level> locDimensionKey = Level.OVERWORLD;
+	ResourceKey<Level> destDimensionKey = Level.OVERWORLD;
+	ResourceKey<Level> prevLocDimensionKey = Level.OVERWORLD;
+	final long destAddr, locAddr, prevLocAddr;
+	int locTimeZone, destTimeZone, prevLocTimezone;
 
 	Direction Facing = Direction.NORTH, DestinationFacing = Direction.NORTH;
 	int Increment = 1;
@@ -41,26 +48,43 @@ public class TARDISNavigationalData {
 
 	public TARDISNavigationalData(TARDISLevelCapability TARDIS) {
 		this.TARDIS = TARDIS;
+
+		destAddr = NativeSpaceCoordinate.create();
+		locAddr = NativeSpaceCoordinate.create();
+		prevLocAddr = NativeSpaceCoordinate.create();
 	}
 
-	public TARDISNavigationalData(int Increment, ResourceKey<Level> exteriorDimensionKey,
-			SpaceTimeCoordinate destination, SpaceTimeCoordinate location, SpaceTimeCoordinate previousLocation,
-			Direction facing, Direction destinationFacing) {
+	public TARDISNavigationalData(int Increment, SpaceTimeCoordinate destination, SpaceTimeCoordinate location,
+			SpaceTimeCoordinate previousLocation, Direction facing, Direction destinationFacing,
+			ResourceKey<Level> locDimensionKey, ResourceKey<Level> destDimensionKey) {
 		this.Increment = Increment;
-		ExteriorDimensionKey = exteriorDimensionKey;
-		Destination = destination;
-		Location = location;
+		this.locDimensionKey = locDimensionKey;
 		Facing = facing;
 		DestinationFacing = destinationFacing;
-		PreviousLocation = previousLocation;
+
+		destAddr = NativeSpaceCoordinate.create();
+		locAddr = NativeSpaceCoordinate.create();
+		prevLocAddr = NativeSpaceCoordinate.create();
+
+		this.setDestination(destination);
+		this.setLocation(location);
+		this.setPreviousLocation(previousLocation);
 	}
 
-	public SpaceTimeCoordinate GetExteriorLocation() {
-		return this.Location.copy();
+	@Deprecated(forRemoval = true)
+	public SpaceTimeCoordinate GetExteriorSpaceTimeCoord() {
+		return new SpaceTimeCoordinate(NativeSpaceCoordinate.getX(locAddr), NativeSpaceCoordinate.getY(locAddr),
+				NativeSpaceCoordinate.getZ(locAddr), locTimeZone, locDimensionKey);
 	}
 
-	public SpaceTimeCoordinate GetPreviousLocation() {
-		return this.PreviousLocation.copy();
+	@Deprecated(forRemoval = true)
+	public SpaceTimeCoordinate GetPreviousLocationSpaceTimeCoord() {
+		return new SpaceTimeCoordinate(NativeSpaceCoordinate.getX(locAddr), NativeSpaceCoordinate.getY(locAddr),
+				NativeSpaceCoordinate.getZ(locAddr), locTimeZone, locDimensionKey);
+	}
+
+	public void SetExteriorLocation(SpaceTimeCoordinate loc) {
+		SpaceCoordinate.memSet(this.locAddr, loc);
 	}
 
 	public int GetNextIncrement() {
@@ -90,38 +114,48 @@ public class TARDISNavigationalData {
 	}
 
 	public void SetCurrentLevel(ResourceKey<Level> exteriorLevel) {
-		this.Location.setLevel(exteriorLevel);
-		this.ExteriorDimensionKey = exteriorLevel;
+		this.locDimensionKey = exteriorLevel;
 	}
 
-	public void SetExteriorLocation(SpaceTimeCoordinate loc) {
-		this.Location = loc.copy();
+	@Deprecated(forRemoval = true)
+	public SpaceTimeCoordinate GetDestinationSpacetimeCoord() {
+		return new SpaceTimeCoordinate(NativeSpaceCoordinate.getX(destAddr), NativeSpaceCoordinate.getY(destAddr),
+				NativeSpaceCoordinate.getZ(destAddr), destTimeZone, destDimensionKey);
 	}
 
-	public SpaceTimeCoordinate getDestination() {
-		return this.Destination.copy();
-	}
-
+	@Deprecated(forRemoval = true)
 	public SpaceTimeCoordinate getLocation() {
-		if (this.Location.getLevel() == null)
-			this.Location.setLevel(this.ExteriorDimensionKey);
-		return this.Location.copy();
+		return GetExteriorSpaceTimeCoord();
 	}
 
 	/**
 	 * Sets the TARDIS Destination IF the coordinate lock is NOT on
 	 */
+	@Deprecated(forRemoval = true)
 	public void setDestination(SpaceTimeCoordinate destination) {
 		if (!this.TARDIS.GetData().getControlData().isCoordinateLock())
-			Destination = destination.copy();
+			forceSetDestination(destination);
 	}
 
 	/** Sets the TARDIS Destination, ignoring the coordinate lock **/
+	@Deprecated(forRemoval = true)
 	public void forceSetDestination(SpaceTimeCoordinate destination) {
-		Destination = destination.copy();
+		SpaceCoordinate.memSet(this.destAddr, destination);
+		this.destTimeZone = destination.getTimeZone();
+		this.destDimensionKey = destination.getLevelKey();
 	}
 
+	@Deprecated(forRemoval = true)
 	public void setLocation(SpaceTimeCoordinate location) {
-		Location = location.copy();
+		SpaceCoordinate.memSet(this.locAddr, location);
+		this.locTimeZone = location.getTimeZone();
+		this.locDimensionKey = location.getLevelKey();
+	}
+
+	@Deprecated(forRemoval = true)
+	public void setPreviousLocation(SpaceTimeCoordinate location) {
+		SpaceCoordinate.memSet(this.prevLocAddr, location);
+		this.prevLocTimezone = location.getTimeZone();
+		this.prevLocDimensionKey = location.getLevelKey();
 	}
 }

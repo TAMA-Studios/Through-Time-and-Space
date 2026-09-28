@@ -64,11 +64,11 @@ public class ControlsRegistry {
 			() -> new SimplestControl("astral_map", tardis -> {
 				if (tardis.GetLevel().isClientSide)
 					Minecraft.getInstance().setScreen(new AstralMapScreen(tardis.GetCurrentLevel(), null,
-							tardis.GetNavigationalData().getDestination()));
+							tardis.GetNavigationalData().GetDestinationSpacetimeCoord()));
 			}, tardis -> {
 				if (tardis.GetLevel().isClientSide)
 					Minecraft.getInstance().setScreen(new AstralMapScreen(tardis.GetCurrentLevel(), null,
-							tardis.GetNavigationalData().getDestination()));
+							tardis.GetNavigationalData().GetDestinationSpacetimeCoord()));
 			}));
 
 	public static final RegistryObject<SimplestControl> HUM_CONTROL = CONTROLS.register("interior_hum",
@@ -76,14 +76,14 @@ public class ControlsRegistry {
 				InteriorHumDPLoader loader = (InteriorHumDPLoader) DatapackRegistry.getLoader(InteriorHumDPLoader.ID);
 				assert loader != null;
 				List<InteriorHumDPLoader.InteriorHum> list = loader.list.getList();
-				int hum = tardis.GetEnvironmentalData().getHum();
-				tardis.GetEnvironmentalData().setHum(hum >= list.size() - 1 ? 0 : hum + 1);
+				int hum = tardis.GetInteriorData().getHum();
+				tardis.GetInteriorData().setHum(hum >= list.size() - 1 ? 0 : hum + 1);
 			}, (tardis) -> {
 				InteriorHumDPLoader loader = (InteriorHumDPLoader) DatapackRegistry.getLoader(InteriorHumDPLoader.ID);
 				assert loader != null;
 				List<InteriorHumDPLoader.InteriorHum> list = loader.list.getList();
-				int hum = tardis.GetEnvironmentalData().getHum();
-				tardis.GetEnvironmentalData().setHum(hum > 0 ? hum - 1 : list.size());
+				int hum = tardis.GetInteriorData().getHum();
+				tardis.GetInteriorData().setHum(hum > 0 ? hum - 1 : list.size());
 			}));
 
 	public static final RegistryObject<SimplestControl> ENGINE_BRAKE = CONTROLS.register("engine_brake",
@@ -92,19 +92,19 @@ public class ControlsRegistry {
 
 	public static final RegistryObject<SimplestControl> TIMEY_WIMEY = CONTROLS.register("timey_wimey",
 			() -> new SimplestControl("timey_wimey", tardis -> {
-				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
-				tardis.GetNavigationalData().getDestination().setTimeZone(timezone + 1 > 2 ? 0 : timezone + 1);
+				int timezone = tardis.GetNavigationalData().GetDestinationSpacetimeCoord().getTimeZone();
+				tardis.GetNavigationalData().GetDestinationSpacetimeCoord()
+						.setTimeZone(timezone + 1 > 2 ? 0 : timezone + 1);
 			}, tardis -> {
-				int timezone = tardis.GetNavigationalData().getDestination().getTimeZone();
-				tardis.GetNavigationalData().getDestination().setTimeZone(timezone - 1 < 0 ? 2 : timezone - 1);
+				int timezone = tardis.GetNavigationalData().GetDestinationSpacetimeCoord().getTimeZone();
+				tardis.GetNavigationalData().GetDestinationSpacetimeCoord()
+						.setTimeZone(timezone - 1 < 0 ? 2 : timezone - 1);
 			}));
 
-	public static final RegistryObject<SimplestControl> MAVITY = CONTROLS.register("mavity",
-			() -> new SimplestControl("mavity",
-					tardis -> tardis.GetEnvironmentalData()
-							.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() + 0.01f),
-					tardis -> tardis.GetEnvironmentalData()
-							.setGravityLevel(tardis.GetEnvironmentalData().getGravityLevel() - 0.01f)));
+	public static final RegistryObject<SimplestControl> MAVITY = CONTROLS.register("mavity", () -> new SimplestControl(
+			"mavity",
+			tardis -> tardis.GetInteriorData().setGravityLevel(tardis.GetInteriorData().getGravityLevel() + 0.01f),
+			tardis -> tardis.GetInteriorData().setGravityLevel(tardis.GetInteriorData().getGravityLevel() - 0.01f)));
 
 	public static final RegistryObject<SimplestControl> SIMPLE_MODE = CONTROLS.register("simple_mode",
 			() -> new SimplestControl("simple_mode", tardis -> tardis.GetData().getControlData().setSimpleMode(true),

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
-import static com.code.tama.tts.server.misc.BlockStateProperties.SONICD;
+import static com.code.tama.tts.core.misc.BlockStateProperties.SONICD;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2026 */
 package com.code.tama.tts.core.tileentities.multiblock;
 
-import com.code.tama.tts.server.misc.NBTUtils;
+import com.code.tama.tts.core.misc.NBTUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,11 +34,9 @@ public class AverageMultiblockSlaveTile extends BlockEntity {
 
 	@Override
 	public void setRemoved() {
-		assert this.level != null;
-		if (this.master == null)
-			return;
-		if (this.level.getBlockEntity(master) instanceof ImAMultiblock master)
-			master.onSlaveRemoved();
+		if (this.level != null && !this.level.isClientSide && this.master != null
+				&& this.level.getBlockEntity(master) instanceof ImAMultiblock m)
+			m.onSlaveRemoved();
 		super.setRemoved();
 	}
 }

@@ -32,7 +32,7 @@ public class EnvironmentScannerControl extends AbstractControl {
 			return InteractionResult.PASS;
 		if (entity instanceof ServerPlayer player)
 			EnvironmentViewerUtils.startSpectateExt(player, itardisLevel,
-					itardisLevel.GetNavigationalData().GetExteriorLocation());
+					itardisLevel.GetNavigationalData().GetExteriorSpaceTimeCoord());
 
 		return InteractionResult.SUCCESS;
 	}
@@ -43,7 +43,7 @@ public class EnvironmentScannerControl extends AbstractControl {
 			return InteractionResult.PASS;
 		if (player instanceof ServerPlayer serverPlayer)
 			EnvironmentViewerUtils.startSpectateExt(serverPlayer, itardisLevel,
-					itardisLevel.GetNavigationalData().GetExteriorLocation());
+					itardisLevel.GetNavigationalData().GetExteriorSpaceTimeCoord());
 
 		return InteractionResult.SUCCESS;
 	}

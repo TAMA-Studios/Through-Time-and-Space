@@ -167,15 +167,13 @@ public class LightPanel extends HorizontalDirectionalBlock implements ImAnIntera
 		GetTARDISCapSupplier(world).ifPresent(tardisLevelCapability -> {
 			switch (button) {
 				case MINUS :
-					tardisLevelCapability.GetEnvironmentalData()
-							.SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
+					tardisLevelCapability.GetInteriorData().SetLightLevel(tardisLevelCapability.GetLightLevel() - 0.1f);
 					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 1), 3);
 					rClickAnim(world, pos);
 					world.playSound(null, pos, TTSSounds.BUTTON_CLICK_01.get(), SoundSource.BLOCKS);
 					break;
 				case PLUS :
-					tardisLevelCapability.GetEnvironmentalData()
-							.SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
+					tardisLevelCapability.GetInteriorData().SetLightLevel(tardisLevelCapability.GetLightLevel() + 0.1f);
 					// world.setBlock(pos, state.setValue(PRESSED_BUTTON, 2), 3);
 					// world.scheduleTick(pos, this, 10);
 					lClickAnim(world, pos);

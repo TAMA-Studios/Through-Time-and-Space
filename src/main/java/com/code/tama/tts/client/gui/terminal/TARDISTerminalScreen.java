@@ -3,13 +3,13 @@ package com.code.tama.tts.client.gui.terminal;
 
 import java.util.List;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalActionPacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalActionPacketC2S.Action;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalSendMessagePacketC2S;
 import com.code.tama.tts.core.networking.packets.C2S.dimensions.TerminalSetDestinationPacketC2S;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -144,13 +144,13 @@ public class TARDISTerminalScreen extends Screen {
 	}
 
 	private void buildNavigationTab(int x, int y) {
-		SpaceTimeCoordinate dest = tardis.GetNavigationalData().getDestination();
+		SpaceTimeCoordinate dest = tardis.GetNavigationalData().GetDestinationSpacetimeCoord();
 
 		int boxY = y + 76;
 		int boxW = 60;
-		destXBox = editBox(x, boxY, boxW, String.valueOf((int) dest.GetX()));
-		destYBox = editBox(x + 64, boxY, boxW, String.valueOf((int) dest.GetY()));
-		destZBox = editBox(x + 128, boxY, boxW, String.valueOf((int) dest.GetZ()));
+		destXBox = editBox(x, boxY, boxW, String.valueOf((int) dest.x()));
+		destYBox = editBox(x + 64, boxY, boxW, String.valueOf((int) dest.y()));
+		destZBox = editBox(x + 128, boxY, boxW, String.valueOf((int) dest.z()));
 		destDimBox = editBox(x + 192, boxY, 146,
 				dest.getLevel() == null ? "minecraft:overworld" : dest.getLevel().dimension().location().toString());
 		addRenderableWidget(destXBox);
@@ -333,8 +333,8 @@ public class TARDISTerminalScreen extends Screen {
 
 	private void drawNavigationContent(GuiGraphics gfx, int x, int y) {
 		SpaceTimeCoordinate loc = tardis.GetNavigationalData().getLocation();
-		SpaceTimeCoordinate dest = tardis.GetNavigationalData().getDestination();
-		SpaceTimeCoordinate prev = tardis.GetNavigationalData().GetPreviousLocation();
+		SpaceTimeCoordinate dest = tardis.GetNavigationalData().GetDestinationSpacetimeCoord();
+		SpaceTimeCoordinate prev = tardis.GetNavigationalData().GetPreviousLocationSpaceTimeCoord();
 
 		line(gfx, "LOCATION:    " + coordString(loc), x, y, COL_TEXT);
 		line(gfx, "DESTINATION: " + coordString(dest) + "  FACING: " + tardis.GetNavigationalData().getFacing(), x,
@@ -352,8 +352,8 @@ public class TARDISTerminalScreen extends Screen {
 		line(gfx, "REFUELING: " + yesNo(tardis.GetData().isRefueling()) + "   DISCO: "
 				+ yesNo(tardis.GetData().isIsDiscoMode()) + "   ALARMS: " + yesNo(tardis.GetData().isAlarmsState()), x,
 				y + 12, COL_TEXT_DIM);
-		line(gfx, "SPARKING: " + yesNo(tardis.GetData().isSparking()) + "   OPERATOR: " + yesNo(tardis.isOperator()), x,
-				y + 24, COL_TEXT_DIM);
+		line(gfx, "SPARKING: " + yesNo(tardis.GetData().isMalfunctioning()) + "   OPERATOR: "
+				+ yesNo(tardis.isOperator()), x, y + 24, COL_TEXT_DIM);
 		line(gfx,
 				"DEMAT. CIRCUIT: "
 						+ yesNo(tardis.GetData().getSubSystemsData().getDematerializationCircuit().isActivated()),
@@ -361,8 +361,8 @@ public class TARDISTerminalScreen extends Screen {
 
 		line(gfx,
 				String.format("LIGHT: %.2f   GRAVITY: %.2f   OXYGEN: %.2f   HUM ID: %d",
-						tardis.GetEnvironmentalData().getLightLevel(), tardis.GetEnvironmentalData().getGravityLevel(),
-						tardis.GetEnvironmentalData().getOxygenLevel(), tardis.GetEnvironmentalData().getHum()),
+						tardis.GetInteriorData().getLightLevel(), tardis.GetInteriorData().getGravityLevel(),
+						tardis.GetInteriorData().getOxygenLevel(), tardis.GetInteriorData().getHum()),
 				x, y + 48, COL_TEXT_DIM);
 	}
 
@@ -397,7 +397,7 @@ public class TARDISTerminalScreen extends Screen {
 	}
 
 	private static String coordString(SpaceTimeCoordinate c) {
-		return String.format("%.0f, %.0f, %.0f  [%s]", c.GetX(), c.GetY(), c.GetZ(),
+		return String.format("%.0f, %.0f, %.0f  [%s]", c.x(), c.y(), c.z(),
 				c.getLevel() == null ? "?" : c.getLevel().dimension().location().toString());
 	}
 

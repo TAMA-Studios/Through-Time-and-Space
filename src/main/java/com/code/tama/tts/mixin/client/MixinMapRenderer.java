@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.mixin.client;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.data.TARDISNavigationalData;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
@@ -75,7 +75,7 @@ public abstract class MixinMapRenderer {
 		}
 
 		// Destination, pink (R=1.0, G=0.41, B=0.71)
-		SpaceTimeCoordinate dest = nav.getDestination();
+		SpaceTimeCoordinate dest = nav.GetDestinationSpacetimeCoord();
 
 		if (dest != null && mapDimension.equals(dest.getLevel())) {
 			float px = worldToMapF(dest.GetBlockPos().getX(), mapCenterX, scale);

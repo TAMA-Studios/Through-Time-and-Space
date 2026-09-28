@@ -1,12 +1,12 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.blocks.Panels;
 
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.dimensions.SyncCapVariantPacketS2C;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 
 import net.minecraft.world.level.Level;
 

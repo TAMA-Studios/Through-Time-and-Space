@@ -2,7 +2,7 @@
 package com.code.tama.tts.client.renderers;
 
 import com.code.tama.tts.core.items.gadgets.SonicItem;
-import com.code.tama.tts.server.misc.progressable.IWeldable;
+import com.code.tama.tts.core.misc.progressable.IWeldable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;

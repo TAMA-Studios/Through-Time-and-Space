@@ -21,11 +21,11 @@ public class UIComponentXCoord extends UIComponent {
 		assert monitor.getLevel() != null;
 		GetTARDISCapSupplier(monitor.getLevel()).ifPresent(cap -> {
 			if (player.isCrouching())
-				cap.GetNavigationalData().setDestination(
-						cap.GetNavigationalData().getDestination().AddX(-cap.GetNavigationalData().getIncrement()));
+				cap.GetNavigationalData().setDestination(cap.GetNavigationalData().GetDestinationSpacetimeCoord()
+						.AddX(-cap.GetNavigationalData().getIncrement()));
 			else
-				cap.GetNavigationalData().setDestination(
-						cap.GetNavigationalData().getDestination().AddX(cap.GetNavigationalData().getIncrement()));
+				cap.GetNavigationalData().setDestination(cap.GetNavigationalData().GetDestinationSpacetimeCoord()
+						.AddX(cap.GetNavigationalData().getIncrement()));
 		});
 	}
 }

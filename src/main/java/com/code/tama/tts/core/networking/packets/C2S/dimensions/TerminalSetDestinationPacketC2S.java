@@ -3,10 +3,10 @@ package com.code.tama.tts.core.networking.packets.C2S.dimensions;
 
 import java.util.function.Supplier;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;

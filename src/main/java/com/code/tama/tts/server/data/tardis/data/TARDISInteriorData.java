@@ -52,7 +52,7 @@ public class TARDISInteriorData {
 	}
 
 	public float getLightLevel() {
-		if (this.TARDIS.GetData().isSparking()) {
+		if (this.TARDIS.GetData().isMalfunctioning()) {
 			return this.LightLevel - (MathUtils.clamp(this.TARDIS.GetLevel().random.nextFloat(), 0.0f, 0.4f) - 0.2f);
 		} else
 			return this.LightLevel;

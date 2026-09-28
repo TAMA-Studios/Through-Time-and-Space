@@ -38,7 +38,8 @@ public class LocationUICategory extends UICategory {
 							+ cap.GetCurrentLevel().location().getPath().substring(1).replace("_", " "))
 					.setStyle(style(monitor));
 
-			Component line2 = Component.literal(cap.GetNavigationalData().GetExteriorLocation().ReadableStringShort());
+			Component line2 = Component
+					.literal(cap.GetNavigationalData().GetExteriorSpaceTimeCoord().ReadableStringShort());
 
 			fontRenderer.drawInBatch(osVer(monitor), -40, 5, white, false, poseStack.last().pose(), bufferSource,
 					Font.DisplayMode.NORMAL, 0, combinedLight);

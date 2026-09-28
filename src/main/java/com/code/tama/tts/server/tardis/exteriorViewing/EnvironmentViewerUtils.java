@@ -6,12 +6,12 @@ import static com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability.G
 import java.util.Set;
 
 import com.code.tama.tts.client.ClientSetup;
+import com.code.tama.tts.core.misc.containers.PlayerPosition;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.networking.Networking;
 import com.code.tama.tts.core.networking.packets.S2C.entities.SyncViewedTARDISS2C;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.PlayerPosition;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

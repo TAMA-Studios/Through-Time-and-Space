@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.sonic;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
+import com.code.tama.tts.core.misc.progressable.IWeldable;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.Capabilities;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
-import com.code.tama.tts.server.misc.progressable.IWeldable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;

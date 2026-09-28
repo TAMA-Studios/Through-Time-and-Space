@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.code.tama.tts.core.misc.NBTUtils;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
-import com.code.tama.tts.server.misc.NBTUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

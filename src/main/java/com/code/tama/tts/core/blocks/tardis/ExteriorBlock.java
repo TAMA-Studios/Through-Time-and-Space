@@ -11,11 +11,11 @@ import javax.annotation.Nullable;
 import com.code.tama.tts.client.TTSSounds;
 import com.code.tama.tts.core.blocks.core.VoxelRotatedShape;
 import com.code.tama.tts.core.entities.FallingExteriorEntity;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSTileEntities;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -109,7 +109,6 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 	@Override
 	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter getter,
 			@NotNull BlockPos pos, @NotNull CollisionContext context) {
-		// Reuse the same logic as getShape, collision needs the split shapes too
 		return getShape(state, getter, pos, context);
 	}
 
@@ -257,8 +256,14 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 			@NotNull BlockState state1, boolean simulated) {
 		super.onPlace(state, level, pos, state1, simulated);
 
-		level.setBlockAndUpdate(pos.above(), TTSBlocks.EXTERIOR_TOP.getDefaultState()
-				.setValue(DOORS, state.getValue(DOORS)).setValue(FACING, state.getValue(FACING)));
+		if (!state1.is(this)) {
+			level.setBlockAndUpdate(pos.above(), TTSBlocks.EXTERIOR_TOP.getDefaultState()
+					.setValue(DOORS, state.getValue(DOORS)).setValue(FACING, state.getValue(FACING)));
+		} else if (state.getValue(DOORS) != state1.getValue(DOORS)) {
+			BlockState top = level.getBlockState(pos.above());
+			if (top.getBlock() == TTSBlocks.EXTERIOR_TOP.get())
+				level.setBlock(pos.above(), top.setValue(DOORS, state.getValue(DOORS)), 3);
+		}
 
 		if (state.hasBlockEntity()) {
 			if (level.getBlockEntity(pos) instanceof ExteriorTile exteriorTile) {
@@ -299,12 +304,14 @@ public class ExteriorBlock extends FallingBlock implements EntityBlock {
 
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		new Throwable("exterior removed").printStackTrace();
 		if (level.getBlockEntity(pos) != null) {
-			ItemEntity entity = EntityType.ITEM.create(level);
-			if (newState == null || newState.equals(Blocks.AIR.defaultBlockState()))
+			if (newState == null || newState.equals(Blocks.AIR.defaultBlockState())) {
+				ItemEntity entity = EntityType.ITEM.create(level);
 				entity.setItem(createExteriorItem(level.getBlockEntity(pos)));
-			entity.setPos(pos.getCenter());
-			level.addFreshEntity(entity);
+				entity.setPos(pos.getCenter());
+				level.addFreshEntity(entity);
+			}
 		}
 		super.onRemove(state, level, pos, newState, movedByPiston);
 	}

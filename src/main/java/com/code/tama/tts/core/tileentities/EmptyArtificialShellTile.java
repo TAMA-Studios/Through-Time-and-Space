@@ -1,7 +1,7 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.core.tileentities;
 
-import com.code.tama.tts.server.misc.progressable.IWeldable;
+import com.code.tama.tts.core.misc.progressable.IWeldable;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;

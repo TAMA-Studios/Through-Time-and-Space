@@ -3,13 +3,13 @@ package com.code.tama.tts.core.entities;
 
 import javax.annotation.Nullable;
 
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
+import com.code.tama.tts.core.misc.containers.SpaceCoordinate;
 import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.forge.TTSEntities;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
 import com.code.tama.tts.server.capabilities.caps.TARDISLevelCapability;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.tardis.ExteriorState;
 import com.code.tama.tts.server.tardis.exteriorViewing.EnvironmentViewerUtils;
 
@@ -335,9 +335,16 @@ public class TardisFlightEntity extends Mob {
 				if (interior != null) {
 					TARDISLevelCapability.GetTARDISCapSupplier(interior).ifPresent(cap -> {
 						cap.SetExteriorTile(tile);
-						SpaceTimeCoordinate here = new SpaceTimeCoordinate(landingPos, level.dimension());
-						cap.GetNavigationalData().SetExteriorLocation(here);
-						cap.GetNavigationalData().setDestination(here);
+						SpaceCoordinate.memSet(cap.GetNavigationalData().getLocAddr(), landingPos);
+						cap.GetNavigationalData().setLocDimensionKey(level.dimension());
+
+						SpaceCoordinate.memSet(cap.GetNavigationalData().getDestAddr(), landingPos);
+						cap.GetNavigationalData().setDestDimensionKey(level.dimension());
+						//
+						// SpaceTimeCoordinate here = new SpaceTimeCoordinate(landingPos,
+						// level.dimension());
+						// cap.GetNavigationalData().SetExteriorLocation(here);
+						// cap.GetNavigationalData().setDestination(here);
 						cap.GetFlightData().setInFlight(false);
 						cap.GetFlightData().setTicksInFlight(0);
 					});

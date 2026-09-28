@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.code.tama.tts.client.gui.ARSRoomRegistry;
+import com.code.tama.tts.core.misc.containers.ARSStructureContainer;
 import com.code.tama.tts.server.enums.Structures;
-import com.code.tama.tts.server.misc.containers.ARSStructureContainer;
 
 import net.minecraft.network.chat.Component;
 

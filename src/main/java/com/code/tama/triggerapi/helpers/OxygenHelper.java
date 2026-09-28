@@ -23,7 +23,7 @@ public class OxygenHelper {
 	 */
 	public static float getO2(Level level) {
 		if (GetTARDISCapSupplier(level).isPresent()) {
-			return Objects.requireNonNull(GetTARDISCap(level)).GetEnvironmentalData().getOxygenLevel();
+			return Objects.requireNonNull(GetTARDISCap(level)).GetInteriorData().getOxygenLevel();
 		}
 
 		return MAP.getOrDefault(level.dimension().location(), 20);

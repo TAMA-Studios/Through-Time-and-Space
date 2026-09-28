@@ -7,8 +7,8 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.data.json.loaders.PlanetLoader;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.jetbrains.annotations.NotNull;
@@ -126,7 +126,7 @@ public class AstralMapScreen extends Screen {
 		}
 
 		Vec3 tardisPos = resolveTardisPosition(time);
-		Vec3 destPos = new Vec3(destination.GetX(), destination.GetY(), destination.GetZ());
+		Vec3 destPos = new Vec3(destination.x(), destination.y(), destination.z());
 		for (Vec3 v : new Vec3[]{tardisPos, destPos}) {
 			minX = Math.min(minX, v.x);
 			maxX = Math.max(maxX, v.x);
@@ -165,7 +165,7 @@ public class AstralMapScreen extends Screen {
 
 	private Vec3 resolveTardisPosition(long time) {
 		if (currentSpacePosition != null) {
-			return new Vec3(currentSpacePosition.GetX(), currentSpacePosition.GetY(), currentSpacePosition.GetZ());
+			return new Vec3(currentSpacePosition.x(), currentSpacePosition.y(), currentSpacePosition.z());
 		}
 
 		if (currentDimension != null) {
@@ -226,7 +226,7 @@ public class AstralMapScreen extends Screen {
 		stack.popPose();
 
 		Vec3 tardisWorld = resolveTardisPosition(time);
-		Vec3 destWorld = new Vec3(destination.GetX(), destination.GetY(), destination.GetZ());
+		Vec3 destWorld = new Vec3(destination.x(), destination.y(), destination.z());
 		int[] tardisScreen = worldToScreen(tardisWorld.x, tardisWorld.z);
 		int[] destScreen = worldToScreen(destWorld.x, destWorld.z);
 

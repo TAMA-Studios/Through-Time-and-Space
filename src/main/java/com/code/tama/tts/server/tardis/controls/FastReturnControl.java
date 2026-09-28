@@ -26,21 +26,23 @@ public class FastReturnControl extends AbstractControl {
 
 	@Override
 	public InteractionResult OnLeftClick(ITARDISLevel itardisLevel, Entity entity) {
-		itardisLevel.GetNavigationalData().setDestination(itardisLevel.GetNavigationalData().GetExteriorLocation());
+		itardisLevel.GetNavigationalData()
+				.setDestination(itardisLevel.GetNavigationalData().GetExteriorSpaceTimeCoord());
 		if (entity instanceof Player player)
-			player.displayClientMessage(Component.literal("Destination set to Current Location: "
-					+ itardisLevel.GetNavigationalData().getDestination().ReadableString()), true);
+			player.displayClientMessage(
+					Component.literal("Destination set to Current Location: "
+							+ itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableString()),
+					true);
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public InteractionResult OnRightClick(ITARDISLevel itardisLevel, Player player) {
-		itardisLevel.GetNavigationalData().setDestination(itardisLevel.GetNavigationalData().GetPreviousLocation());
+		itardisLevel.GetNavigationalData()
+				.setDestination(itardisLevel.GetNavigationalData().GetPreviousLocationSpaceTimeCoord());
 
-		player.displayClientMessage(
-				Component.literal(
-						"Destination set to: " + itardisLevel.GetNavigationalData().getDestination().ReadableString()),
-				true);
+		player.displayClientMessage(Component.literal("Destination set to: "
+				+ itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().ReadableString()), true);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -112,7 +112,7 @@ public interface ITARDISLevel extends INBTSerializable<CompoundTag> {
 
 	TARDISData GetData();
 
-	TARDISInteriorData GetEnvironmentalData();
+	TARDISInteriorData GetInteriorData();
 
 	ExteriorTile GetExteriorTile();
 

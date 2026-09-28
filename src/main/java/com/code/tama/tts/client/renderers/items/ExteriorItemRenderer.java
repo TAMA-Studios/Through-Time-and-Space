@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.code.tama.tts.client.renderers.exteriors.AbstractJSONRenderer;
+import com.code.tama.tts.core.misc.containers.ExteriorModelContainer;
 import com.code.tama.tts.core.registries.tardis.ExteriorsRegistry;
-import com.code.tama.tts.server.misc.containers.ExteriorModelContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;

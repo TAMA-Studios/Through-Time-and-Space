@@ -2,8 +2,8 @@
 package com.code.tama.tts.server.tardis.terminationprotocol;
 
 import com.code.tama.tts.client.util.CameraShakeHandler;
+import com.code.tama.tts.core.misc.containers.FlightTerminationProtocol;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
-import com.code.tama.tts.server.misc.containers.FlightTerminationProtocol;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

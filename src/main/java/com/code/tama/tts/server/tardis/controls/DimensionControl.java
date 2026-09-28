@@ -1,10 +1,10 @@
 /* (C) TAMA Studios 2025 */
 package com.code.tama.tts.server.tardis.controls;
 
+import com.code.tama.tts.core.misc.MiscUtils;
+import com.code.tama.tts.core.misc.containers.SpaceTimeCoordinate;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
 import com.code.tama.tts.server.data.tardis.DataUpdateValues;
-import com.code.tama.tts.server.misc.MiscUtils;
-import com.code.tama.tts.server.misc.containers.SpaceTimeCoordinate;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -35,17 +35,18 @@ public class DimensionControl extends AbstractControl {
 			if (itardisLevel.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated())
 				return InteractionResult.FAIL;
 
-			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().getDestination();
+			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord();
 
-			coordinate.setLevel(
-					WorldHelper.getNextDimension(itardisLevel.GetNavigationalData().getDestination().getLevelKey()));
+			coordinate.setLevel(WorldHelper
+					.getNextDimension(itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().getLevelKey()));
 			itardisLevel.GetNavigationalData().setDestination(coordinate);
 
 			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 
 			if (entity instanceof Player player)
-				player.displayClientMessage(Component.literal("Destination Level = " + MiscUtils
-						.getDimName(itardisLevel.GetNavigationalData().getDestination().getLevelKey().location())),
+				player.displayClientMessage(
+						Component.literal("Destination Level = " + MiscUtils.getDimName(itardisLevel
+								.GetNavigationalData().GetDestinationSpacetimeCoord().getLevelKey().location())),
 						false);
 		}
 		return InteractionResult.SUCCESS;
@@ -57,16 +58,16 @@ public class DimensionControl extends AbstractControl {
 			if (itardisLevel.GetData().getSubSystemsData().NetherReactorCoreSubsystem.isActivated())
 				return InteractionResult.FAIL;
 
-			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().getDestination();
-			coordinate.setLevel(
-					WorldHelper.getNextDimension(itardisLevel.GetNavigationalData().getDestination().getLevelKey()));
+			SpaceTimeCoordinate coordinate = itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord();
+			coordinate.setLevel(WorldHelper
+					.getNextDimension(itardisLevel.GetNavigationalData().GetDestinationSpacetimeCoord().getLevelKey()));
 			itardisLevel.GetNavigationalData().setDestination(coordinate);
 
 			itardisLevel.UpdateClient(DataUpdateValues.NAVIGATIONAL);
 
 			player.displayClientMessage(
-					Component.literal("Destination Level = " + GrammarNazi.cleanString(
-							itardisLevel.GetNavigationalData().getDestination().getLevelKey().location().getPath())),
+					Component.literal("Destination Level = " + GrammarNazi.cleanString(itardisLevel
+							.GetNavigationalData().GetDestinationSpacetimeCoord().getLevelKey().location().getPath())),
 					true);
 		}
 		return InteractionResult.SUCCESS;

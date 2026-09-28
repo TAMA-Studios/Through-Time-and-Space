@@ -96,7 +96,7 @@ public class ClientForgeEvents {
 			});
 
 			TARDISLevelCapability.GetClientTARDISCapSupplier().ifPresent(tardis -> {
-				TardisAmbientParticle ambient = tardis.GetEnvironmentalData().getAmbientParticle();
+				TardisAmbientParticle ambient = tardis.GetInteriorData().getAmbientParticle();
 
 				if (ambient == null)
 					return;
