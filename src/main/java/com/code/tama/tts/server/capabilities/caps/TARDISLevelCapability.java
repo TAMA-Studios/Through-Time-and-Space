@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import com.code.tama.tts.TTSMod;
+import com.code.tama.tts.TardisTickCoroutine;
 import com.code.tama.tts.client.gui.ARSGrid;
 import com.code.tama.tts.client.gui.ARSPos;
 import com.code.tama.tts.core.blocks.tardis.ExteriorBlock;
@@ -28,7 +29,6 @@ import com.code.tama.tts.core.registries.forge.TTSBlocks;
 import com.code.tama.tts.core.registries.tardis.FlightTerminationProtocolRegistry;
 import com.code.tama.tts.core.registries.tardis.LandingTypeRegistry;
 import com.code.tama.tts.core.tileentities.ExteriorTile;
-import com.code.tama.tts.server.CommonThreads;
 import com.code.tama.tts.server.ServerThreads;
 import com.code.tama.tts.server.capabilities.Capabilities;
 import com.code.tama.tts.server.capabilities.interfaces.ITARDISLevel;
@@ -78,7 +78,8 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	private int Speed;
 	private boolean isOperator = false, ShouldRev = false;
 	private final PowerHandler powerHandler = new PowerHandler(this);
-	private Thread TickThread;
+	// private Thread TickThread;
+	private TardisTickCoroutine TardisTickCoroutine;
 	private TARDISData data = new TARDISData(this);
 	private TARDISNavigationalData navigationalData = new TARDISNavigationalData(this);
 	private TARDISInteriorData environmentalData = new TARDISInteriorData(this);
@@ -767,10 +768,15 @@ public class TARDISLevelCapability implements ITARDISLevel {
 	}
 
 	private void TickThread() {
-		if (TickThread == null || !TickThread.isAlive()) {
-			TickThread = CommonThreads.TARDISTickThread(this);
-			TickThread.start();
+		// if (TickThread == null || !TickThread.isAlive()) {
+		// TickThread = CommonThreads.TARDISTickThread(this);
+		// TickThread.start();
+		// }
+		if (TardisTickCoroutine == null) {
+			this.TardisTickCoroutine = new TardisTickCoroutine(this);
+			TardisTickCoroutine.start();
 		}
+
 	}
 	@Override
 	public void Tick() {

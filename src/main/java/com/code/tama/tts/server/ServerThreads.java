@@ -16,8 +16,7 @@ public class ServerThreads {
 	}
 
 	public static Thread LandingThread(ITARDISLevel tardis) {
-		return ThreadUtils.NewThread((itardisLevel) -> {
-			new PhysicalStateManager(itardisLevel).serverLand();
-		}, tardis, "Landing Thread");
+		return ThreadUtils.NewThread((itardisLevel) -> new PhysicalStateManager(itardisLevel).serverLand(), tardis,
+				"Landing Thread");
 	}
 }

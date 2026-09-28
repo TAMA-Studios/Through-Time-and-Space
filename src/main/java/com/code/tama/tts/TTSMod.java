@@ -59,7 +59,6 @@ import com.code.tama.triggerapi.TriggerAPI;
 import com.code.tama.triggerapi.animation.AnimationTicker;
 import com.code.tama.triggerapi.helpers.FileHelper;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(TTSMod.MODID)
 public class TTSMod {
 	public static final String MODID = "tts";
@@ -68,7 +67,7 @@ public class TTSMod {
 
 	public static final Logger LOGGER = com.code.tama.triggerapi.Logger.LOGGER;
 	public static final org.slf4j.Logger LOGGER_SLF4J = LogUtils.getLogger();
-	// Define mod id in a common place for everything to reference
+
 	public static ArrayList<AbstractSoundScheme> SoundSchemes = new ArrayList<>();
 	public static TriggerAPI triggerAPI;
 
@@ -81,7 +80,6 @@ public class TTSMod {
 		// noinspection InstantiationOfUtilityClass
 		triggerAPI = new TriggerAPI(modEventBus, MODID);
 
-		// Register the commonSetup method for modloading
 		modEventBus.addListener(this::commonSetup);
 		Loaders.registerAll();
 
@@ -114,9 +112,7 @@ public class TTSMod {
 		TTSTrunkPlacerTypes.register(modEventBus);
 		ModFoliagePlacers.register(modEventBus);
 		TTSFeatures.FEATURES.register(modEventBus);
-		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-		// Register the items to a creative tab
 		modEventBus.addListener(this::addCreative);
 		Biomes.BIOME_MODIFIERS.register(modEventBus);
 		Biomes.CHUNK_GENERATORS.register(modEventBus);

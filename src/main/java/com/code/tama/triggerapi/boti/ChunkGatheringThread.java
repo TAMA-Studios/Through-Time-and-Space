@@ -208,12 +208,15 @@ public class ChunkGatheringThread extends Thread {
 			BlockEntity[] tileEntities = new BlockEntity[total];
 			int[] packedLights = new int[total];
 
+			// Preallocate variables
+			ChunkAccess chunk;
+			BlockState state;
+
 			// -- Phase 1: gather block data ------------------------------------
 			for (int u = uMin + 1; u < uMax; u++) {
 				for (int v = vMin + 1; v < vMax; v++) {
 					ChunkPos chunkPos = new ChunkPos(baseChunkX + u, baseChunkZ + v);
-					ChunkAccess chunk = targetLevel.getChunkSource().getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL,
-							true);
+					chunk = targetLevel.getChunkSource().getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, true);
 					if (chunk == null)
 						continue;
 
@@ -246,11 +249,9 @@ public class ChunkGatheringThread extends Thread {
 										sectionAbove, y, x, z, gx, gz, lx, lz);
 
 								// -- 3. Higher section ------------------
-								if (sectionHigher != null) {
-									gatherSection(sectionBaseYHigher, worldYMin, sizeY, sizeZ, solid, blocksFlow,
-											blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk,
-											sectionHigher, y, x, z, gx, gz, lx, lz);
-								}
+								gatherSection(sectionBaseYHigher, worldYMin, sizeY, sizeZ, solid, blocksFlow,
+										blockStates, fluidStates, teLocations, tileEntities, packedLights, chunk,
+										sectionHigher, y, x, z, gx, gz, lx, lz);
 
 							}
 						}
@@ -286,7 +287,7 @@ public class ChunkGatheringThread extends Thread {
 				int ly = rem / sizeZ;
 				int lz = rem % sizeZ;
 
-				BlockState state = blockStates[fi];
+				state = blockStates[fi];
 				if (state == null || state.isAir())
 					continue;
 
@@ -360,11 +361,16 @@ public class ChunkGatheringThread extends Thread {
 			int lx, int lz) {
 		int gy2 = base + y;
 		int ly2 = gy2 - worldYMin;
+
+		BlockState stateA;
+		FluidState fluidA;
+		BlockPos gpos = new BlockPos.MutableBlockPos();
+
 		if (ly2 >= 0 && ly2 < sizeY) {
 			int fi2 = lx * sizeY * sizeZ + ly2 * sizeZ + lz;
-			BlockState stateA = sectionAbove.getBlockState(x, y, z);
-			FluidState fluidA = sectionAbove.getFluidState(x, y, z);
-			BlockPos gpos = new BlockPos(gx, gy2, gz);
+			stateA = sectionAbove.getBlockState(x, y, z);
+			fluidA = sectionAbove.getFluidState(x, y, z);
+			gpos.mutable().set(gx, gy2, gz);
 
 			assert portalTile != null;
 			if (!gpos.equals(portalTile.getTargetPos())) {
