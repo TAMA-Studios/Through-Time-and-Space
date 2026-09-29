@@ -91,8 +91,6 @@ public class ExteriorTile extends AbstractPortalTile implements ImAMultiblock {
 	public boolean ShouldMakeDimOnNextTick = false;
 	public boolean isArtificial;
 
-	public boolean ThreadWorking = false;
-
 	public ExteriorAnimationData exteriorAnimationData = new ExteriorAnimationData();
 
 	public ExteriorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {

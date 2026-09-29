@@ -66,7 +66,7 @@ public class TARDISNavigationalData {
 		locAddr = NativeSpaceCoordinate.create();
 		prevLocAddr = NativeSpaceCoordinate.create();
 
-		this.setDestination(destination);
+		this.forceSetDestination(destination);
 		this.setLocation(location);
 		this.setPreviousLocation(previousLocation);
 	}
@@ -133,7 +133,7 @@ public class TARDISNavigationalData {
 	 */
 	@Deprecated(forRemoval = true)
 	public void setDestination(SpaceTimeCoordinate destination) {
-		if (!this.TARDIS.GetData().getControlData().isCoordinateLock())
+		if (this.TARDIS != null && !this.TARDIS.GetData().getControlData().isCoordinateLock())
 			forceSetDestination(destination);
 	}
 

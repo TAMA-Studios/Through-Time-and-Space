@@ -17,7 +17,6 @@ public class GetExteriorVariantThread extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		this.tile.ThreadWorking = true;
 		if (tile.getLevel() == null)
 			return;
 		if (tile.Model == null)
@@ -25,9 +24,5 @@ public class GetExteriorVariantThread extends Thread {
 		if (tile.getLevel().isClientSide)
 			Networking.sendToServer(new TriggerSyncExteriorPacketC2S(tile.getLevel().dimension(),
 					tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ()));
-		if (tile.Model == null)
-			tile.Model = ExteriorsRegistry.Get(0);
-
-		this.tile.ThreadWorking = false;
 	}
 }
