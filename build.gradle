@@ -414,12 +414,7 @@ def rustcExecutable = "${rustBin}"
 def cargoExecutable = "${cargoBin}"
 def crossExecutable = crossBin ? "${crossBin}" : null
 
-def rustPath = [
-		rustBin,
-		cargoBin,
-		crossBin ?: '',
-		System.getenv('PATH') ?: ''
-].join(File.pathSeparator)
+def rustPath = System.getenv('PATH') ?: ''
 
 def rustupHome = System.getenv('RUSTUP_HOME') ?:
 		"${System.getenv('HOME')}/.rustup"
