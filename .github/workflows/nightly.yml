@@ -1,9 +1,10 @@
+
 name: Nightly Build
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 2 AM UTC = 10 PM EST / 9 PM CST
-  workflow_dispatch:      # allow manual trigger too
+    - cron: '0 2 * * *'  # 2 AM UTC = 8 PM CST / 9 PM CDT
+  workflow_dispatch:
 
 jobs:
   check-changes:
@@ -103,9 +104,20 @@ jobs:
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-gnu
 
-      - name: Install cross
-        run: cargo install cross --locked
+      - name: Install Windows cross-linker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-x86-64
+
+      - name: Verify Rust and MinGW
+        run: |
+          rustc --version
+          cargo --version
+          rustup target list --installed
+          x86_64-w64-mingw32-gcc --version
 
       - name: Cache Cargo
         uses: actions/cache@v4
@@ -140,17 +152,24 @@ jobs:
         run: |
           git fetch --tags
           VERSION="${{ steps.get_version.outputs.mod_version }}"
-          # Count nightlies for this specific version only
           COUNT=$(git tag | grep "^NIGHTLY-${VERSION}-" | wc -l)
           NEXT=$((COUNT + 1))
           echo "nightly_number=$NEXT" >> $GITHUB_OUTPUT
 
       - name: Build Linux + Windows natives + mod jar
-        run: ./gradlew copyNative_x86_64_unknown_linux_gnu copyNative_x86_64_pc_windows_gnu jarJar --no-daemon --info --stacktrace
+        run: |
+          ./gradlew \
+            -PCROSS_PATH=cargo \
+            copyNative_x86_64_unknown_linux_gnu \
+            copyNative_x86_64_pc_windows_gnu \
+            jarJar \
+            --no-daemon \
+            --info \
+            --stacktrace
         env:
           CARGO_HOME: /home/runner/.cargo
           RUSTUP_HOME: /home/runner/.rustup
-          CROSS_DEBUG: "1"
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: x86_64-w64-mingw32-gcc
 
       - name: Upload mod jar artifact
         uses: actions/upload-artifact@v4
@@ -161,7 +180,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [ build-macos-native, build-mod-jar ]
+    needs: [build-macos-native, build-mod-jar]
     permissions:
       contents: write
     steps:
@@ -222,7 +241,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.NIGHTLY_TAG }}
-          name: "TTS Nightly,  ${{ needs.build-mod-jar.outputs.mod_version }} #${{ needs.build-mod-jar.outputs.nightly_number }}"
+          name: "TTS Nightly, ${{ needs.build-mod-jar.outputs.mod_version }} #${{ needs.build-mod-jar.outputs.nightly_number }}"
           prerelease: true
           body: |
             ## Nightly Build
@@ -233,10 +252,11 @@ jobs:
 
             ### Changes since last nightly
             ${{ steps.changelog.outputs.changelog }}
+
             ### Platforms
             - Windows (x86_64)
             - Linux (x86_64)
-            - macOS (x86_64 Intel + aarch64 Apple Silicon,  universal binary)
+            - macOS (x86_64 Intel + aarch64 Apple Silicon, universal binary)
 
           files: ${{ env.JAR_PATH }}
           draft: false
