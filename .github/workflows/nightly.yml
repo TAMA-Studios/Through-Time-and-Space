@@ -146,10 +146,11 @@ jobs:
           echo "nightly_number=$NEXT" >> $GITHUB_OUTPUT
 
       - name: Build Linux + Windows natives + mod jar
-        run: ./gradlew copyNative_x86_64_unknown_linux_gnu copyNative_x86_64_pc_windows_gnu jarJar --no-daemon
+        run: ./gradlew copyNative_x86_64_unknown_linux_gnu copyNative_x86_64_pc_windows_gnu jarJar --no-daemon --info --stacktrace
         env:
           CARGO_HOME: /home/runner/.cargo
           RUSTUP_HOME: /home/runner/.rustup
+          CROSS_DEBUG: "1"
 
       - name: Upload mod jar artifact
         uses: actions/upload-artifact@v4
