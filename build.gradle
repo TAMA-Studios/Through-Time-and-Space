@@ -706,6 +706,7 @@ tasks.register('copyNativeLibs') {
 }
 
 processResources.dependsOn 'copyNativeLibs'
+processResources.mustRunAfter 'copyNative_x86_64_pc_windows_gnu'
 
 
 // ============================================================================
